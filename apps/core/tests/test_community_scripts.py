@@ -65,6 +65,17 @@ class DownloadFailureIsAnError(SimpleTestCase):
         self.assertIn("ran", res.stdout)
 
 
+class CatalogRefreshTasksRegistered(SimpleTestCase):
+    """The VM 'refresh catalog' task lived in vm_tasks.py, which Celery's
+    autodiscovery never imported: the button failed with NotRegistered."""
+
+    def test_both_refresh_tasks_are_registered(self):
+        from proxorchestrator.celery import app
+        app.loader.import_default_modules()
+        self.assertIn("vmcreator.refresh_vm_community_catalog", app.tasks)
+        self.assertIn("lxc.refresh_community_catalog", app.tasks)
+
+
 class TemplateStorage(SimpleTestCase):
 
     def test_template_storage_passed_to_script(self):

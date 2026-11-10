@@ -330,3 +330,8 @@ def run_create_pipeline(self, job_id):
     except Exception as exc:
         _fail_create(job, str(exc), assigned_vmid, config, node)
         logger.error("VmCreateJob %d: unexpected error", job_id, exc_info=True)
+
+
+# Celery's autodiscover only imports <app>.tasks; register vm_tasks too,
+# otherwise the 'refresh catalog' button raised NotRegistered.
+from apps.vmcreator import vm_tasks  # noqa: E402,F401

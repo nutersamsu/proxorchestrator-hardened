@@ -520,7 +520,10 @@ def vm_community_scripts_refresh_status(request, task_id):
     result = AsyncResult(task_id)
 
     if result.ready():
-        task_result = result.result or {}
+        task_result = result.result if isinstance(result.result, dict) else {
+            "success": False,
+            "error": str(result.result) or "Catalog refresh task failed",
+        }
         return JsonResponse({
             "status": "complete",
             "success": task_result.get("success", False),
