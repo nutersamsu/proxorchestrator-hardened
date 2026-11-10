@@ -2,7 +2,7 @@
 
 This branch fixes the issues found in an audit of ProxOrchestrator 1.1.2
 (`main` + `dev` as of 2026-04-18). Every fix has a regression test in
-`apps/core/tests/test_security.py` (29 tests).
+`apps/core/tests/test_security.py` (37 tests).
 
 ## Critical
 
@@ -56,7 +56,7 @@ This branch fixes the issues found in an audit of ProxOrchestrator 1.1.2
 
 ## How it was tested
 
-- 29 regression tests (`python manage.py test apps.core.tests`).
+- 37 regression tests (`python manage.py test apps.core.tests`).
 - nginx + gunicorn + a fake Proxmox in a container: with the original
   `/vm-ws/` block an unauthenticated `DELETE /vm-ws/nodes/pve/qemu/101`
   reached the API with the token attached; with the new block it returns 404.
@@ -69,8 +69,24 @@ This branch fixes the issues found in an audit of ProxOrchestrator 1.1.2
   without login, operator blocked from admin areas and the root terminal,
   cross-site WebSocket rejected, login lockout via Redis, SSH host key and
   API certificate pinned (fingerprint matches `/etc/pve/local/pve-ssl.pem`).
+- Community-script deployment on a production Proxmox VE 9.2 (2026-11-10),
+  Alpine LXC through the deploy form and the live terminal. The first runs
+  exposed five problems, all fixed and covered by tests:
+  1. every script terminal closed after 5 s (`channels_redis` + redis-py >= 6
+     idle `TimeoutError`) — explicit `socket_timeout`;
+  2. the core ignores `var_diagnostics` and blocks on a dialog whose default
+     is "Yes" — the app writes `DIAGNOSTICS=no` first if no choice exists;
+  3. no way to choose the template storage — new form field
+     (`var_template_storage`); note the core still asks once per host, on
+     its very first run, to create `default.vars`;
+  4. the new CT ID was never recorded (current output is colourised
+     `Container 104 created`) — ANSI stripped, both formats matched;
+  5. after a browser reconnect the DONE/exit notice went to the old socket —
+     notices follow the attached socket.
+  Final run: no prompts, DONE in 28 s, CT ID recorded. Test containers were
+  removed afterwards.
 - Not tested: Entra ID against a real tenant, ACME issuance, LXC console,
-  disk import and community-script deployment.
+  disk import and VM community scripts.
 
 ## Upgrading an existing install
 
