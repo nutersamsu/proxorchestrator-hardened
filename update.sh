@@ -499,6 +499,23 @@ for svc_pair in \
     fi
 done
 
+# ---------------------------------------------------------------------------
+# Community-script catalogs: the copy above replaced them with the snapshot
+# shipped in the repository (possibly older than one refreshed in the UI).
+# Rebuild both from upstream; on failure (offline) the snapshot stays.
+# ---------------------------------------------------------------------------
+echo "==> Refreshing community-script catalogs..."
+sudo -u "${APP_USER}" \
+    DJANGO_SETTINGS_MODULE=proxorchestrator.settings.production \
+    "${PYTHON}" "${APP_HOME}/manage.py" shell -c "
+from apps.lxc.catalog import rebuild_catalog as lxc_rebuild
+from apps.vmcreator.vm_catalog import rebuild_catalog as vm_rebuild
+for name, fn in (('LXC', lxc_rebuild), ('VM', vm_rebuild)):
+    r = fn()
+    print('    %s catalog: %s' % (name, ('%s scripts' % r.get('script_count')) if r.get('success') else 'kept repository snapshot (' + str(r.get('error')) + ')'))
+" --settings=proxorchestrator.settings.production 2>/dev/null \
+    || echo "    Catalog refresh skipped (kept repository snapshot)."
+
 echo "==> Restarting services..."
 systemctl restart proxorchestrator-gunicorn proxorchestrator-celery
 sleep 2
