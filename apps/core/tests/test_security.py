@@ -210,6 +210,31 @@ class ConsoleProxyAuth(SecurityTestCase):
             with self.subTest(uri=bad):
                 self.assertEqual(self._auth(c, bad).status_code, 403)
 
+    def test_ticket_with_special_characters(self):
+        """Proxmox 9 tickets contain characters like  " < > ' ( ) — the console
+        page must emit them as valid JSON and the auth check must accept the
+        browser's encodeURIComponent() form."""
+        from urllib.parse import quote
+        from django.template.loader import render_to_string
+        ticket = """,>8J6"OWP'(x)!~*:PVEVNC:6AF2E8B5::txAs<q>/S+="""
+        html = render_to_string("vmmanager/console.html", {
+            "vmid": 101, "vnc": {"ticket": ticket}, "error": None,
+            "console_data": {"ticket": ticket, "node": "pve", "vmid": 101, "vnc_port": "5900"}})
+        import json
+        import re
+        m = re.search(r'<script id="console-data" type="application/json">(.*?)</script>', html, re.S)
+        self.assertEqual(json.loads(m.group(1))["ticket"], ticket)
+
+        make_user("op4")
+        c = Client()
+        c.login(username="op4", password="S3cure-pass-for-tests!")
+        session = c.session
+        session["console_grants"] = {"pve/qemu/101": time.time() + 60}
+        session.save()
+        encoded = quote(ticket, safe="-_.!~*'()")  # == encodeURIComponent
+        uri = f"/vm-ws/nodes/pve/qemu/101/vncwebsocket?port=5900&vncticket={encoded}"
+        self.assertEqual(self._auth(c, uri).status_code, 204)
+
     def test_expired_grant_denied(self):
         make_user("op3")
         c = Client()

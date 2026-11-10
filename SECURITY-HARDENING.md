@@ -2,7 +2,7 @@
 
 This branch fixes the issues found in an audit of ProxOrchestrator 1.1.2
 (`main` + `dev` as of 2026-04-18). Every fix has a regression test in
-`apps/core/tests/test_security.py` (28 tests).
+`apps/core/tests/test_security.py` (29 tests).
 
 ## Critical
 
@@ -49,7 +49,28 @@ This branch fixes the issues found in an audit of ProxOrchestrator 1.1.2
 - Community scripts restricted to
   `https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/(ct|vm)/*.sh`.
 - Bugs found on the way: login errors were never displayed; WebSocket
-  `disconnect()` crashed when `connect()` had rejected the socket.
+  `disconnect()` crashed when `connect()` had rejected the socket; the VNC
+  console failed whenever a Proxmox 9 ticket contained `"`, `<` or `>`
+  (console data was hand-built JSON inside `<script>` and got HTML-escaped —
+  now emitted with `json_script`).
+
+## How it was tested
+
+- 29 regression tests (`python manage.py test apps.core.tests`).
+- nginx + gunicorn + a fake Proxmox in a container: with the original
+  `/vm-ws/` block an unauthenticated `DELETE /vm-ws/nodes/pve/qemu/101`
+  reached the API with the token attached; with the new block it returns 404.
+- Full install with the modified `install.sh` on a disposable Debian 13 VM
+  running a nested Proxmox VE 9.2, then `update.sh` over it, then an
+  end-to-end client (25/25): signup blocked, complete setup wizard (SSH key
+  copy, least-privilege token `po@pve` with PVEVMAdmin + PVEDatastoreUser +
+  PVEAuditor), discovery, inventory, VNC console reaching the guest (`RFB
+  003.008`) only with a session that opened it, `/vm-ws/` API paths 404
+  without login, operator blocked from admin areas and the root terminal,
+  cross-site WebSocket rejected, login lockout via Redis, SSH host key and
+  API certificate pinned (fingerprint matches `/etc/pve/local/pve-ssl.pem`).
+- Not tested: Entra ID against a real tenant, ACME issuance, LXC console,
+  disk import and community-script deployment.
 
 ## Upgrading an existing install
 
