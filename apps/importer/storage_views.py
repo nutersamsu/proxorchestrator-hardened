@@ -1,5 +1,6 @@
 import logging
 import os
+import posixpath
 import shutil
 
 from django.conf import settings
@@ -16,6 +17,25 @@ from apps.wizard.models import ProxmoxConfig
 logger = logging.getLogger(__name__)
 
 UPLOAD_ROOT = getattr(settings, "UPLOAD_ROOT", "/opt/proxorchestrator/uploads")
+
+
+def proxmox_temp_path(config, path):
+    """Return the normalised path if it is a file inside the Proxmox temp
+    directory, else None.
+
+    A plain startswith() check accepted "<temp>/../../etc/..." — enough to
+    delete any file as root on the Proxmox host or to import another VM's
+    disk into a VM the caller controls.
+    """
+    temp_dir = posixpath.normpath((config.proxmox_temp_dir or "").strip())
+    if not path or "\x00" in path or not temp_dir.startswith("/") or temp_dir == "/":
+        return None
+    if ".." in path.split("/"):
+        return None
+    norm = posixpath.normpath(path)
+    if not norm.startswith(temp_dir + "/"):
+        return None
+    return norm
 
 
 def _scan_local_uploads():
@@ -259,8 +279,8 @@ def create_job_from_proxmox(request):
     if not path:
         return JsonResponse({"ok": False, "error": "No path provided."}, status=400)
 
-    temp_dir = (config.proxmox_temp_dir or "").rstrip("/")
-    if not temp_dir or not path.startswith(temp_dir + "/"):
+    path = proxmox_temp_path(config, path)
+    if not path:
         return JsonResponse({"ok": False, "error": "Path is outside the Proxmox temp directory."}, status=400)
 
     filename = os.path.basename(path)
@@ -293,8 +313,8 @@ def delete_proxmox_file(request):
     if not path:
         return JsonResponse({"ok": False, "error": "No path provided."}, status=400)
 
-    temp_dir = config.proxmox_temp_dir.rstrip("/")
-    if not path.startswith(temp_dir + "/"):
+    path = proxmox_temp_path(config, path)
+    if not path:
         return JsonResponse({"ok": False, "error": "Path is outside the Proxmox temp directory."}, status=400)
 
     try:
