@@ -240,7 +240,9 @@ def run_create_pipeline(self, job_id):
             ssh.run_checked(["qm", "set", str(vmid), f"--{disk_bus}0", disk_opts])
 
             if disk_bus == "scsi":
-                ssh.run_checked(["qm", "set", str(vmid), "--scsihw", "virtio-scsi-pci"])
+                # iothread needs virtio-scsi-single (ignored with virtio-scsi-pci)
+                scsihw = "virtio-scsi-single" if vm_config.get("disk_iothread") else "virtio-scsi-pci"
+                ssh.run_checked(["qm", "set", str(vmid), "--scsihw", scsihw])
 
             # Extra disks
             extra_disks_raw = vm_config.get("extra_disks", "")

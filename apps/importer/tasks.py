@@ -329,17 +329,21 @@ def _create_vm_and_import(job, config, remote_qcow2_path, job_id):
     if not friendly_name.lower().endswith(".qcow2"):
         friendly_name += ".qcow2"
     keep_path = f"{remote_dir}/{friendly_name}"
-    with config.get_ssh_client() as ssh:
-        out, err, rc = ssh.run(["ln", "-f", remote_qcow2_path, keep_path])
-        if rc != 0:
-            logger.warning(
-                "ImportJob %d: hard link failed (%s), falling back to cp — "
-                "this will use extra disk space during import",
-                job_id, err.strip(),
-            )
-            ssh.run_checked(["cp", remote_qcow2_path, keep_path])
-        else:
-            logger.info("ImportJob %d: preserved qcow2 as %s", job_id, keep_path)
+    # Keeping a reusable copy used to be unconditional and silently left an
+    # image as large as the disk in the Proxmox temp directory after every
+    # import. It is now opt-in (form option "keep_converted_image").
+    if vm_config.get("keep_converted_image"):
+        with config.get_ssh_client() as ssh:
+            out, err, rc = ssh.run(["ln", "-f", remote_qcow2_path, keep_path])
+            if rc != 0:
+                logger.warning(
+                    "ImportJob %d: hard link failed (%s), falling back to cp — "
+                    "this will use extra disk space during import",
+                    job_id, err.strip(),
+                )
+                ssh.run_checked(["cp", remote_qcow2_path, keep_path])
+            else:
+                logger.info("ImportJob %d: preserved qcow2 as %s", job_id, keep_path)
 
     with config.get_ssh_client() as ssh:
         import_output = ssh.run_checked(
@@ -394,7 +398,11 @@ def _create_vm_and_import(job, config, remote_qcow2_path, job_id):
         "--boot", f"order={disk_bus}0",
     ]
     if disk_bus == "scsi":
-        qm_set_disk_args += ["--scsihw", "virtio-scsi-pci"]
+        # iothread on a SCSI disk needs one controller per disk; with
+        # virtio-scsi-pci Proxmox ignores it ("iothread is only valid with
+        # virtio disk or virtio-scsi-single controller").
+        scsihw = "virtio-scsi-single" if vm_config.get("disk_iothread") else "virtio-scsi-pci"
+        qm_set_disk_args += ["--scsihw", scsihw]
 
     with config.get_ssh_client() as ssh:
         ssh.run_checked(qm_set_disk_args)

@@ -614,6 +614,13 @@ class VMConfigForm(forms.Form):
         required=False,
         label="Emulate SSD",
     )
+    keep_converted_image = forms.BooleanField(
+        required=False,
+        initial=False,
+        label="Keep the converted image on Proxmox for reuse",
+        help_text="Leaves a copy in the Proxmox temp directory (as large as the disk) "
+                  "so it can be imported again from Storage. Off by default.",
+    )
 
     # Extra disks (JSON array serialized by JS: [{storage, size_gb}, ...])
     extra_disks = forms.CharField(

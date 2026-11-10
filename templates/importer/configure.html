@@ -589,6 +589,12 @@
             &nbsp;Emulate SSD — tells the guest OS the disk is an SSD
           </label>
         </div>
+        <div class="field">
+          <label class="checkbox">
+            <input type="checkbox" name="keep_converted_image" {% if form.keep_converted_image.value %}checked{% endif %}>
+            &nbsp;Keep the converted image on Proxmox for reuse — uses as much space as the disk in the Proxmox temp directory
+          </label>
+        </div>
 
         {# ---- Additional Disks ---- #}
         <div style="border-top: 1px solid var(--border-main);margin-top: 1.25rem;padding-top: 1.25rem;">

@@ -733,7 +733,7 @@ def run_px_import_pipeline(self, job_id):
                 if is_primary:
                     qm_set_args += ["--boot", f"order={slot}"]
                 if disk_bus == "scsi" and is_primary:
-                    qm_set_args += ["--scsihw", "virtio-scsi-pci"]
+                    qm_set_args += ["--scsihw", "virtio-scsi-single" if vm_config.get("disk_iothread") else "virtio-scsi-pci"]
                 ssh.run_checked(qm_set_args)
 
             # EFI disk
