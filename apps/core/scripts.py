@@ -18,6 +18,20 @@ DIAGNOSTICS_OPT_OUT = (
 )
 
 
+def fetch_and_run(quoted_url):
+    """Shell snippet that downloads a script and runs it, failing loudly.
+
+    The original `bash -c "$(curl -fsSL URL)"` exits 0 when the download
+    fails (404, network error): bash runs an empty string and the job was
+    reported as successful although nothing happened.
+    """
+    return (
+        f"_cs_script=\"$(curl -fsSL {quoted_url})\" && [ -n \"$_cs_script\" ] "
+        f"|| {{ echo \"ProxOrchestrator: could not download {quoted_url}\" >&2; exit 97; }}; "
+        'bash -c "$_cs_script"'
+    )
+
+
 def script_url_is_trusted(url):
     """Only scripts from the official community-scripts repository may run."""
     return bool(_SCRIPT_URL_RE.match(url or ""))

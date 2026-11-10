@@ -33,6 +33,38 @@ class DiagnosticsOptOut(SimpleTestCase):
         self.assertEqual(content, "DIAGNOSTICS=yes\n")
 
 
+class DownloadFailureIsAnError(SimpleTestCase):
+    """bash -c "$(curl URL)" exited 0 on a 404, so a job whose script no
+    longer existed upstream was reported as successful."""
+
+    def _run_with_fake_curl(self, curl_body):
+        import os
+        import shlex
+        from apps.core.scripts import fetch_and_run
+        with tempfile.TemporaryDirectory() as d:
+            fake = os.path.join(d, "curl")
+            with open(fake, "w") as f:
+                f.write("#!/bin/sh\n" + curl_body + "\n")
+            os.chmod(fake, 0o755)
+            env = dict(os.environ, PATH=d + ":" + os.environ["PATH"])
+            return subprocess.run(
+                ["bash", "-c", fetch_and_run(shlex.quote("https://example.invalid/x.sh"))],
+                env=env, capture_output=True, text=True)
+
+    def test_404_fails(self):
+        res = self._run_with_fake_curl("exit 22")
+        self.assertEqual(res.returncode, 97)
+        self.assertIn("could not download", res.stderr)
+
+    def test_empty_download_fails(self):
+        self.assertEqual(self._run_with_fake_curl("exit 0").returncode, 97)
+
+    def test_script_runs_and_exit_code_propagates(self):
+        res = self._run_with_fake_curl("echo 'echo ran; exit 5'")
+        self.assertEqual(res.returncode, 5)
+        self.assertIn("ran", res.stdout)
+
+
 class TemplateStorage(SimpleTestCase):
 
     def test_template_storage_passed_to_script(self):

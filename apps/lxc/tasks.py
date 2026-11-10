@@ -8,6 +8,7 @@ import time
 from celery import shared_task
 
 from apps.core.scripts import DIAGNOSTICS_OPT_OUT
+from apps.core.scripts import fetch_and_run
 from apps.core.scripts import script_url_is_trusted
 from apps.proxmox.api import ProxmoxAPIError
 from apps.proxmox.ssh import SSHCommandError
@@ -551,7 +552,7 @@ def run_community_script(self, job_id):
         # Variables must be exported (not just set as inline prefixes) so
         # they propagate into the nested subshell created by $(curl ...).
         # TERM=xterm prevents "TERM not set" errors from `clear`.
-        inner_cmd = f'{DIAGNOSTICS_OPT_OUT}export TERM=xterm {env_str}; bash -c "$(curl -fsSL {shlex.quote(script_url)})"'
+        inner_cmd = f'{DIAGNOSTICS_OPT_OUT}export TERM=xterm {env_str}; ' + fetch_and_run(shlex.quote(script_url))
 
         # ── 2. RUNNING SCRIPT ────────────────────────────────────────────
         _check_community_cancelled(job)
