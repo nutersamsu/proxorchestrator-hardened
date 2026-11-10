@@ -2,7 +2,7 @@
 
 This branch fixes the issues found in an audit of ProxOrchestrator 1.1.2
 (`main` + `dev` as of 2026-04-18). Every fix has a regression test in
-`apps/core/tests/` (37 tests).
+`apps/core/tests/` (41 tests).
 
 ## Critical
 
@@ -56,7 +56,7 @@ This branch fixes the issues found in an audit of ProxOrchestrator 1.1.2
 
 ## How it was tested
 
-- 37 regression tests (`python manage.py test apps.core.tests`).
+- 41 regression tests (`python manage.py test apps.core.tests`).
 - nginx + gunicorn + a fake Proxmox in a container: with the original
   `/vm-ws/` block an unauthenticated `DELETE /vm-ws/nodes/pve/qemu/101`
   reached the API with the token attached; with the new block it returns 404.
@@ -85,8 +85,21 @@ This branch fixes the issues found in an audit of ProxOrchestrator 1.1.2
      notices follow the attached socket.
   Final run: no prompts, DONE in 28 s, CT ID recorded. Test containers were
   removed afterwards.
-- Not tested: Entra ID against a real tenant, ACME issuance, LXC console,
-  disk import and VM community scripts.
+- VM community script on the same host (`debian-vm`, Debian 13): the
+  interactive terminal answered 5 dialogs (version, cloud-init, user,
+  password, settings), VM created and started in 138 s, VMID recorded;
+  VM, cached image and credentials file removed afterwards. Getting there
+  exposed three more problems, fixed and tested:
+  6. a failed or empty script download (`bash -c "$(curl …)"` on a 404)
+     was reported as success — now an error (exit 97);
+  7. the VM "refresh catalog" button never worked: its Celery task lived in
+     `vm_tasks.py`, which autodiscovery never imports (NotRegistered), and
+     the status endpoint crashed with 500 on the failed result;
+  8. the shipped catalog was stale (removed scripts such as `debian-13-vm`)
+     and every `update.sh` reverted a catalog refreshed in the UI — the
+     snapshot is current again and `update.sh` rebuilds both catalogs.
+- Not tested: Entra ID against a real tenant, ACME issuance, LXC console
+  and disk import.
 
 ## Upgrading an existing install
 
