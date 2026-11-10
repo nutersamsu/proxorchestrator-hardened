@@ -118,8 +118,13 @@ This branch fixes the issues found in an audit of ProxOrchestrator 1.1.2
   and keep about 2× the image size free; VMware guests keep their old NIC
   name in netplan (e.g. `ens160`) and boot without network until it is
   changed to the Proxmox NIC (`ens18`) or to a `match: name: "en*"` rule.
-- Not tested: Entra ID against a real tenant, ACME issuance and the LXC
-  console.
+- LXC console on the same host (test container, deleted afterwards): the
+  console page issued a ticket; through the authenticated `/vm-ws/` proxy a
+  client completed the full RFB 3.8 handshake, VNC authentication with the
+  ticket, ServerInit (744x400 "VNC Command Terminal") and a framebuffer
+  update; without a session (401) and for another guest's console (403) the
+  proxy refused. No app changes were needed.
+- Not tested: Entra ID against a real tenant and ACME issuance.
 
 ## Upgrading an existing install
 
