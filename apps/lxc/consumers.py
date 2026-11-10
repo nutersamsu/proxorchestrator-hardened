@@ -20,7 +20,8 @@ from .terminal_bridge import SSHTerminalBridge
 
 logger = logging.getLogger(__name__)
 
-_VMID_RE = re.compile(r"CT\s+(\d+)")
+# "CT 103" (older scripts) or "Container 103 created" (current core)
+_VMID_RE = re.compile(r"(?:\bCT|\bContainer)\s+(\d+)\b")
 
 # Keep bridges alive after WebSocket disconnect so scripts survive navigation.
 # Maps job_id -> {"bridge": SSHTerminalBridge, "flush_running": bool}
@@ -81,6 +82,7 @@ class CommunityScriptTerminalConsumer(WebsocketConsumer):
                 # Reattach to the existing SSH session
                 self.bridge = detached["bridge"]
                 self.bridge.send_callback = self._on_ssh_output
+                self.bridge.control_callback = self._send_control
                 self._flush_running = True
                 self._flush_thread = threading.Thread(
                     target=self._flush_loop, daemon=True,
@@ -140,6 +142,8 @@ class CommunityScriptTerminalConsumer(WebsocketConsumer):
             send_callback=self._on_ssh_output,
             screen_name=screen_name,
         )
+
+        self.bridge.control_callback = self._send_control
 
         try:
             self.bridge.start(cols=120, rows=40)
@@ -223,8 +227,8 @@ class CommunityScriptTerminalConsumer(WebsocketConsumer):
                 f"{self.job.app_name} deployed successfully!",
                 percent=100,
             )
-            self._send_control("stage", stage="DONE")
-            self._send_control("exit", code=0, vmid=self.job.vmid)
+            self._notify("stage", stage="DONE")
+            self._notify("exit", code=0, vmid=self.job.vmid)
         else:
             error_msg = f"Script exited with code {exit_code}"
             self.job.stage = CommunityScriptJob.STAGE_FAILED
@@ -232,8 +236,8 @@ class CommunityScriptTerminalConsumer(WebsocketConsumer):
             self.job.save(update_fields=[
                 "stage", "error", "log_output", "updated_at",
             ])
-            self._send_control("stage", stage="FAILED")
-            self._send_control("error", message=error_msg)
+            self._notify("stage", stage="FAILED")
+            self._notify("error", message=error_msg)
 
         logger.info(
             "CommunityScriptJob %d: terminal session ended (exit=%s, vmid=%s)",
@@ -272,6 +276,7 @@ class CommunityScriptTerminalConsumer(WebsocketConsumer):
         if self.bridge and self.bridge.is_running:
             # Script still running — detach instead of killing
             self.bridge.send_callback = lambda text: None  # silence output
+            self.bridge.control_callback = None
             with _detached_lock:
                 _detached_bridges[self.job.pk] = {
                     "bridge": self.bridge,
@@ -305,6 +310,16 @@ class CommunityScriptTerminalConsumer(WebsocketConsumer):
                 except Exception:
                     pass
             self.bridge.close()
+
+    def _notify(self, msg_type, **kwargs):
+        """Send a control message to whichever socket is attached now.
+
+        The monitor thread outlives the consumer that started the script;
+        after a reconnect, notices must reach the new socket.
+        """
+        callback = getattr(self.bridge, "control_callback", None)
+        if callback:
+            callback(msg_type, **kwargs)
 
     def _send_control(self, msg_type, **kwargs):
         """Send a JSON control message to the browser."""

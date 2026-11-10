@@ -45,6 +45,40 @@ class TemplateStorage(SimpleTestCase):
         self.assertIn("var_template_storage='x; rm -rf /'", env)
 
 
+class ContainerIdDetection(SimpleTestCase):
+
+    def test_current_and_old_output(self):
+        from apps.lxc.consumers import _VMID_RE
+        self.assertEqual(_VMID_RE.search("✔️  Container 103 created").group(1), "103")
+        self.assertEqual(_VMID_RE.search("Creating LXC CT 205 ...").group(1), "205")
+        self.assertIsNone(_VMID_RE.search("Container started"))
+
+
+class CompletionNoticeAfterReconnect(SimpleTestCase):
+    """The monitor thread belongs to the consumer that started the script;
+    after a browser reconnect the DONE/exit notices went to the dead socket."""
+
+    def test_notice_reaches_reattached_socket(self):
+        from apps.lxc.consumers import CommunityScriptTerminalConsumer
+        first = CommunityScriptTerminalConsumer()
+        second = CommunityScriptTerminalConsumer()
+        received = []
+
+        class Bridge:
+            control_callback = None
+
+        bridge = Bridge()
+        first.bridge = second.bridge = bridge
+        bridge.control_callback = lambda t, **k: received.append(("first", t))
+        bridge.control_callback = lambda t, **k: received.append(("second", t))  # reattach
+        first._notify("exit", code=0)  # monitor thread of the first consumer
+        self.assertEqual(received, [("second", "exit")])
+
+        bridge.control_callback = None  # everyone detached
+        first._notify("exit", code=0)
+        self.assertEqual(len(received), 1)
+
+
 class ChannelLayerIdleWait(SimpleTestCase):
     """With redis-py >= 6 an idle receive() raised TimeoutError after 5 s,
     which closed every script terminal right after it opened."""

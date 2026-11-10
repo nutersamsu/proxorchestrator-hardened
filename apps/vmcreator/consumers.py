@@ -93,6 +93,7 @@ class VmCommunityScriptTerminalConsumer(WebsocketConsumer):
             if detached and detached["bridge"].is_running:
                 self.bridge = detached["bridge"]
                 self.bridge.send_callback = self._on_ssh_output
+                self.bridge.control_callback = self._send_control
                 self._flush_running = True
                 self._flush_thread = threading.Thread(
                     target=self._flush_loop, daemon=True,
@@ -153,6 +154,8 @@ class VmCommunityScriptTerminalConsumer(WebsocketConsumer):
             send_callback=self._on_ssh_output,
             screen_name=screen_name,
         )
+
+        self.bridge.control_callback = self._send_control
 
         try:
             self.bridge.start(cols=120, rows=40)
@@ -229,8 +232,8 @@ class VmCommunityScriptTerminalConsumer(WebsocketConsumer):
                 f"{self.job.app_name} deployed successfully!",
                 percent=100,
             )
-            self._send_control("stage", stage="DONE")
-            self._send_control("exit", code=0, vmid=self.job.vmid)
+            self._notify("stage", stage="DONE")
+            self._notify("exit", code=0, vmid=self.job.vmid)
         else:
             error_msg = f"Script exited with code {exit_code}"
             self.job.stage = VmCommunityScriptJob.STAGE_FAILED
@@ -238,8 +241,8 @@ class VmCommunityScriptTerminalConsumer(WebsocketConsumer):
             self.job.save(update_fields=[
                 "stage", "error", "log_output", "updated_at",
             ])
-            self._send_control("stage", stage="FAILED")
-            self._send_control("error", message=error_msg)
+            self._notify("stage", stage="FAILED")
+            self._notify("error", message=error_msg)
 
         logger.info(
             "VmCommunityScriptJob %d: terminal session ended (exit=%s, vmid=%s)",
@@ -267,6 +270,7 @@ class VmCommunityScriptTerminalConsumer(WebsocketConsumer):
     def disconnect(self, code):
         if self.bridge and self.bridge.is_running:
             self.bridge.send_callback = lambda text: None
+            self.bridge.control_callback = None
             with _detached_lock:
                 _detached_bridges[self.job.pk] = {
                     "bridge": self.bridge,
@@ -298,6 +302,16 @@ class VmCommunityScriptTerminalConsumer(WebsocketConsumer):
                 except Exception:
                     pass
             self.bridge.close()
+
+    def _notify(self, msg_type, **kwargs):
+        """Send a control message to whichever socket is attached now.
+
+        The monitor thread outlives the consumer that started the script;
+        after a reconnect, notices must reach the new socket.
+        """
+        callback = getattr(self.bridge, "control_callback", None)
+        if callback:
+            callback(msg_type, **kwargs)
 
     def _send_control(self, msg_type, **kwargs):
         msg = {"type": msg_type, **kwargs}
