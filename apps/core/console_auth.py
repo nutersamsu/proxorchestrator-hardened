@@ -23,7 +23,8 @@ SESSION_KEY = "console_grants"
 _URI_RE = re.compile(
     r"^/vm-ws/nodes/(?P<node>[A-Za-z0-9][A-Za-z0-9.\-]{0,62})/"
     r"(?P<kind>qemu|lxc)/(?P<vmid>[0-9]{1,9})/vncwebsocket\?"
-    r"port=[0-9]{1,5}&vncticket=[A-Za-z0-9%:+/=._\-]+$"
+    # encodeURIComponent() output: percent-escapes plus A-Z a-z 0-9 - _ . ! ~ * ' ( )
+    r"port=[0-9]{1,5}&vncticket=[A-Za-z0-9%._!~*'()\-]+$"
 )
 
 

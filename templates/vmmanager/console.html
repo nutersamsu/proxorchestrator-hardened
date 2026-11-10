@@ -285,9 +285,8 @@
 
 {% if not error %}
 {# Data block — avoids any template escaping issues in JS #}
-<script id="console-data" type="application/json">
-{"host": "{{ vnc.proxmox_host }}", "port": {{ vnc.proxmox_port }}, "node": "{{ vnc.node }}", "vmid": {{ vmid }}, "ticket": "{{ vnc.ticket }}", "vnc_port": {{ vnc.port }}}
-</script>
+{# json_script: correct JSON escaping (Proxmox 9 tickets contain " < > characters) #}
+{{ console_data|json_script:"console-data" }}
 
 {% load static %}
 {# noVNC served from local static files — no CDN dependency, works on air-gapped networks #}

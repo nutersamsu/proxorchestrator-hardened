@@ -255,6 +255,11 @@ def lxc_console(request, vmid):
     return render(request, "lxc/console.html", {
         "vmid": vmid,
         "vnc": vnc,
+        "console_data": {
+            "host": vnc.get("proxmox_host"), "port": vnc.get("proxmox_port"),
+            "node": vnc.get("node"), "vmid": vmid,
+            "ticket": vnc.get("ticket"), "vnc_port": vnc.get("port"),
+        },
         "error": error,
     })
 
