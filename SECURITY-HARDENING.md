@@ -2,7 +2,7 @@
 
 This branch fixes the issues found in an audit of ProxOrchestrator 1.1.2
 (`main` + `dev` as of 2026-04-18). Every fix has a regression test in
-`apps/core/tests/test_security.py` (37 tests).
+`apps/core/tests/` (37 tests).
 
 ## Critical
 
