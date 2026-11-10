@@ -1691,6 +1691,7 @@ def community_scripts_deploy(request, slug):
             "ip_address": request.POST.get("ip_address", "").strip(),
             "gateway": request.POST.get("gateway", "").strip(),
             "container_storage": request.POST.get("container_storage", ""),
+            "template_storage": request.POST.get("template_storage", ""),
         }
 
         node = request.POST.get("node", config.default_node)
@@ -1712,6 +1713,7 @@ def community_scripts_deploy(request, slug):
     # GET: render deploy configuration form
     nodes = []
     rootfs_pools = []
+    template_pools = []
     networks = []
     error = None
 
@@ -1725,6 +1727,10 @@ def community_scripts_deploy(request, slug):
                 if "rootdir" in (s.get("content", "") or "")
                 or "images" in (s.get("content", "") or "")
             ]
+            template_pools = [
+                s for s in storage_pools
+                if "vztmpl" in (s.get("content", "") or "")
+            ]
             networks = api.get_networks(config.default_node)
         except ProxmoxAPIError as exc:
             error = f"Could not load Proxmox resources: {exc.message}"
@@ -1736,6 +1742,7 @@ def community_scripts_deploy(request, slug):
         "config": config,
         "nodes": nodes,
         "rootfs_pools": rootfs_pools,
+        "template_pools": template_pools,
         "networks": networks,
         "error": error,
     })

@@ -126,6 +126,23 @@
               <p class="field-hint">Leave as auto to use the script's default storage.</p>
             </div>
           </div>
+          <div class="column">
+            <div class="field">
+              <label class="label" style="font-size:0.875rem;font-weight:600;">Template Storage</label>
+              <div class="control">
+                <div class="select is-fullwidth">
+                  <select name="template_storage">
+                    {% for s in template_pools %}
+                      <option value="{{ s.storage }}" {% if s.storage == "local" %}selected{% endif %}>{{ s.storage }}</option>
+                    {% empty %}
+                      <option value="">Auto (script default)</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+              <p class="field-hint">Where the OS template is downloaded. Choosing it here avoids an interactive prompt when several storages hold templates.</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

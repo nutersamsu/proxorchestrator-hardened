@@ -7,6 +7,7 @@ import time
 
 from celery import shared_task
 
+from apps.core.scripts import DIAGNOSTICS_OPT_OUT
 from apps.core.scripts import script_url_is_trusted
 from apps.proxmox.api import ProxmoxAPIError
 from apps.proxmox.ssh import SSHCommandError
@@ -510,6 +511,10 @@ def _build_env_string(deploy_config):
     if container_storage:
         env_parts.append(f"var_container_storage={shlex.quote(container_storage)}")
 
+    template_storage = (deploy_config.get("template_storage") or "").strip()
+    if template_storage:
+        env_parts.append(f"var_template_storage={shlex.quote(template_storage)}")
+
     return " ".join(env_parts)
 
 
@@ -546,7 +551,7 @@ def run_community_script(self, job_id):
         # Variables must be exported (not just set as inline prefixes) so
         # they propagate into the nested subshell created by $(curl ...).
         # TERM=xterm prevents "TERM not set" errors from `clear`.
-        inner_cmd = f'export TERM=xterm {env_str}; bash -c "$(curl -fsSL {shlex.quote(script_url)})"'
+        inner_cmd = f'{DIAGNOSTICS_OPT_OUT}export TERM=xterm {env_str}; bash -c "$(curl -fsSL {shlex.quote(script_url)})"'
 
         # ── 2. RUNNING SCRIPT ────────────────────────────────────────────
         _check_community_cancelled(job)

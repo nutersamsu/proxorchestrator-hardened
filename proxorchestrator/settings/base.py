@@ -219,7 +219,14 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [os.environ.get("REDIS_URL", "redis://127.0.0.1:6379/0")],
+            # channels_redis waits on BZPOPMIN for 5 s; with redis-py >= 6
+            # the default socket timeout makes that wait raise TimeoutError
+            # after 5 s and kills every long-lived WebSocket (script
+            # terminals). An explicit, longer socket timeout fixes it.
+            "hosts": [{
+                "address": os.environ.get("REDIS_URL", "redis://127.0.0.1:6379/0"),
+                "socket_timeout": 30,
+            }],
         },
     },
 }

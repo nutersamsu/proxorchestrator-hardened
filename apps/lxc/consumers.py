@@ -9,6 +9,7 @@ import time
 
 from channels.generic.websocket import WebsocketConsumer
 
+from apps.core.scripts import DIAGNOSTICS_OPT_OUT
 from apps.core.scripts import script_url_is_trusted
 from apps.core.security import user_is_admin
 from apps.wizard.models import ProxmoxConfig
@@ -115,6 +116,7 @@ class CommunityScriptTerminalConsumer(WebsocketConsumer):
             return
         quoted_url = shlex.quote(script_url)
         command = (
+            f"{DIAGNOSTICS_OPT_OUT}"
             f"export TERM=xterm-256color {env_str}; "
             f"unset SSH_CLIENT SSH_TTY SSH_CONNECTION; "
             f'bash -c "$(curl -fsSL {quoted_url})"'
