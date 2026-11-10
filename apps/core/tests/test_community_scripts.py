@@ -53,6 +53,12 @@ class ContainerIdDetection(SimpleTestCase):
         self.assertEqual(_VMID_RE.search("Creating LXC CT 205 ...").group(1), "205")
         self.assertIsNone(_VMID_RE.search("Container started"))
 
+    def test_colourised_output_from_real_run(self):
+        from apps.lxc.consumers import _ANSI_RE, _VMID_RE
+        raw = "\x1b[K  ✔️  \x1b[1;92mContainer \x1b[36m104\x1b[m created\x1b[m"
+        self.assertIsNone(_VMID_RE.search(raw))  # why the ANSI strip is needed
+        self.assertEqual(_VMID_RE.search(_ANSI_RE.sub("", raw)).group(1), "104")
+
 
 class CompletionNoticeAfterReconnect(SimpleTestCase):
     """The monitor thread belongs to the consumer that started the script;

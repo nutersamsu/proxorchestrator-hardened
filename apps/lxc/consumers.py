@@ -21,6 +21,8 @@ from .terminal_bridge import SSHTerminalBridge
 logger = logging.getLogger(__name__)
 
 # "CT 103" (older scripts) or "Container 103 created" (current core)
+# Script output is colourised: "Container \x1b[36m104\x1b[m created"
+_ANSI_RE = re.compile(r"\x1b\[[0-9;?]*[A-Za-z]|\x1b[()][0-9A-Za-z]")
 _VMID_RE = re.compile(r"(?:\bCT|\bContainer)\s+(\d+)\b")
 
 # Keep bridges alive after WebSocket disconnect so scripts survive navigation.
@@ -218,7 +220,7 @@ class CommunityScriptTerminalConsumer(WebsocketConsumer):
         exit_code = self.bridge.exit_code
         if exit_code == 0 or exit_code is None:
             # Try to extract VMID from output
-            vmid_match = _VMID_RE.search(raw)
+            vmid_match = _VMID_RE.search(_ANSI_RE.sub("", raw))
             if vmid_match:
                 self.job.vmid = int(vmid_match.group(1))
 

@@ -20,6 +20,8 @@ from apps.lxc.terminal_bridge import SSHTerminalBridge
 logger = logging.getLogger(__name__)
 
 # VM scripts print "Virtual Machine ID is <VMID>" or just reference the VMID variable
+# Script output is colourised: "Container \x1b[36m104\x1b[m created"
+_ANSI_RE = re.compile(r"\x1b\[[0-9;?]*[A-Za-z]|\x1b[()][0-9A-Za-z]")
 _VMID_RE = re.compile(r"(?:VM\s+ID\s+is|Virtual Machine ID:\s*|VMID[=:\s]+)(\d+)", re.IGNORECASE)
 # Also match the common pattern: "Created a <name> VM (hostname)"
 _VMID_RE2 = re.compile(r"VM\s+ID\s+(\d+)")
@@ -221,9 +223,9 @@ class VmCommunityScriptTerminalConsumer(WebsocketConsumer):
         exit_code = self.bridge.exit_code
         if exit_code == 0 or exit_code is None:
             # Try to extract VMID from output
-            vmid_match = _VMID_RE.search(raw)
+            vmid_match = _VMID_RE.search(_ANSI_RE.sub("", raw))
             if not vmid_match:
-                vmid_match = _VMID_RE2.search(raw)
+                vmid_match = _VMID_RE2.search(_ANSI_RE.sub("", raw))
             if vmid_match:
                 self.job.vmid = int(vmid_match.group(1))
 
