@@ -2,7 +2,7 @@
 
 This branch fixes the issues found in an audit of ProxOrchestrator 1.1.2
 (`main` + `dev` as of 2026-04-18). Every fix has a regression test in
-`apps/core/tests/` (41 tests).
+`apps/core/tests/` (46 tests).
 
 ## Critical
 
@@ -17,6 +17,11 @@ This branch fixes the issues found in an audit of ProxOrchestrator 1.1.2
 
 ## High
 
+- **Importer path traversal (Proxmox side)**: `storage/delete-proxmox/` and
+  `storage/create-from-proxmox/` only checked `startswith(temp_dir)`, so
+  `<temp>/../../...` let any logged-in user (not only admins) run `rm -f` as
+  root on any file of the Proxmox host, or import another VM's disk into a
+  VM they control. Paths are now normalised and `..` is rejected.
 - **Entra ID**: blank tenant fell back to `common` (any Microsoft account in the
   world could sign in); Microsoft identities were linked to existing local
   accounts by the user-controlled `mail` attribute (account takeover, and the
@@ -56,7 +61,7 @@ This branch fixes the issues found in an audit of ProxOrchestrator 1.1.2
 
 ## How it was tested
 
-- 41 regression tests (`python manage.py test apps.core.tests`).
+- 46 regression tests (`python manage.py test apps.core.tests`).
 - nginx + gunicorn + a fake Proxmox in a container: with the original
   `/vm-ws/` block an unauthenticated `DELETE /vm-ws/nodes/pve/qemu/101`
   reached the API with the token attached; with the new block it returns 404.
@@ -98,8 +103,23 @@ This branch fixes the issues found in an audit of ProxOrchestrator 1.1.2
   8. the shipped catalog was stale (removed scripts such as `debian-13-vm`)
      and every `update.sh` reverted a catalog refreshed in the UI — the
      snapshot is current again and `update.sh` rebuilds both catalogs.
-- Not tested: Entra ID against a real tenant, ACME issuance, LXC console
-  and disk import.
+- Disk import on the same host: a real 3 GB VMware Ubuntu 22.04 VMDK
+  uploaded by the owner, and a CirrOS 0.6.3 image (SHA-256 verified)
+  converted to VMDK and imported through the upload and configure forms.
+  The CirrOS VM booted and got a DHCP lease. Findings, fixed:
+  9. the converted qcow2 was always kept in the Proxmox temp directory
+     (6.6 GB left behind by the 3 GB VMDK) — now an opt-in form option;
+  10. `iothread=1` was set with the `virtio-scsi-pci` controller, which
+      Proxmox ignores — importer, exporter import and VM creator now use
+      `virtio-scsi-single` when iothread is on;
+  11. the path traversal described under "High".
+  Operational notes: on a small VM `/tmp` is a RAM tmpfs (about half the
+  RAM), so set the upload temp directory to a disk path (Settings → Storage)
+  and keep about 2× the image size free; VMware guests keep their old NIC
+  name in netplan (e.g. `ens160`) and boot without network until it is
+  changed to the Proxmox NIC (`ens18`) or to a `match: name: "en*"` rule.
+- Not tested: Entra ID against a real tenant, ACME issuance and the LXC
+  console.
 
 ## Upgrading an existing install
 
