@@ -4,6 +4,8 @@ import shlex
 import time
 
 import paramiko
+
+from apps.proxmox.hostkeys import prepare_client
 from paramiko.ssh_exception import AuthenticationException
 from paramiko.ssh_exception import NoValidConnectionsError
 from paramiko.ssh_exception import SSHException
@@ -43,8 +45,7 @@ class ProxmoxSSH:
     def connect(self):
         """Open the SSH connection using key-based auth."""
         client = paramiko.SSHClient()
-        client.load_system_host_keys()
-        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        prepare_client(client)
         logger.debug(
             "SSH connecting to %s:%s as %s using key %s",
             self.host,
@@ -214,8 +215,7 @@ class ProxmoxSSH:
             NoValidConnectionsError: if connection is refused
         """
         client = paramiko.SSHClient()
-        client.load_system_host_keys()
-        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        prepare_client(client)
 
         try:
             logger.debug(

@@ -9,6 +9,8 @@ import time
 
 from channels.generic.websocket import WebsocketConsumer
 
+from apps.core.scripts import script_url_is_trusted
+from apps.core.security import user_is_admin
 from apps.wizard.models import ProxmoxConfig
 
 from .models import CommunityScriptJob
@@ -33,10 +35,18 @@ class CommunityScriptTerminalConsumer(WebsocketConsumer):
     enabling fully interactive script execution.
     """
 
+    # Defaults so disconnect() is safe when connect() rejected the socket.
+    bridge = None
+    _flush_running = False
+
     def connect(self):
         user = self.scope.get("user")
         if not user or not user.is_authenticated:
             self.close(code=4401)
+            return
+        # Community scripts run as root on the Proxmox host: admins only.
+        if not user_is_admin(user):
+            self.close(code=4403)
             return
 
         job_id = self.scope["url_route"]["kwargs"]["job_id"]
@@ -99,6 +109,10 @@ class CommunityScriptTerminalConsumer(WebsocketConsumer):
         deploy_config = self.job.deploy_config
         env_str = _build_env_string(deploy_config)
         script_url = self.job.script_url
+        if not script_url_is_trusted(script_url):
+            self._send_control("error", message="Refusing to run a script from an untrusted URL")
+            self._fail_job(f"Untrusted script URL: {script_url}")
+            return
         quoted_url = shlex.quote(script_url)
         command = (
             f"export TERM=xterm-256color {env_str}; "

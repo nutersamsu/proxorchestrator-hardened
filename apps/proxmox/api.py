@@ -48,6 +48,15 @@ class ProxmoxAPI:
                 }
             )
             session.verify = self.verify_ssl
+            if not self.verify_ssl:
+                # Self-signed Proxmox certificate: pin it instead of trusting
+                # whatever answers on this address.
+                from apps.proxmox.tlspin import FingerprintAdapter, pinned_fingerprint
+                try:
+                    fp = pinned_fingerprint(self.host, self.port)
+                except OSError as exc:
+                    raise ProxmoxAPIError(f"Connection error: {exc}")
+                session.mount(f"https://{self.host}:{self.port}/", FingerprintAdapter(fp))
             self._session_obj = session
         return self._session_obj
 

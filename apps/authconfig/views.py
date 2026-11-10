@@ -98,7 +98,17 @@ def auth_settings_save(request, auth_type):
 
     elif auth_type == "entra":
         config, _ = EntraIDConfig.objects.get_or_create(pk=1)
-        config.tenant_id = request.POST.get("tenant_id", "").strip()
+        from apps.authconfig.adapters import tenant_is_valid
+        tenant_id = request.POST.get("tenant_id", "").strip()
+        if not tenant_is_valid(tenant_id):
+            messages.error(
+                request,
+                "Enter your organisation's tenant ID (GUID) or primary domain. "
+                "'common', 'organizations' and 'consumers' are not allowed because they "
+                "would let any Microsoft account sign in.",
+            )
+            return redirect(reverse("auth_settings") + "?tab=entra")
+        config.tenant_id = tenant_id
         config.client_id = request.POST.get("client_id", "").strip()
         config.allowed_domains = request.POST.get("allowed_domains", "").strip()
         config.require_group_id = request.POST.get("require_group_id", "").strip()

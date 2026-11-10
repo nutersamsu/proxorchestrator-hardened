@@ -30,6 +30,11 @@ from django.utils.http import urlsafe_base64_decode
 from django.utils.http import urlsafe_base64_encode
 from django.views.decorators.http import require_POST
 
+from apps.core.security import login_is_locked
+from apps.core.security import register_login_failure
+from apps.core.security import reset_login_failures
+from apps.core.security import safe_next_url
+
 logger = logging.getLogger(__name__)
 
 HELP_DIR = getattr(settings, "HELP_DIR", Path(settings.BASE_DIR) / "help")
@@ -206,38 +211,50 @@ def login_view(request):
     if request.method == "POST":
         username = request.POST.get("username", "").strip()
         password = request.POST.get("password", "")
+        submitted_login = username
 
-        # Allow login with email address — look up the username
-        if "@" in username:
-            try:
-                username = User.objects.get(email__iexact=username).username
-            except User.DoesNotExist:
-                pass  # Let authenticate() fail normally
+        if login_is_locked(request, submitted_login):
+            logger.warning("Login throttled for username: %s", submitted_login)
+            error = "Too many failed attempts. Please wait 15 minutes and try again."
+            user = None
+        else:
+            # Allow login with email address — look up the username
+            if "@" in username:
+                try:
+                    username = User.objects.get(email__iexact=username).username
+                except (User.DoesNotExist, User.MultipleObjectsReturned):
+                    pass  # Let authenticate() fail normally
 
-        user = authenticate(request, username=username, password=password)
+            user = authenticate(request, username=username, password=password)
+
         if user is not None:
-            next_url = request.POST.get("next") or request.GET.get("next") or "/"
-            if not next_url.startswith("/"):
-                next_url = "/"
+            reset_login_failures(request, submitted_login)
+            next_url = safe_next_url(
+                request, request.POST.get("next") or request.GET.get("next")
+            )
 
-            # Check if MFA is enabled for this user
+            # Check if MFA is enabled for this user. Fail closed: a missing
+            # profile means no MFA, any other error refuses the login.
+            from apps.core.models import UserProfile
             try:
                 profile = user.profile
-                if profile.mfa_enabled and profile.auth_source != "entra":
-                    # Don't login yet — redirect to MFA challenge
-                    request.session["mfa_user_id"] = user.pk
-                    request.session["mfa_next"] = next_url
-                    request.session["mfa_expires"] = time.time() + 300  # 5 min
-                    request.session["mfa_attempts"] = 0
-                    return redirect("mfa_verify")
-            except Exception:
-                pass
+            except UserProfile.DoesNotExist:
+                profile = None
+            if profile and profile.mfa_enabled and profile.auth_source != "entra":
+                # Don't login yet — redirect to MFA challenge
+                request.session.cycle_key()
+                request.session["mfa_user_id"] = user.pk
+                request.session["mfa_next"] = next_url
+                request.session["mfa_expires"] = time.time() + 300  # 5 min
+                request.session["mfa_attempts"] = 0
+                return redirect("mfa_verify")
 
             login(request, user)
             return redirect(next_url)
-        else:
+        elif error is None:
+            register_login_failure(request, submitted_login)
             error = "Invalid username or password."
-            logger.warning("Failed login attempt for username: %s", username)
+            logger.warning("Failed login attempt for username: %s", submitted_login)
 
     entra_enabled = False
     ldap_enabled = False
@@ -333,6 +350,11 @@ def password_reset_request(request):
             messages.error(request, "Password recovery is unavailable — email is not configured.")
             return redirect("password_reset_request")
 
+        if login_is_locked(request, email, scope="pwreset"):
+            messages.error(request, "Too many requests. Please try again later.")
+            return redirect("password_reset_request")
+        register_login_failure(request, email, scope="pwreset")
+
         # Only send for local auth users with a matching email
         try:
             user = User.objects.get(email__iexact=email, is_active=True)
@@ -351,8 +373,12 @@ def password_reset_request(request):
             # Build reset link
             uid = urlsafe_base64_encode(force_bytes(user.pk))
             token = default_token_generator.make_token(user)
-            protocol = "https" if request.is_secure() else "http"
-            reset_url = f"{protocol}://{request.get_host()}/reset-password/{uid}/{token}/"
+            # Never trust the Host header for links sent by email.
+            base_url = getattr(settings, "PUBLIC_BASE_URL", "")
+            if not base_url:
+                logger.error("password_reset: PUBLIC_BASE_URL is not set; refusing to send link")
+                raise RuntimeError("PUBLIC_BASE_URL is not configured")
+            reset_url = f"{base_url}/reset-password/{uid}/{token}/"
 
             subject = "ProxOrchestrator — Password Reset"
             body = render_to_string("core/email/password_reset.txt", {
@@ -462,7 +488,7 @@ def mfa_verify(request):
         attempts = request.session.get("mfa_attempts", 0) + 1
         request.session["mfa_attempts"] = attempts
 
-        if attempts > 5:
+        if attempts > 5 or login_is_locked(request, user.username, scope="mfa"):
             messages.error(request, "Too many failed attempts. Please sign in again.")
             for key in ("mfa_user_id", "mfa_next", "mfa_expires", "mfa_attempts"):
                 request.session.pop(key, None)
@@ -493,12 +519,14 @@ def mfa_verify(request):
                 pass
 
         if verified:
-            next_url = request.session.get("mfa_next", "/")
+            reset_login_failures(request, user.username, scope="mfa")
+            next_url = safe_next_url(request, request.session.get("mfa_next"))
             for key in ("mfa_user_id", "mfa_next", "mfa_expires", "mfa_attempts"):
                 request.session.pop(key, None)
             login(request, user)
             return redirect(next_url)
         else:
+            register_login_failure(request, user.username, scope="mfa")
             error = "Invalid code. Please try again."
 
     from apps.core.models import MFAConfig
@@ -538,17 +566,29 @@ def mfa_email_recovery(request):
             stored_hash = request.session.get("mfa_email_code_hash")
             code_expires = request.session.get("mfa_email_code_expires", 0)
 
+            email_attempts = request.session.get("mfa_email_attempts", 0) + 1
+            request.session["mfa_email_attempts"] = email_attempts
+            if email_attempts > 5 or login_is_locked(request, user.username, scope="mfa"):
+                for key in ("mfa_user_id", "mfa_next", "mfa_expires", "mfa_attempts",
+                            "mfa_email_code_hash", "mfa_email_code_expires",
+                            "mfa_email_sent_at", "mfa_email_attempts"):
+                    request.session.pop(key, None)
+                messages.error(request, "Too many failed attempts. Please sign in again.")
+                return redirect("login")
             if not stored_hash or time.time() > code_expires:
                 error = "Code has expired. Please request a new one."
-            elif _hash_code(submitted) == stored_hash:
-                next_url = request.session.get("mfa_next", "/")
+            elif secrets.compare_digest(_hash_code(submitted), stored_hash):
+                reset_login_failures(request, user.username, scope="mfa")
+                next_url = safe_next_url(request, request.session.get("mfa_next"))
                 for key in ("mfa_user_id", "mfa_next", "mfa_expires", "mfa_attempts",
-                            "mfa_email_code_hash", "mfa_email_code_expires", "mfa_email_sent_at"):
+                            "mfa_email_code_hash", "mfa_email_code_expires",
+                            "mfa_email_sent_at", "mfa_email_attempts"):
                     request.session.pop(key, None)
                 login(request, user)
                 messages.success(request, "Signed in via email recovery code.")
                 return redirect(next_url)
             else:
+                register_login_failure(request, user.username, scope="mfa")
                 error = "Invalid code. Please check your email and try again."
         else:
             # Send the code
@@ -565,6 +605,7 @@ def mfa_email_recovery(request):
                     request.session["mfa_email_code_hash"] = _hash_code(code)
                     request.session["mfa_email_code_expires"] = time.time() + 300
                     request.session["mfa_email_sent_at"] = time.time()
+                    request.session["mfa_email_attempts"] = 0
 
                     try:
                         send_mail(

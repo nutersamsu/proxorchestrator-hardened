@@ -11,6 +11,7 @@ from django.views.decorators.http import require_POST
 
 from django.core.paginator import Paginator
 
+from apps.core.console_auth import grant_console
 from apps.proxmox.api import ProxmoxAPIError
 from apps.vmcreator.stages import build_stages
 from apps.wizard.models import ProxmoxConfig
@@ -246,6 +247,7 @@ def lxc_console(request, vmid):
         vnc["vmid"] = vmid
         vnc["proxmox_host"] = config.host
         vnc["proxmox_port"] = config.api_port
+        grant_console(request, node, "lxc", vmid)
     except ProxmoxAPIError as exc:
         error = f"Could not create console session: {exc.message}"
         logger.error("lxc_console vmid=%d: %s", vmid, exc)

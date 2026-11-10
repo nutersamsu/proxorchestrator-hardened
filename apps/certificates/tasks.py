@@ -1,5 +1,6 @@
 import logging
 import os
+import re
 import tempfile
 
 from celery import shared_task
@@ -17,19 +18,8 @@ CERT_DIR = "/opt/proxorchestrator/certs"
 CERT_FILE = os.path.join(CERT_DIR, "proxorchestrator.crt")
 KEY_FILE = os.path.join(CERT_DIR, "proxorchestrator.key")
 CHALLENGE_DIR = os.path.join(CERT_DIR, "acme-challenge")
-ACME_NGINX_CONF = "/opt/proxorchestrator/deploy/acme-challenge.conf"
-
-ACME_NGINX_BLOCK = """server {
-    listen 80;
-    server_name _;
-    location /.well-known/acme-challenge/ {
-        alias /opt/proxorchestrator/certs/acme-challenge/;
-    }
-    location / {
-        return 301 https://$host$request_uri;
-    }
-}
-"""
+# RFC 8555 tokens are base64url; anything else could escape CHALLENGE_DIR.
+_ACME_TOKEN_RE = re.compile(r"^[A-Za-z0-9_-]{16,256}$")
 
 
 def _install_cert_and_key(cert_pem, key_pem):
@@ -43,43 +33,29 @@ def _install_cert_and_key(cert_pem, key_pem):
 
 
 def _reload_nginx():
-    """Reload nginx. Raises RuntimeError on failure."""
-    import subprocess
-
-    result = subprocess.run(
-        ["sudo", "nginx", "-s", "reload"],
-        capture_output=True, text=True, shell=False,
-    )
-    if result.returncode != 0:
-        raise RuntimeError(f"nginx reload failed: {result.stderr.strip()}")
+    """Reload nginx through the privileged helper. Raises on failure."""
+    from apps.core import nginx_helper
+    nginx_helper.reload()
 
 
-def _test_nginx():
-    """Test nginx config. Returns True if valid."""
-    import subprocess
-
-    result = subprocess.run(
-        ["sudo", "nginx", "-t"],
-        capture_output=True, text=True, shell=False,
-    )
-    return result.returncode == 0
-
-
-def _write_acme_nginx(content):
-    """Write the ACME challenge nginx config file."""
-    with open(ACME_NGINX_CONF, "w") as f:
-        f.write(content)
+def _acme_nginx(enabled):
+    """Enable/disable the port-80 HTTP-01 server block (validated by nginx -t)."""
+    from apps.core import nginx_helper
+    if enabled:
+        nginx_helper.acme_on()
+    else:
+        nginx_helper.acme_off()
 
 
 def _cleanup_challenge(token=None):
     """Remove challenge token file and clear the nginx config."""
-    if token:
+    if token and _ACME_TOKEN_RE.match(token):
         token_path = os.path.join(CHALLENGE_DIR, token)
         if os.path.exists(token_path):
             os.remove(token_path)
 
-    _write_acme_nginx("")
     try:
+        _acme_nginx(False)
         _reload_nginx()
     except RuntimeError:
         logger.warning("nginx reload failed during challenge cleanup")
@@ -285,6 +261,8 @@ def issue_acme_certificate(self):
                             raise AcmeError("No HTTP-01 challenge available")
 
                         token = challenge["token"]
+                        if not _ACME_TOKEN_RE.match(token or ""):
+                            raise AcmeError("ACME server returned an invalid challenge token")
                         key_auth = acme.compute_key_authorization(key_pem, token)
 
                         # Write challenge token file
@@ -294,8 +272,9 @@ def issue_acme_certificate(self):
                             f.write(key_auth)
 
                         # Enable nginx port 80 block
-                        _write_acme_nginx(ACME_NGINX_BLOCK)
-                        if not _test_nginx():
+                        try:
+                            _acme_nginx(True)
+                        except RuntimeError:
                             _cleanup_challenge(token)
                             raise AcmeError(
                                 "nginx config test failed — port 80 may be in use. "

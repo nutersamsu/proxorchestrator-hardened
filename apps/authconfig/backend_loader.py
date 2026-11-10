@@ -146,7 +146,16 @@ def _configure_ldap(config):
 
 
 def _configure_entra(config):
+    from apps.authconfig.adapters import tenant_is_valid
     providers = getattr(settings, "SOCIALACCOUNT_PROVIDERS", {})
+    if not tenant_is_valid(config.tenant_id):
+        logger.error(
+            "Entra ID is enabled but tenant_id %r is not a specific tenant; "
+            "Microsoft sign-in stays disabled.", config.tenant_id,
+        )
+        providers.pop("microsoft", None)
+        settings.SOCIALACCOUNT_PROVIDERS = providers
+        return
     # Request GroupMember.Read.All whenever either group field is configured so
     # the pre_social_login handler can check group membership via the Graph API.
     scopes = ["User.Read"]
@@ -158,7 +167,7 @@ def _configure_entra(config):
             "client_id": config.client_id,
             "secret": config.client_secret,
             "settings": {
-                "tenant": config.tenant_id or "common",
+                "tenant": config.tenant_id.strip(),
             },
         },
         "SCOPE": scopes,

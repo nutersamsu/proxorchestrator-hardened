@@ -18,6 +18,7 @@ EXEMPT_PREFIXES = (
     "/forgot-password/",
     "/reset-password/",
     "/mfa/",
+    "/internal/",
 )
 
 

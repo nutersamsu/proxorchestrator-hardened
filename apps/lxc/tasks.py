@@ -7,6 +7,7 @@ import time
 
 from celery import shared_task
 
+from apps.core.scripts import script_url_is_trusted
 from apps.proxmox.api import ProxmoxAPIError
 from apps.proxmox.ssh import SSHCommandError
 import re as _re
@@ -538,6 +539,8 @@ def run_community_script(self, job_id):
 
         env_str = _build_env_string(deploy_config)
         script_url = job.script_url
+        if not script_url_is_trusted(script_url):
+            raise RuntimeError(f"Untrusted script URL: {script_url}")
 
         # Build the command: export env vars then curl + execute the script.
         # Variables must be exported (not just set as inline prefixes) so

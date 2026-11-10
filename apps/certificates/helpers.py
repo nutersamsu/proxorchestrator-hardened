@@ -8,7 +8,6 @@ certificate parsing. No HTTP request/response handling.
 import logging
 import os
 import re
-import subprocess
 
 logger = logging.getLogger(__name__)
 
@@ -97,13 +96,9 @@ def get_current_port():
 
 
 def reload_nginx():
-    """Reload nginx. Raises RuntimeError on failure."""
-    result = subprocess.run(
-        ["sudo", "nginx", "-s", "reload"],
-        capture_output=True, text=True, shell=False,
-    )
-    if result.returncode != 0:
-        raise RuntimeError(f"nginx reload failed: {result.stderr.strip()}")
+    """Reload nginx through the privileged helper. Raises RuntimeError on failure."""
+    from apps.core import nginx_helper
+    nginx_helper.reload()
 
 
 def install_cert_and_key(cert_content, key_content):

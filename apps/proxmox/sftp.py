@@ -3,6 +3,8 @@ import os
 
 import paramiko
 
+from apps.proxmox.hostkeys import prepare_client
+
 logger = logging.getLogger(__name__)
 
 CHUNK_SIZE = 32 * 1024  # 32 KB
@@ -31,11 +33,19 @@ class ProxmoxSFTP:
             self.username,
             self.key_path,
         )
-        transport = paramiko.Transport((self.host, self.port))
-        private_key = paramiko.RSAKey.from_private_key_file(self.key_path)
-        transport.connect(username=self.username, pkey=private_key)
-        self._transport = transport
-        self._sftp = paramiko.SFTPClient.from_transport(transport)
+        # SSHClient (not a bare Transport) so the pinned host key is verified.
+        client = prepare_client(paramiko.SSHClient())
+        client.connect(
+            hostname=self.host,
+            port=self.port,
+            username=self.username,
+            key_filename=self.key_path,
+            timeout=30,
+            look_for_keys=False,
+            allow_agent=False,
+        )
+        self._transport = client
+        self._sftp = client.open_sftp()
         return self
 
     def disconnect(self):

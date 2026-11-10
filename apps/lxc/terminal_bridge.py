@@ -12,6 +12,8 @@ import time
 
 import paramiko
 
+from apps.proxmox.hostkeys import prepare_client
+
 logger = logging.getLogger(__name__)
 
 
@@ -51,8 +53,7 @@ class SSHTerminalBridge:
     def start(self, cols=120, rows=40):
         """Open SSH connection, allocate PTY, and start the command."""
         self._client = paramiko.SSHClient()
-        self._client.load_system_host_keys()
-        self._client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        prepare_client(self._client)
 
         logger.debug("Terminal bridge connecting to %s:%s", self.host, self.port)
         self._client.connect(

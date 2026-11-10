@@ -1,22 +1,25 @@
-Django==4.2.16
-gunicorn==21.2.0
-celery==5.3.6
-redis==5.0.1
-paramiko==3.4.0
-channels==4.2.0
-channels_redis==4.2.1
-daphne==4.1.2
-requests==2.31.0
-python-dotenv==1.0.0
+# Pinned versions — audited with pip-audit on 2026-11-10.
+# Django 5.2 is the current LTS line (security support until April 2028).
+Django==5.2.19
+gunicorn==26.2.0
+celery==5.7.0
+redis==8.1.0
+paramiko==5.1.0
+channels==4.3.2
+channels_redis==4.3.0
+daphne==4.2.3
+requests==2.34.2
+python-dotenv==1.2.4
 django-encrypted-model-fields==0.6.5
-python-ldap==3.4.5
-django-auth-ldap==4.6.0
-django-allauth==0.61.1
-Markdown==3.5.2
-cryptography==42.0.2
-pyotp==2.9.0
-qrcode==7.4.2
-Pillow==11.1.0
-channels==4.2.0
-channels_redis==4.2.1
-daphne==4.1.2
+python-ldap==3.4.8
+django-auth-ldap==5.4.0
+django-allauth==65.21.1
+Markdown==3.11.3
+cryptography>=46,<51
+pyotp==2.10.0
+qrcode==8.2
+Pillow==13.0.0
+# Transitive dependencies pinned to patched releases
+twisted>=26.10.0
+autobahn>=26.10.1
+pyOpenSSL>=26.0.0

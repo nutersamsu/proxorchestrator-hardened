@@ -12,6 +12,7 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from django.views.decorators.http import require_POST
 
+from apps.core.console_auth import grant_console
 from apps.proxmox.api import ProxmoxAPIError
 from apps.wizard.models import ProxmoxConfig
 
@@ -243,6 +244,7 @@ def vm_console(request, vmid):
         vnc["vmid"] = vmid
         vnc["proxmox_host"] = config.host
         vnc["proxmox_port"] = config.api_port
+        grant_console(request, node, "qemu", vmid)
     except ProxmoxAPIError as exc:
         error = f"Could not create console session: {exc.message}"
         logger.error("vm_console vmid=%d: %s", vmid, exc)

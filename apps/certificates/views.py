@@ -3,7 +3,6 @@ import ipaddress
 import logging
 import os
 import re
-import subprocess
 from functools import wraps
 
 import redis
@@ -20,7 +19,6 @@ from apps.certificates.helpers import CSR_KEY_FILE
 from apps.certificates.helpers import ENV_FILE
 from apps.certificates.helpers import KEY_FILE
 from apps.certificates.helpers import PENDING_CSR_FILE
-from apps.certificates.helpers import find_nginx_conf
 from apps.certificates.helpers import get_cert_info
 from apps.certificates.helpers import get_current_port
 from apps.certificates.helpers import get_pending_csr
@@ -368,53 +366,15 @@ def change_port(request):
         messages.info(request, f"Port is already {new_port}.")
         return redirect("cert_settings")
 
-    nginx_conf = find_nginx_conf()
-    if not nginx_conf:
-        messages.error(request, "Cannot find nginx configuration file.")
+    from apps.core import nginx_helper
+    try:
+        # Validated and rolled back on nginx -t failure by the root helper.
+        nginx_helper.set_port(new_port)
+    except nginx_helper.NginxHelperError as exc:
+        messages.error(request, f"Failed to change nginx port: {exc}")
         return redirect("cert_settings")
 
     try:
-        with open(nginx_conf) as f:
-            original = f.read()
-
-        updated = re.sub(
-            r"(listen\s+)\d+(\s+ssl)", rf"\g<1>{new_port}\2", original,
-        )
-
-        if updated == original:
-            messages.warning(
-                request,
-                "Could not locate the listen directive in the nginx config.",
-            )
-            return redirect("cert_settings")
-
-        write = subprocess.run(
-            ["sudo", "tee", nginx_conf],
-            input=updated.encode(),
-            capture_output=True, shell=False,
-        )
-        if write.returncode != 0:
-            messages.error(
-                request,
-                f"Failed to write nginx config: {write.stderr.decode().strip()}",
-            )
-            return redirect("cert_settings")
-
-        test = subprocess.run(
-            ["sudo", "nginx", "-t"],
-            capture_output=True, text=True, shell=False,
-        )
-        if test.returncode != 0:
-            subprocess.run(
-                ["sudo", "tee", nginx_conf],
-                input=original.encode(), capture_output=True, shell=False,
-            )
-            messages.error(
-                request,
-                f"nginx config test failed (rolled back): {test.stderr.strip()}",
-            )
-            return redirect("cert_settings")
-
         if os.path.exists(ENV_FILE):
             with open(ENV_FILE) as f:
                 env = f.read()

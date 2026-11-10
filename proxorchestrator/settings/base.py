@@ -19,12 +19,31 @@ if _prod_env.is_file() and os.access(_prod_env, os.R_OK):
 # Core
 # ---------------------------------------------------------------------------
 
-SECRET_KEY = os.environ.get("SECRET_KEY", "insecure-default-change-me")
-
 DEBUG = os.environ.get("DEBUG", "False").lower() in ("true", "1", "yes")
 
-_raw_hosts = os.environ.get("ALLOWED_HOSTS", "*")
+SECRET_KEY = os.environ.get("SECRET_KEY", "")
+_INSECURE_KEYS = {"", "insecure-default-change-me", "change-me-to-a-random-50-char-string"}
+if SECRET_KEY in _INSECURE_KEYS or len(SECRET_KEY) < 40:
+    if DEBUG:
+        SECRET_KEY = "dev-only-insecure-key-never-use-in-production-0123456789"
+    else:
+        from django.core.exceptions import ImproperlyConfigured
+        raise ImproperlyConfigured(
+            "SECRET_KEY must be set to a random value of at least 40 characters "
+            "in /opt/proxorchestrator/.env"
+        )
+
+# Comma-separated host names / IPs this server answers to. A wildcard makes
+# Host-header attacks possible, so it is only honoured when explicitly
+# acknowledged with ALLOW_ANY_HOST=true.
+_raw_hosts = os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1")
 ALLOWED_HOSTS = [h.strip() for h in _raw_hosts.split(",") if h.strip()]
+if "*" in ALLOWED_HOSTS and os.environ.get("ALLOW_ANY_HOST", "").lower() != "true":
+    ALLOWED_HOSTS = [h for h in ALLOWED_HOSTS if h != "*"] or ["localhost", "127.0.0.1"]
+
+# Base URL used in links sent by email (password reset). Never derived from
+# the request Host header. Example: https://proxorchestrator.example.lan:8443
+PUBLIC_BASE_URL = os.environ.get("PUBLIC_BASE_URL", "").rstrip("/")
 
 SITE_ID = 1
 
@@ -80,6 +99,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "allauth.account.middleware.AccountMiddleware",
+    "apps.core.security.AccessControlMiddleware",
     "apps.core.middleware.ForcePasswordChangeMiddleware",
     "apps.core.middleware.ForceMFASetupMiddleware",
     "apps.core.middleware.WizardRedirectMiddleware",
@@ -223,10 +243,15 @@ AUTHENTICATION_BACKENDS = [
 # django-allauth
 # ---------------------------------------------------------------------------
 
-ACCOUNT_EMAIL_REQUIRED = False
-ACCOUNT_AUTHENTICATION_METHOD = "username"
+# Local accounts are created only by administrators. allauth is used solely
+# for the Microsoft Entra ID flow; its local login/signup views are blocked
+# by AccessControlMiddleware and closed by the adapter as well.
+ACCOUNT_LOGIN_METHODS = {"username"}
+ACCOUNT_SIGNUP_FIELDS = ["username*", "password1*", "password2*"]
+ACCOUNT_ADAPTER = "apps.authconfig.adapters.ClosedAccountAdapter"
 SOCIALACCOUNT_AUTO_SIGNUP = True
-SOCIALACCOUNT_LOGIN_ON_GET = True
+# Require a POST (with CSRF token) to start the OAuth flow.
+SOCIALACCOUNT_LOGIN_ON_GET = False
 SOCIALACCOUNT_ADAPTER = "apps.authconfig.adapters.AutoSignupSocialAdapter"
 ACCOUNT_SIGNUP_REDIRECT_URL = "/"
 LOGIN_URL = "/login/"
@@ -272,6 +297,44 @@ HELP_DIR = BASE_DIR / "help"
 # Nginx sets X-Forwarded-Proto: https; without this, Django sees the gunicorn
 # connection as plain HTTP and its CSRF referer check fails.
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+# The app is only served over HTTPS (nginx on WEB_PORT).
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = "Lax"
+SESSION_COOKIE_AGE = int(os.environ.get("SESSION_COOKIE_AGE", 8 * 3600))
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_REFERRER_POLICY = "same-origin"
+SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin"
+X_FRAME_OPTIONS = "DENY"
+SECURE_HSTS_SECONDS = int(os.environ.get("SECURE_HSTS_SECONDS", 0))
+
+# Origins allowed to POST (needed behind a reverse proxy on another host/port).
+CSRF_TRUSTED_ORIGINS = [
+    o.strip() for o in os.environ.get("CSRF_TRUSTED_ORIGINS", "").split(",") if o.strip()
+]
+if PUBLIC_BASE_URL and PUBLIC_BASE_URL not in CSRF_TRUSTED_ORIGINS:
+    CSRF_TRUSTED_ORIGINS.append(PUBLIC_BASE_URL)
+
+# Shared cache (login throttling must be shared by all gunicorn workers).
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": os.environ.get("CACHE_URL", "redis://127.0.0.1:6379/2"),
+        "KEY_PREFIX": "proxorchestrator",
+    }
+}
+
+LOGIN_MAX_FAILURES_PER_USER = int(os.environ.get("LOGIN_MAX_FAILURES_PER_USER", 5))
+LOGIN_MAX_FAILURES_PER_IP = int(os.environ.get("LOGIN_MAX_FAILURES_PER_IP", 20))
+LOGIN_LOCKOUT_SECONDS = int(os.environ.get("LOGIN_LOCKOUT_SECONDS", 900))
+
+# Proxmox SSH host keys pinned on first use (see apps/proxmox/hostkeys.py).
+SSH_KNOWN_HOSTS = os.environ.get(
+    "SSH_KNOWN_HOSTS", "/opt/proxorchestrator/.ssh/known_hosts"
+)
 
 # ---------------------------------------------------------------------------
 # Deployment

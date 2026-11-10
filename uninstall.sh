@@ -103,6 +103,10 @@ rm -f /etc/sudoers.d/proxorchestrator-nginx
 rm -f /etc/sudoers.d/proxmigrate-nginx
 echo "    Sudoers rules removed."
 
+echo "==> Removing nginx helper and its root-owned includes..."
+rm -f /usr/local/sbin/proxorchestrator-nginx-helper
+rm -rf /etc/proxorchestrator
+
 echo "==> Removing Nginx configuration..."
 
 # Remove both old and new naming

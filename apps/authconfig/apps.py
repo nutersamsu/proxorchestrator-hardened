@@ -41,7 +41,7 @@ class AuthConfigConfig(AppConfig):
         # Entra ID: pre-login hook — check group membership, enforce require_group_id,
         # and set is_staff/is_superuser based on admin_group_id.
         try:
-            from allauth.exceptions import ImmediateHttpResponse
+            from allauth.core.exceptions import ImmediateHttpResponse
             from allauth.socialaccount.signals import pre_social_login
             from django.contrib import messages as django_messages
             from django.shortcuts import redirect as _redirect
@@ -126,7 +126,10 @@ class AuthConfigConfig(AppConfig):
                 except ImmediateHttpResponse:
                     raise
                 except Exception:
+                    # Fail closed: never let an error skip the group checks.
                     logger.exception("_entra_pre_login: unexpected error")
+                    django_messages.error(request, "Microsoft sign-in failed. Please try again.")
+                    raise ImmediateHttpResponse(_redirect("/login/"))
 
             pre_social_login.connect(_entra_pre_login, weak=False)
         except Exception:

@@ -1,5 +1,6 @@
 from django.urls import path
 
+from . import console_auth
 from . import views
 
 
@@ -18,4 +19,6 @@ urlpatterns = [
     path("mfa/disable/", views.mfa_disable, name="mfa_disable"),
     path("mfa/recovery/email/", views.mfa_email_recovery, name="mfa_email_recovery"),
     path("help/<slug:slug>/", views.help_view, name="help"),
+    # nginx auth_request target for the /vm-ws/ console proxy
+    path("internal/console-auth/", console_auth.console_ws_auth, name="console_ws_auth"),
 ]

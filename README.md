@@ -4,6 +4,11 @@
 
 > **To update an existing install:** `git pull origin main && sudo ./update.sh`
 
+> **Security-hardened fork (branch `hardening`).** Fixes an unauthenticated
+> Proxmox API exposure via `/vm-ws/`, open self-signup, MFA bypass, missing
+> role checks and more — see [SECURITY-HARDENING.md](SECURITY-HARDENING.md)
+> before upgrading.
+
 A free, open-source, self-hosted web UI for Proxmox VE — built for administrators who need to import disk images, create VMs, and manage their virtual infrastructure without logging into the Proxmox web interface.
 
 Made by **[ForgedIO](https://github.com/ForgedIO)**.
