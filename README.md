@@ -9,6 +9,13 @@
 > role checks and more — see [SECURITY-HARDENING.md](SECURITY-HARDENING.md)
 > before upgrading.
 
+> **Credits.** ProxOrchestrator was created by **[ForgedIO](https://github.com/ForgedIO)**
+> — original project at <https://github.com/ForgedIO/ProxOrchestrator>, written mainly by
+> csd440 with contributions from Brett Verney. All the core application is their work,
+> released under the MIT License (kept unchanged in [LICENSE](LICENSE)). This fork only
+> adds security fixes and small improvements on top; please support and star the
+> original project.
+
 A free, open-source, self-hosted web UI for Proxmox VE — built for administrators who need to import disk images, create VMs, and manage their virtual infrastructure without logging into the Proxmox web interface.
 
 Made by **[ForgedIO](https://github.com/ForgedIO)**.
@@ -597,6 +604,15 @@ Turn ProxOrchestrator into a comprehensive Proxmox observability platform.
 - **Frontend:** Django templates + HTMX + xterm.js (no JavaScript framework required)
 - **Proxy:** nginx handles TLS termination and WebSocket proxying for consoles and community script terminals
 - **Database:** SQLite (self-contained, no separate database server needed)
+
+## Credits
+
+- **Original author:** [ForgedIO](https://github.com/ForgedIO) —
+  [ForgedIO/ProxOrchestrator](https://github.com/ForgedIO/ProxOrchestrator)
+  (csd440, Brett Verney). Thank you for building and open-sourcing it.
+- **This fork (`hardening` branch):** security hardening
+  ([SECURITY-HARDENING.md](SECURITY-HARDENING.md)), a unified typography scale and a
+  node summary card (PVE Summary data + hardware temperatures) on the dashboard.
 
 ## License
 
