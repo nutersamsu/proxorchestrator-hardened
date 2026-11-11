@@ -1495,51 +1495,73 @@ a.stat-card-link:hover {
 /* --------------------------------------------------------------------------
    Dashboard: node summary (PVE "Summary" without graphs) + temperatures
    -------------------------------------------------------------------------- */
-.node-summary { margin-bottom: 1.5rem; }
-.node-summary .card-header { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
-.node-summary .card-body { padding: 0.75rem 1.25rem 1rem; }
-.node-summary-node { font-family: var(--font-mono); font-weight: 600; }
-.node-summary-uptime { margin-left: auto; font-size: 0.8125rem; font-weight: 500; color: var(--text-muted); }
+.node-summary {
+  margin-bottom: 1.5rem;
+  --pve-bar-track: #e4e4e4;
+  --pve-bar-fill: #2a7fd0;
+  --pve-bar-warning: #e8a317;
+  --pve-bar-critical: #d9534f;
+}
+[data-theme='dark'] .node-summary {
+  --pve-bar-track: #3b3b3b;
+  --pve-bar-fill: #1a6ab3;
+}
+.pve-header {
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid var(--border-main);
+  color: var(--link-color);
+  font-size: 1rem;
+}
+.pve-body { padding: 0.75rem 1rem 0.9rem; }
 .node-summary-error { color: var(--danger-color); font-size: 0.875rem; margin-bottom: 0.5rem; }
 
-/* Two columns of label/value rows, like the PVE Summary panel */
-.ns-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 0 2.5rem; }
-.ns-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 0 1rem;
-  padding: 0.2rem 0;
-  font-size: 0.8125rem;
-  line-height: 1.4;
+/* 2-column table like StatusView.js; IO delay spans two rows */
+.pve-status {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 1.75rem;
+  font-size: 0.875rem;
+  color: var(--text-header);
 }
-.ns-k { color: var(--text-muted); white-space: nowrap; }
-.ns-k i { width: 1.1em; margin-right: 0.35rem; text-align: center; opacity: 0.8; }
-.ns-v { color: var(--text-header); text-align: right; font-variant-numeric: tabular-nums; min-width: 0; overflow-wrap: anywhere; }
-.ns-muted { color: var(--text-muted); }
-.ns-bar { flex-basis: 100%; height: 4px; border-radius: 2px; background: var(--border-light); margin-top: 0.25rem; overflow: hidden; }
-.ns-bar span { display: block; height: 100%; max-width: 100%; background: var(--success-color); }
-.ns-bar.is-mid span { background: var(--warning-color); }
-.ns-bar.is-high span { background: var(--danger-color); }
+.pve-item { padding: 0.3rem 0; min-width: 0; }
+.pve-cpu  { grid-column: 1; grid-row: 1; }
+.pve-io   { grid-column: 2; grid-row: 1 / span 2; align-self: center; }
+.pve-load { grid-column: 1; grid-row: 2; }
+.pve-item.is-wide, .pve-spacer { grid-column: 1 / -1; }
+.pve-item.is-wide { padding: 0.2rem 0; }
+.pve-spacer { height: 0.9rem; }
+.pve-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  line-height: 1.35;
+}
+.pve-title { white-space: nowrap; }
+.pve-title i { width: 1.15em; margin-right: 0.4rem; text-align: center; }
+.pve-value { text-align: right; min-width: 0; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
 
-/* Full-width facts below (CPU model, kernel, versions, temperatures) */
-.ns-facts { margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--border-main); }
-.ns-facts .ns-k { min-width: 9rem; }
-.ns-temp { white-space: nowrap; margin-left: 1rem; }
-.ns-temp:first-child { margin-left: 0; }
+/* Usage bar: flat, thin, blue (PVE progress bar) */
+.pve-bar { height: 5px; margin-top: 0.3rem; background: var(--pve-bar-track); overflow: hidden; }
+.pve-bar > div { height: 100%; max-width: 100%; background: var(--pve-bar-fill); }
+.pve-bar.is-warning > div { background: var(--pve-bar-warning); }
+.pve-bar.is-critical > div { background: var(--pve-bar-critical); }
+
+.pve-repo { margin-left: 1rem; white-space: nowrap; }
+.pve-repo:first-child { margin-left: 0; }
+.pve-repo i { margin-right: 0.3rem; }
+.pve-repo.is-ok i { color: #21bf4b; }
+.pve-repo.is-warning i { color: #fcb900; }
+.pve-repo.is-error i { color: #f0262c; }
+.pve-temp { margin-left: 1rem; white-space: nowrap; }
+.pve-temp:first-child { margin-left: 0; }
 .temp-value { font-weight: 600; }
 .temp-value.temp-ok { color: var(--success-color); }
 .temp-value.temp-warm { color: var(--warning-color); }
 .temp-value.temp-hot { color: var(--danger-color); }
 
-/* The dark theme forces .card-body text to --text-main; keep our colours */
-[data-theme='dark'] .node-summary .ns-k,
-[data-theme='dark'] .node-summary .ns-muted { color: var(--text-muted) !important; }
-[data-theme='dark'] .node-summary .temp-ok { color: var(--success-color) !important; }
-[data-theme='dark'] .node-summary .temp-warm { color: var(--warning-color) !important; }
-[data-theme='dark'] .node-summary .temp-hot { color: var(--danger-color) !important; }
-
 @media (max-width: 900px) {
-  .ns-cols { grid-template-columns: 1fr; }
+  .pve-status { grid-template-columns: 1fr; }
+  .pve-cpu, .pve-io, .pve-load { grid-column: 1; grid-row: auto; }
+  .pve-line { flex-wrap: wrap; }
 }

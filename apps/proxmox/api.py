@@ -163,6 +163,16 @@ class ProxmoxAPI:
         result = self._get(f"/nodes/{node}/status")
         return result if isinstance(result, dict) else {}
 
+    def get_apt_repositories(self, node):
+        """Return the APT repository info of a node (Sys.Audit)."""
+        result = self._get(f"/nodes/{node}/apt/repositories")
+        return result if isinstance(result, dict) else {}
+
+    def get_subscription(self, node):
+        """Return the subscription status dict of a node."""
+        result = self._get(f"/nodes/{node}/subscription")
+        return result if isinstance(result, dict) else {}
+
     def get_storage(self, node):
         """Return list of storage dicts for a node."""
         result = self._get(f"/nodes/{node}/storage")

@@ -8,6 +8,7 @@ host.
 """
 
 import logging
+import re
 
 from django.core.cache import cache
 
@@ -145,15 +146,20 @@ def read_temperatures(config):
     return temps, None
 
 
+
+# ---------------------------------------------------------------------------
+# Formatting: same strings as the PVE web UI (proxmox-widget-toolkit Utils)
+# ---------------------------------------------------------------------------
+
 def _pct(used, total):
     try:
-        return round(100.0 * float(used) / float(total), 1) if total else 0.0
+        return round(100.0 * float(used) / float(total), 2) if total else 0.0
     except (TypeError, ValueError):
         return 0.0
 
 
 def format_bytes(value):
-    """Binary units like the PVE UI (GiB)."""
+    """Binary units like the PVE UI ("15.48 GiB", "0 B")."""
     try:
         size = float(value)
     except (TypeError, ValueError):
@@ -166,77 +172,128 @@ def format_bytes(value):
 
 
 def format_uptime(seconds):
+    """PVE format_duration_long: '2 days 22:35:28' / '1 day 01:02:03' / '22:35:28'."""
     try:
         seconds = int(seconds)
     except (TypeError, ValueError):
         return "-"
     days, rest = divmod(seconds, 86400)
     hours, rest = divmod(rest, 3600)
-    minutes = rest // 60
+    minutes, secs = divmod(rest, 60)
+    clock = f"{hours:02d}:{minutes:02d}:{secs:02d}"
     if days:
-        return f"{days}d {hours:02d}h {minutes:02d}m"
-    return f"{hours:02d}h {minutes:02d}m"
+        return f"{days} day{'s' if days != 1 else ''} {clock}"
+    return clock
+
+
+def _kernel_text(status):
+    """'Linux 7.0.14-28-pve (2026-11-02T11:54Z)' like the PVE Summary."""
+    kernel = status.get("current-kernel") or {}
+    if kernel.get("sysname") and kernel.get("release"):
+        text = f"{kernel['sysname']} {kernel['release']}"
+        match = re.search(r"\(([^()]+)\)\s*$", kernel.get("version") or "")
+        return f"{text} ({match.group(1)})" if match else text
+    return status.get("kversion") or "-"
 
 
 def build_summary(status):
     """Turn /nodes/{node}/status into template-friendly values."""
-    mem = status.get("memory") or {}
-    swap = status.get("swap") or {}
-    rootfs = status.get("rootfs") or {}
     cpuinfo = status.get("cpuinfo") or {}
     boot = status.get("boot-info") or {}
     ksm = status.get("ksm") or {}
-    kernel = status.get("current-kernel") or {}
 
     def usage(block):
+        block = block or {}
         total = block.get("total") or 0
         used = block.get("used")
         if used is None and total:
             used = total - (block.get("free") or block.get("avail") or 0)
         used = used or 0
+        pct = _pct(used, total)
         return {
-            "pct": _pct(used, total),
-            "used": format_bytes(used),
-            "total": format_bytes(total),
+            "pct": pct,
+            "text": f"{pct:.2f}% ({format_bytes(used)} of {format_bytes(total)})",
             "present": bool(total),
         }
 
     cpus = cpuinfo.get("cpus")
     sockets = cpuinfo.get("sockets")
     model = cpuinfo.get("model") or ""
-    cpu_desc = model
+    cpu_desc = model or "-"
     if cpus:
         cpu_desc = f"{cpus} x {model}" if model else f"{cpus} CPU(s)"
         if sockets:
             cpu_desc += f" ({sockets} Socket{'s' if int(sockets) != 1 else ''})"
 
-    boot_mode = (boot.get("mode") or "").upper()
-    if boot_mode == "EFI" and boot.get("secureboot"):
-        boot_mode = "EFI (Secure Boot)"
-    elif boot_mode == "LEGACY-BIOS":
+    boot_mode = (boot.get("mode") or "").lower()
+    if boot_mode == "efi":
+        boot_mode = "EFI (Secure Boot)" if boot.get("secureboot") else "EFI"
+    elif boot_mode == "legacy-bios":
         boot_mode = "Legacy BIOS"
+    else:
+        boot_mode = boot_mode.upper() or "-"
 
-    kversion = status.get("kversion") or ""
-    if kernel.get("sysname") and kernel.get("release"):
-        kversion = f"{kernel['sysname']} {kernel['release']} {kernel.get('version', '')}".strip()
+    cpu_pct = _pct(status.get("cpu") or 0, 1)
+    cpu_text = f"{cpu_pct:.2f}%"
+    if cpus:
+        cpu_text += f" of {cpus} CPU{'s' if int(cpus) > 1 else ''}"
+    io_pct = _pct(status.get("wait") or 0, 1)
 
     load = status.get("loadavg") or []
     return {
-        "cpu_pct": _pct(status.get("cpu") or 0, 1),
-        "cpus": cpus,
-        "io_delay_pct": _pct(status.get("wait") or 0, 1),
-        "loadavg": ", ".join(str(x) for x in load) if load else "-",
-        "memory": usage(mem),
-        "swap": usage(swap),
-        "rootfs": usage(rootfs),
+        "cpu_pct": cpu_pct,
+        "cpu_text": cpu_text,
+        "io_delay_pct": io_pct,
+        "io_delay_text": f"{io_pct:.2f}%",
+        "loadavg": ",".join(str(x) for x in load) if load else "-",
+        "memory": usage(status.get("memory")),
+        "swap": usage(status.get("swap")),
+        "rootfs": usage(status.get("rootfs")),
         "ksm_shared": format_bytes(ksm.get("shared") or 0),
-        "cpu_desc": cpu_desc or "-",
-        "cpu_mhz": cpuinfo.get("mhz"),
-        "kernel": kversion or "-",
-        "boot_mode": boot_mode or "-",
+        "cpu_desc": cpu_desc,
+        "kernel": _kernel_text(status),
+        "boot_mode": boot_mode,
         "pveversion": status.get("pveversion") or "-",
         "uptime": format_uptime(status.get("uptime")),
     }
+
+
+def repository_status(repos, subscription_active=None):
+    """Summarise /nodes/{node}/apt/repositories like the PVE Summary.
+
+    Returns a list of {level: ok|warning|error, text} or None if unknown.
+    """
+    if not isinstance(repos, dict):
+        return None
+    if repos.get("errors"):
+        return [{"level": "error", "text": "Error parsing repositories"}]
+    enabled = {
+        r.get("handle") for r in repos.get("standard-repos") or []
+        if r.get("status") == 1 and not str(r.get("handle", "")).startswith("ceph")
+    }
+    if not enabled:
+        return [{"level": "error", "text": "No Proxmox VE repository enabled!"}]
+    result = [{"level": "ok", "text": "Proxmox VE updates"}]
+    if enabled & {"no-subscription", "test"}:
+        result.append({"level": "warning", "text": "Non production-ready repository enabled!"})
+    elif "enterprise" in enabled and subscription_active is False:
+        result.append({"level": "warning", "text": "Enterprise repository needs valid subscription"})
+    return result
+
+
+def read_repository_status(api, node):
+    try:
+        repos = api.get_apt_repositories(node)
+    except Exception as exc:
+        logger.info("Repository status failed: %s", exc)
+        return None
+    subscription_active = None
+    try:
+        sub = api.get_subscription(node)
+        subscription_active = (sub or {}).get("status", "").lower() == "active"
+    except Exception:
+        pass
+    return repository_status(repos, subscription_active)
 
 
 def get_node_summary(config, use_cache=True):
@@ -248,10 +305,12 @@ def get_node_summary(config, use_cache=True):
         if cached is not None:
             return cached
 
-    data = {"node": node, "summary": None, "error": None, "temps": [], "temps_error": None}
+    data = {"node": node, "summary": None, "error": None, "repos": None,
+            "temps": [], "temps_error": None}
     try:
-        status = config.get_api_client().get_node_status(node)
-        data["summary"] = build_summary(status)
+        api = config.get_api_client()
+        data["summary"] = build_summary(api.get_node_status(node))
+        data["repos"] = read_repository_status(api, node)
     except Exception as exc:
         logger.info("Node status failed: %s", exc)
         msg = str(exc)

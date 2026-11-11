@@ -35,7 +35,7 @@ STATUS_SAMPLE = {
     "cpuinfo": {"model": "Intel(R) Core(TM) i5-6500 CPU @ 3.20GHz", "cpus": 4, "sockets": 1},
     "ksm": {"shared": 0},
     "boot-info": {"mode": "efi", "secureboot": 0},
-    "current-kernel": {"sysname": "Linux", "release": "6.17.2-1-pve", "version": "#1 SMP PREEMPT_DYNAMIC"},
+    "current-kernel": {"sysname": "Linux", "release": "6.17.2-1-pve", "version": "#1 SMP PREEMPT_DYNAMIC PMX 6.17.2-1 (2026-11-02T11:54Z)"},
     "pveversion": "pve-manager/9.2.0/abcdef",
 }
 
@@ -87,18 +87,39 @@ class TemperatureParsingTests(TestCase):
 class SummaryFormattingTests(TestCase):
     def test_build_summary(self):
         s = ns.build_summary(STATUS_SAMPLE)
-        self.assertEqual(s["cpu_pct"], 5.3)
-        self.assertEqual(s["io_delay_pct"], 0.2)
-        self.assertEqual(s["loadavg"], "0.31, 0.42, 0.40")
+        self.assertEqual(s["cpu_pct"], 5.32)
+        self.assertEqual(s["cpu_text"], "5.32% of 4 CPUs")
+        self.assertEqual(s["io_delay_text"], "0.21%")
+        self.assertEqual(s["loadavg"], "0.31,0.42,0.40")
         self.assertEqual(s["memory"]["pct"], 37.5)
-        self.assertEqual(s["memory"]["total"], "16.00 GiB")
+        self.assertEqual(s["memory"]["text"], "37.50% (6.00 GiB of 16.00 GiB)")
         self.assertFalse(s["swap"]["present"])
         self.assertEqual(s["rootfs"]["pct"], 93.0)
-        self.assertEqual(s["uptime"], "3d 04h 05m")
+        self.assertEqual(s["uptime"], "3 days 04:05:00")
         self.assertEqual(s["boot_mode"], "EFI")
         self.assertIn("4 x Intel(R) Core(TM) i5-6500", s["cpu_desc"])
         self.assertIn("(1 Socket)", s["cpu_desc"])
-        self.assertEqual(s["kernel"], "Linux 6.17.2-1-pve #1 SMP PREEMPT_DYNAMIC")
+        self.assertEqual(s["kernel"], "Linux 6.17.2-1-pve (2026-11-02T11:54Z)")
+
+    def test_uptime_format_matches_pve(self):
+        self.assertEqual(ns.format_uptime(2 * 86400 + 22 * 3600 + 35 * 60 + 28), "2 days 22:35:28")
+        self.assertEqual(ns.format_uptime(86400 + 61), "1 day 00:01:01")
+        self.assertEqual(ns.format_uptime(59), "00:00:59")
+
+    def test_repository_status(self):
+        def repos(*enabled):
+            return {"errors": [], "standard-repos": [
+                {"handle": h, "status": 1 if h in enabled else None}
+                for h in ("enterprise", "no-subscription", "test", "ceph-squid-enterprise")]}
+        self.assertEqual(ns.repository_status(repos("no-subscription")), [
+            {"level": "ok", "text": "Proxmox VE updates"},
+            {"level": "warning", "text": "Non production-ready repository enabled!"}])
+        self.assertEqual(ns.repository_status(repos("enterprise"), True),
+                         [{"level": "ok", "text": "Proxmox VE updates"}])
+        self.assertEqual(ns.repository_status(repos("enterprise"), False)[1]["level"], "warning")
+        self.assertEqual(ns.repository_status(repos("ceph-squid-enterprise"))[0]["level"], "error")
+        self.assertEqual(ns.repository_status({"errors": [{"x": 1}]})[0]["text"], "Error parsing repositories")
+        self.assertIsNone(ns.repository_status(None))
 
     def test_build_summary_tolerates_empty_status(self):
         s = ns.build_summary({})
@@ -117,10 +138,22 @@ class NodeSummaryViewTests(TestCase):
         profile.save()
         self.client = Client()
         self.client.force_login(user)
+        patcher = mock.patch("apps.core.node_summary.read_repository_status", return_value=[
+            {"level": "ok", "text": "Proxmox VE updates"},
+            {"level": "warning", "text": "Non production-ready repository enabled!"}])
+        patcher.start()
+        self.addCleanup(patcher.stop)
         ProxmoxConfig.objects.create(
             host="10.0.0.2", api_port=8006, default_node="pve",
             api_token_id="a@pve!b", api_token_secret="s", is_configured=True,
         )
+
+    def test_stylesheet_url_is_versioned(self):
+        # nginx caches /static/ for 30 days as immutable: the CSS URL must
+        # change with its content or browsers keep the old stylesheet.
+        import re
+        html = Client().get("/login/").content.decode()
+        self.assertRegex(html, r'/static/css/proxorchestrator\.css\?v=[0-9a-f]{12}"')
 
     def test_requires_login(self):
         resp = Client().get("/dashboard/node-summary/")
@@ -134,11 +167,13 @@ class NodeSummaryViewTests(TestCase):
         self.assertEqual(resp.status_code, 200)
         html = resp.content.decode()
         self.assertIn("RAM usage", html)
+        self.assertNotIn("StatusView.js", html)  # template comment must not leak
         self.assertIn("6.00 GiB of 16.00 GiB", html)
         self.assertIn("pve-manager/9.2.0", html)
         self.assertIn("52.0 °C", html)
-        self.assertIn("ns-bar is-high", html)  # root disk at 93%
-        self.assertIn("width: 37.5%", html)
+        self.assertIn("pve-bar is-critical", html)  # root disk at 93%
+        self.assertIn("Non production-ready repository enabled!", html)
+        self.assertIn("width: 37.50%", html)
 
     @mock.patch("apps.core.node_summary.read_temperatures", return_value=([], "SSH unavailable"))
     @mock.patch("apps.proxmox.api.ProxmoxAPI.get_node_status")
