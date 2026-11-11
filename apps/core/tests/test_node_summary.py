@@ -133,7 +133,7 @@ class NodeSummaryViewTests(TestCase):
         resp = self.client.get("/dashboard/node-summary/")
         self.assertEqual(resp.status_code, 200)
         html = resp.content.decode()
-        self.assertIn("Memory usage", html)
+        self.assertIn("RAM usage", html)
         self.assertIn("6.00 GiB of 16.00 GiB", html)
         self.assertIn("pve-manager/9.2.0", html)
         self.assertIn("52.0 °C", html)

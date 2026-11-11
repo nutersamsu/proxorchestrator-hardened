@@ -1,8 +1,9 @@
+{# Same layout as the PVE node "Summary" panel: two columns of label/value rows. #}
 <div class="proxorchestrator-card node-summary">
   <div class="card-header">
-    <i class="fas fa-microchip" style="color: var(--link-color);"></i>
-    Node Summary <span class="node-summary-node">{{ node }}</span>
-    {% if summary %}<span class="node-summary-uptime"><i class="fas fa-clock"></i> Uptime {{ summary.uptime }}</span>{% endif %}
+    <i class="fas fa-server" style="color: var(--link-color);"></i>
+    Node <span class="node-summary-node">{{ node }}</span>
+    {% if summary %}<span class="node-summary-uptime">Uptime: {{ summary.uptime }}</span>{% endif %}
   </div>
   <div class="card-body">
     {% if error %}
@@ -10,70 +11,72 @@
     {% endif %}
 
     {% if summary %}
-    <div class="node-summary-grid">
-      <div class="ns-item">
-        <div class="ns-label">CPU usage</div>
-        <div class="ns-value">{{ summary.cpu_pct }}%{% if summary.cpus %} <span class="ns-sub">of {{ summary.cpus }} CPU(s)</span>{% endif %}</div>
-        <div class="ns-bar{% if summary.cpu_pct >= 90 %} is-high{% elif summary.cpu_pct >= 75 %} is-mid{% endif %}"><span style="width: {{ summary.cpu_pct|stringformat:".1f" }}%;"></span></div>
-      </div>
-      <div class="ns-item">
-        <div class="ns-label">Memory usage</div>
-        <div class="ns-value">{{ summary.memory.pct }}% <span class="ns-sub">({{ summary.memory.used }} of {{ summary.memory.total }})</span></div>
-        <div class="ns-bar{% if summary.memory.pct >= 90 %} is-high{% elif summary.memory.pct >= 75 %} is-mid{% endif %}"><span style="width: {{ summary.memory.pct|stringformat:".1f" }}%;"></span></div>
-      </div>
-      <div class="ns-item">
-        <div class="ns-label">Root disk (/)</div>
-        <div class="ns-value">{{ summary.rootfs.pct }}% <span class="ns-sub">({{ summary.rootfs.used }} of {{ summary.rootfs.total }})</span></div>
-        <div class="ns-bar{% if summary.rootfs.pct >= 90 %} is-high{% elif summary.rootfs.pct >= 75 %} is-mid{% endif %}"><span style="width: {{ summary.rootfs.pct|stringformat:".1f" }}%;"></span></div>
-      </div>
-      <div class="ns-item">
-        <div class="ns-label">Swap usage</div>
-        {% if summary.swap.present %}
-          <div class="ns-value">{{ summary.swap.pct }}% <span class="ns-sub">({{ summary.swap.used }} of {{ summary.swap.total }})</span></div>
-          <div class="ns-bar{% if summary.swap.pct >= 90 %} is-high{% elif summary.swap.pct >= 75 %} is-mid{% endif %}"><span style="width: {{ summary.swap.pct|stringformat:".1f" }}%;"></span></div>
-        {% else %}
-          <div class="ns-value ns-sub">No swap</div>
-        {% endif %}
-      </div>
-      <div class="ns-item">
-        <div class="ns-label">IO delay</div>
-        <div class="ns-value">{{ summary.io_delay_pct }}%</div>
-      </div>
-      <div class="ns-item">
-        <div class="ns-label">Load average</div>
-        <div class="ns-value">{{ summary.loadavg }}</div>
-      </div>
-      <div class="ns-item">
-        <div class="ns-label">KSM sharing</div>
-        <div class="ns-value">{{ summary.ksm_shared }}</div>
-      </div>
-      <div class="ns-item">
-        <div class="ns-label">Boot mode</div>
-        <div class="ns-value">{{ summary.boot_mode }}</div>
-      </div>
-    </div>
-
-    <dl class="node-summary-facts">
-      <dt>CPU(s)</dt><dd>{{ summary.cpu_desc }}</dd>
-      <dt>Kernel version</dt><dd class="is-mono">{{ summary.kernel }}</dd>
-      <dt>Manager version</dt><dd class="is-mono">{{ summary.pveversion }}</dd>
-    </dl>
-    {% endif %}
-
-    <div class="node-temps">
-      <div class="ns-label"><i class="fas fa-thermometer-half"></i> Temperatures</div>
-      {% if temps %}
-        <div class="node-temps-list">
-          {% for t in temps %}
-          <div class="temp-chip temp-{{ t.level }}"{% if t.details %} title="{% for d in t.details %}{{ d.label }}: {{ d.celsius }} °C{% if not forloop.last %}&#10;{% endif %}{% endfor %}"{% endif %}>
-            <span class="temp-name">{{ t.name }}{% if t.label %} <span class="temp-label">{{ t.label }}</span>{% endif %}</span>
-            <span class="temp-value">{{ t.celsius }} °C</span>
-          </div>
-          {% endfor %}
+    <div class="ns-cols">
+      <div class="ns-col">
+        <div class="ns-row">
+          <span class="ns-k"><i class="fas fa-microchip"></i> CPU usage</span>
+          <span class="ns-v">{{ summary.cpu_pct }}%{% if summary.cpus %} of {{ summary.cpus }} CPU(s){% endif %}</span>
+          <div class="ns-bar{% if summary.cpu_pct >= 90 %} is-high{% elif summary.cpu_pct >= 75 %} is-mid{% endif %}"><span style="width: {{ summary.cpu_pct|stringformat:".1f" }}%;"></span></div>
         </div>
-      {% else %}
-        <div class="ns-sub">{{ temps_error|default:"Unavailable" }}</div>
-      {% endif %}
+        <div class="ns-row">
+          <span class="ns-k"><i class="fas fa-hourglass-half"></i> IO delay</span>
+          <span class="ns-v">{{ summary.io_delay_pct }}%</span>
+        </div>
+        <div class="ns-row">
+          <span class="ns-k"><i class="fas fa-tasks"></i> Load average</span>
+          <span class="ns-v">{{ summary.loadavg }}</span>
+        </div>
+        <div class="ns-row">
+          <span class="ns-k"><i class="fas fa-memory"></i> RAM usage</span>
+          <span class="ns-v">{{ summary.memory.pct }}% ({{ summary.memory.used }} of {{ summary.memory.total }})</span>
+          <div class="ns-bar{% if summary.memory.pct >= 90 %} is-high{% elif summary.memory.pct >= 75 %} is-mid{% endif %}"><span style="width: {{ summary.memory.pct|stringformat:".1f" }}%;"></span></div>
+        </div>
+        <div class="ns-row">
+          <span class="ns-k"><i class="fas fa-hdd"></i> / HD space</span>
+          <span class="ns-v">{{ summary.rootfs.pct }}% ({{ summary.rootfs.used }} of {{ summary.rootfs.total }})</span>
+          <div class="ns-bar{% if summary.rootfs.pct >= 90 %} is-high{% elif summary.rootfs.pct >= 75 %} is-mid{% endif %}"><span style="width: {{ summary.rootfs.pct|stringformat:".1f" }}%;"></span></div>
+        </div>
+      </div>
+      <div class="ns-col">
+        <div class="ns-row">
+          <span class="ns-k"><i class="fas fa-thermometer-half"></i> CPU temperature</span>
+          {% with cpu=temps.0 %}
+          <span class="ns-v">{% if cpu and cpu.name == "CPU" %}<span class="temp-value temp-{{ cpu.level }}">{{ cpu.celsius }} °C</span>{% else %}<span class="ns-muted">{{ temps_error|default:"n/a" }}</span>{% endif %}</span>
+          {% endwith %}
+        </div>
+        <div class="ns-row">
+          <span class="ns-k"><i class="fas fa-clone"></i> KSM sharing</span>
+          <span class="ns-v">{{ summary.ksm_shared }}</span>
+        </div>
+        <div class="ns-row">
+          <span class="ns-k"><i class="fas fa-exchange-alt"></i> SWAP usage</span>
+          {% if summary.swap.present %}
+          <span class="ns-v">{{ summary.swap.pct }}% ({{ summary.swap.used }} of {{ summary.swap.total }})</span>
+          <div class="ns-bar{% if summary.swap.pct >= 90 %} is-high{% elif summary.swap.pct >= 75 %} is-mid{% endif %}"><span style="width: {{ summary.swap.pct|stringformat:".1f" }}%;"></span></div>
+          {% else %}
+          <span class="ns-v ns-muted">No swap</span>
+          {% endif %}
+        </div>
+      </div>
     </div>
+
+    <div class="ns-facts">
+      <div class="ns-row"><span class="ns-k">CPU(s)</span><span class="ns-v">{{ summary.cpu_desc }}</span></div>
+      <div class="ns-row"><span class="ns-k">Kernel Version</span><span class="ns-v">{{ summary.kernel }}</span></div>
+      <div class="ns-row"><span class="ns-k">Boot Mode</span><span class="ns-v">{{ summary.boot_mode }}</span></div>
+      <div class="ns-row"><span class="ns-k">Manager Version</span><span class="ns-v">{{ summary.pveversion }}</span></div>
+      <div class="ns-row">
+        <span class="ns-k">Temperatures</span>
+        <span class="ns-v">
+          {% for t in temps %}<span class="ns-temp"{% if t.details %} title="{% for d in t.details %}{{ d.label }}: {{ d.celsius }} °C{% if not forloop.last %}&#10;{% endif %}{% endfor %}"{% endif %}>{{ t.name }} <span class="temp-value temp-{{ t.level }}">{{ t.celsius }} °C</span></span>{% empty %}<span class="ns-muted">{{ temps_error|default:"Unavailable" }}</span>{% endfor %}
+        </span>
+      </div>
+    </div>
+    {% else %}
+    <div class="ns-row">
+      <span class="ns-k">Temperatures</span>
+      <span class="ns-v">{% for t in temps %}<span class="ns-temp">{{ t.name }} <span class="temp-value temp-{{ t.level }}">{{ t.celsius }} °C</span></span>{% empty %}<span class="ns-muted">{{ temps_error|default:"Unavailable" }}</span>{% endfor %}</span>
+    </div>
+    {% endif %}
   </div>
 </div>
