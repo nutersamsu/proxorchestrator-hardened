@@ -92,7 +92,7 @@
       <div class="card-header" style="display: flex;justify-content: space-between;align-items: center;">
         <span><i class="fas fa-info-circle" style="color: var(--link-color);"></i> General</span>
         <button class="button is-small is-white" onclick="openSettingsModal('general')" title="Edit description">
-          <i class="fas fa-pencil-alt" style="font-size: 0.7rem;color: var(--text-muted);"></i>
+          <i class="fas fa-pencil-alt" style="font-size: 0.75rem;color: var(--text-muted);"></i>
         </button>
       </div>
       <div class="card-body" style="padding: 1rem 1.5rem;">
@@ -102,7 +102,7 @@
           <div class="cert-detail-value" id="vm-name-display" style="font-family:inherit;font-size:0.875rem;">
             <span id="vm-name-text">{{ vm.name }}</span>
             <button class="button is-small is-white" style="margin-left:0.5rem;padding:0 0.4rem;height:1.5rem;" onclick="startRename()" title="Rename VM">
-              <i class="fas fa-pencil-alt" style="font-size:0.7rem;color:var(--text-muted, #7a7a7a);"></i>
+              <i class="fas fa-pencil-alt" style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);"></i>
             </button>
             <form id="vm-rename-form" method="post" action="{% url 'vm_rename' vmid %}" style="display:none;margin:0;">
               {% csrf_token %}
@@ -130,7 +130,7 @@
               —
             {% endif %}
             <button class="button is-small is-white" style="margin-left:0.5rem;padding:0 0.4rem;height:1.5rem;" onclick="openSettingsModal('general')" title="Edit description">
-              <i class="fas fa-pencil-alt" style="font-size:0.7rem;color:var(--text-muted, #7a7a7a);"></i>
+              <i class="fas fa-pencil-alt" style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);"></i>
             </button>
           </div>
         </div>
@@ -144,7 +144,7 @@
       <div class="card-header" style="display: flex;justify-content: space-between;align-items: center;">
         <span><i class="fas fa-microchip" style="color: var(--purple-color);"></i> Firmware &amp; Boot</span>
         <button class="button is-small is-white" onclick="openSettingsModal('firmware')" title="Edit firmware settings">
-          <i class="fas fa-pencil-alt" style="font-size: 0.7rem;color: var(--text-muted);"></i>
+          <i class="fas fa-pencil-alt" style="font-size: 0.75rem;color: var(--text-muted);"></i>
         </button>
       </div>
       <div class="card-body" style="padding: 1rem 1.5rem;">
@@ -172,7 +172,7 @@
         </div>
         <div class="cert-detail-row">
           <div class="cert-detail-label">Boot Order</div>
-          <div class="cert-detail-value" style="font-family: monospace;font-size: 0.8rem;">{{ vm.boot|default:"—" }}</div>
+          <div class="cert-detail-value" style="font-family: var(--font-mono);font-size: 0.8125rem;">{{ vm.boot|default:"—" }}</div>
         </div>
       </div>
     </div>
@@ -184,7 +184,7 @@
       <div class="card-header" style="display: flex;justify-content: space-between;align-items: center;">
         <span><i class="fas fa-microchip" style="color: var(--success-color);"></i> CPU</span>
         <button class="button is-small is-white" onclick="openSettingsModal('cpu')" title="Edit CPU settings">
-          <i class="fas fa-pencil-alt" style="font-size: 0.7rem;color: var(--text-muted);"></i>
+          <i class="fas fa-pencil-alt" style="font-size: 0.75rem;color: var(--text-muted);"></i>
         </button>
       </div>
       <div class="card-body" style="padding: 1rem 1.5rem;">
@@ -218,7 +218,7 @@
       <div class="card-header" style="display: flex;justify-content: space-between;align-items: center;">
         <span><i class="fas fa-memory" style="color: var(--warning-color);"></i> Memory</span>
         <button class="button is-small is-white" onclick="openSettingsModal('memory')" title="Edit memory settings">
-          <i class="fas fa-pencil-alt" style="font-size: 0.7rem;color: var(--text-muted);"></i>
+          <i class="fas fa-pencil-alt" style="font-size: 0.75rem;color: var(--text-muted);"></i>
         </button>
       </div>
       <div class="card-body" style="padding: 1rem 1.5rem;">
@@ -319,7 +319,7 @@
       <input type="hidden" name="section" value="general">
       <section class="modal-card-body">
         <div class="field">
-          <label class="label" style="font-size:0.85rem;">Description</label>
+          <label class="label" style="font-size:0.875rem;">Description</label>
           <div class="control">
             <textarea class="textarea" name="description" rows="4" placeholder="VM description...">{{ vm.description }}</textarea>
           </div>
@@ -346,12 +346,12 @@
       <input type="hidden" name="section" value="cpu">
       <section class="modal-card-body">
         {% if vm.status == 'running' %}
-        <div class="notification is-warning is-light" style="padding:0.5rem 0.75rem;font-size:0.82rem;margin-bottom:1rem;">
+        <div class="notification is-warning is-light" style="padding:0.5rem 0.75rem;font-size:0.8125rem;margin-bottom:1rem;">
           <i class="fas fa-exclamation-triangle"></i> VM is running. Changes take effect after restart.
         </div>
         {% endif %}
         <div class="field">
-          <label class="label" style="font-size:0.85rem;">CPU Type</label>
+          <label class="label" style="font-size:0.875rem;">CPU Type</label>
           <div class="control">
             <div class="select is-fullwidth">
               <select name="cpu">
@@ -365,7 +365,7 @@
         <div class="columns" style="margin-bottom:0;">
           <div class="column">
             <div class="field">
-              <label class="label" style="font-size:0.85rem;">Sockets</label>
+              <label class="label" style="font-size:0.875rem;">Sockets</label>
               <div class="control">
                 <input class="input" type="number" name="sockets" value="{{ vm.sockets }}" min="1" max="4">
               </div>
@@ -373,7 +373,7 @@
           </div>
           <div class="column">
             <div class="field">
-              <label class="label" style="font-size:0.85rem;">Cores per Socket</label>
+              <label class="label" style="font-size:0.875rem;">Cores per Socket</label>
               <div class="control">
                 <input class="input" type="number" name="cores" value="{{ vm.cores }}" min="1" max="128">
               </div>
@@ -381,7 +381,7 @@
           </div>
         </div>
         <div class="field">
-          <label class="checkbox" style="font-size:0.85rem;">
+          <label class="checkbox" style="font-size:0.875rem;">
             <input type="checkbox" name="numa" value="1"{% if vm.numa %} checked{% endif %}>
             Enable NUMA
           </label>
@@ -409,19 +409,19 @@
       <input type="hidden" name="section" value="memory">
       <section class="modal-card-body">
         {% if vm.status == 'running' %}
-        <div class="notification is-warning is-light" style="padding:0.5rem 0.75rem;font-size:0.82rem;margin-bottom:1rem;">
+        <div class="notification is-warning is-light" style="padding:0.5rem 0.75rem;font-size:0.8125rem;margin-bottom:1rem;">
           <i class="fas fa-exclamation-triangle"></i> VM is running. Changes take effect after restart.
         </div>
         {% endif %}
         <div class="field">
-          <label class="label" style="font-size:0.85rem;">Allocated RAM (GB)</label>
+          <label class="label" style="font-size:0.875rem;">Allocated RAM (GB)</label>
           <div class="control">
             <input class="input" type="number" name="memory_gb" value="{{ vm.memory_gb }}" min="0.5" step="0.5" id="memory-gb-input">
           </div>
           <p class="help">e.g. 2, 4, 8, 16 — or 0.5, 1.5, 2.5 for half-GB increments.</p>
         </div>
         <div class="field">
-          <label class="checkbox" style="font-size:0.85rem;">
+          <label class="checkbox" style="font-size:0.875rem;">
             <input type="checkbox" id="ballooning-toggle"{% if vm.raw_balloon %} checked{% endif %}
                    onchange="toggleBalloon(this.checked)">
             Enable Ballooning
@@ -429,7 +429,7 @@
           <p class="help">When enabled, Proxmox can reclaim unused memory from the guest OS.</p>
         </div>
         <div class="field" id="balloon-min-field"{% if not vm.raw_balloon %} style="display:none;"{% endif %}>
-          <label class="label" style="font-size:0.85rem;">Balloon Minimum (GB)</label>
+          <label class="label" style="font-size:0.875rem;">Balloon Minimum (GB)</label>
           <div class="control">
             <input class="input" type="number" name="balloon_gb" value="{{ vm.balloon_gb }}" min="0" step="0.5" id="balloon-input">
           </div>
@@ -458,12 +458,12 @@
       <input type="hidden" name="boot" id="boot-order-value" value="{{ vm.boot }}">
       <section class="modal-card-body">
         {% if vm.status == 'running' %}
-        <div class="notification is-warning is-light" style="padding:0.5rem 0.75rem;font-size:0.82rem;margin-bottom:1rem;">
+        <div class="notification is-warning is-light" style="padding:0.5rem 0.75rem;font-size:0.8125rem;margin-bottom:1rem;">
           <i class="fas fa-exclamation-triangle"></i> VM is running. Changes take effect after restart.
         </div>
         {% endif %}
         <div class="field">
-          <label class="label" style="font-size:0.85rem;">BIOS</label>
+          <label class="label" style="font-size:0.875rem;">BIOS</label>
           <div class="control">
             <div class="select is-fullwidth">
               <select name="bios" id="bios-select" onchange="toggleUefiOptions()">
@@ -480,7 +480,7 @@
         <div id="uefi-options" style="{% if vm.raw_bios != 'ovmf' %}display:none;{% endif %}">
           {% if not vm.efidisk0 %}
           <div class="field">
-            <label class="label" style="font-size:0.85rem;">EFI Disk Storage</label>
+            <label class="label" style="font-size:0.875rem;">EFI Disk Storage</label>
             <div class="control">
               <div class="select is-fullwidth">
                 <select name="efi_storage">
@@ -493,20 +493,20 @@
             <p class="help">A small EFI disk will be created to store UEFI firmware variables.</p>
           </div>
           {% else %}
-          <div class="notification is-success is-light" style="padding:0.5rem 0.75rem;font-size:0.82rem;margin-bottom:1rem;">
+          <div class="notification is-success is-light" style="padding:0.5rem 0.75rem;font-size:0.8125rem;margin-bottom:1rem;">
             <i class="fas fa-check-circle"></i> EFI disk is already configured.
           </div>
           {% endif %}
 
           {% if not vm.tpmstate0 %}
           <div class="field">
-            <label class="checkbox" style="font-size:0.85rem;">
+            <label class="checkbox" style="font-size:0.875rem;">
               <input type="checkbox" name="tpm" value="1">
               Add TPM 2.0
             </label>
           </div>
           <div class="field" id="tpm-storage-field" style="display:none;">
-            <label class="label" style="font-size:0.85rem;">TPM Storage</label>
+            <label class="label" style="font-size:0.875rem;">TPM Storage</label>
             <div class="control">
               <div class="select is-fullwidth">
                 <select name="tpm_storage">
@@ -518,7 +518,7 @@
             </div>
           </div>
           {% else %}
-          <div class="notification is-success is-light" style="padding:0.5rem 0.75rem;font-size:0.82rem;margin-bottom:1rem;">
+          <div class="notification is-success is-light" style="padding:0.5rem 0.75rem;font-size:0.8125rem;margin-bottom:1rem;">
             <i class="fas fa-check-circle"></i> TPM 2.0 is already configured.
           </div>
           {% endif %}
@@ -526,7 +526,7 @@
 
         {# Boot order builder #}
         <div class="field">
-          <label class="label" style="font-size:0.85rem;">Boot Order</label>
+          <label class="label" style="font-size:0.875rem;">Boot Order</label>
           <div id="boot-order-list" style="margin-bottom:0.5rem;"></div>
           <div style="display:flex;gap:0.5rem;">
             <div class="select is-small" style="flex:1;">
@@ -545,7 +545,7 @@
         </div>
 
         <div class="field">
-          <label class="checkbox" style="font-size:0.85rem;">
+          <label class="checkbox" style="font-size:0.875rem;">
             <input type="checkbox" name="onboot" value="1"{% if vm.onboot %} checked{% endif %}>
             Start at boot
           </label>
@@ -576,7 +576,7 @@
         <p>You are about to <strong>permanently delete</strong> the virtual machine:</p>
         <div style="background:var(--bg-card, #f5f5f5);border-radius:8px;padding:1rem;margin:1rem 0;">
           <strong>{{ vm.name }}</strong> (VMID {{ vm.vmid }})<br>
-          <span style="font-size:0.85rem;color:var(--text-muted, #7a7a7a);">
+          <span style="font-size:0.875rem;color:var(--text-muted, #7a7a7a);">
             {{ vm.vcpus }} vCPU &middot; {{ vm.memory }} MB RAM &middot; {{ vm.disks|length }} disk{{ vm.disks|length|pluralize }}
           </span>
         </div>
@@ -585,7 +585,7 @@
           This will destroy all disks and data. This action cannot be undone.
         </p>
         <div style="margin-top:1rem;">
-          <label class="label" style="font-size:0.85rem;">Type <strong>{{ vm.vmid }}</strong> to confirm:</label>
+          <label class="label" style="font-size:0.875rem;">Type <strong>{{ vm.vmid }}</strong> to confirm:</label>
           <input class="input" type="text" id="delete-confirm-input" placeholder="Enter VMID" autocomplete="off"
                  oninput="document.getElementById('delete-confirm-btn').disabled = (this.value !== '{{ vm.vmid }}')">
         </div>
@@ -632,7 +632,7 @@
         '<div style="text-align:center;padding:2rem;">' +
           '<span class="spinner" style="width:2rem;height:2rem;border-width:3px;display:inline-block;margin-bottom:1rem;"></span>' +
           '<p style="font-weight:600;font-size:1rem;">Deleting VM…</p>' +
-          '<p style="color:var(--text-muted, #7a7a7a);font-size:0.85rem;">Waiting for Proxmox to remove disks and configuration.</p>' +
+          '<p style="color:var(--text-muted, #7a7a7a);font-size:0.875rem;">Waiting for Proxmox to remove disks and configuration.</p>' +
         '</div>';
     }
     // Disable cancel button
@@ -703,13 +703,13 @@
     list.innerHTML = '';
     bootOrder.forEach(function(dev, i) {
       var row = document.createElement('div');
-      row.style.cssText = 'display:flex;align-items:center;gap:0.5rem;margin-bottom:0.35rem;padding:0.35rem 0.5rem;background:var(--bg-card,#f5f5f5);border-radius:4px;font-size:0.85rem;';
+      row.style.cssText = 'display:flex;align-items:center;gap:0.5rem;margin-bottom:0.35rem;padding:0.35rem 0.5rem;background:var(--bg-card,#f5f5f5);border-radius:4px;font-size:0.875rem;';
       row.innerHTML =
         '<span style="color:var(--text-muted,#7a7a7a);font-size:0.75rem;width:1.5rem;">' + (i+1) + '.</span>' +
-        '<span style="font-family:monospace;font-weight:600;flex:1;">' + dev + '</span>' +
-        (i > 0 ? '<button type="button" class="button is-small is-white" onclick="moveBootDevice('+i+',-1)" title="Move up"><i class="fas fa-arrow-up" style="font-size:0.65rem;"></i></button>' : '') +
-        (i < bootOrder.length-1 ? '<button type="button" class="button is-small is-white" onclick="moveBootDevice('+i+',1)" title="Move down"><i class="fas fa-arrow-down" style="font-size:0.65rem;"></i></button>' : '') +
-        '<button type="button" class="button is-small is-white" onclick="removeBootDevice('+i+')" title="Remove"><i class="fas fa-times" style="font-size:0.7rem;color:var(--danger-color,#f14668);"></i></button>';
+        '<span style="font-family: var(--font-mono);font-weight:600;flex:1;">' + dev + '</span>' +
+        (i > 0 ? '<button type="button" class="button is-small is-white" onclick="moveBootDevice('+i+',-1)" title="Move up"><i class="fas fa-arrow-up" style="font-size:0.75rem;"></i></button>' : '') +
+        (i < bootOrder.length-1 ? '<button type="button" class="button is-small is-white" onclick="moveBootDevice('+i+',1)" title="Move down"><i class="fas fa-arrow-down" style="font-size:0.75rem;"></i></button>' : '') +
+        '<button type="button" class="button is-small is-white" onclick="removeBootDevice('+i+')" title="Remove"><i class="fas fa-times" style="font-size:0.75rem;color:var(--danger-color,#f14668);"></i></button>';
       list.appendChild(row);
     });
     // Update hidden input

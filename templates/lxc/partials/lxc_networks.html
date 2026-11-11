@@ -2,13 +2,13 @@
 <div id="lxc-network-table">
 
   {% if net_error %}
-    <div class="notification is-warning is-light" style="margin-bottom:1rem;padding:0.75rem 1rem;font-size:0.85rem;">
+    <div class="notification is-warning is-light" style="margin-bottom:1rem;padding:0.75rem 1rem;font-size:0.875rem;">
       <i class="fas fa-exclamation-triangle" style="margin-right:0.4rem;"></i> {{ net_error }}
     </div>
   {% endif %}
 
   {% if net_success %}
-    <div class="notification is-success is-light" style="margin-bottom:1rem;padding:0.75rem 1rem;font-size:0.85rem;">
+    <div class="notification is-success is-light" style="margin-bottom:1rem;padding:0.75rem 1rem;font-size:0.875rem;">
       <i class="fas fa-check-circle" style="margin-right:0.4rem;"></i> {{ net_success }}
     </div>
   {% endif %}
@@ -31,20 +31,20 @@
     <tbody>
       {% for nic in networks %}
       <tr{% if nic.link_down %} style="opacity:0.6;"{% endif %}>
-        <td style="font-family:monospace;font-size:0.82rem;padding-left:1.5rem;font-weight:600;">{{ nic.interface }}</td>
+        <td style="font-family: var(--font-mono);font-size:0.8125rem;padding-left:1.5rem;font-weight:600;">{{ nic.interface }}</td>
         <td>{{ nic.name }}</td>
         <td>{{ nic.bridge }}</td>
-        <td style="font-family:monospace;font-size:0.8rem;">{{ nic.mac }}</td>
-        <td style="font-size:0.82rem;">{{ nic.ip }}{% if nic.gateway %} <span style="color:var(--text-muted);">(gw {{ nic.gateway }})</span>{% endif %}</td>
+        <td style="font-family: var(--font-mono);font-size:0.8125rem;">{{ nic.mac }}</td>
+        <td style="font-size:0.8125rem;">{{ nic.ip }}{% if nic.gateway %} <span style="color:var(--text-muted);">(gw {{ nic.gateway }})</span>{% endif %}</td>
         <td>{{ nic.tag|default:"—" }}</td>
         <td>{% if nic.firewall %}<span style="color:var(--success-color);">Yes</span>{% else %}No{% endif %}</td>
         <td>
           {% if nic.link_down %}
-            <span style="color:var(--danger-color, #f14668);font-size:0.78rem;font-weight:600;">
+            <span style="color:var(--danger-color, #f14668);font-size:0.8125rem;font-weight:600;">
               <i class="fas fa-unlink" style="margin-right:0.2rem;"></i>Disconnected
             </span>
           {% else %}
-            <span style="color:var(--success-color, #48c78e);font-size:0.78rem;font-weight:600;">
+            <span style="color:var(--success-color, #48c78e);font-size:0.8125rem;font-weight:600;">
               <i class="fas fa-link" style="margin-right:0.2rem;"></i>Connected
             </span>
           {% endif %}

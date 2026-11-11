@@ -36,13 +36,13 @@
         </div>
 
         <h2 style="font-size:1.15rem;font-weight:700;color:var(--text-header, #1a1a2e);margin-bottom:0.3rem;">{{ script.name }}</h2>
-        <p style="font-size:0.85rem;color:var(--text-muted, #7a7a7a);margin-bottom:1.25rem;">{{ script.description }}</p>
+        <p style="font-size:0.875rem;color:var(--text-muted, #7a7a7a);margin-bottom:1.25rem;">{{ script.description }}</p>
 
-        <div style="background:var(--bg-main, #f5f7fa);border-radius:8px;padding:1rem;text-align:left;font-size:0.82rem;">
+        <div style="background:var(--bg-main, #f5f7fa);border-radius:8px;padding:1rem;text-align:left;font-size:0.8125rem;">
           <div style="font-weight:700;color:var(--text-semi, #4a4a4a);margin-bottom:0.6rem;">
             <i class="fas fa-sliders-h" style="margin-right:0.3rem;color:var(--link-color, #3273dc);"></i> Script Defaults
           </div>
-          <table style="width:100%;font-size:0.82rem;">
+          <table style="width:100%;font-size:0.8125rem;">
             <tr>
               <td style="padding:0.2rem 0;color:var(--text-muted, #7a7a7a);">CPU Cores</td>
               <td style="padding:0.2rem 0;font-weight:600;text-align:right;">{{ script.defaults.cpu }}</td>
@@ -65,7 +65,7 @@
         {% if script.source_url %}
           <a href="{{ script.source_url|truncatechars:200 }}"
              target="_blank" rel="noopener"
-             style="display:inline-block;margin-top:1rem;font-size:0.78rem;color:var(--link-color, #3273dc);">
+             style="display:inline-block;margin-top:1rem;font-size:0.8125rem;color:var(--link-color, #3273dc);">
             <i class="fas fa-external-link-alt" style="margin-right:0.2rem;"></i> Project Website
           </a>
         {% endif %}
@@ -85,12 +85,12 @@
         </div>
       </div>
       <div class="form-section-body is-open">
-        <p style="font-size:0.9rem;color:var(--text-semi, #4a4a4a);line-height:1.6;margin-bottom:1rem;">
+        <p style="font-size:0.875rem;color:var(--text-semi, #4a4a4a);line-height:1.6;margin-bottom:1rem;">
           This script runs <strong>interactively</strong> in a live terminal session on your Proxmox host.
           You'll be guided through the configuration step by step &mdash; including resource allocation,
           storage, and network settings.
         </p>
-        <div style="display:flex;flex-direction:column;gap:0.5rem;font-size:0.85rem;">
+        <div style="display:flex;flex-direction:column;gap:0.5rem;font-size:0.875rem;">
           <div style="display:flex;align-items:flex-start;gap:0.6rem;">
             <span style="color:var(--link-color, #3273dc);font-size:0.75rem;margin-top:0.15rem;"><i class="fas fa-check-circle"></i></span>
             <span style="color:var(--text-muted, #7a7a7a);">Choose <strong style="color:var(--text-semi, #4a4a4a);">Default Settings</strong> for a quick deploy, or <strong style="color:var(--text-semi, #4a4a4a);">Advanced</strong> to customise everything</span>
@@ -143,7 +143,7 @@
         <span class="icon"><i class="fas fa-terminal"></i></span>
         <span>Deploy</span>
       </button>
-      <p style="font-size:0.78rem;color:var(--text-muted, #7a7a7a);margin-top:0.75rem;">
+      <p style="font-size:0.8125rem;color:var(--text-muted, #7a7a7a);margin-top:0.75rem;">
         Opens an interactive terminal session on your Proxmox host via SSH.
       </p>
     </div>

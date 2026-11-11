@@ -155,6 +155,14 @@ class ProxmoxAPI:
             return []
         return result
 
+    def get_node_status(self, node):
+        """Return the node status dict (same data as the PVE node Summary).
+
+        Needs Sys.Audit on /nodes/{node} (PVEAuditor has it).
+        """
+        result = self._get(f"/nodes/{node}/status")
+        return result if isinstance(result, dict) else {}
+
     def get_storage(self, node):
         """Return list of storage dicts for a node."""
         result = self._get(f"/nodes/{node}/storage")

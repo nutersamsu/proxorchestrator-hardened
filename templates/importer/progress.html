@@ -30,7 +30,7 @@
             <div style="font-size: 1.1rem;font-weight: 700;color: var(--text-header);">
               {{ job.vm_name|default:"Unnamed VM" }}
             </div>
-            <div style="font-size: 0.85rem;color: var(--text-muted);margin-top: 0.2rem;">
+            <div style="font-size: 0.875rem;color: var(--text-muted);margin-top: 0.2rem;">
               VMID <span class="is-monospace" style="font-weight: 600;color: var(--text-header);">{{ job.vmid }}</span>
               &nbsp;&bull;&nbsp;
               Started {{ job.created_at|timesince }} ago
@@ -83,7 +83,7 @@
             <i class="fas fa-exclamation-triangle" style="margin-right: 0.5rem;"></i>Import Failed
           </h3>
           {% if job.error_message %}
-            <div style="background: var(--bg-main);border: 1px solid var(--border-main);border-radius: 6px;padding: 1rem;font-family: monospace;font-size: 0.8rem;color: var(--text-semi);white-space: pre-wrap;word-break: break-all;margin-bottom: 1rem;">{{ job.error_message }}</div>
+            <div style="background: var(--bg-main);border: 1px solid var(--border-main);border-radius: 6px;padding: 1rem;font-family: var(--font-mono);font-size: 0.8125rem;color: var(--text-semi);white-space: pre-wrap;word-break: break-all;margin-bottom: 1rem;">{{ job.error_message }}</div>
           {% endif %}
           <div style="display: flex;gap: 1rem;flex-wrap: wrap;">
             <a href="{% url 'importer_configure' job.id %}?retry=1" class="button is-danger is-light" style="font-weight: 600;">

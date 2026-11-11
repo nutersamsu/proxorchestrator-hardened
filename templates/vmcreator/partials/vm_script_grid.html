@@ -1,5 +1,5 @@
 {# Out-of-band swap: update the script count in the search bar #}
-<span id="script-count" hx-swap-oob="true" style="font-size:0.85rem;color:var(--text-muted, #7a7a7a);white-space:nowrap;">
+<span id="script-count" hx-swap-oob="true" style="font-size:0.875rem;color:var(--text-muted, #7a7a7a);white-space:nowrap;">
   {{ total_count }} script{{ total_count|pluralize }}
 </span>
 
@@ -16,7 +16,7 @@
       <div class="card-body" style="padding:3rem;text-align:center;">
         <i class="fas fa-search" style="font-size:2rem;color:var(--border-main, #e8ecf0);margin-bottom:1rem;display:block;"></i>
         <h3 style="font-size:1rem;font-weight:700;color:var(--text-semi, #4a4a4a);margin-bottom:0.5rem;">No VM scripts found</h3>
-        <p style="font-size:0.85rem;color:var(--text-muted, #7a7a7a);">
+        <p style="font-size:0.875rem;color:var(--text-muted, #7a7a7a);">
           {% if query %}
             No results for "<strong>{{ query }}</strong>".
           {% else %}

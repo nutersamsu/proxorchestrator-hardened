@@ -7,7 +7,7 @@
       hx-swap="outerHTML"
     {% endif %}>
   <td style="vertical-align:middle;max-width:160px;">
-    <span style="font-family:monospace;font-size:0.78rem;color:var(--text-muted);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="{{ job.display_name }}">
+    <span style="font-family: var(--font-mono);font-size:0.8125rem;color:var(--text-muted);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="{{ job.display_name }}">
       {{ job.display_name|truncatechars:28 }}
     </span>
   </td>
@@ -16,19 +16,19 @@
   </td>
   <td style="vertical-align:middle;">
     {% if job.job_type == 'import' %}
-      <span style="font-size:0.72rem;background:#f0f4ff;color:#3273dc;border-radius:4px;padding:0.15rem 0.5rem;font-weight:600;">Import</span>
+      <span style="font-size:0.75rem;background:#f0f4ff;color:#3273dc;border-radius:4px;padding:0.15rem 0.5rem;font-weight:600;">Import</span>
     {% elif job.job_type == 'lxc_create' %}
-      <span style="font-size:0.72rem;background:#faf5ff;color:#7c3aed;border-radius:4px;padding:0.15rem 0.5rem;font-weight:600;">New LXC</span>
+      <span style="font-size:0.75rem;background:#faf5ff;color:#7c3aed;border-radius:4px;padding:0.15rem 0.5rem;font-weight:600;">New LXC</span>
     {% elif job.job_type == 'lxc_clone' %}
-      <span style="font-size:0.72rem;background:#fff7ed;color:#c2410c;border-radius:4px;padding:0.15rem 0.5rem;font-weight:600;">Clone</span>
+      <span style="font-size:0.75rem;background:#fff7ed;color:#c2410c;border-radius:4px;padding:0.15rem 0.5rem;font-weight:600;">Clone</span>
     {% elif job.job_type == 'lxc_snapshot' %}
-      <span style="font-size:0.72rem;background:#ecfdf5;color:#047857;border-radius:4px;padding:0.15rem 0.5rem;font-weight:600;">Snapshot</span>
+      <span style="font-size:0.75rem;background:#ecfdf5;color:#047857;border-radius:4px;padding:0.15rem 0.5rem;font-weight:600;">Snapshot</span>
     {% elif job.job_type == 'community_script' %}
-      <span style="font-size:0.72rem;background:var(--bg-warning-light, #fffbeb);color:var(--text-warning-dark, #b45309);border-radius:4px;padding:0.15rem 0.5rem;font-weight:600;">Community</span>
+      <span style="font-size:0.75rem;background:var(--bg-warning-light, #fffbeb);color:var(--text-warning-dark, #b45309);border-radius:4px;padding:0.15rem 0.5rem;font-weight:600;">Community</span>
     {% elif job.job_type == 'vm_community_script' %}
-      <span style="font-size:0.72rem;background:var(--bg-warning-light, #fffbeb);color:var(--text-warning-dark, #b45309);border-radius:4px;padding:0.15rem 0.5rem;font-weight:600;">VM Script</span>
+      <span style="font-size:0.75rem;background:var(--bg-warning-light, #fffbeb);color:var(--text-warning-dark, #b45309);border-radius:4px;padding:0.15rem 0.5rem;font-weight:600;">VM Script</span>
     {% else %}
-      <span style="font-size:0.72rem;background:#f0fdf4;color:#257953;border-radius:4px;padding:0.15rem 0.5rem;font-weight:600;">New VM</span>
+      <span style="font-size:0.75rem;background:#f0fdf4;color:#257953;border-radius:4px;padding:0.15rem 0.5rem;font-weight:600;">New VM</span>
     {% endif %}
   </td>
   <td style="vertical-align:middle;">
@@ -44,17 +44,17 @@
       {# In progress — show stage + mini progress bar #}
       <div style="min-width:120px;">
         <div style="display:flex;align-items:center;gap:0.4rem;margin-bottom:0.2rem;">
-          <i class="fas fa-spinner fa-spin" style="font-size:0.65rem;color:#3273dc;"></i>
-          <span style="font-size:0.7rem;color:#3273dc;font-weight:600;">{{ job.message|default:job.stage|truncatechars:22 }}</span>
+          <i class="fas fa-spinner fa-spin" style="font-size:0.75rem;color:#3273dc;"></i>
+          <span style="font-size:0.75rem;color:#3273dc;font-weight:600;">{{ job.message|default:job.stage|truncatechars:22 }}</span>
         </div>
         <div style="background:#e8ecf0;border-radius:3px;height:4px;overflow:hidden;">
           <div style="background:#3273dc;height:100%;border-radius:3px;width:{{ job.percent|default:0 }}%;transition:width 0.5s ease;"></div>
         </div>
-        {% if job.percent %}<span style="font-size:0.65rem;color:#7a7a7a;">{{ job.percent }}%</span>{% endif %}
+        {% if job.percent %}<span style="font-size:0.75rem;color:#7a7a7a;">{{ job.percent }}%</span>{% endif %}
       </div>
     {% endif %}
   </td>
-  <td style="vertical-align:middle;color:var(--text-muted);font-size:0.85rem;white-space:nowrap;">
+  <td style="vertical-align:middle;color:var(--text-muted);font-size:0.875rem;white-space:nowrap;">
     {{ job.created_at|date:"M j, Y" }}
   </td>
   <td style="vertical-align:middle;text-align:right;white-space:nowrap;">

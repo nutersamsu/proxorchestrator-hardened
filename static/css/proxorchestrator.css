@@ -3,6 +3,44 @@
    Complements Bulma CSS framework
    ========================================================================== */
 
+/* --------------------------------------------------------------------------
+   Typography
+   Base 15px (Bulma uses 16px) and one small text scale used everywhere:
+   0.75rem (meta/labels) / 0.8125rem (secondary) / 0.875rem (body) / 1rem.
+   -------------------------------------------------------------------------- */
+:root {
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+               "Noto Sans", "Liberation Sans", Arial, sans-serif;
+  --font-mono: ui-monospace, "Cascadia Mono", "SF Mono", SFMono-Regular, Consolas,
+               "Liberation Mono", Menlo, monospace;
+}
+
+html { font-size: 15px; }
+
+body,
+button, input, optgroup, select, textarea,
+.button, .input, .textarea, .select select {
+  font-family: var(--font-sans);
+}
+
+body { line-height: 1.5; }
+
+code, kbd, pre, samp, .is-family-monospace, .is-family-code {
+  font-family: var(--font-mono);
+}
+
+/* Bulma's button sizes jump from 12px (small) to 20px (medium); keep them close */
+.button.is-small  { font-size: 0.8125rem; }
+.button.is-medium { font-size: 1rem; }
+.button.is-large  { font-size: 1.125rem; }
+
+/* Bulma titles are large for a dense admin UI */
+.title.is-3 { font-size: 1.5rem; }
+.title.is-4 { font-size: 1.25rem; }
+.title.is-5 { font-size: 1.125rem; }
+.subtitle.is-5 { font-size: 1rem; }
+.subtitle.is-6 { font-size: 0.875rem; }
+
 :root {
   /* Core Colors */
   --bg-main: #f5f7fa;
@@ -294,7 +332,7 @@
 
 .sidebar-logo .logo-subtitle {
   color: var(--text-sidebar);
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
@@ -307,7 +345,7 @@
 
 .sidebar-nav .nav-label {
   color: var(--text-sidebar);
-  font-size: 0.65rem;
+  font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 1.5px;
   padding: 0.5rem 1.5rem;
@@ -320,7 +358,7 @@
   gap: 0.75rem;
   padding: 0.65rem 1.5rem;
   color: var(--text-sidebar);
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   text-decoration: none;
   transition: all 0.15s;
   border-left: 3px solid transparent;
@@ -461,7 +499,7 @@
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   z-index: 1;
 }
 
@@ -477,7 +515,7 @@
 }
 
 .wizard-step-label {
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   color: var(--text-muted);
   margin-top: 0.4rem;
   white-space: nowrap;
@@ -541,8 +579,8 @@
 }
 
 #help-panel-body h1 { font-size: 1.1rem; border-bottom: 2px solid var(--link-color); padding-bottom: 0.4rem; }
-#help-panel-body h2 { font-size: 0.95rem; color: var(--text-main); }
-#help-panel-body h3 { font-size: 0.85rem; color: var(--text-semi); }
+#help-panel-body h2 { font-size: 1rem; color: var(--text-main); }
+#help-panel-body h3 { font-size: 0.875rem; color: var(--text-semi); }
 
 #help-panel-body ul {
   margin-left: 1.5rem;
@@ -572,7 +610,7 @@
   border: 1px solid var(--border-main);
   border-radius: 4px;
   padding: 0.1rem 0.35rem;
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   color: var(--link-color);
 }
 
@@ -608,9 +646,9 @@
 .pipeline-stage.is-skipped { background: var(--bg-main); border-color: var(--border-light); opacity: 0.7; }
 
 .stage-icon { font-size: 1.1rem; width: 24px; text-align: center; flex-shrink: 0; }
-.stage-name { font-weight: 500; flex: 1; font-size: 0.9rem; }
-.stage-status { font-size: 0.8rem; color: var(--text-muted); }
-.stage-message { font-size: 0.8rem; color: var(--text-semi); margin-top: 0.25rem; }
+.stage-name { font-weight: 500; flex: 1; font-size: 0.875rem; }
+.stage-status { font-size: 0.8125rem; color: var(--text-muted); }
+.stage-message { font-size: 0.8125rem; color: var(--text-semi); margin-top: 0.25rem; }
 
 .pipeline-stage.is-active .stage-name { color: var(--link-color); }
 .pipeline-stage.is-done .stage-name   { color: var(--text-success-dark); }
@@ -652,9 +690,9 @@
   color: var(--link-color);
   border-radius: 4px;
   padding: 0.15rem 0.45rem;
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   font-weight: 700;
-  font-family: monospace;
+  font-family: var(--font-mono);
   letter-spacing: 0.5px;
   min-width: 3.5rem;
   text-align: center;
@@ -675,7 +713,7 @@
   background: var(--bg-sidebar);
   color: rgba(255,255,255,0.8);
   font-weight: 500;
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   border: none !important;
@@ -695,8 +733,8 @@
 .vm-table tbody tr:hover { background: var(--bg-main); }
 
 .vm-table .vmid-col {
-  font-family: monospace;
-  font-size: 0.85rem;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
   color: var(--text-muted);
   font-weight: 600;
 }
@@ -716,7 +754,7 @@
   border-bottom: 1px solid var(--border-main);
   padding: 1rem 1.5rem;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   color: var(--text-header);
   display: flex;
   align-items: center;
@@ -764,7 +802,7 @@
 }
 
 .stat-card-label {
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   color: var(--text-muted);
   margin-top: 0.2rem;
 }
@@ -795,7 +833,7 @@ a.stat-card-link:hover {
   border-radius: 8px;
   cursor: pointer;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   color: var(--text-main);
   user-select: none;
   transition: background 0.15s;
@@ -810,7 +848,7 @@ a.stat-card-link:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.85rem;
+  font-size: 0.875rem;
   background: var(--border-main);
   color: var(--text-semi);
 }
@@ -932,7 +970,7 @@ a.stat-card-link:hover {
 
 .wizard-topbar .wizard-title {
   color: rgba(255,255,255,0.7);
-  font-size: 0.9rem;
+  font-size: 0.875rem;
 }
 
 .wizard-content {
@@ -967,7 +1005,7 @@ a.stat-card-link:hover {
 
 .wizard-card-header .subtitle {
   color: var(--text-muted);
-  font-size: 0.9rem;
+  font-size: 0.875rem;
 }
 
 .wizard-card-body {
@@ -1003,7 +1041,7 @@ a.stat-card-link:hover {
   background: var(--bg-sidebar);
   border-radius: 8px;
   padding: 1rem;
-  font-family: 'Courier New', monospace;
+  font-family: var(--font-mono);
   font-size: 0.75rem;
   color: var(--key-text);
   word-break: break-all;
@@ -1040,15 +1078,15 @@ a.stat-card-link:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   flex-shrink: 0;
   margin-top: 0.1rem;
 }
 
-.step-guide-text { flex: 1; font-size: 0.9rem; color: var(--text-semi); line-height: 1.5; }
+.step-guide-text { flex: 1; font-size: 0.875rem; color: var(--text-semi); line-height: 1.5; }
 .step-guide-text strong { color: var(--text-header); }
-.step-guide-text code { background: var(--bg-info-light); border: 1px solid var(--border-info-chip); border-radius: 4px; padding: 0.1rem 0.35rem; font-size: 0.8rem; color: var(--link-color); }
+.step-guide-text code { background: var(--bg-info-light); border: 1px solid var(--border-info-chip); border-radius: 4px; padding: 0.1rem 0.35rem; font-size: 0.8125rem; color: var(--link-color); }
 
 /* --------------------------------------------------------------------------
    Discovery Results (step 4)
@@ -1060,7 +1098,7 @@ a.stat-card-link:hover {
   color: var(--link-color);
   border-radius: 20px;
   padding: 0.2rem 0.7rem;
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   font-weight: 500;
   margin: 0.2rem;
 }
@@ -1115,7 +1153,7 @@ a.stat-card-link:hover {
 }
 
 .summary-item-label {
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 1px;
   color: var(--text-muted);
@@ -1125,7 +1163,7 @@ a.stat-card-link:hover {
 .summary-item-value {
   font-weight: 600;
   color: var(--text-header);
-  font-size: 0.95rem;
+  font-size: 1rem;
 }
 
 /* --------------------------------------------------------------------------
@@ -1150,7 +1188,7 @@ a.stat-card-link:hover {
 
 .cert-detail-row:last-child { border-bottom: none; }
 .cert-detail-label { width: 140px; color: var(--text-muted); flex-shrink: 0; font-weight: 500; }
-.cert-detail-value { color: var(--text-header); flex: 1; font-family: monospace; font-size: 0.825rem; }
+.cert-detail-value { color: var(--text-header); flex: 1; font-family: var(--font-mono); font-size: 0.8125rem; }
 
 /* --------------------------------------------------------------------------
    Auth Source Badges
@@ -1163,7 +1201,7 @@ a.stat-card-link:hover {
   display: inline-block;
   padding: 0.15rem 0.5rem;
   border-radius: 12px;
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -1234,10 +1272,10 @@ a.stat-card-link:hover {
    -------------------------------------------------------------------------- */
 .is-fullheight-100 { min-height: 100vh; }
 .has-text-tiny { font-size: 0.75rem; }
-.is-monospace { font-family: 'Courier New', monospace; }
+.is-monospace { font-family: var(--font-mono); }
 
 .field-hint {
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   color: var(--text-muted);
   margin-top: 0.25rem;
 }
@@ -1276,8 +1314,8 @@ a.stat-card-link:hover {
   border: 1px solid var(--border-main);
   border-radius: 6px;
   padding: 0.65rem 1rem;
-  font-family: monospace;
-  font-size: 0.82rem;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
   color: var(--text-semi);
   word-break: break-all;
 }
@@ -1303,7 +1341,7 @@ a.stat-card-link:hover {
 }
 .wizard-topbar .logo-subtitle {
   color: rgba(255,255,255,0.35);
-  font-size: 0.65rem;
+  font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
@@ -1314,7 +1352,7 @@ a.stat-card-link:hover {
 }
 .wizard-title {
   color: rgba(255,255,255,0.7);
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   font-weight: 500;
 }
 .wizard-content {
@@ -1343,7 +1381,7 @@ a.stat-card-link:hover {
 }
 .wizard-card-header p {
   color: var(--text-muted);
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   line-height: 1.5;
 }
 .wizard-card-body {
@@ -1362,7 +1400,7 @@ a.stat-card-link:hover {
   border: 1px solid var(--border-input);
   border-radius: 6px;
   padding: 0.85rem 1rem;
-  font-family: 'Courier New', monospace;
+  font-family: var(--font-mono);
   font-size: 0.75rem;
   word-break: break-all;
   color: var(--text-main);
@@ -1395,7 +1433,7 @@ a.stat-card-link:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   flex-shrink: 0;
   margin-top: 0.1rem;
@@ -1426,7 +1464,7 @@ a.stat-card-link:hover {
   border: 1px solid var(--border-info-chip);
   border-radius: 4px;
   padding: 0.2rem 0.5rem;
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   margin: 0.15rem;
 }
 .wizard-success-icon {
@@ -1444,12 +1482,83 @@ a.stat-card-link:hover {
 }
 .wizard-summary-table td:first-child {
   color: var(--text-muted);
-  font-size: 0.85rem;
+  font-size: 0.875rem;
   padding-right: 1rem;
   white-space: nowrap;
 }
 .wizard-summary-table td:last-child {
   font-weight: 500;
-  font-family: monospace;
-  font-size: 0.85rem;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+}
+
+/* --------------------------------------------------------------------------
+   Dashboard: node summary (PVE "Summary" without graphs) + temperatures
+   -------------------------------------------------------------------------- */
+.node-summary { margin-bottom: 1.5rem; }
+.node-summary .card-header { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+.node-summary-node { font-family: var(--font-mono); color: var(--text-muted); font-weight: 500; }
+.node-summary-uptime { margin-left: auto; font-size: 0.8125rem; font-weight: 500; color: var(--text-muted); }
+.node-summary-error { color: var(--danger-color); font-size: 0.875rem; margin-bottom: 1rem; }
+.node-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(220px, 100%), 1fr));
+  gap: 1rem 1.5rem;
+}
+.ns-item { min-width: 0; }
+.ns-value { overflow-wrap: anywhere; }
+.ns-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+.ns-value { font-size: 0.875rem; font-weight: 600; color: var(--text-header); }
+.ns-sub { font-size: 0.8125rem; font-weight: 400; color: var(--text-muted); }
+.ns-bar { height: 6px; border-radius: 3px; background: var(--border-light); margin-top: 0.4rem; overflow: hidden; }
+.ns-bar span { display: block; height: 100%; max-width: 100%; background: var(--success-color); border-radius: 3px; }
+.ns-bar.is-mid span { background: var(--warning-color); }
+.ns-bar.is-high span { background: var(--danger-color); }
+.node-summary-facts {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.35rem 1.25rem;
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-main);
+  font-size: 0.875rem;
+}
+.node-summary-facts dt { color: var(--text-muted); }
+.node-summary-facts dd { color: var(--text-header); margin: 0; overflow-wrap: anywhere; }
+.node-summary-facts dd.is-mono { font-family: var(--font-mono); font-size: 0.8125rem; }
+.node-temps { margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--border-main); }
+.node-temps-list { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.4rem; }
+.temp-chip {
+  display: flex; align-items: baseline; gap: 0.6rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-main);
+  background: var(--bg-main);
+  font-size: 0.8125rem;
+}
+.temp-name { color: var(--text-semi); font-weight: 600; }
+.temp-label { color: var(--text-muted); font-weight: 400; }
+.temp-value { font-weight: 700; font-variant-numeric: tabular-nums; color: var(--success-color); }
+.temp-warm .temp-value { color: var(--warning-color); }
+.temp-hot .temp-value { color: var(--danger-color); }
+.temp-hot { border-color: var(--danger-color); }
+/* The dark theme forces .card-body text to --text-main; keep our colours */
+[data-theme='dark'] .node-summary .ns-label,
+[data-theme='dark'] .node-summary .ns-sub,
+[data-theme='dark'] .node-summary .temp-label { color: var(--text-muted) !important; }
+[data-theme='dark'] .node-summary .temp-name { color: var(--text-semi) !important; }
+[data-theme='dark'] .node-summary .temp-value { color: var(--success-color) !important; }
+[data-theme='dark'] .node-summary .temp-warm .temp-value { color: var(--warning-color) !important; }
+[data-theme='dark'] .node-summary .temp-hot .temp-value { color: var(--danger-color) !important; }
+@media (max-width: 600px) {
+  .node-summary-facts { grid-template-columns: 1fr; gap: 0.1rem; }
+  .node-summary-facts dd { margin-bottom: 0.5rem; }
+  .node-summary-uptime { margin-left: 0; width: 100%; }
 }

@@ -13,7 +13,7 @@
       </div>
 
       <h2 style="font-size: 1.6rem;font-weight: 800;color: var(--text-header);margin-bottom: 0.5rem;">Setup Complete!</h2>
-      <p style="color: var(--text-muted);font-size: 0.95rem;margin-bottom: 2rem;max-width: 400px;margin-left: auto;margin-right: auto;line-height: 1.6;">
+      <p style="color: var(--text-muted);font-size: 1rem;margin-bottom: 2rem;max-width: 400px;margin-left: auto;margin-right: auto;line-height: 1.6;">
         ProxOrchestrator is connected to your Proxmox server and ready to import VMs. Here's a summary of your configuration.
       </p>
 
@@ -37,7 +37,7 @@
         </div>
         <div class="summary-item">
           <div class="summary-item-label"><i class="fas fa-key" style="margin-right: 0.3rem;"></i>API Token</div>
-          <div class="summary-item-value" style="font-family: monospace;font-size: 0.8rem;">{{ config.api_token_id }}</div>
+          <div class="summary-item-value" style="font-family: var(--font-mono);font-size: 0.8125rem;">{{ config.api_token_id }}</div>
         </div>
         <div class="summary-item">
           <div class="summary-item-label"><i class="fas fa-hashtag" style="margin-right: 0.3rem;"></i>VMID Pool</div>
@@ -49,15 +49,15 @@
       <div style="display: flex;gap: 1.5rem;justify-content: center;margin: 1.5rem 0;">
         <div style="text-align: center;">
           <span class="status-dot is-online"></span>
-          <span style="font-size: 0.82rem;color: var(--text-success-dark);font-weight: 600;">SSH Connected</span>
+          <span style="font-size: 0.8125rem;color: var(--text-success-dark);font-weight: 600;">SSH Connected</span>
         </div>
         <div style="text-align: center;">
           <span class="status-dot is-online"></span>
-          <span style="font-size: 0.82rem;color: var(--text-success-dark);font-weight: 600;">API Verified</span>
+          <span style="font-size: 0.8125rem;color: var(--text-success-dark);font-weight: 600;">API Verified</span>
         </div>
         <div style="text-align: center;">
           <span class="status-dot is-online"></span>
-          <span style="font-size: 0.82rem;color: var(--text-success-dark);font-weight: 600;">Key Installed</span>
+          <span style="font-size: 0.8125rem;color: var(--text-success-dark);font-weight: 600;">Key Installed</span>
         </div>
       </div>
 
@@ -68,7 +68,7 @@
         <span class="icon"><i class="fas fa-arrow-right"></i></span>
       </a>
 
-      <p style="margin-top: 1.25rem;font-size: 0.8rem;color: var(--text-muted);">
+      <p style="margin-top: 1.25rem;font-size: 0.8125rem;color: var(--text-muted);">
         You can change any of these settings later under
         <a href="{% url 'auth_settings' %}" style="color: var(--text-muted);">Settings</a>.
       </p>

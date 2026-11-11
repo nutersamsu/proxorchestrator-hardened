@@ -1,0 +1,79 @@
+<div class="proxorchestrator-card node-summary">
+  <div class="card-header">
+    <i class="fas fa-microchip" style="color: var(--link-color);"></i>
+    Node Summary <span class="node-summary-node">{{ node }}</span>
+    {% if summary %}<span class="node-summary-uptime"><i class="fas fa-clock"></i> Uptime {{ summary.uptime }}</span>{% endif %}
+  </div>
+  <div class="card-body">
+    {% if error %}
+      <p class="node-summary-error"><i class="fas fa-exclamation-triangle"></i> {{ error }}</p>
+    {% endif %}
+
+    {% if summary %}
+    <div class="node-summary-grid">
+      <div class="ns-item">
+        <div class="ns-label">CPU usage</div>
+        <div class="ns-value">{{ summary.cpu_pct }}%{% if summary.cpus %} <span class="ns-sub">of {{ summary.cpus }} CPU(s)</span>{% endif %}</div>
+        <div class="ns-bar{% if summary.cpu_pct >= 90 %} is-high{% elif summary.cpu_pct >= 75 %} is-mid{% endif %}"><span style="width: {{ summary.cpu_pct|stringformat:".1f" }}%;"></span></div>
+      </div>
+      <div class="ns-item">
+        <div class="ns-label">Memory usage</div>
+        <div class="ns-value">{{ summary.memory.pct }}% <span class="ns-sub">({{ summary.memory.used }} of {{ summary.memory.total }})</span></div>
+        <div class="ns-bar{% if summary.memory.pct >= 90 %} is-high{% elif summary.memory.pct >= 75 %} is-mid{% endif %}"><span style="width: {{ summary.memory.pct|stringformat:".1f" }}%;"></span></div>
+      </div>
+      <div class="ns-item">
+        <div class="ns-label">Root disk (/)</div>
+        <div class="ns-value">{{ summary.rootfs.pct }}% <span class="ns-sub">({{ summary.rootfs.used }} of {{ summary.rootfs.total }})</span></div>
+        <div class="ns-bar{% if summary.rootfs.pct >= 90 %} is-high{% elif summary.rootfs.pct >= 75 %} is-mid{% endif %}"><span style="width: {{ summary.rootfs.pct|stringformat:".1f" }}%;"></span></div>
+      </div>
+      <div class="ns-item">
+        <div class="ns-label">Swap usage</div>
+        {% if summary.swap.present %}
+          <div class="ns-value">{{ summary.swap.pct }}% <span class="ns-sub">({{ summary.swap.used }} of {{ summary.swap.total }})</span></div>
+          <div class="ns-bar{% if summary.swap.pct >= 90 %} is-high{% elif summary.swap.pct >= 75 %} is-mid{% endif %}"><span style="width: {{ summary.swap.pct|stringformat:".1f" }}%;"></span></div>
+        {% else %}
+          <div class="ns-value ns-sub">No swap</div>
+        {% endif %}
+      </div>
+      <div class="ns-item">
+        <div class="ns-label">IO delay</div>
+        <div class="ns-value">{{ summary.io_delay_pct }}%</div>
+      </div>
+      <div class="ns-item">
+        <div class="ns-label">Load average</div>
+        <div class="ns-value">{{ summary.loadavg }}</div>
+      </div>
+      <div class="ns-item">
+        <div class="ns-label">KSM sharing</div>
+        <div class="ns-value">{{ summary.ksm_shared }}</div>
+      </div>
+      <div class="ns-item">
+        <div class="ns-label">Boot mode</div>
+        <div class="ns-value">{{ summary.boot_mode }}</div>
+      </div>
+    </div>
+
+    <dl class="node-summary-facts">
+      <dt>CPU(s)</dt><dd>{{ summary.cpu_desc }}</dd>
+      <dt>Kernel version</dt><dd class="is-mono">{{ summary.kernel }}</dd>
+      <dt>Manager version</dt><dd class="is-mono">{{ summary.pveversion }}</dd>
+    </dl>
+    {% endif %}
+
+    <div class="node-temps">
+      <div class="ns-label"><i class="fas fa-thermometer-half"></i> Temperatures</div>
+      {% if temps %}
+        <div class="node-temps-list">
+          {% for t in temps %}
+          <div class="temp-chip temp-{{ t.level }}"{% if t.details %} title="{% for d in t.details %}{{ d.label }}: {{ d.celsius }} °C{% if not forloop.last %}&#10;{% endif %}{% endfor %}"{% endif %}>
+            <span class="temp-name">{{ t.name }}{% if t.label %} <span class="temp-label">{{ t.label }}</span>{% endif %}</span>
+            <span class="temp-value">{{ t.celsius }} °C</span>
+          </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="ns-sub">{{ temps_error|default:"Unavailable" }}</div>
+      {% endif %}
+    </div>
+  </div>
+</div>

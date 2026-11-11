@@ -1,5 +1,5 @@
 {% if error %}
-<div style="background: var(--bg-danger-light);border: 1px solid var(--danger-color);border-radius: 6px;padding: 0.75rem 1rem;font-size: 0.82rem;color: var(--danger-color);">
+<div style="background: var(--bg-danger-light);border: 1px solid var(--danger-color);border-radius: 6px;padding: 0.75rem 1rem;font-size: 0.8125rem;color: var(--danger-color);">
   <i class="fas fa-exclamation-circle" style="margin-right: 0.4rem;"></i>
   <strong>Could not load ISO list:</strong> {{ error }}
   <br><small>Type the Proxmox storage reference manually below.</small>
@@ -9,21 +9,21 @@
     <input class="input is-small" type="text" name="virtio_iso_ref"
            placeholder="e.g. data:iso/virtio-win-0.1.285.iso"
            value="{{ default_ref }}"
-           style="font-family: monospace;font-size: 0.82rem;">
+           style="font-family: var(--font-mono);font-size: 0.8125rem;">
   </div>
 </div>
 {% elif not isos %}
-<div style="background: var(--bg-warning-light);border: 1px solid var(--warning-color);border-radius: 6px;padding: 0.75rem 1rem;font-size: 0.82rem;line-height: 1.5;">
+<div style="background: var(--bg-warning-light);border: 1px solid var(--warning-color);border-radius: 6px;padding: 0.75rem 1rem;font-size: 0.8125rem;line-height: 1.5;">
   <i class="fas fa-exclamation-triangle" style="color: var(--warning-color);margin-right: 0.4rem;"></i>
   <strong>No ISO files found in any storage pool.</strong>
   <a href="https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/archive-virtio/?C=M;O=D"
      target="_blank" rel="noopener" style="color: var(--link-color);">Download virtio-win ISO
-    <i class="fas fa-external-link-alt" style="font-size: 0.7rem;"></i></a>
+    <i class="fas fa-external-link-alt" style="font-size: 0.75rem;"></i></a>
   (Fedora archive, sorted newest first), upload it to a Proxmox ISO storage pool, then come back here.
 </div>
 <input type="hidden" name="virtio_iso_ref" value="">
 {% else %}
-<div style="font-size: 0.8rem;color: var(--text-muted);margin-bottom: 0.5rem;">
+<div style="font-size: 0.8125rem;color: var(--text-muted);margin-bottom: 0.5rem;">
   Select the ISO to attach as a CD-ROM — VirtIO driver ISOs are listed first.
 </div>
 <div style="max-height: 220px;overflow-y: auto;border: 1px solid var(--border-main);border-radius: 6px;background: var(--bg-card);">
@@ -34,14 +34,14 @@
            {% if iso.vol_id == default_ref %}checked{% endif %}
            style="margin: 0;flex-shrink: 0;">
     <span style="display: flex;flex-direction: column;min-width: 0;">
-      <span style="font-size: 0.82rem;font-weight: {% if iso.is_virtio %}600{% else %}400{% endif %};white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
+      <span style="font-size: 0.8125rem;font-weight: {% if iso.is_virtio %}600{% else %}400{% endif %};white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
         <i class="fas fa-compact-disc" style="color: {% if iso.is_virtio %}var(--success-color){% else %}var(--text-muted){% endif %};margin-right: 0.3rem;font-size: 0.75rem;"></i>
         {{ iso.filename }}
         {% if iso.is_virtio %}
-        <span style="display: inline-block;background: var(--bg-success-light);color: var(--text-success-dark);font-size: 0.68rem;font-weight: 700;padding: 0.1rem 0.4rem;border-radius: 4px;margin-left: 0.4rem;vertical-align: middle;">Recommended</span>
+        <span style="display: inline-block;background: var(--bg-success-light);color: var(--text-success-dark);font-size: 0.75rem;font-weight: 700;padding: 0.1rem 0.4rem;border-radius: 4px;margin-left: 0.4rem;vertical-align: middle;">Recommended</span>
         {% endif %}
       </span>
-      <span style="font-size: 0.72rem;color: var(--text-muted);font-family: monospace;">{{ iso.vol_id }}</span>
+      <span style="font-size: 0.75rem;color: var(--text-muted);font-family: var(--font-mono);">{{ iso.vol_id }}</span>
     </span>
   </label>
   {% endfor %}

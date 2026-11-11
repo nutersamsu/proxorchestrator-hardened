@@ -47,13 +47,13 @@
               <div class="stage-name">{{ stage.label }}</div>
               <div class="stage-status">
                 {% if stage.state == 'DONE' %}
-                  <span style="color: var(--text-success-dark);font-size: 0.78rem;font-weight: 600;">Done</span>
+                  <span style="color: var(--text-success-dark);font-size: 0.8125rem;font-weight: 600;">Done</span>
                 {% elif stage.state == 'ACTIVE' or stage.state == 'RUNNING' %}
                   {% if stage.duration %}
-                    <span style="color: var(--text-muted);font-size: 0.78rem;">{{ stage.duration }}</span>
+                    <span style="color: var(--text-muted);font-size: 0.8125rem;">{{ stage.duration }}</span>
                   {% endif %}
                 {% elif stage.state == 'FAILED' %}
-                  <span style="color: var(--danger-color);font-size: 0.78rem;font-weight: 600;">Failed</span>
+                  <span style="color: var(--danger-color);font-size: 0.8125rem;font-weight: 600;">Failed</span>
                 {% endif %}
               </div>
             </div>
@@ -62,8 +62,8 @@
               {% if stage.percent > 0 %}
                 <div style="margin-top: 0.4rem;">
                   <div style="display: flex;justify-content: space-between;margin-bottom: 0.2rem;">
-                    <span style="font-size: 0.72rem;color: var(--text-semi);">{{ stage.message|default:"Working..." }}</span>
-                    <span style="font-size: 0.72rem;color: var(--link-color);font-weight: 600;">{{ stage.percent }}%</span>
+                    <span style="font-size: 0.75rem;color: var(--text-semi);">{{ stage.message|default:"Working..." }}</span>
+                    <span style="font-size: 0.75rem;color: var(--link-color);font-weight: 600;">{{ stage.percent }}%</span>
                   </div>
                   <progress class="progress is-primary is-small" value="{{ stage.percent }}" max="100" style="height: 6px;margin-bottom: 0;"></progress>
                 </div>
@@ -73,7 +73,7 @@
             {% endif %}
 
             {% if stage.state == 'FAILED' and stage.message %}
-              <div style="font-size: 0.8rem;color: var(--danger-color);margin-top: 0.25rem;">{{ stage.message }}</div>
+              <div style="font-size: 0.8125rem;color: var(--danger-color);margin-top: 0.25rem;">{{ stage.message }}</div>
             {% endif %}
           </div>
 
@@ -85,7 +85,7 @@
 
       {% if stages %}
         <div style="margin-top: 1rem;padding-top: 1rem;border-top: 1px solid var(--border-light);display: flex;align-items: center;justify-content: space-between;">
-          <div style="font-size: 0.8rem;color: var(--text-muted);">
+          <div style="font-size: 0.8125rem;color: var(--text-muted);">
             {% if job.stage == 'DONE' %}
               All stages complete
             {% elif job.stage == 'FAILED' %}
@@ -94,7 +94,7 @@
               Running...
             {% endif %}
           </div>
-          <div style="font-size: 0.8rem;color: var(--text-semi);font-weight: 600;">
+          <div style="font-size: 0.8125rem;color: var(--text-semi);font-weight: 600;">
             {{ stages_done_count|default:0 }} / {{ stages|length }} stages
           </div>
         </div>

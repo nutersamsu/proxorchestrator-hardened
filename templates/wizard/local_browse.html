@@ -1,6 +1,6 @@
 {# Local directory browser partial — loaded into a modal body via HTMX #}
 
-<div style="display:flex;align-items:center;gap:0.5rem;padding:0.6rem 1rem;background:#f5f7fa;border-bottom:1px solid #e8ecf0;font-size:0.85rem;">
+<div style="display:flex;align-items:center;gap:0.5rem;padding:0.6rem 1rem;background:#f5f7fa;border-bottom:1px solid #e8ecf0;font-size:0.875rem;">
   {# Up one level #}
   {% if path != "/" %}
     <button class="button is-small is-light"
@@ -21,19 +21,19 @@
 </div>
 
 {% if free_bytes is not None %}
-  <div style="padding:0.4rem 1rem;background:#fefce8;border-bottom:1px solid #e8ecf0;font-size:0.8rem;color:#713f12;">
+  <div style="padding:0.4rem 1rem;background:#fefce8;border-bottom:1px solid #e8ecf0;font-size:0.8125rem;color:#713f12;">
     <i class="fas fa-hdd" style="margin-right:0.3rem;"></i>
     Free space: <strong>{{ free_bytes|filesizeformat }}</strong>
   </div>
 {% endif %}
 
 {% if error %}
-  <div style="padding:1rem;color:#f14668;font-size:0.85rem;">
+  <div style="padding:1rem;color:#f14668;font-size:0.875rem;">
     <i class="fas fa-exclamation-triangle" style="margin-right:0.4rem;"></i>
     {{ error }}
   </div>
 {% elif not dirs %}
-  <div style="padding:1.25rem 1rem;color:#b5b5b5;font-size:0.85rem;text-align:center;">
+  <div style="padding:1.25rem 1rem;color:#b5b5b5;font-size:0.875rem;text-align:center;">
     <i class="fas fa-folder-open" style="margin-right:0.4rem;"></i>
     No subdirectories here.
     <br>
@@ -48,7 +48,7 @@
       <li style="border-bottom:1px solid #f0f0f0;">
         <div style="display:flex;align-items:center;padding:0.45rem 1rem;gap:0.5rem;">
           <i class="fas fa-folder" style="color:#f59e0b;flex-shrink:0;"></i>
-          <button class="button is-ghost" style="flex:1;justify-content:flex-start;text-align:left;font-size:0.875rem;padding:0;height:auto;font-family:monospace;"
+          <button class="button is-ghost" style="flex:1;justify-content:flex-start;text-align:left;font-size:0.875rem;padding:0;height:auto;font-family: var(--font-mono);"
                   hx-get="{% url 'wizard_local_browse' %}?path={{ path }}/{{ dir }}&field={{ field }}"
                   hx-target="#local-browser-body"
                   hx-swap="innerHTML">

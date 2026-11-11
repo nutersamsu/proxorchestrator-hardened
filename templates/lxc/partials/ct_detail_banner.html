@@ -31,7 +31,7 @@
           <span class="status-badge vm-status-unknown">{{ ct.status }}</span>
         {% endif %}
       </div>
-      <div style="font-size: 0.82rem;color: var(--text-muted);margin-top: 0.3rem;">
+      <div style="font-size: 0.8125rem;color: var(--text-muted);margin-top: 0.3rem;">
         CTID <strong>{{ ct.vmid }}</strong>
         &bull; Node <strong>{{ ct.node }}</strong>
         {% if ct.status == 'running' and ct.uptime_human %}
@@ -44,11 +44,11 @@
     <div style="margin-left: auto;display: flex;gap: 2rem;">
       <div style="text-align: center;">
         <div style="font-size: 1.25rem;font-weight: 700;color: var(--text-header);">{{ ct.cpu_pct|floatformat:1 }}%</div>
-        <div style="font-size: 0.72rem;color: var(--text-muted);text-transform: uppercase;letter-spacing: 0.5px;">CPU</div>
+        <div style="font-size: 0.75rem;color: var(--text-muted);text-transform: uppercase;letter-spacing: 0.5px;">CPU</div>
       </div>
       <div style="text-align: center;">
         <div style="font-size: 1.25rem;font-weight: 700;color: var(--text-header);">{{ ct.mem_human|default:"—" }}</div>
-        <div style="font-size: 0.72rem;color: var(--text-muted);text-transform: uppercase;letter-spacing: 0.5px;">RAM Used</div>
+        <div style="font-size: 0.75rem;color: var(--text-muted);text-transform: uppercase;letter-spacing: 0.5px;">RAM Used</div>
       </div>
     </div>
     {% endif %}

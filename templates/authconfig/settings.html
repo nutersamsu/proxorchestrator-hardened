@@ -18,21 +18,21 @@
       <a onclick="switchTab('ldap')">
         <span class="icon is-small"><i class="fas fa-building"></i></span>
         <span>LDAP / Active Directory</span>
-        {% if ldap_enabled %}<span class="tag is-success is-light" style="margin-left: 0.5rem;font-size: 0.65rem;">Enabled</span>{% endif %}
+        {% if ldap_enabled %}<span class="tag is-success is-light" style="margin-left: 0.5rem;font-size: 0.75rem;">Enabled</span>{% endif %}
       </a>
     </li>
     <li class="{% if active_tab == 'entra' %}is-active{% endif %}" data-tab="entra">
       <a onclick="switchTab('entra')">
         <span class="icon is-small"><i class="fab fa-microsoft"></i></span>
         <span>Entra ID (Microsoft)</span>
-        {% if entra_enabled %}<span class="tag is-success is-light" style="margin-left: 0.5rem;font-size: 0.65rem;">Enabled</span>{% endif %}
+        {% if entra_enabled %}<span class="tag is-success is-light" style="margin-left: 0.5rem;font-size: 0.75rem;">Enabled</span>{% endif %}
       </a>
     </li>
     <li class="{% if active_tab == 'mfa' %}is-active{% endif %}" data-tab="mfa">
       <a onclick="switchTab('mfa')">
         <span class="icon is-small"><i class="fas fa-shield-alt"></i></span>
         <span>MFA</span>
-        {% if mfa_enforced %}<span class="tag is-warning is-light" style="margin-left: 0.5rem;font-size: 0.65rem;">Enforced</span>{% endif %}
+        {% if mfa_enforced %}<span class="tag is-warning is-light" style="margin-left: 0.5rem;font-size: 0.75rem;">Enforced</span>{% endif %}
       </a>
     </li>
   </ul>
@@ -83,10 +83,10 @@
 
         <div style="display: flex;align-items: center;justify-content: space-between;background: var(--bg-main);border-radius: 8px;padding: 1.25rem 1.5rem;">
           <div>
-            <div style="font-weight: 600;font-size: 0.95rem;color: var(--text-header);">
+            <div style="font-weight: 600;font-size: 1rem;color: var(--text-header);">
               Global Enforcement
             </div>
-            <p style="font-size: 0.82rem;color: var(--text-muted);margin-top: 0.3rem;">
+            <p style="font-size: 0.8125rem;color: var(--text-muted);margin-top: 0.3rem;">
               {% if mfa_enforced %}
                 All local and LDAP users are <strong>required</strong> to set up MFA on their next login.
                 Users cannot disable MFA while enforcement is active.
@@ -113,10 +113,10 @@
 
         <div style="display: flex;align-items: center;justify-content: space-between;background: var(--bg-main);border-radius: 8px;padding: 1.25rem 1.5rem;margin-top: 1.25rem;">
           <div>
-            <div style="font-weight: 600;font-size: 0.95rem;color: var(--text-header);">
+            <div style="font-weight: 600;font-size: 1rem;color: var(--text-header);">
               Email Recovery
             </div>
-            <p style="font-size: 0.82rem;color: var(--text-muted);margin-top: 0.3rem;">
+            <p style="font-size: 0.8125rem;color: var(--text-muted);margin-top: 0.3rem;">
               {% if mfa_email_recovery %}
                 Users can receive a one-time bypass code via email if they lose access to their authenticator.
                 Requires email to be configured (SMTP or Graph API).
@@ -143,7 +143,7 @@
         <div style="margin-top: 1.5rem;">
           <div class="info-box" style="margin-bottom: 1rem;">
             <div class="info-box-icon"><i class="fas fa-info-circle"></i></div>
-            <div style="font-size: 0.82rem;">
+            <div style="font-size: 0.8125rem;">
               <strong>Recovery options:</strong> Users always get 8 one-time recovery codes at setup.
               Admins can reset a user's MFA from the User Management page.
             </div>
@@ -165,7 +165,7 @@
         <div style="display: flex;align-items: center;justify-content: space-between;padding: 1rem;background: var(--bg-main);border-radius: 8px;margin-bottom: 1.5rem;">
           <div>
             <div style="font-weight: 600;color: var(--text-header);">Enable LDAP Authentication</div>
-            <div style="font-size: 0.82rem;color: var(--text-muted);margin-top: 0.2rem;">Allow users to sign in with LDAP/Active Directory credentials.</div>
+            <div style="font-size: 0.8125rem;color: var(--text-muted);margin-top: 0.2rem;">Allow users to sign in with LDAP/Active Directory credentials.</div>
           </div>
           <input type="checkbox" {% if ldap_enabled %}checked{% endif %}
             hx-post="{% url 'auth_settings_toggle' 'ldap' %}"
@@ -288,7 +288,7 @@
             <div class="control">
               <textarea class="textarea is-small" name="ca_cert" rows="4"
                 placeholder="-----BEGIN CERTIFICATE-----&#10;Paste the CA or LDAP server certificate here to trust it for LDAPS connections.&#10;Leave blank to use system CAs or if Skip Certificate Verification is enabled.&#10;-----END CERTIFICATE-----"
-                style="font-family: monospace;font-size: 0.75rem;resize: vertical;">{{ ldap_config.ca_cert|default:'' }}</textarea>
+                style="font-family: var(--font-mono);font-size: 0.75rem;resize: vertical;">{{ ldap_config.ca_cert|default:'' }}</textarea>
             </div>
             <p class="field-hint">
               Paste either the <strong>CA certificate</strong> that signed the LDAP server's cert, or the <strong>LDAP server certificate</strong> itself.
@@ -337,7 +337,7 @@
         <div style="display: flex;align-items: center;justify-content: space-between;padding: 1rem;background: var(--bg-main);border-radius: 8px;margin-bottom: 1.5rem;">
           <div>
             <div style="font-weight: 600;color: var(--text-header);">Enable Entra ID Authentication</div>
-            <div style="font-size: 0.82rem;color: var(--text-muted);margin-top: 0.2rem;">Allow users to sign in with their Microsoft work accounts.</div>
+            <div style="font-size: 0.8125rem;color: var(--text-muted);margin-top: 0.2rem;">Allow users to sign in with their Microsoft work accounts.</div>
           </div>
           <input type="checkbox" {% if entra_enabled %}checked{% endif %}
             hx-post="{% url 'auth_settings_toggle' 'entra' %}"
@@ -366,7 +366,7 @@
               <i class="fas fa-book" style="color: var(--link-color);"></i>
               Azure App Registration Guide
             </div>
-            <i class="fas fa-chevron-down section-toggle-icon" style="color: var(--text-muted);font-size: 0.8rem;"></i>
+            <i class="fas fa-chevron-down section-toggle-icon" style="color: var(--text-muted);font-size: 0.8125rem;"></i>
           </div>
           <div class="form-section-body">
             <ol class="step-guide">
@@ -392,7 +392,7 @@
                 <div class="step-guide-num">4</div>
                 <div class="step-guide-text">
                   Go to <strong>API permissions</strong> &rarr; <strong>Add a permission</strong> &rarr; <strong>Microsoft Graph</strong> &rarr; <strong>Delegated permissions</strong> and confirm the following are present:
-                  <table style="margin-top: 0.6rem;font-size: 0.8rem;border-collapse: collapse;width: 100%;">
+                  <table style="margin-top: 0.6rem;font-size: 0.8125rem;border-collapse: collapse;width: 100%;">
                     <thead>
                       <tr style="background: var(--bg-main);">
                         <th style="padding: 0.35rem 0.6rem;text-align: left;border: 1px solid var(--border-main);">Permission</th>
@@ -403,15 +403,15 @@
                     </thead>
                     <tbody>
                       <tr>
-                        <td style="padding: 0.35rem 0.6rem;border: 1px solid var(--border-main);font-family: monospace;">User.Read</td>
+                        <td style="padding: 0.35rem 0.6rem;border: 1px solid var(--border-main);font-family: var(--font-mono);">User.Read</td>
                         <td style="padding: 0.35rem 0.6rem;border: 1px solid var(--border-main);">Delegated</td>
-                        <td style="padding: 0.35rem 0.6rem;border: 1px solid var(--border-main);"><span class="tag is-success is-light" style="font-size: 0.72rem;">Not required</span></td>
+                        <td style="padding: 0.35rem 0.6rem;border: 1px solid var(--border-main);"><span class="tag is-success is-light" style="font-size: 0.75rem;">Not required</span></td>
                         <td style="padding: 0.35rem 0.6rem;border: 1px solid var(--border-main);">Sign in, read user profile &amp; email — added by default</td>
                       </tr>
                       <tr style="background: var(--bg-main);">
-                        <td style="padding: 0.35rem 0.6rem;border: 1px solid var(--border-main);font-family: monospace;">GroupMember.Read.All</td>
+                        <td style="padding: 0.35rem 0.6rem;border: 1px solid var(--border-main);font-family: var(--font-mono);">GroupMember.Read.All</td>
                         <td style="padding: 0.35rem 0.6rem;border: 1px solid var(--border-main);">Delegated</td>
-                        <td style="padding: 0.35rem 0.6rem;border: 1px solid var(--border-main);"><span class="tag is-warning is-light" style="font-size: 0.72rem;">Required</span></td>
+                        <td style="padding: 0.35rem 0.6rem;border: 1px solid var(--border-main);"><span class="tag is-warning is-light" style="font-size: 0.75rem;">Required</span></td>
                         <td style="padding: 0.35rem 0.6rem;border: 1px solid var(--border-main);">Check group membership — required if Require Group ID or Admin Group ID is set</td>
                       </tr>
                     </tbody>

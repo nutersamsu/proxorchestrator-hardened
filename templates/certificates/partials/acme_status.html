@@ -5,7 +5,7 @@
       <i class="fas fa-spinner fa-spin" style="color:#3273dc;"></i> Certificate Issuance In Progress
     </div>
     <div class="card-body">
-      <div style="font-size:0.85rem;color:#4a4a4a;">
+      <div style="font-size:0.875rem;color:#4a4a4a;">
         <span class="spinner" style="margin-right:0.4rem;"></span>
         {{ acme.issuing_stage|default:"Working..." }}
       </div>
@@ -18,14 +18,14 @@
       <i class="fas fa-check-circle" style="color:#48c78e;"></i> Certificate Issued Successfully
     </div>
     <div class="card-body">
-      <div style="font-size:0.85rem;color:#257953;">
+      <div style="font-size:0.875rem;color:#257953;">
         Certificate installed and nginx reloaded.
         {% if cert_days_remaining %} Expires in {{ cert_days_remaining }} days.{% endif %}
       </div>
-      <p style="font-size:0.78rem;color:#7a7a7a;margin-top:0.5rem;">
+      <p style="font-size:0.8125rem;color:#7a7a7a;margin-top:0.5rem;">
         Renewed: {{ acme.last_renewed_at|date:"N j, Y g:i A" }}
       </p>
-      <p style="font-size:0.78rem;color:#7a7a7a;margin-top:0.5rem;">
+      <p style="font-size:0.8125rem;color:#7a7a7a;margin-top:0.5rem;">
         <i class="fas fa-sync-alt" style="margin-right:0.3rem;"></i>
         Page will refresh in <strong><span id="acme-countdown">10</span></strong> seconds...
       </p>
@@ -52,7 +52,7 @@
       <i class="fas fa-times-circle" style="color:#f14668;"></i> Certificate Issuance Failed
     </div>
     <div class="card-body">
-      <div style="font-size:0.85rem;color:#cc0f35;">
+      <div style="font-size:0.875rem;color:#cc0f35;">
         {{ acme.last_renewal_error }}
       </div>
     </div>

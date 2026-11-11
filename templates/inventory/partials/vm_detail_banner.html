@@ -59,11 +59,11 @@
         {% endif %}
       </div>
       {% if stuck %}
-      <div style="font-size: 0.85rem;color: var(--text-warning-dark);margin-top: 0.3rem;">
+      <div style="font-size: 0.875rem;color: var(--text-warning-dark);margin-top: 0.3rem;">
         VM is not responding to {{ action_label|lower }} command. This may require investigation in the Proxmox console.
       </div>
       {% else %}
-      <div style="font-size: 0.82rem;color: var(--text-muted);margin-top: 0.3rem;">
+      <div style="font-size: 0.8125rem;color: var(--text-muted);margin-top: 0.3rem;">
         VMID <strong>{{ vm.vmid }}</strong>
         &bull; Node <strong>{{ vm.node }}</strong>
         {% if vm.status == 'running' and vm.uptime_human %}
@@ -77,11 +77,11 @@
     <div style="margin-left: auto;display: flex;gap: 2rem;">
       <div style="text-align: center;">
         <div style="font-size: 1.25rem;font-weight: 700;color: var(--text-header);">{{ vm.cpu_pct|floatformat:1 }}%</div>
-        <div style="font-size: 0.72rem;color: var(--text-muted);text-transform: uppercase;letter-spacing: 0.5px;">CPU</div>
+        <div style="font-size: 0.75rem;color: var(--text-muted);text-transform: uppercase;letter-spacing: 0.5px;">CPU</div>
       </div>
       <div style="text-align: center;">
         <div style="font-size: 1.25rem;font-weight: 700;color: var(--text-header);">{{ vm.mem_human|default:"—" }}</div>
-        <div style="font-size: 0.72rem;color: var(--text-muted);text-transform: uppercase;letter-spacing: 0.5px;">RAM Used</div>
+        <div style="font-size: 0.75rem;color: var(--text-muted);text-transform: uppercase;letter-spacing: 0.5px;">RAM Used</div>
       </div>
     </div>
     {% endif %}

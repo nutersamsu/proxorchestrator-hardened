@@ -53,13 +53,13 @@
                 </div>
                 <div>
                   <div style="font-weight: 700;color: var(--text-header);">SMTP</div>
-                  <div style="font-size: 0.78rem;color: var(--text-muted);">Standard mail server</div>
+                  <div style="font-size: 0.8125rem;color: var(--text-muted);">Standard mail server</div>
                 </div>
                 <span class="method-check" style="margin-left: auto;font-size: 1.1rem;color: var(--success-color);display: none;">
                   <i class="fas fa-check-circle"></i>
                 </span>
               </div>
-              <p style="font-size: 0.82rem;color: var(--text-semi);line-height: 1.5;">
+              <p style="font-size: 0.8125rem;color: var(--text-semi);line-height: 1.5;">
                 Works with any SMTP server — Office 365, Gmail, Postfix, SendGrid, or your own mail relay.
               </p>
             </div>
@@ -76,13 +76,13 @@
                 </div>
                 <div>
                   <div style="font-weight: 700;color: var(--text-header);">Microsoft Graph API</div>
-                  <div style="font-size: 0.78rem;color: var(--text-muted);">Microsoft 365 / Azure AD</div>
+                  <div style="font-size: 0.8125rem;color: var(--text-muted);">Microsoft 365 / Azure AD</div>
                 </div>
                 <span class="method-check" style="margin-left: auto;font-size: 1.1rem;color: var(--success-color);display: none;">
                   <i class="fas fa-check-circle"></i>
                 </span>
               </div>
-              <p style="font-size: 0.82rem;color: var(--text-semi);line-height: 1.5;">
+              <p style="font-size: 0.8125rem;color: var(--text-semi);line-height: 1.5;">
                 Sends via Microsoft Graph API using an Azure App Registration. No SMTP credentials required — ideal for Microsoft 365 tenants.
               </p>
             </div>
@@ -224,7 +224,7 @@
                 <span class="icon"><i class="fas fa-save"></i></span>
                 <span>Save Settings</span>
               </button>
-              <label class="checkbox" style="font-size: 0.9rem;">
+              <label class="checkbox" style="font-size: 0.875rem;">
                 <input type="checkbox" name="is_enabled"
                        {% if config and config.is_enabled and config.backend_type == 'smtp' %}checked{% endif %}>
                 Enable email delivery
@@ -253,7 +253,7 @@
                 <i class="fas fa-book" style="color: var(--link-color);"></i>
                 Azure App Registration Guide — Mail.Send via Client Credentials
               </div>
-              <i class="fas fa-chevron-down section-toggle-icon" style="color: var(--text-muted);font-size: 0.8rem;"></i>
+              <i class="fas fa-chevron-down section-toggle-icon" style="color: var(--text-muted);font-size: 0.8125rem;"></i>
             </div>
             <div class="form-section-body">
               <ol class="step-guide">
@@ -279,7 +279,7 @@
                   <div class="step-guide-num">3</div>
                   <div class="step-guide-text">
                     Go to <strong>API permissions</strong> &rarr; <strong>Add a permission</strong> &rarr; <strong>Microsoft Graph</strong> &rarr; <strong>Application permissions</strong> (not Delegated — this is server-to-server) and add the following:
-                    <table style="margin-top: 0.6rem;font-size: 0.8rem;border-collapse: collapse;width: 100%;">
+                    <table style="margin-top: 0.6rem;font-size: 0.8125rem;border-collapse: collapse;width: 100%;">
                       <thead>
                         <tr style="background: var(--bg-main);">
                           <th style="padding: 0.35rem 0.6rem;text-align: left;border: 1px solid var(--border-main);">Permission</th>
@@ -290,9 +290,9 @@
                       </thead>
                       <tbody>
                         <tr>
-                          <td style="padding: 0.35rem 0.6rem;border: 1px solid var(--border-main);font-family: monospace;">Mail.Send</td>
+                          <td style="padding: 0.35rem 0.6rem;border: 1px solid var(--border-main);font-family: var(--font-mono);">Mail.Send</td>
                           <td style="padding: 0.35rem 0.6rem;border: 1px solid var(--border-main);">Application</td>
-                          <td style="padding: 0.35rem 0.6rem;border: 1px solid var(--border-main);"><span class="tag is-warning is-light" style="font-size: 0.72rem;">Required</span></td>
+                          <td style="padding: 0.35rem 0.6rem;border: 1px solid var(--border-main);"><span class="tag is-warning is-light" style="font-size: 0.75rem;">Required</span></td>
                           <td style="padding: 0.35rem 0.6rem;border: 1px solid var(--border-main);">Allows ProxOrchestrator to send email as the configured From mailbox</td>
                         </tr>
                       </tbody>
@@ -310,7 +310,7 @@
                     <strong>Restrict the permission to a specific mailbox (recommended).</strong>
                     By default, <code>Mail.Send</code> as an Application permission allows the app to send as <em>any</em> mailbox in your tenant.
                     To restrict it to a single mailbox, create an <strong>Application Access Policy</strong> in Exchange Online PowerShell:
-                    <pre style="margin-top: 0.5rem;background: var(--bg-info-light);border: 1px solid var(--border-main);border-radius: 6px;padding: 0.6rem 0.8rem;font-size: 0.78rem;overflow-x: auto;"><code># Run in Exchange Online PowerShell
+                    <pre style="margin-top: 0.5rem;background: var(--bg-info-light);border: 1px solid var(--border-main);border-radius: 6px;padding: 0.6rem 0.8rem;font-size: 0.8125rem;overflow-x: auto;"><code># Run in Exchange Online PowerShell
 New-ApplicationAccessPolicy `
   -AppId "&lt;your-client-id&gt;" `
   -PolicyScopeGroupId "&lt;mailbox@yourcompany.com&gt;" `
@@ -435,7 +435,7 @@ New-ApplicationAccessPolicy `
                 <span class="icon"><i class="fas fa-save"></i></span>
                 <span>Save Settings</span>
               </button>
-              <label class="checkbox" style="font-size: 0.9rem;">
+              <label class="checkbox" style="font-size: 0.875rem;">
                 <input type="checkbox" name="is_enabled"
                        {% if config and config.is_enabled and config.backend_type == 'graph' %}checked{% endif %}>
                 Enable email delivery

@@ -166,6 +166,19 @@ def dashboard(request):
 
 
 @login_required
+def dashboard_node_summary(request):
+    """HTMX endpoint: node Summary (PVE) + temperatures for the dashboard."""
+    from apps.core.node_summary import get_node_summary
+    from apps.wizard.models import ProxmoxConfig
+
+    config = ProxmoxConfig.objects.filter(is_configured=True).first()
+    if config is None:
+        return HttpResponse(status=204)
+    context = get_node_summary(config)
+    return render(request, "core/partials/node_summary.html", context)
+
+
+@login_required
 def dashboard_job_status(request, job_type, job_id):
     """HTMX endpoint: return an updated job row partial for dashboard polling."""
     from apps.importer.models import ImportJob

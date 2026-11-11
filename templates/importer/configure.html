@@ -28,10 +28,10 @@
         <i class="fas fa-file-archive" style="color: var(--bg-card);font-size: 1rem;"></i>
       </div>
       <div style="flex: 1;min-width: 0;">
-        <div style="font-weight: 700;color: var(--text-header);font-size: 0.95rem;margin-bottom: 0.35rem;">
+        <div style="font-weight: 700;color: var(--text-header);font-size: 1rem;margin-bottom: 0.35rem;">
           OVA Settings Detected
         </div>
-        <div style="font-size: 0.83rem;color: var(--text-semi);line-height: 1.6;">
+        <div style="font-size: 0.8125rem;color: var(--text-semi);line-height: 1.6;">
           Hardware settings have been read from the OVF descriptor inside the OVA package.
           {% if ovf_data.os_description %}
             <span style="margin-left: 0.5rem;">
@@ -58,17 +58,17 @@
             </span>
           {% endif %}
         </div>
-        <div style="font-size: 0.78rem;color: var(--text-muted);margin-top: 0.4rem;">
+        <div style="font-size: 0.8125rem;color: var(--text-muted);margin-top: 0.4rem;">
           Settings are pre-filled from the OVA. For vendor appliances (Cisco, Aruba, etc.),
           select a <strong>hardware preset</strong> below to override with KVM-compatible settings.
         </div>
         {% if ova_iso_file %}
         <div style="margin-top: 0.75rem;padding: 0.75rem 1rem;background: rgba(255,255,255,0.7);border-radius: 6px;border: 1px solid var(--border-success);">
-          <div style="font-weight: 600;font-size: 0.85rem;color: var(--text-header);margin-bottom: 0.4rem;">
+          <div style="font-weight: 600;font-size: 0.875rem;color: var(--text-header);margin-bottom: 0.4rem;">
             <i class="fas fa-compact-disc" style="color: var(--success-color);margin-right: 0.3rem;"></i>
             ISO Boot Image: <code>{{ ova_iso_file }}</code>
           </div>
-          <p style="font-size: 0.78rem;color: var(--text-semi);margin-bottom: 0.5rem;">
+          <p style="font-size: 0.8125rem;color: var(--text-semi);margin-bottom: 0.5rem;">
             This OVA contains an ISO that the appliance boots from to install. Select a Proxmox storage to upload it to:
           </p>
           <div class="control" style="max-width: 250px;">
@@ -98,10 +98,10 @@
         <i class="fas fa-exchange-alt" style="color: var(--bg-card);font-size: 1rem;"></i>
       </div>
       <div style="flex: 1;min-width: 0;">
-        <div style="font-weight: 700;color: var(--text-header);font-size: 0.95rem;margin-bottom: 0.35rem;">
+        <div style="font-weight: 700;color: var(--text-header);font-size: 1rem;margin-bottom: 0.35rem;">
           VMware Image Detected
         </div>
-        <div style="font-size: 0.83rem;color: var(--text-semi);line-height: 1.6;">
+        <div style="font-size: 0.8125rem;color: var(--text-semi);line-height: 1.6;">
           This looks like a VMware disk image. Select a <strong>hardware preset</strong> below
           to auto-configure compatible settings for a smooth transition.
           VMware guests often need <strong>E1000 / SATA / IDE</strong> instead of VirtIO to boot successfully.
@@ -115,10 +115,10 @@
         <i class="fas fa-check-circle" style="color: var(--bg-card);font-size: 1rem;"></i>
       </div>
       <div style="flex: 1;min-width: 0;">
-        <div style="font-weight: 700;color: var(--text-header);font-size: 0.95rem;margin-bottom: 0.35rem;">
+        <div style="font-weight: 700;color: var(--text-header);font-size: 1rem;margin-bottom: 0.35rem;">
           KVM Image Detected
         </div>
-        <div style="font-size: 0.83rem;color: var(--text-semi);line-height: 1.6;">
+        <div style="font-size: 0.8125rem;color: var(--text-semi);line-height: 1.6;">
           This is a native KVM/QEMU disk image. It should work with <strong>VirtIO</strong> drivers
           for the best performance. Select a hardware preset or configure manually.
         </div>
@@ -130,10 +130,10 @@
         <i class="fas fa-exchange-alt" style="color: var(--bg-card);font-size: 1rem;"></i>
       </div>
       <div style="flex: 1;min-width: 0;">
-        <div style="font-weight: 700;color: var(--text-header);font-size: 0.95rem;margin-bottom: 0.35rem;">
+        <div style="font-weight: 700;color: var(--text-header);font-size: 1rem;margin-bottom: 0.35rem;">
           Hyper-V Image Detected
         </div>
-        <div style="font-size: 0.83rem;color: var(--text-semi);line-height: 1.6;">
+        <div style="font-size: 0.8125rem;color: var(--text-semi);line-height: 1.6;">
           This looks like a Hyper-V disk image. Select a <strong>hardware preset</strong> below
           to auto-configure compatible settings.
           Hyper-V guests typically work well with <strong>E1000e / SATA</strong> controllers.
@@ -150,10 +150,10 @@
           <div class="section-icon" style="background: var(--bg-warning-light);color: var(--warning-color);"><i class="fas fa-magic"></i></div>
           Hardware Preset
           {% if source_platform %}
-            <span class="tag is-warning is-light" style="font-size: 0.7rem;">Recommended for {{ source_platform|title }} imports</span>
+            <span class="tag is-warning is-light" style="font-size: 0.75rem;">Recommended for {{ source_platform|title }} imports</span>
           {% endif %}
         </div>
-        <i class="fas fa-chevron-up section-toggle-icon" style="color: var(--text-muted);font-size: 0.8rem;"></i>
+        <i class="fas fa-chevron-up section-toggle-icon" style="color: var(--text-muted);font-size: 0.8125rem;"></i>
       </div>
       <div class="form-section-body is-open">
         <div class="field">
@@ -203,7 +203,7 @@
           <div class="section-icon" style="background: var(--bg-info-light);color: var(--link-color);"><i class="fas fa-tag"></i></div>
           General
         </div>
-        <i class="fas fa-chevron-up section-toggle-icon" style="color: var(--text-muted);font-size: 0.8rem;"></i>
+        <i class="fas fa-chevron-up section-toggle-icon" style="color: var(--text-muted);font-size: 0.8125rem;"></i>
       </div>
       <div class="form-section-body is-open">
         <div class="columns">
@@ -297,14 +297,14 @@
           <div style="border: 1px solid var(--border-main);border-radius: 8px;padding: 0.9rem 1rem;background: var(--bg-main);">
             <div style="display: flex;align-items: center;gap: 0.5rem;margin-bottom: 0.65rem;">
               <i class="fas fa-compact-disc" style="color: var(--success-color);"></i>
-              <strong style="font-size: 0.9rem;">VirtIO Windows Drivers ISO</strong>
+              <strong style="font-size: 0.875rem;">VirtIO Windows Drivers ISO</strong>
               <span style="font-size: 0.75rem;color: var(--text-muted);">— attached as ide2 so drivers are ready on first boot</span>
             </div>
             <div id="virtio-iso-picker"
                  hx-get="/wizard/iso-list/?default={{ virtio_iso|urlencode }}"
                  hx-trigger="revealed"
                  hx-swap="innerHTML">
-              <div style="color: var(--text-muted);font-size: 0.8rem;"><i class="fas fa-spinner fa-spin" style="margin-right: 0.4rem;"></i>Loading ISO list…</div>
+              <div style="color: var(--text-muted);font-size: 0.8125rem;"><i class="fas fa-spinner fa-spin" style="margin-right: 0.4rem;"></i>Loading ISO list…</div>
             </div>
           </div>
         </div>
@@ -318,7 +318,7 @@
           <div class="section-icon" style="background: var(--bg-purple-light);color: var(--purple-color);"><i class="fas fa-microchip"></i></div>
           Firmware &amp; Boot
         </div>
-        <i class="fas fa-chevron-up section-toggle-icon" style="color: var(--text-muted);font-size: 0.8rem;"></i>
+        <i class="fas fa-chevron-up section-toggle-icon" style="color: var(--text-muted);font-size: 0.8125rem;"></i>
       </div>
       <div class="form-section-body is-open">
         <div class="columns">
@@ -394,7 +394,7 @@
           <div class="section-icon" style="background: var(--bg-success-light);color: var(--success-color);"><i class="fas fa-microchip"></i></div>
           CPU
         </div>
-        <i class="fas fa-chevron-up section-toggle-icon" style="color: var(--text-muted);font-size: 0.8rem;"></i>
+        <i class="fas fa-chevron-up section-toggle-icon" style="color: var(--text-muted);font-size: 0.8125rem;"></i>
       </div>
       <div class="form-section-body is-open">
         <div class="columns">
@@ -448,7 +448,7 @@
           <div class="section-icon" style="background: var(--bg-warning-badge);color: var(--warning-color);"><i class="fas fa-memory"></i></div>
           Memory
         </div>
-        <i class="fas fa-chevron-down section-toggle-icon" style="color: var(--text-muted);font-size: 0.8rem;"></i>
+        <i class="fas fa-chevron-down section-toggle-icon" style="color: var(--text-muted);font-size: 0.8125rem;"></i>
       </div>
       <div class="form-section-body">
         <div class="columns">
@@ -465,16 +465,16 @@
                   value="{{ form.memory_mb.value|default:2048 }}">
               </div>
               <div style="display: flex;gap: 0.35rem;flex-wrap: wrap;margin-top: 0.4rem;">
-                <button type="button" class="button is-small is-light" style="font-size: 0.72rem;padding: 0.2rem 0.5rem;" onclick="setMemoryGb(2)">2 GB</button>
-                <button type="button" class="button is-small is-light" style="font-size: 0.72rem;padding: 0.2rem 0.5rem;" onclick="setMemoryGb(4)">4 GB</button>
-                <button type="button" class="button is-small is-light" style="font-size: 0.72rem;padding: 0.2rem 0.5rem;" onclick="setMemoryGb(8)">8 GB</button>
-                <button type="button" class="button is-small is-light" style="font-size: 0.72rem;padding: 0.2rem 0.5rem;" onclick="setMemoryGb(16)">16 GB</button>
-                <button type="button" class="button is-small is-light" style="font-size: 0.72rem;padding: 0.2rem 0.5rem;" onclick="setMemoryGb(24)">24 GB</button>
-                <button type="button" class="button is-small is-light" style="font-size: 0.72rem;padding: 0.2rem 0.5rem;" onclick="setMemoryGb(32)">32 GB</button>
-                <button type="button" class="button is-small is-light" style="font-size: 0.72rem;padding: 0.2rem 0.5rem;" onclick="setMemoryGb(48)">48 GB</button>
-                <button type="button" class="button is-small is-light" style="font-size: 0.72rem;padding: 0.2rem 0.5rem;" onclick="setMemoryGb(64)">64 GB</button>
-                <button type="button" class="button is-small is-light" style="font-size: 0.72rem;padding: 0.2rem 0.5rem;" onclick="setMemoryGb(96)">96 GB</button>
-                <button type="button" class="button is-small is-light" style="font-size: 0.72rem;padding: 0.2rem 0.5rem;" onclick="setMemoryGb(128)">128 GB</button>
+                <button type="button" class="button is-small is-light" style="font-size: 0.75rem;padding: 0.2rem 0.5rem;" onclick="setMemoryGb(2)">2 GB</button>
+                <button type="button" class="button is-small is-light" style="font-size: 0.75rem;padding: 0.2rem 0.5rem;" onclick="setMemoryGb(4)">4 GB</button>
+                <button type="button" class="button is-small is-light" style="font-size: 0.75rem;padding: 0.2rem 0.5rem;" onclick="setMemoryGb(8)">8 GB</button>
+                <button type="button" class="button is-small is-light" style="font-size: 0.75rem;padding: 0.2rem 0.5rem;" onclick="setMemoryGb(16)">16 GB</button>
+                <button type="button" class="button is-small is-light" style="font-size: 0.75rem;padding: 0.2rem 0.5rem;" onclick="setMemoryGb(24)">24 GB</button>
+                <button type="button" class="button is-small is-light" style="font-size: 0.75rem;padding: 0.2rem 0.5rem;" onclick="setMemoryGb(32)">32 GB</button>
+                <button type="button" class="button is-small is-light" style="font-size: 0.75rem;padding: 0.2rem 0.5rem;" onclick="setMemoryGb(48)">48 GB</button>
+                <button type="button" class="button is-small is-light" style="font-size: 0.75rem;padding: 0.2rem 0.5rem;" onclick="setMemoryGb(64)">64 GB</button>
+                <button type="button" class="button is-small is-light" style="font-size: 0.75rem;padding: 0.2rem 0.5rem;" onclick="setMemoryGb(96)">96 GB</button>
+                <button type="button" class="button is-small is-light" style="font-size: 0.75rem;padding: 0.2rem 0.5rem;" onclick="setMemoryGb(128)">128 GB</button>
               </div>
             </div>
           </div>
@@ -515,7 +515,7 @@
           <div class="section-icon" style="background: var(--bg-success-light);color: var(--success-color);"><i class="fas fa-hdd"></i></div>
           Disk
         </div>
-        <i class="fas fa-chevron-down section-toggle-icon" style="color: var(--text-muted);font-size: 0.8rem;"></i>
+        <i class="fas fa-chevron-down section-toggle-icon" style="color: var(--text-muted);font-size: 0.8125rem;"></i>
       </div>
       <div class="form-section-body">
         <div class="columns">
@@ -616,7 +616,7 @@
             </div>
           </div>
           <div id="extra-disks-list"></div>
-          <p style="font-size: 0.78rem;color: var(--text-muted);margin-top: 0.5rem;" id="extra-disks-hint">
+          <p style="font-size: 0.8125rem;color: var(--text-muted);margin-top: 0.5rem;" id="extra-disks-hint">
             Add new empty volumes, upload disk images from your computer, or select images already on Proxmox.
           </p>
           <input type="hidden" name="extra_disks" id="extra-disks-data" value="">
@@ -631,7 +631,7 @@
           <div class="section-icon" style="background: var(--bg-info-light);color: var(--link-color);"><i class="fas fa-ethernet"></i></div>
           Network
         </div>
-        <i class="fas fa-chevron-down section-toggle-icon" style="color: var(--text-muted);font-size: 0.8rem;"></i>
+        <i class="fas fa-chevron-down section-toggle-icon" style="color: var(--text-muted);font-size: 0.8125rem;"></i>
       </div>
       <div class="form-section-body">
         <div class="columns">
@@ -707,7 +707,7 @@
           <div class="section-icon"><i class="fas fa-desktop"></i></div>
           Display &amp; Agent
         </div>
-        <i class="fas fa-chevron-up section-toggle-icon" style="color: var(--text-muted);font-size: 0.8rem;"></i>
+        <i class="fas fa-chevron-up section-toggle-icon" style="color: var(--text-muted);font-size: 0.8125rem;"></i>
       </div>
       <div class="form-section-body is-open">
         <div class="columns">
@@ -777,7 +777,7 @@
           <div class="section-icon"><i class="fas fa-cloud"></i></div>
           Cloud-Init
         </div>
-        <i class="fas fa-chevron-down section-toggle-icon" style="color: var(--text-muted);font-size: 0.8rem;"></i>
+        <i class="fas fa-chevron-down section-toggle-icon" style="color: var(--text-muted);font-size: 0.8125rem;"></i>
       </div>
       <div class="form-section-body" id="cloud-init-body">
         <div class="field" style="margin-bottom: 1rem;">
@@ -930,7 +930,7 @@
         <i class="fas fa-file" style="color: var(--text-muted);"></i> Uploaded File
       </div>
       <div class="card-body" style="padding: 1.25rem 1.5rem;">
-        <div style="word-break: break-all;font-family: monospace;font-size: 0.82rem;color: var(--text-header);font-weight: 600;margin-bottom: 0.75rem;">
+        <div style="word-break: break-all;font-family: var(--font-mono);font-size: 0.8125rem;color: var(--text-header);font-weight: 600;margin-bottom: 0.75rem;">
           {{ job.upload_filename }}
         </div>
         <div style="display: flex;gap: 0.5rem;margin-bottom: 0.75rem;flex-wrap: wrap;">
@@ -940,8 +940,8 @@
           <span class="tag is-light">{{ job.file_size_human|default:"" }}</span>
         </div>
         {% if job.detected_format and job.detected_format != 'qcow2' %}
-          <div class="info-box" style="font-size: 0.78rem;padding: 0.65rem 0.85rem;">
-            <div class="info-box-icon" style="font-size: 0.85rem;"><i class="fas fa-sync-alt"></i></div>
+          <div class="info-box" style="font-size: 0.8125rem;padding: 0.65rem 0.85rem;">
+            <div class="info-box-icon" style="font-size: 0.875rem;"><i class="fas fa-sync-alt"></i></div>
             <div>Will be converted to <strong>qcow2</strong> before transfer.</div>
           </div>
         {% endif %}
@@ -952,19 +952,19 @@
       </div>
       <div class="card-body" style="padding: 1.25rem 1.5rem;">
         <ul style="list-style: none;margin: 0;padding: 0;display: flex;flex-direction: column;gap: 0.75rem;">
-          <li style="font-size: 0.82rem;color: var(--text-semi);display: flex;gap: 0.5rem;">
+          <li style="font-size: 0.8125rem;color: var(--text-semi);display: flex;gap: 0.5rem;">
             <i class="fas fa-circle" style="color: var(--link-color);font-size: 0.4rem;margin-top: 0.45rem;flex-shrink: 0;"></i>
             Use <strong>OVMF (UEFI)</strong> if the source VM was UEFI-booted.
           </li>
-          <li style="font-size: 0.82rem;color: var(--text-semi);display: flex;gap: 0.5rem;">
+          <li style="font-size: 0.8125rem;color: var(--text-semi);display: flex;gap: 0.5rem;">
             <i class="fas fa-circle" style="color: var(--link-color);font-size: 0.4rem;margin-top: 0.45rem;flex-shrink: 0;"></i>
             VirtIO network &amp; SCSI gives best performance but requires drivers in the guest.
           </li>
-          <li style="font-size: 0.82rem;color: var(--text-semi);display: flex;gap: 0.5rem;">
+          <li style="font-size: 0.8125rem;color: var(--text-semi);display: flex;gap: 0.5rem;">
             <i class="fas fa-circle" style="color: var(--link-color);font-size: 0.4rem;margin-top: 0.45rem;flex-shrink: 0;"></i>
             Windows 11 requires <strong>UEFI + Secure Boot + TPM 2.0</strong>.
           </li>
-          <li style="font-size: 0.82rem;color: var(--text-semi);display: flex;gap: 0.5rem;">
+          <li style="font-size: 0.8125rem;color: var(--text-semi);display: flex;gap: 0.5rem;">
             <i class="fas fa-circle" style="color: var(--link-color);font-size: 0.4rem;margin-top: 0.45rem;flex-shrink: 0;"></i>
             Enable <strong>QEMU Guest Agent</strong> after installing it in the VM for better integration.
           </li>
@@ -1146,13 +1146,13 @@
     row.dataset.diskType = 'new';
     row.style.cssText = 'display:flex;gap:0.75rem;align-items:center;margin-bottom:0.6rem;background:#f9fafb;border:1px solid #e8ecf0;border-radius:6px;padding:0.6rem 0.75rem;';
     row.innerHTML = `
-      <span style="font-size: 0.78rem;color: var(--text-muted);white-space: nowrap;min-width: 3rem;" data-role="disk-label">Disk ${idx}</span>
+      <span style="font-size: 0.8125rem;color: var(--text-muted);white-space: nowrap;min-width: 3rem;" data-role="disk-label">Disk ${idx}</span>
       <div class="control" style="flex: 1;">${buildStorageSelect(defaultStorage)}</div>
       <div class="control" style="width: 7rem;">
         <input class="input is-small" type="number" min="1" max="65536" value="50"
-               placeholder="Size (GB)" data-role="disk-size" style="font-size: 0.82rem;">
+               placeholder="Size (GB)" data-role="disk-size" style="font-size: 0.8125rem;">
       </div>
-      <span style="font-size: 0.72rem;color: var(--text-muted);white-space: nowrap;">GB</span>
+      <span style="font-size: 0.75rem;color: var(--text-muted);white-space: nowrap;">GB</span>
       <button type="button" class="delete is-small" onclick="removeDisk(this)" title="Remove disk"></button>
     `;
     document.getElementById('extra-disks-list').appendChild(row);
@@ -1168,7 +1168,7 @@
     row.dataset.fileId = '';
     row.style.cssText = 'display:flex;gap:0.75rem;align-items:flex-start;margin-bottom:0.6rem;background:#f9fafb;border:1px solid #e8ecf0;border-radius:6px;padding:0.6rem 0.75rem;flex-wrap:wrap;';
     row.innerHTML = `
-      <span style="font-size: 0.78rem;color: var(--text-muted);white-space: nowrap;min-width: 3rem;padding-top: 0.3rem;" data-role="disk-label">Disk ${idx}</span>
+      <span style="font-size: 0.8125rem;color: var(--text-muted);white-space: nowrap;min-width: 3rem;padding-top: 0.3rem;" data-role="disk-label">Disk ${idx}</span>
       <div style="flex: 1;min-width: 0;">
         <div style="display: flex;gap: 0.5rem;align-items: center;margin-bottom: 0.4rem;">
           <label class="button is-info is-small is-light" style="cursor: pointer;margin: 0;">
@@ -1180,7 +1180,7 @@
           <div class="control" style="width: 9rem;">${buildStorageSelect(defaultStorage)}</div>
           <button type="button" class="delete is-small" onclick="removeDisk(this)" title="Remove disk"></button>
         </div>
-        <div data-role="upload-status" style="font-size: 0.8rem;color: var(--text-muted);">No file selected</div>
+        <div data-role="upload-status" style="font-size: 0.8125rem;color: var(--text-muted);">No file selected</div>
       </div>
     `;
     document.getElementById('extra-disks-list').appendChild(row);
@@ -1196,7 +1196,7 @@
     row.dataset.sourcePath = '';
     row.style.cssText = 'display:flex;gap:0.75rem;align-items:flex-start;margin-bottom:0.6rem;background:#f9fafb;border:1px solid #e8ecf0;border-radius:6px;padding:0.6rem 0.75rem;flex-wrap:wrap;';
     row.innerHTML = `
-      <span style="font-size: 0.78rem;color: var(--text-muted);white-space: nowrap;min-width: 3rem;padding-top: 0.3rem;" data-role="disk-label">Disk ${idx}</span>
+      <span style="font-size: 0.8125rem;color: var(--text-muted);white-space: nowrap;min-width: 3rem;padding-top: 0.3rem;" data-role="disk-label">Disk ${idx}</span>
       <div style="flex: 1;min-width: 0;">
         <div style="display: flex;gap: 0.5rem;align-items: center;margin-bottom: 0.5rem;">
           <div class="control" style="width: 9rem;">${buildStorageSelect(defaultStorage)}</div>
@@ -1206,9 +1206,9 @@
              hx-get="/wizard/proxmox-disk-browser/"
              hx-trigger="load"
              hx-swap="innerHTML">
-          <div style="font-size: 0.8rem;color: var(--text-muted);"><i class="fas fa-spinner fa-spin" style="margin-right: 0.3rem;"></i>Loading…</div>
+          <div style="font-size: 0.8125rem;color: var(--text-muted);"><i class="fas fa-spinner fa-spin" style="margin-right: 0.3rem;"></i>Loading…</div>
         </div>
-        <div data-role="proxmox-selection" style="font-size: 0.78rem;color: var(--text-muted);margin-top: 0.4rem;display: none;">
+        <div data-role="proxmox-selection" style="font-size: 0.8125rem;color: var(--text-muted);margin-top: 0.4rem;display: none;">
           Selected: <span data-role="selected-filename" style="font-weight: 600;"></span>
         </div>
       </div>

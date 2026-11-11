@@ -19,6 +19,16 @@ If this is your first time, click **Run Setup Wizard** to connect ProxOrchestrat
 4. Discovering your environment (nodes, storage, networks)
 5. Setting sensible defaults
 
+## Node summary
+
+The card at the top shows the same data as the node **Summary** panel in the Proxmox web UI (without the graphs): CPU, memory, root disk and swap usage, IO delay, load average, KSM sharing, boot mode, CPU model, kernel and `pve-manager` version, and uptime. It refreshes every 30 seconds.
+
+**Temperatures** are not exposed by the Proxmox API, so they are read over the app's SSH connection directly from `/sys/class/hwmon` — nothing needs to be installed on the host. One reading per device is shown (CPU package, NVMe "Composite", etc.); hover a chip to see the other sensors of that device (e.g. each CPU core). Values turn yellow and red as they approach the sensor's critical limit (or 70/85 °C when the sensor reports none).
+
+- *"needs Sys.Audit"* — the API token cannot read the node status; give it the **PVEAuditor** role on `/`.
+- *"SSH unavailable"* — the SSH key is not working; check **Settings → Proxmox**.
+- *"No sensors exposed by the host"* — common inside nested/virtual Proxmox hosts.
+
 ## Monitoring VM counts
 
 VM counts load live from the Proxmox API each time the dashboard is visited. If the counts show spinners that never resolve, check your API token status in **Settings → Authentication**.

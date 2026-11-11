@@ -2,13 +2,13 @@
 <div id="disk-table">
 
   {% if disk_error %}
-    <div class="notification is-warning is-light" style="margin-bottom:1rem;padding:0.75rem 1rem;font-size:0.85rem;">
+    <div class="notification is-warning is-light" style="margin-bottom:1rem;padding:0.75rem 1rem;font-size:0.875rem;">
       <i class="fas fa-exclamation-triangle" style="margin-right:0.4rem;"></i> {{ disk_error }}
     </div>
   {% endif %}
 
   {% if disk_success %}
-    <div class="notification is-success is-light" style="margin-bottom:1rem;padding:0.75rem 1rem;font-size:0.85rem;">
+    <div class="notification is-success is-light" style="margin-bottom:1rem;padding:0.75rem 1rem;font-size:0.875rem;">
       <i class="fas fa-check-circle" style="margin-right:0.4rem;"></i> {{ disk_success }}
     </div>
   {% endif %}
@@ -29,11 +29,11 @@
     <tbody>
       {% for disk in disks %}
       <tr{% if disk.is_cdrom and disk.is_empty_cdrom %} style="opacity:0.6;"{% endif %}>
-        <td style="font-family:monospace;font-size:0.82rem;padding-left:1.5rem;font-weight:600;">{{ disk.interface }}</td>
+        <td style="font-family: var(--font-mono);font-size:0.8125rem;padding-left:1.5rem;font-weight:600;">{{ disk.interface }}</td>
         <td>
           {% if disk.is_cdrom %}
             {% if disk.iso_name %}
-              <span style="font-size:0.82rem;" title="{{ disk.storage }}:{{ disk.volume }}">
+              <span style="font-size:0.8125rem;" title="{{ disk.storage }}:{{ disk.volume }}">
                 <i class="fas fa-compact-disc" style="color:var(--info-color, #3273dc);margin-right:0.3rem;font-size:0.75rem;"></i>{{ disk.iso_name }}
               </span>
             {% elif disk.is_empty_cdrom %}
@@ -47,7 +47,7 @@
         </td>
         <td><strong>{{ disk.size }}</strong></td>
         <td><span class="format-badge">{{ disk.format|upper }}</span></td>
-        <td style="font-size:0.78rem;color:var(--text-muted, #7a7a7a);">{{ disk.options|default:"—" }}</td>
+        <td style="font-size:0.8125rem;color:var(--text-muted, #7a7a7a);">{{ disk.options|default:"—" }}</td>
         <td style="text-align:right;padding-right:1.5rem;white-space:nowrap;">
           {% if disk.is_cdrom %}
             {# CD-ROM drive: mount ISO, eject, or remove drive entirely #}
@@ -134,7 +134,7 @@
   {# -- Add disk form -- #}
   {% if storage_pools %}
   <div style="border-top:1px solid var(--border-color, #e8ecf0);padding:1rem 1.5rem;margin-top:0;">
-    <div style="font-size:0.8rem;font-weight:600;color:var(--text-muted, #7a7a7a);margin-bottom:0.75rem;text-transform:uppercase;letter-spacing:0.5px;">
+    <div style="font-size:0.8125rem;font-weight:600;color:var(--text-muted, #7a7a7a);margin-bottom:0.75rem;text-transform:uppercase;letter-spacing:0.5px;">
       <i class="fas fa-plus-circle" style="margin-right:0.3rem;"></i> Add Disk
     </div>
     <form method="post" action="{% url 'vm_disk_add' vmid %}"
@@ -179,16 +179,16 @@
         </div>
       </div>
       <div style="display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap;">
-        <label style="font-size:0.8rem;color:var(--text-semi, #555);display:flex;align-items:center;gap:0.3rem;cursor:pointer;">
+        <label style="font-size:0.8125rem;color:var(--text-semi, #555);display:flex;align-items:center;gap:0.3rem;cursor:pointer;">
           <input type="checkbox" name="ssd" value="1"> SSD Emulation
         </label>
-        <label style="font-size:0.8rem;color:var(--text-semi, #555);display:flex;align-items:center;gap:0.3rem;cursor:pointer;">
+        <label style="font-size:0.8125rem;color:var(--text-semi, #555);display:flex;align-items:center;gap:0.3rem;cursor:pointer;">
           <input type="checkbox" name="discard" value="1"> Discard (TRIM)
         </label>
-        <label style="font-size:0.8rem;color:var(--text-semi, #555);display:flex;align-items:center;gap:0.3rem;cursor:pointer;" id="iothread-label">
+        <label style="font-size:0.8125rem;color:var(--text-semi, #555);display:flex;align-items:center;gap:0.3rem;cursor:pointer;" id="iothread-label">
           <input type="checkbox" name="iothread" value="1"> IO Thread
         </label>
-        <label style="font-size:0.8rem;color:var(--text-semi, #555);display:flex;align-items:center;gap:0.3rem;cursor:pointer;">
+        <label style="font-size:0.8125rem;color:var(--text-semi, #555);display:flex;align-items:center;gap:0.3rem;cursor:pointer;">
           <input type="checkbox" name="backup" value="1" checked> Include in Backup
         </label>
         <div style="margin-left:auto;display:flex;gap:0.5rem;">
@@ -226,11 +226,11 @@
         {% csrf_token %}
         <input type="hidden" name="disk" id="resize-disk-name" value="">
         <section class="modal-card-body" id="resize-modal-body">
-          <p style="margin-bottom:1rem;font-size:0.9rem;">
+          <p style="margin-bottom:1rem;font-size:0.875rem;">
             Increase <strong id="resize-disk-label"></strong> (currently <span id="resize-disk-current"></span>)
           </p>
           <div class="field">
-            <label class="label" style="font-size:0.85rem;">Add (GB)</label>
+            <label class="label" style="font-size:0.875rem;">Add (GB)</label>
             <div class="control">
               <input class="input" type="number" name="add_gb" min="1" value="10" required id="resize-add-input">
             </div>
@@ -266,14 +266,14 @@
         {% csrf_token %}
         <input type="hidden" name="disk" id="attach-disk-name" value="">
         <section class="modal-card-body">
-          <p style="margin-bottom:1rem;font-size:0.9rem;">
+          <p style="margin-bottom:1rem;font-size:0.875rem;">
             Attach <strong id="attach-disk-volume"></strong> to this VM.
           </p>
 
           <div class="columns" style="margin-bottom:0;">
             <div class="column">
               <div class="field">
-                <label class="label" style="font-size:0.85rem;">Bus Type</label>
+                <label class="label" style="font-size:0.875rem;">Bus Type</label>
                 <div class="control">
                   <div class="select is-fullwidth">
                     <select name="bus" id="attach-disk-bus">
@@ -287,7 +287,7 @@
             </div>
             <div class="column">
               <div class="field">
-                <label class="label" style="font-size:0.85rem;">Cache</label>
+                <label class="label" style="font-size:0.875rem;">Cache</label>
                 <div class="control">
                   <div class="select is-fullwidth">
                     <select name="cache">
@@ -302,16 +302,16 @@
           </div>
 
           <div style="display:flex;gap:1.25rem;flex-wrap:wrap;margin-top:0.5rem;">
-            <label style="font-size:0.85rem;color:var(--text-semi, #555);display:flex;align-items:center;gap:0.3rem;cursor:pointer;">
+            <label style="font-size:0.875rem;color:var(--text-semi, #555);display:flex;align-items:center;gap:0.3rem;cursor:pointer;">
               <input type="checkbox" name="ssd" value="1"> SSD Emulation
             </label>
-            <label style="font-size:0.85rem;color:var(--text-semi, #555);display:flex;align-items:center;gap:0.3rem;cursor:pointer;">
+            <label style="font-size:0.875rem;color:var(--text-semi, #555);display:flex;align-items:center;gap:0.3rem;cursor:pointer;">
               <input type="checkbox" name="discard" value="1"> Discard (TRIM)
             </label>
-            <label style="font-size:0.85rem;color:var(--text-semi, #555);display:flex;align-items:center;gap:0.3rem;cursor:pointer;" id="attach-iothread-label">
+            <label style="font-size:0.875rem;color:var(--text-semi, #555);display:flex;align-items:center;gap:0.3rem;cursor:pointer;" id="attach-iothread-label">
               <input type="checkbox" name="iothread" value="1"> IO Thread
             </label>
-            <label style="font-size:0.85rem;color:var(--text-semi, #555);display:flex;align-items:center;gap:0.3rem;cursor:pointer;">
+            <label style="font-size:0.875rem;color:var(--text-semi, #555);display:flex;align-items:center;gap:0.3rem;cursor:pointer;">
               <input type="checkbox" name="backup" value="1" checked> Include in Backup
             </label>
           </div>
@@ -353,7 +353,7 @@
       <section class="modal-card-body">
         {# Step 1: Select storage pool #}
         <div class="field">
-          <label class="label" style="font-size:0.85rem;">ISO Storage Pool</label>
+          <label class="label" style="font-size:0.875rem;">ISO Storage Pool</label>
           <div class="control">
             <div class="select is-fullwidth">
               <select id="cdrom-storage-select" onchange="loadPoolIsos()">
@@ -373,14 +373,14 @@
         <div id="cdrom-selected" style="display:none;margin-top:1rem;padding:0.75rem 1rem;background:var(--bg-card, #f0fdf4);border:1px solid var(--success-color, #48c78e);border-radius:6px;">
           <div style="display:flex;align-items:center;gap:0.5rem;">
             <i class="fas fa-check-circle" style="color:var(--success-color, #48c78e);"></i>
-            <span id="cdrom-selected-name" style="font-family:monospace;font-size:0.82rem;font-weight:600;flex:1;"></span>
+            <span id="cdrom-selected-name" style="font-family: var(--font-mono);font-size:0.8125rem;font-weight:600;flex:1;"></span>
             <button type="button" class="button is-small is-light" onclick="clearIsoSelection()">Change</button>
           </div>
         </div>
 
         {# Upload ISO divider #}
         <hr style="margin:1rem 0;border:none;border-top:1px solid var(--border-color, #e8ecf0);">
-        <div style="font-size:0.8rem;font-weight:600;color:var(--text-muted, #7a7a7a);margin-bottom:0.5rem;">
+        <div style="font-size:0.8125rem;font-weight:600;color:var(--text-muted, #7a7a7a);margin-bottom:0.5rem;">
           <i class="fas fa-upload" style="margin-right:0.3rem;"></i> Upload New ISO
         </div>
         <form id="iso-upload-form" onsubmit="uploadIso(event)">
@@ -415,18 +415,18 @@
             </button>
           </div>
           <div style="margin-top:0.5rem;">
-            <label style="font-size:0.8rem;color:var(--text-semi, #555);display:flex;align-items:center;gap:0.3rem;cursor:pointer;">
+            <label style="font-size:0.8125rem;color:var(--text-semi, #555);display:flex;align-items:center;gap:0.3rem;cursor:pointer;">
               <input type="checkbox" id="iso-mount-after" checked> Mount after upload
             </label>
           </div>
         </form>
         <div id="iso-upload-progress" style="display:none;margin-top:0.75rem;">
-          <div style="margin-bottom:0.4rem;display:flex;justify-content:space-between;font-size:0.78rem;">
+          <div style="margin-bottom:0.4rem;display:flex;justify-content:space-between;font-size:0.8125rem;">
             <span id="iso-upload-stage" style="color:var(--link-color, #3273dc);font-weight:600;">Uploading...</span>
             <span id="iso-upload-pct" style="color:var(--text-muted, #7a7a7a);">0%</span>
           </div>
           <progress class="progress is-small is-info" id="iso-upload-bar" value="0" max="100" style="margin-bottom:0.25rem;">0%</progress>
-          <div id="iso-upload-detail" style="font-size:0.72rem;color:var(--text-muted, #7a7a7a);"></div>
+          <div id="iso-upload-detail" style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);"></div>
         </div>
       </section>
 

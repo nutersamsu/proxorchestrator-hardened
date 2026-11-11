@@ -6,6 +6,7 @@ from . import views
 
 urlpatterns = [
     path("", views.dashboard, name="dashboard"),
+    path("dashboard/node-summary/", views.dashboard_node_summary, name="dashboard_node_summary"),
     path("dashboard/job/<str:job_type>/<int:job_id>/", views.dashboard_job_status, name="dashboard_job_status"),
     path("login/", views.login_view, name="login"),
     path("logout/", views.logout_view, name="logout"),

@@ -47,9 +47,9 @@
               <div class="stage-name">{{ stage.label }}</div>
               <div class="stage-status">
                 {% if stage.state == 'DONE' %}
-                  <span style="color:var(--text-success-dark, #257953);font-size:0.78rem;font-weight:600;">Done</span>
+                  <span style="color:var(--text-success-dark, #257953);font-size:0.8125rem;font-weight:600;">Done</span>
                 {% elif stage.state == 'FAILED' %}
-                  <span style="color:var(--text-danger-dark, #cc0f35);font-size:0.78rem;font-weight:600;">Failed</span>
+                  <span style="color:var(--text-danger-dark, #cc0f35);font-size:0.8125rem;font-weight:600;">Failed</span>
                 {% endif %}
               </div>
             </div>
@@ -57,8 +57,8 @@
             {% if stage.state == 'ACTIVE' or stage.state == 'RUNNING' %}
               <div style="margin-top:0.4rem;">
                 <div style="display:flex;justify-content:space-between;margin-bottom:0.2rem;">
-                  <span style="font-size:0.72rem;color:var(--text-semi, #4a4a4a);">{{ stage.message|default:"Working..." }}</span>
-                  <span style="font-size:0.72rem;color:var(--link-color, #3273dc);font-weight:600;font-variant-numeric:tabular-nums;">
+                  <span style="font-size:0.75rem;color:var(--text-semi, #4a4a4a);">{{ stage.message|default:"Working..." }}</span>
+                  <span style="font-size:0.75rem;color:var(--link-color, #3273dc);font-weight:600;font-variant-numeric:tabular-nums;">
                     {% if elapsed_min %}{{ elapsed_min }}m {% endif %}{{ elapsed_sec }}s
                   </span>
                 </div>
@@ -67,7 +67,7 @@
             {% endif %}
 
             {% if stage.state == 'FAILED' and stage.message %}
-              <div style="font-size:0.8rem;color:var(--text-danger-dark, #cc0f35);margin-top:0.25rem;">{{ stage.message }}</div>
+              <div style="font-size:0.8125rem;color:var(--text-danger-dark, #cc0f35);margin-top:0.25rem;">{{ stage.message }}</div>
             {% endif %}
           </div>
         </div>
@@ -75,7 +75,7 @@
 
       {% if stages %}
         <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border-light, #f0f0f0);display:flex;align-items:center;justify-content:space-between;">
-          <div style="font-size:0.8rem;color:var(--text-muted, #7a7a7a);">
+          <div style="font-size:0.8125rem;color:var(--text-muted, #7a7a7a);">
             {% if job.stage == 'DONE' %}
               All stages complete
             {% elif job.stage == 'FAILED' %}
@@ -86,7 +86,7 @@
               Running — {% if elapsed_min %}{{ elapsed_min }}m {% endif %}{{ elapsed_sec }}s elapsed
             {% endif %}
           </div>
-          <div style="font-size:0.8rem;color:var(--text-semi, #4a4a4a);font-weight:600;">
+          <div style="font-size:0.8125rem;color:var(--text-semi, #4a4a4a);font-weight:600;">
             {{ stages_done_count|default:0 }} / {{ stages|length }} stages
           </div>
         </div>

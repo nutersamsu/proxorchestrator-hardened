@@ -27,7 +27,7 @@
     <div class="proxorchestrator-card" style="margin-bottom: 1.5rem;">
       <div class="card-header">
         <i class="fas fa-file-export" style="color: var(--link-color);"></i> Container Exports
-        <span style="margin-left: auto;font-size: 0.78rem;color: var(--text-muted);font-weight: 400;">
+        <span style="margin-left: auto;font-size: 0.8125rem;color: var(--text-muted);font-weight: 400;">
           Completed exports expire after 24 hours
         </span>
       </div>
@@ -47,7 +47,7 @@
                 <tr>
                   <td style="padding: 0.75rem 1rem;vertical-align: middle;">
                     <div style="font-weight: 600;color: var(--text-header);">{{ job.ct_name|default:job.vmid }}</div>
-                    <div style="font-size: 0.78rem;color: var(--text-muted);">CTID {{ job.vmid }}</div>
+                    <div style="font-size: 0.8125rem;color: var(--text-muted);">CTID {{ job.vmid }}</div>
                   </td>
                   <td style="padding: 0.75rem 1rem;vertical-align: middle;">
                     {% if job.stage == 'DONE' %}
@@ -58,7 +58,7 @@
                       <span class="status-badge" style="background: var(--link-color);color: var(--bg-card);">In Progress</span>
                     {% endif %}
                   </td>
-                  <td style="padding: 0.75rem 1rem;vertical-align: middle;color: var(--text-muted);font-size: 0.82rem;">
+                  <td style="padding: 0.75rem 1rem;vertical-align: middle;color: var(--text-muted);font-size: 0.8125rem;">
                     {{ job.created_at|timesince }} ago
                   </td>
                   <td style="padding: 0.75rem 1rem;vertical-align: middle;text-align: right;">
@@ -89,7 +89,7 @@
           <div style="padding: 2rem;text-align: center;color: var(--text-muted);">
             <i class="fas fa-cube" style="font-size: 2rem;color: var(--border-light);display: block;margin-bottom: 0.75rem;"></i>
             <div style="font-size: 0.875rem;">No container exports yet.</div>
-            <div style="font-size: 0.8rem;margin-top: 0.4rem;">
+            <div style="font-size: 0.8125rem;margin-top: 0.4rem;">
               Go to <a href="{% url 'lxc_list' %}">Container Inventory</a>, open a container, and click <strong>Export Container</strong>.
             </div>
           </div>
@@ -118,7 +118,7 @@
               <tr>
                 <td style="padding: 0.75rem 1rem;vertical-align: middle;">
                   <div style="font-weight: 600;color: var(--text-header);">{{ job.ct_name|default:"Unnamed" }}</div>
-                  {% if job.vmid %}<div style="font-size: 0.78rem;color: var(--text-muted);">CTID {{ job.vmid }}</div>{% endif %}
+                  {% if job.vmid %}<div style="font-size: 0.8125rem;color: var(--text-muted);">CTID {{ job.vmid }}</div>{% endif %}
                 </td>
                 <td style="padding: 0.75rem 1rem;vertical-align: middle;">
                   {% if job.stage == 'DONE' %}
@@ -131,7 +131,7 @@
                     <span class="status-badge" style="background: var(--link-color);color: var(--bg-card);">In Progress</span>
                   {% endif %}
                 </td>
-                <td style="padding: 0.75rem 1rem;vertical-align: middle;color: var(--text-muted);font-size: 0.82rem;">
+                <td style="padding: 0.75rem 1rem;vertical-align: middle;color: var(--text-muted);font-size: 0.8125rem;">
                   {{ job.created_at|timesince }} ago
                 </td>
                 <td style="padding: 0.75rem 1rem;vertical-align: middle;text-align: right;">
@@ -170,7 +170,7 @@
       <div class="card-header">
         <i class="fas fa-info-circle" style="color: var(--link-color);"></i> About Container Packages
       </div>
-      <div class="card-body" style="font-size: 0.85rem;color: var(--text-semi);line-height: 1.7;">
+      <div class="card-body" style="font-size: 0.875rem;color: var(--text-semi);line-height: 1.7;">
         <p style="margin-bottom: 0.75rem;">
           <strong>Export</strong> — packages a container's full configuration and rootfs into a portable <code>.px</code> file
           using vzdump snapshot mode (zero downtime).
@@ -183,7 +183,7 @@
           <strong>Use cases:</strong> migrate containers between Proxmox clusters, back up container configurations, or share development environments.
         </p>
         <hr style="border: none;border-top: 1px solid var(--border-main);margin: 0.75rem 0;">
-        <p style="font-size: 0.78rem;color: var(--text-muted);">
+        <p style="font-size: 0.8125rem;color: var(--text-muted);">
           <i class="fas fa-clock" style="margin-right: 0.3rem;"></i>
           Completed exports are automatically deleted after 24 hours.
         </p>
@@ -195,7 +195,7 @@
         <i class="fas fa-file-import" style="color: var(--link-color);"></i> Import a Container
       </div>
       <div class="card-body" style="text-align: center;padding: 1.5rem;">
-        <p style="font-size: 0.85rem;color: var(--text-semi);margin-bottom: 1rem;">
+        <p style="font-size: 0.875rem;color: var(--text-semi);margin-bottom: 1rem;">
           Have a container <code>.px</code> file from another ProxOrchestrator server?
         </p>
         <a href="{% url 'lxc_px_upload' %}" class="button is-info is-medium is-fullwidth" style="font-weight: 600;">

@@ -11,13 +11,13 @@
     <div class="proxorchestrator-card" style="margin-bottom: 1.5rem;">
       <div class="card-header">
         <i class="fas fa-hdd" style="color: var(--link-color);"></i> Local Upload Storage
-        <span style="margin-left: auto;font-size: 0.78rem;color: var(--text-muted);">{{ upload_root }}</span>
+        <span style="margin-left: auto;font-size: 0.8125rem;color: var(--text-muted);">{{ upload_root }}</span>
       </div>
       <div class="card-body">
 
         {# Disk usage bar #}
         <div style="margin-bottom: 1.25rem;">
-          <div style="display: flex;justify-content: space-between;font-size: 0.8rem;color: var(--text-muted);margin-bottom: 0.4rem;">
+          <div style="display: flex;justify-content: space-between;font-size: 0.8125rem;color: var(--text-muted);margin-bottom: 0.4rem;">
             <span>{{ local_used }} used</span>
             <span>{{ local_free }} free of {{ local_total }}</span>
           </div>
@@ -28,7 +28,7 @@
 
         {% if local_files %}
           <div style="margin-bottom: 0.75rem;display: flex;justify-content: space-between;align-items: center;">
-            <span style="font-size: 0.85rem;color: var(--text-semi);">{{ local_files|length }} file{{ local_files|length|pluralize }} on disk</span>
+            <span style="font-size: 0.875rem;color: var(--text-semi);">{{ local_files|length }} file{{ local_files|length|pluralize }} on disk</span>
             <button class="button is-warning is-small" id="btn-clean-orphans" style="font-weight: 600;">
               <span class="icon is-small"><i class="fas fa-broom"></i></span>
               <span>Clean Up Completed &amp; Failed</span>
@@ -36,7 +36,7 @@
           </div>
 
           <div style="border: 1px solid var(--border-main);border-radius: 8px;overflow: hidden;">
-            <table style="width: 100%;border-collapse: collapse;font-size: 0.82rem;">
+            <table style="width: 100%;border-collapse: collapse;font-size: 0.8125rem;">
               <thead>
                 <tr style="background: var(--bg-main);border-bottom: 1px solid var(--border-main);">
                   <th style="padding: 0.6rem 1rem;text-align: left;font-weight: 600;color: var(--text-semi);">File</th>
@@ -48,14 +48,14 @@
               <tbody>
                 {% for f in local_files %}
                 <tr style="border-bottom: 1px solid var(--border-light);" id="local-row-{{ forloop.counter }}">
-                  <td style="padding: 0.55rem 1rem;word-break: break-all;font-family: monospace;color: var(--text-header);">{{ f.name }}</td>
+                  <td style="padding: 0.55rem 1rem;word-break: break-all;font-family: var(--font-mono);color: var(--text-header);">{{ f.name }}</td>
                   <td style="padding: 0.55rem 0.5rem;text-align: right;white-space: nowrap;color: var(--text-semi);">{{ f.size_human }}</td>
                   <td style="padding: 0.55rem 0.75rem;">
                     {% if f.job %}
                       <span class="tag is-small {% if f.job.stage == 'DONE' %}is-success is-light{% elif f.job.stage == 'FAILED' %}is-danger is-light{% else %}is-info is-light{% endif %}">
                         {{ f.job.stage }}
                       </span>
-                      <span style="color: var(--text-muted);font-size: 0.78rem;margin-left: 0.3rem;">{{ f.job.vm_name }}</span>
+                      <span style="color: var(--text-muted);font-size: 0.8125rem;margin-left: 0.3rem;">{{ f.job.vm_name }}</span>
                     {% else %}
                       <span class="tag is-small is-warning is-light">No job</span>
                     {% endif %}
@@ -93,12 +93,12 @@
     <div class="proxorchestrator-card">
       <div class="card-header">
         <i class="fas fa-server" style="color: var(--purple-color);"></i> Proxmox Temp Directory
-        <span style="margin-left: auto;font-size: 0.78rem;color: var(--text-muted);">{{ proxmox_temp_dir|default:"Not configured" }}</span>
+        <span style="margin-left: auto;font-size: 0.8125rem;color: var(--text-muted);">{{ proxmox_temp_dir|default:"Not configured" }}</span>
       </div>
       <div class="card-body">
 
         {% if proxmox_error %}
-          <div class="notification is-warning is-light" style="font-size: 0.85rem;">
+          <div class="notification is-warning is-light" style="font-size: 0.875rem;">
             <i class="fas fa-exclamation-triangle" style="margin-right: 0.4rem;"></i>
             {{ proxmox_error }}
           </div>
@@ -106,7 +106,7 @@
 
           {% if proxmox_dir_info %}
           <div style="margin-bottom: 1.25rem;">
-            <div style="display: flex;justify-content: space-between;font-size: 0.8rem;color: var(--text-muted);margin-bottom: 0.4rem;">
+            <div style="display: flex;justify-content: space-between;font-size: 0.8125rem;color: var(--text-muted);margin-bottom: 0.4rem;">
               <span>{{ proxmox_dir_info.used_human }} used on Proxmox filesystem</span>
               <span>{{ proxmox_dir_info.free_human }} free</span>
             </div>
@@ -119,11 +119,11 @@
           {% endif %}
 
           {% if proxmox_files %}
-            <p style="font-size: 0.8rem;color: var(--text-muted);margin-bottom: 0.75rem;">
+            <p style="font-size: 0.8125rem;color: var(--text-muted);margin-bottom: 0.75rem;">
               These are temporary files in the Proxmox staging directory. The import pipeline cleans them up automatically on success or failure. Files listed here may be from interrupted jobs.
             </p>
             <div style="border: 1px solid var(--border-main);border-radius: 8px;overflow: hidden;">
-              <table style="width: 100%;border-collapse: collapse;font-size: 0.82rem;">
+              <table style="width: 100%;border-collapse: collapse;font-size: 0.8125rem;">
                 <thead>
                   <tr style="background: var(--bg-main);border-bottom: 1px solid var(--border-main);">
                     <th style="padding: 0.6rem 1rem;text-align: left;font-weight: 600;color: var(--text-semi);">File</th>
@@ -134,7 +134,7 @@
                 <tbody>
                   {% for f in proxmox_files %}
                   <tr style="border-bottom: 1px solid var(--border-light);" id="prox-row-{{ forloop.counter }}">
-                    <td style="padding: 0.55rem 1rem;word-break: break-all;font-family: monospace;color: var(--text-header);">{{ f.name }}</td>
+                    <td style="padding: 0.55rem 1rem;word-break: break-all;font-family: var(--font-mono);color: var(--text-header);">{{ f.name }}</td>
                     <td style="padding: 0.55rem 0.5rem;text-align: right;white-space: nowrap;color: var(--text-semi);">{{ f.size_human }}</td>
                     <td style="padding: 0.55rem 0.75rem;text-align: right;white-space: nowrap;">
                       {% if f.is_disk %}
@@ -177,7 +177,7 @@
       <div class="card-header">
         <i class="fas fa-info-circle" style="color: var(--link-color);"></i> How Cleanup Works
       </div>
-      <div class="card-body" style="font-size: 0.85rem;color: var(--text-semi);line-height: 1.7;">
+      <div class="card-body" style="font-size: 0.875rem;color: var(--text-semi);line-height: 1.7;">
         <p style="margin-bottom: 0.75rem;">
           <strong>Automatic cleanup:</strong> When an import job completes successfully or fails, ProxOrchestrator automatically deletes the local upload file and any temporary files on the Proxmox staging directory.
         </p>
@@ -199,18 +199,18 @@
       <div class="card-header">
         <i class="fas fa-cog" style="color: var(--text-muted);"></i> Storage Paths
       </div>
-      <div class="card-body" style="font-size: 0.82rem;">
+      <div class="card-body" style="font-size: 0.8125rem;">
         <div class="cert-detail-row">
           <div class="cert-detail-label">Local upload store</div>
-          <div class="cert-detail-value is-monospace" style="font-size: 0.78rem;word-break: break-all;">{{ upload_root }}</div>
+          <div class="cert-detail-value is-monospace" style="font-size: 0.8125rem;word-break: break-all;">{{ upload_root }}</div>
         </div>
         <div class="cert-detail-row">
           <div class="cert-detail-label">Proxmox temp dir</div>
-          <div class="cert-detail-value is-monospace" style="font-size: 0.78rem;word-break: break-all;">{{ proxmox_temp_dir|default:"—" }}</div>
+          <div class="cert-detail-value is-monospace" style="font-size: 0.8125rem;word-break: break-all;">{{ proxmox_temp_dir|default:"—" }}</div>
         </div>
         <div class="cert-detail-row">
           <div class="cert-detail-label">Upload temp dir</div>
-          <div class="cert-detail-value is-monospace" style="font-size: 0.78rem;word-break: break-all;">
+          <div class="cert-detail-value is-monospace" style="font-size: 0.8125rem;word-break: break-all;">
             {% if config.upload_temp_dir %}{{ config.upload_temp_dir }}{% else %}OS default (/tmp){% endif %}
           </div>
         </div>
@@ -228,7 +228,7 @@
 </div>
 
 {# Toast #}
-<div id="storage-toast" style="position: fixed;bottom: 1.5rem;left: 50%;transform: translateX(-50%) translateY(60px);background: var(--bg-sidebar);border: 1px solid var(--border-main);border-radius: 8px;padding: 0.5rem 1.25rem;font-size: 0.82rem;color: var(--success-color);z-index: 100;transition: transform 0.25s,opacity 0.25s;opacity: 0;pointer-events: none;white-space: nowrap;"></div>
+<div id="storage-toast" style="position: fixed;bottom: 1.5rem;left: 50%;transform: translateX(-50%) translateY(60px);background: var(--bg-sidebar);border: 1px solid var(--border-main);border-radius: 8px;padding: 0.5rem 1.25rem;font-size: 0.8125rem;color: var(--success-color);z-index: 100;transition: transform 0.25s,opacity 0.25s;opacity: 0;pointer-events: none;white-space: nowrap;"></div>
 
 <script>
   const CSRF = document.cookie.match(/csrftoken=([^;]+)/)?.[1] || '';

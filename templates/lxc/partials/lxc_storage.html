@@ -2,13 +2,13 @@
 <div id="lxc-storage-table">
 
   {% if mp_error %}
-    <div class="notification is-warning is-light" style="margin-bottom:1rem;padding:0.75rem 1rem;font-size:0.85rem;">
+    <div class="notification is-warning is-light" style="margin-bottom:1rem;padding:0.75rem 1rem;font-size:0.875rem;">
       <i class="fas fa-exclamation-triangle" style="margin-right:0.4rem;"></i> {{ mp_error }}
     </div>
   {% endif %}
 
   {% if mp_success %}
-    <div class="notification is-success is-light" style="margin-bottom:1rem;padding:0.75rem 1rem;font-size:0.85rem;">
+    <div class="notification is-success is-light" style="margin-bottom:1rem;padding:0.75rem 1rem;font-size:0.875rem;">
       <i class="fas fa-check-circle" style="margin-right:0.4rem;"></i> {{ mp_success }}
     </div>
   {% endif %}
@@ -29,11 +29,11 @@
     <tbody>
       {% for mp in mounts %}
       <tr>
-        <td style="font-family:monospace;font-size:0.82rem;padding-left:1.5rem;font-weight:600;">{{ mp.interface }}</td>
-        <td style="font-family:monospace;font-size:0.82rem;">{{ mp.mp|default:"—" }}</td>
+        <td style="font-family: var(--font-mono);font-size:0.8125rem;padding-left:1.5rem;font-weight:600;">{{ mp.interface }}</td>
+        <td style="font-family: var(--font-mono);font-size:0.8125rem;">{{ mp.mp|default:"—" }}</td>
         <td>{{ mp.storage }}</td>
         <td><strong>{{ mp.size }}</strong></td>
-        <td style="font-size:0.78rem;color:var(--text-muted, #7a7a7a);">{{ mp.options_display|default:"—" }}</td>
+        <td style="font-size:0.8125rem;color:var(--text-muted, #7a7a7a);">{{ mp.options_display|default:"—" }}</td>
         <td style="text-align:right;padding-right:1.5rem;white-space:nowrap;">
           <button class="button is-small is-info is-light" style="font-weight:600;"
                   onclick="openLxcResizeModal('{{ mp.interface }}', '{{ mp.size }}')"
@@ -65,7 +65,7 @@
   {# -- Add mountpoint form -- #}
   {% if storage_pools %}
   <div style="border-top:1px solid var(--border-color, #e8ecf0);padding:1rem 1.5rem;margin-top:0;">
-    <div style="font-size:0.8rem;font-weight:600;color:var(--text-muted, #7a7a7a);margin-bottom:0.75rem;text-transform:uppercase;letter-spacing:0.5px;">
+    <div style="font-size:0.8125rem;font-weight:600;color:var(--text-muted, #7a7a7a);margin-bottom:0.75rem;text-transform:uppercase;letter-spacing:0.5px;">
       <i class="fas fa-plus-circle" style="margin-right:0.3rem;"></i> Add Mountpoint
     </div>
     <form method="post" action="{% url 'lxc_mountpoint_add' vmid %}"
@@ -92,7 +92,7 @@
           <label style="font-size:0.75rem;font-weight:600;color:var(--text-muted, #7a7a7a);display:block;margin-bottom:0.25rem;">Mount Path (in container)</label>
           <input class="input is-small" type="text" name="mp" placeholder="/data" required style="width:100%;">
         </div>
-        <label style="font-size:0.8rem;color:var(--text-semi, #555);display:flex;align-items:center;gap:0.3rem;cursor:pointer;">
+        <label style="font-size:0.8125rem;color:var(--text-semi, #555);display:flex;align-items:center;gap:0.3rem;cursor:pointer;">
           <input type="checkbox" name="backup" value="1" checked> Include in Backup
         </label>
         <button type="submit" class="button is-small is-primary" style="font-weight:600;">
@@ -122,11 +122,11 @@
         {% csrf_token %}
         <input type="hidden" name="disk" id="lxc-resize-mp-name" value="">
         <section class="modal-card-body">
-          <p style="margin-bottom:1rem;font-size:0.9rem;">
+          <p style="margin-bottom:1rem;font-size:0.875rem;">
             Increase <strong id="lxc-resize-mp-label"></strong> (currently <span id="lxc-resize-mp-current"></span>)
           </p>
           <div class="field">
-            <label class="label" style="font-size:0.85rem;">Add (GB)</label>
+            <label class="label" style="font-size:0.875rem;">Add (GB)</label>
             <div class="control">
               <input class="input" type="number" name="add_gb" min="1" value="10" required>
             </div>

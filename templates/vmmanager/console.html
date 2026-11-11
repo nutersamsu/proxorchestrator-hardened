@@ -38,7 +38,7 @@
     .vm-label .badge {
       background: #48c78e;
       color: #fff;
-      font-size: 0.7rem;
+      font-size: 0.75rem;
       padding: 0.15rem 0.5rem;
       border-radius: 999px;
       font-weight: 700;
@@ -48,7 +48,7 @@
       background: rgba(255,255,255,0.08);
       border: 1px solid rgba(255,255,255,0.12);
       color: #d0d0d0;
-      font-size: 0.78rem;
+      font-size: 0.8125rem;
       padding: 0.3rem 0.75rem;
       border-radius: 6px;
       cursor: pointer;
@@ -89,7 +89,7 @@
       animation: spin 0.8s linear infinite;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .status-text { font-size: 0.9rem; color: #9a9a9a; }
+    .status-text { font-size: 0.875rem; color: #9a9a9a; }
 
     /* Clipboard panel */
     #clipboard-panel {
@@ -114,7 +114,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      font-size: 0.8rem;
+      font-size: 0.8125rem;
       font-weight: 600;
       color: #c0c0d0;
       border-bottom: 1px solid #3a3a5a;
@@ -147,14 +147,14 @@
       border: 1px solid #3a3a5a;
       border-radius: 6px;
       color: #e0e0e0;
-      font-family: 'Consolas', 'Courier New', monospace;
-      font-size: 0.8rem;
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
       padding: 0.5rem;
       resize: vertical;
       outline: none;
     }
     .clipboard-textarea:focus { border-color: #48c78e; }
-    .clipboard-hint { font-size: 0.72rem; color: #666; line-height: 1.5; }
+    .clipboard-hint { font-size: 0.75rem; color: #666; line-height: 1.5; }
     .clipboard-actions { display: flex; gap: 0.5rem; }
     .clipboard-btn {
       flex: 1;
@@ -181,7 +181,7 @@
       border: 1px solid #3a3a5a;
       border-radius: 8px;
       padding: 0.5rem 1rem;
-      font-size: 0.78rem;
+      font-size: 0.8125rem;
       color: #48c78e;
       z-index: 30;
       transition: transform 0.25s ease, opacity 0.25s ease;
@@ -244,7 +244,7 @@
       <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#f14668" stroke-width="2">
         <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
       </svg>
-      <div style="color: var(--danger-color);font-size: 0.9rem;">{{ error }}</div>
+      <div style="color: var(--danger-color);font-size: 0.875rem;">{{ error }}</div>
       <a class="toolbar-btn" href="{% url 'vm_detail' vmid %}" style="margin-top: 0.5rem;">Back to VM</a>
     {% else %}
       <div class="status-spinner"></div>
@@ -320,11 +320,11 @@
       <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2">
         <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
       </svg>
-      <div style="color: var(--warning-color);font-size: 0.9rem;">
+      <div style="color: var(--warning-color);font-size: 0.875rem;">
         Disconnected${e.detail.clean ? '' : ' unexpectedly'}.
       </div>
       <a href="/vm/${d.vmid}/console/"
-         style="margin-top: 0.5rem;background: rgba(255,255,255,0.08);border: 1px solid rgba(255,255,255,0.12);color: #d0d0d0;font-size: 0.78rem;padding: 0.3rem 0.75rem;border-radius: 6px;text-decoration: none;">
+         style="margin-top: 0.5rem;background: rgba(255,255,255,0.08);border: 1px solid rgba(255,255,255,0.12);color: #d0d0d0;font-size: 0.8125rem;padding: 0.3rem 0.75rem;border-radius: 6px;text-decoration: none;">
         Reconnect
       </a>`;
     overlay.style.display = 'flex';

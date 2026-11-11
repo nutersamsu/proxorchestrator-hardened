@@ -19,7 +19,7 @@
             <div style="font-size:1.1rem;font-weight:700;color:var(--text-main, #1a1a2e);">
               {{ clone_task.new_name }}
             </div>
-            <div style="font-size:0.85rem;color:var(--text-muted, #7a7a7a);margin-top:0.2rem;">
+            <div style="font-size:0.875rem;color:var(--text-muted, #7a7a7a);margin-top:0.2rem;">
               VMID <span class="is-monospace" style="font-weight:600;color:var(--text-main, #1a1a2e);">{{ clone_task.new_vmid }}</span>
               &nbsp;&bull;&nbsp;
               <i class="fas fa-clone" style="margin-right:0.2rem;"></i>Clone of {{ clone_task.source_name }} (VMID {{ clone_task.source_vmid }})
@@ -37,7 +37,7 @@
       <div class="card-body" style="padding:2rem;text-align:center;">
         <span class="spinner" style="width:2.5rem;height:2.5rem;border-width:3px;display:inline-block;margin-bottom:1rem;"></span>
         <p id="progress-text" style="font-weight:600;font-size:1.05rem;color:var(--text-main, #1a1a2e);">Cloning VM...</p>
-        <p style="color:var(--text-muted, #7a7a7a);font-size:0.85rem;margin-top:0.5rem;">
+        <p style="color:var(--text-muted, #7a7a7a);font-size:0.875rem;margin-top:0.5rem;">
           Proxmox is creating a copy of the disk(s) and configuration. This may take several minutes for large disks.
         </p>
       </div>
@@ -137,7 +137,7 @@
         '<h3 style="font-size:1rem;font-weight:700;color:#cc0f35;margin-bottom:0.75rem;">' +
           '<i class="fas fa-exclamation-triangle" style="margin-right:0.5rem;"></i>Clone Failed' +
         '</h3>' +
-        '<div style="background:var(--bg-card, #f9fafb);border:1px solid var(--border-color, #e8ecf0);border-radius:6px;padding:1rem;font-family:monospace;font-size:0.8rem;color:var(--text-main, #4a4a4a);white-space:pre-wrap;word-break:break-all;margin-bottom:1rem;">' +
+        '<div style="background:var(--bg-card, #f9fafb);border:1px solid var(--border-color, #e8ecf0);border-radius:6px;padding:1rem;font-family: var(--font-mono);font-size:0.8125rem;color:var(--text-main, #4a4a4a);white-space:pre-wrap;word-break:break-all;margin-bottom:1rem;">' +
           message +
         '</div>' +
         '<div style="display:flex;gap:1rem;flex-wrap:wrap;">' +

@@ -52,7 +52,7 @@
           <input type="hidden" name="section" value="connection">
 
           <div class="field" style="margin-bottom: 1.25rem;">
-            <label class="label" style="font-weight: 600;color:  var(--text-header);font-size: 0.9rem;">
+            <label class="label" style="font-weight: 600;color:  var(--text-header);font-size: 0.875rem;">
               Proxmox Host
             </label>
             <div class="control has-icons-left">
@@ -74,7 +74,7 @@
           <div class="columns">
             <div class="column">
               <div class="field">
-                <label class="label" style="font-weight: 600;color:  var(--text-header);font-size: 0.9rem;">SSH Port</label>
+                <label class="label" style="font-weight: 600;color:  var(--text-header);font-size: 0.875rem;">SSH Port</label>
                 <div class="control has-icons-left">
                   <input
                     class="input {% if errors.connection.ssh_port %}is-danger{% endif %}"
@@ -93,7 +93,7 @@
             </div>
             <div class="column">
               <div class="field">
-                <label class="label" style="font-weight: 600;color:  var(--text-header);font-size: 0.9rem;">API Port</label>
+                <label class="label" style="font-weight: 600;color:  var(--text-header);font-size: 0.875rem;">API Port</label>
                 <div class="control has-icons-left">
                   <input
                     class="input {% if errors.connection.api_port %}is-danger{% endif %}"
@@ -150,7 +150,7 @@
           <input type="hidden" name="section" value="token">
 
           <div class="field" style="margin-bottom: 1.25rem;">
-            <label class="label" style="font-weight: 600;color:  var(--text-header);font-size: 0.9rem;">
+            <label class="label" style="font-weight: 600;color:  var(--text-header);font-size: 0.875rem;">
               Token ID
             </label>
             <div class="control has-icons-left">
@@ -171,7 +171,7 @@
           </div>
 
           <div class="field" style="margin-bottom: 1.25rem;">
-            <label class="label" style="font-weight: 600;color:  var(--text-header);font-size: 0.9rem;">
+            <label class="label" style="font-weight: 600;color:  var(--text-header);font-size: 0.875rem;">
               Token Secret
             </label>
             <div class="control has-icons-left">
@@ -234,7 +234,7 @@
           <input type="hidden" name="section" value="server">
 
           <div class="field" style="margin-bottom: 1.25rem;">
-            <label class="label" style="font-weight: 600;color:  var(--text-header);font-size: 0.9rem;">
+            <label class="label" style="font-weight: 600;color:  var(--text-header);font-size: 0.875rem;">
               Appearance
             </label>
             <div class="control has-icons-left">
@@ -253,7 +253,7 @@
           </div>
 
           <div class="field" style="margin-bottom: 0.5rem;">
-            <label class="label" style="font-weight: 600;color:  var(--text-header);font-size: 0.9rem;">
+            <label class="label" style="font-weight: 600;color:  var(--text-header);font-size: 0.875rem;">
               Upload Temp Directory
             </label>
             <div class="field has-addons" style="margin-bottom: 0;">
@@ -323,15 +323,15 @@
         {% endif %}
 
         <div style="margin-bottom: 1.25rem;">
-          <label class="label" style="font-weight: 600;color:  var(--text-header);font-size: 0.9rem;">Public Key</label>
+          <label class="label" style="font-weight: 600;color:  var(--text-header);font-size: 0.875rem;">Public Key</label>
           {% if pub_key %}
-            <pre style="font-size: 0.7rem;background: var(--bg-sidebar);border: 1px solid var(--border-main);border-radius: 6px;padding: 0.75rem;word-break: break-all;white-space: pre-wrap;margin: 0;color: var(--key-text);">{{ pub_key }}</pre>
+            <pre style="font-size: 0.75rem;background: var(--bg-sidebar);border: 1px solid var(--border-main);border-radius: 6px;padding: 0.75rem;word-break: break-all;white-space: pre-wrap;margin: 0;color: var(--key-text);">{{ pub_key }}</pre>
             <p class="field-hint" style="margin-top: 0.5rem;">
               Add this key to <code>/root/.ssh/authorized_keys</code> on your Proxmox host,
               or use the re-copy button below.
             </p>
           {% else %}
-            <div class="notification is-warning is-light" style="font-size: 0.85rem;">
+            <div class="notification is-warning is-light" style="font-size: 0.875rem;">
               <i class="fas fa-exclamation-triangle" style="margin-right: 0.4rem;"></i>
               No SSH key found. Use the regenerate button below.
             </div>
@@ -342,7 +342,7 @@
 
         {# Re-copy key #}
         <div style="margin-bottom: 1.25rem;">
-          <div style="font-size: 0.78rem;text-transform: uppercase;letter-spacing: 1px;color: var(--text-muted);font-weight: 600;margin-bottom: 0.75rem;">
+          <div style="font-size: 0.8125rem;text-transform: uppercase;letter-spacing: 1px;color: var(--text-muted);font-weight: 600;margin-bottom: 0.75rem;">
             Re-copy Key to Proxmox
           </div>
           <form method="post" action="{% url 'proxmox_settings' %}">
@@ -374,7 +374,7 @@
 
         {# Regenerate key #}
         <div>
-          <div style="font-size: 0.78rem;text-transform: uppercase;letter-spacing: 1px;color: var(--text-muted);font-weight: 600;margin-bottom: 0.75rem;">
+          <div style="font-size: 0.8125rem;text-transform: uppercase;letter-spacing: 1px;color: var(--text-muted);font-weight: 600;margin-bottom: 0.75rem;">
             Regenerate SSH Key
           </div>
           <form method="post" action="{% url 'proxmox_settings' %}"
@@ -424,7 +424,7 @@
           <input type="hidden" name="section" value="defaults">
 
           {% if not api_ok and config.host %}
-            <div class="notification is-warning is-light" style="font-size: 0.82rem;margin-bottom: 1rem;padding: 0.6rem 1rem;">
+            <div class="notification is-warning is-light" style="font-size: 0.8125rem;margin-bottom: 1rem;padding: 0.6rem 1rem;">
               <i class="fas fa-plug" style="margin-right: 0.4rem;"></i>
               Proxmox API is not reachable — dropdowns show current saved values only.
               Fix the connection settings above, then reload this page to see live options.
@@ -531,13 +531,13 @@
           </div>
 
           <div style="background: var(--bg-main);border: 1px solid var(--border-main);border-radius: 8px;padding: 0.875rem;margin-bottom: 1rem;">
-            <div style="font-size: 0.78rem;text-transform: uppercase;letter-spacing: 1px;color: var(--text-muted);font-weight: 600;margin-bottom: 0.75rem;">
+            <div style="font-size: 0.8125rem;text-transform: uppercase;letter-spacing: 1px;color: var(--text-muted);font-weight: 600;margin-bottom: 0.75rem;">
               VMID Pool Range
             </div>
             <div class="columns is-gapless">
               <div class="column" style="padding-right: 0.5rem;">
                 <div class="field">
-                  <label class="label" style="font-size: 0.85rem;font-weight: 600;color: var(--text-semi);">Pool Min</label>
+                  <label class="label" style="font-size: 0.875rem;font-weight: 600;color: var(--text-semi);">Pool Min</label>
                   <div class="control">
                     <input class="input" type="number" name="vmid_min"
                       value="{{ config.vmid_min|default:100 }}" min="100" max="999999999">
@@ -546,7 +546,7 @@
               </div>
               <div class="column" style="padding-left: 0.5rem;">
                 <div class="field">
-                  <label class="label" style="font-size: 0.85rem;font-weight: 600;color: var(--text-semi);">Pool Max</label>
+                  <label class="label" style="font-size: 0.875rem;font-weight: 600;color: var(--text-semi);">Pool Max</label>
                   <div class="control">
                     <input class="input" type="number" name="vmid_max"
                       value="{{ config.vmid_max|default:999 }}" min="100" max="999999999">
@@ -604,7 +604,7 @@
           re-running the wizard will walk you through every step again — re-copying the SSH key,
           re-testing the API token, and re-discovering nodes, storage, and networks.
         </p>
-        <p style="font-size: 0.82rem;color: var(--text-muted);margin-bottom: 1.25rem;line-height: 1.5;">
+        <p style="font-size: 0.8125rem;color: var(--text-muted);margin-bottom: 1.25rem;line-height: 1.5;">
           Your existing VMs and import history are not affected.
           The app will be inaccessible until the wizard is completed again.
         </p>

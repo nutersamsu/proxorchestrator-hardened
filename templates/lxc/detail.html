@@ -77,7 +77,7 @@
       <div class="card-header" style="display: flex;justify-content: space-between;align-items: center;">
         <span><i class="fas fa-info-circle" style="color: var(--link-color);"></i> General</span>
         <button class="button is-small is-white" onclick="openLxcSettingsModal('general')" title="Edit description">
-          <i class="fas fa-pencil-alt" style="font-size: 0.7rem;color: var(--text-muted);"></i>
+          <i class="fas fa-pencil-alt" style="font-size: 0.75rem;color: var(--text-muted);"></i>
         </button>
       </div>
       <div class="card-body" style="padding: 1rem 1.5rem;">
@@ -102,7 +102,7 @@
           <div class="cert-detail-value">
             {% if ct.description %}{{ ct.description|safe_html_description }}{% else %}—{% endif %}
             <button class="button is-small is-white" style="margin-left:0.5rem;padding:0 0.4rem;height:1.5rem;" onclick="openLxcSettingsModal('general')" title="Edit description">
-              <i class="fas fa-pencil-alt" style="font-size:0.7rem;color:var(--text-muted, #7a7a7a);"></i>
+              <i class="fas fa-pencil-alt" style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);"></i>
             </button>
           </div>
         </div>
@@ -116,7 +116,7 @@
       <div class="card-header" style="display: flex;justify-content: space-between;align-items: center;">
         <span><i class="fas fa-cogs" style="color: var(--purple-color);"></i> Options</span>
         <button class="button is-small is-white" onclick="openLxcSettingsModal('options')" title="Edit container options">
-          <i class="fas fa-pencil-alt" style="font-size: 0.7rem;color: var(--text-muted);"></i>
+          <i class="fas fa-pencil-alt" style="font-size: 0.75rem;color: var(--text-muted);"></i>
         </button>
       </div>
       <div class="card-body" style="padding: 1rem 1.5rem;">
@@ -134,7 +134,7 @@
         </div>
         <div class="cert-detail-row">
           <div class="cert-detail-label">Startup Order</div>
-          <div class="cert-detail-value" style="font-family: monospace;font-size: 0.82rem;">{{ ct.startup|default:"—" }}</div>
+          <div class="cert-detail-value" style="font-family: var(--font-mono);font-size: 0.8125rem;">{{ ct.startup|default:"—" }}</div>
         </div>
         <div class="cert-detail-row">
           <div class="cert-detail-label">Protection</div>
@@ -155,7 +155,7 @@
         {% if ct.hookscript %}
         <div class="cert-detail-row">
           <div class="cert-detail-label">Hookscript</div>
-          <div class="cert-detail-value" style="font-family: monospace;font-size: 0.82rem;">{{ ct.hookscript }}</div>
+          <div class="cert-detail-value" style="font-family: var(--font-mono);font-size: 0.8125rem;">{{ ct.hookscript }}</div>
         </div>
         {% endif %}
         {% if ct.lock %}
@@ -180,7 +180,7 @@
       <div class="card-header" style="display: flex;justify-content: space-between;align-items: center;">
         <span><i class="fas fa-microchip" style="color: var(--success-color);"></i> CPU</span>
         <button class="button is-small is-white" onclick="openLxcSettingsModal('cpu')" title="Edit CPU settings">
-          <i class="fas fa-pencil-alt" style="font-size: 0.7rem;color: var(--text-muted);"></i>
+          <i class="fas fa-pencil-alt" style="font-size: 0.75rem;color: var(--text-muted);"></i>
         </button>
       </div>
       <div class="card-body" style="padding: 1rem 1.5rem;">
@@ -206,7 +206,7 @@
       <div class="card-header" style="display: flex;justify-content: space-between;align-items: center;">
         <span><i class="fas fa-memory" style="color: var(--warning-color);"></i> Memory</span>
         <button class="button is-small is-white" onclick="openLxcSettingsModal('memory')" title="Edit memory settings">
-          <i class="fas fa-pencil-alt" style="font-size: 0.7rem;color: var(--text-muted);"></i>
+          <i class="fas fa-pencil-alt" style="font-size: 0.75rem;color: var(--text-muted);"></i>
         </button>
       </div>
       <div class="card-body" style="padding: 1rem 1.5rem;">
@@ -233,7 +233,7 @@
         </div>
         <div class="cert-detail-row">
           <div class="cert-detail-label">DNS Servers</div>
-          <div class="cert-detail-value" style="font-family: monospace;font-size: 0.82rem;">{{ ct.nameserver|default:"Host settings" }}</div>
+          <div class="cert-detail-value" style="font-family: var(--font-mono);font-size: 0.8125rem;">{{ ct.nameserver|default:"Host settings" }}</div>
         </div>
         <div class="cert-detail-row">
           <div class="cert-detail-label">Search Domain</div>
@@ -310,7 +310,7 @@
       <input type="hidden" name="section" value="general">
       <section class="modal-card-body">
         <div class="field">
-          <label class="label" style="font-size:0.85rem;">Description</label>
+          <label class="label" style="font-size:0.875rem;">Description</label>
           <div class="control">
             <textarea class="textarea" name="description" rows="4" placeholder="Container description...">{{ ct.description }}</textarea>
           </div>
@@ -337,26 +337,26 @@
       <input type="hidden" name="section" value="cpu">
       <section class="modal-card-body">
         {% if ct.status == 'running' %}
-        <div class="notification is-warning is-light" style="padding:0.5rem 0.75rem;font-size:0.82rem;margin-bottom:1rem;">
+        <div class="notification is-warning is-light" style="padding:0.5rem 0.75rem;font-size:0.8125rem;margin-bottom:1rem;">
           <i class="fas fa-exclamation-triangle"></i> Container is running. Some changes may not take effect until restart.
         </div>
         {% endif %}
         <div class="field">
-          <label class="label" style="font-size:0.85rem;">Cores</label>
+          <label class="label" style="font-size:0.875rem;">Cores</label>
           <div class="control">
             <input class="input" type="number" name="cores" value="{{ ct.cores }}" min="1" max="128" placeholder="e.g. 2">
           </div>
           <p class="help">Number of CPU cores assigned to the container. Leave empty to remove the limit.</p>
         </div>
         <div class="field">
-          <label class="label" style="font-size:0.85rem;">CPU Limit</label>
+          <label class="label" style="font-size:0.875rem;">CPU Limit</label>
           <div class="control">
             <input class="input" type="text" name="cpulimit" value="{{ ct.cpulimit }}" placeholder="Unlimited">
           </div>
           <p class="help">Hard cap on host CPU time (e.g. <code>0.5</code> = half a core, <code>2</code> = two cores). Leave empty for unlimited.</p>
         </div>
         <div class="field">
-          <label class="label" style="font-size:0.85rem;">CPU Units (weight)</label>
+          <label class="label" style="font-size:0.875rem;">CPU Units (weight)</label>
           <div class="control">
             <input class="input" type="number" name="cpuunits" value="{{ ct.cpuunits }}" min="8" max="500000" placeholder="1024">
           </div>
@@ -384,17 +384,17 @@
       <input type="hidden" name="section" value="options">
       <section class="modal-card-body">
         {% if ct.status == 'running' %}
-        <div class="notification is-warning is-light" style="padding:0.5rem 0.75rem;font-size:0.82rem;margin-bottom:1rem;">
+        <div class="notification is-warning is-light" style="padding:0.5rem 0.75rem;font-size:0.8125rem;margin-bottom:1rem;">
           <i class="fas fa-exclamation-triangle"></i> Container is running. Feature changes require a restart to take effect.
         </div>
         {% endif %}
 
-        <div class="notification is-info is-light" style="padding:0.5rem 0.75rem;font-size:0.78rem;margin-bottom:1rem;">
+        <div class="notification is-info is-light" style="padding:0.5rem 0.75rem;font-size:0.8125rem;margin-bottom:1rem;">
           <i class="fas fa-info-circle"></i> <strong>Unprivileged</strong> ({% if ct.unprivileged %}Yes{% else %}No{% endif %}) is set at container creation and cannot be changed afterwards. To switch, back up and restore the container with the opposite flag.
         </div>
 
         <div class="field">
-          <label class="checkbox" style="font-size:0.85rem;">
+          <label class="checkbox" style="font-size:0.875rem;">
             <input type="checkbox" name="onboot" value="1"{% if ct.onboot %} checked{% endif %}>
             Start at boot
           </label>
@@ -402,7 +402,7 @@
         </div>
 
         <div class="field">
-          <label class="checkbox" style="font-size:0.85rem;">
+          <label class="checkbox" style="font-size:0.875rem;">
             <input type="checkbox" name="protection" value="1"{% if ct.protection %} checked{% endif %}>
             Protection
           </label>
@@ -410,7 +410,7 @@
         </div>
 
         <div class="field">
-          <label class="label" style="font-size:0.85rem;">Startup Order</label>
+          <label class="label" style="font-size:0.875rem;">Startup Order</label>
           <div class="control">
             <input class="input" type="text" name="startup" value="{{ ct.startup }}" placeholder="order=1,up=30,down=30">
           </div>
@@ -418,21 +418,21 @@
         </div>
 
         <div class="field">
-          <label class="label" style="font-size:0.85rem;">Features</label>
+          <label class="label" style="font-size:0.875rem;">Features</label>
           <div style="display:flex;flex-wrap:wrap;gap:1rem;">
-            <label class="checkbox" style="font-size:0.85rem;">
+            <label class="checkbox" style="font-size:0.875rem;">
               <input type="checkbox" name="feature_nesting" value="1"{% if ct.features_flags.nesting %} checked{% endif %}>
               Nesting
             </label>
-            <label class="checkbox" style="font-size:0.85rem;">
+            <label class="checkbox" style="font-size:0.875rem;">
               <input type="checkbox" name="feature_fuse" value="1"{% if ct.features_flags.fuse %} checked{% endif %}>
               FUSE
             </label>
-            <label class="checkbox" style="font-size:0.85rem;">
+            <label class="checkbox" style="font-size:0.875rem;">
               <input type="checkbox" name="feature_keyctl" value="1"{% if ct.features_flags.keyctl %} checked{% endif %}>
               keyctl
             </label>
-            <label class="checkbox" style="font-size:0.85rem;">
+            <label class="checkbox" style="font-size:0.875rem;">
               <input type="checkbox" name="feature_mknod" value="1"{% if ct.features_flags.mknod %} checked{% endif %}>
               mknod
             </label>
@@ -441,7 +441,7 @@
         </div>
 
         <div class="field">
-          <label class="label" style="font-size:0.85rem;">Tags</label>
+          <label class="label" style="font-size:0.875rem;">Tags</label>
           <div class="control">
             <input class="input" type="text" name="tags" value="{{ ct.tags }}" placeholder="production;web;customer-a">
           </div>
@@ -449,7 +449,7 @@
         </div>
 
         <div class="field">
-          <label class="label" style="font-size:0.85rem;">Hookscript</label>
+          <label class="label" style="font-size:0.875rem;">Hookscript</label>
           <div class="control">
             <input class="input" type="text" name="hookscript" value="{{ ct.hookscript }}" placeholder="local:snippets/hook.pl">
           </div>
@@ -477,19 +477,19 @@
       <input type="hidden" name="section" value="memory">
       <section class="modal-card-body">
         {% if ct.status == 'running' %}
-        <div class="notification is-warning is-light" style="padding:0.5rem 0.75rem;font-size:0.82rem;margin-bottom:1rem;">
+        <div class="notification is-warning is-light" style="padding:0.5rem 0.75rem;font-size:0.8125rem;margin-bottom:1rem;">
           <i class="fas fa-exclamation-triangle"></i> Container is running. Memory changes may require a restart.
         </div>
         {% endif %}
         <div class="field">
-          <label class="label" style="font-size:0.85rem;">Allocated RAM (MB)</label>
+          <label class="label" style="font-size:0.875rem;">Allocated RAM (MB)</label>
           <div class="control">
             <input class="input" type="number" name="memory_mb" value="{{ ct.memory }}" min="16" step="1" required>
           </div>
           <p class="help">Memory in megabytes. e.g. <code>512</code>, <code>2048</code>, <code>4096</code>.</p>
         </div>
         <div class="field">
-          <label class="label" style="font-size:0.85rem;">Swap (MB)</label>
+          <label class="label" style="font-size:0.875rem;">Swap (MB)</label>
           <div class="control">
             <input class="input" type="number" name="swap_mb" value="{{ ct.swap }}" min="0" step="1">
           </div>

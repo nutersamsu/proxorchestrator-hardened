@@ -80,12 +80,12 @@
   <div class="card-header">
     <i class="fas fa-server" style="color: var(--link-color);"></i> Virtual Machines
     {% if node_name %}
-      <span style="font-weight: 400;color: var(--text-muted);font-size: 0.82rem;margin-left: 0.5rem;">
+      <span style="font-weight: 400;color: var(--text-muted);font-size: 0.8125rem;margin-left: 0.5rem;">
         on <strong>{{ node_name }}</strong>
       </span>
     {% endif %}
     <div style="margin-left: auto;">
-      <div class="control has-icons-left" style="font-size: 0.85rem;">
+      <div class="control has-icons-left" style="font-size: 0.875rem;">
         <input id="vm-filter-input" class="input is-small" type="text"
                placeholder="Filter by name or VMID…"
                value="{{ search_query }}"
@@ -140,13 +140,13 @@
             </td>
             <td style="vertical-align: middle;">
               {% if vm.status == 'running' %}
-                <span style="font-size: 0.82rem;color: var(--text-semi);"
+                <span style="font-size: 0.8125rem;color: var(--text-semi);"
                       hx-get="/inventory/{{ vm.vmid }}/ip/"
                       hx-trigger="load"
                       hx-swap="innerHTML"
                       hx-select="unset">—</span>
               {% else %}
-                <span style="font-size: 0.82rem;color: var(--text-muted);">—</span>
+                <span style="font-size: 0.8125rem;color: var(--text-muted);">—</span>
               {% endif %}
             </td>
             <td style="vertical-align: middle;">
@@ -164,7 +164,7 @@
               </span>
             </td>
             <td style="vertical-align: middle;">
-              <span style="font-size: 0.82rem;color: var(--text-muted);">
+              <span style="font-size: 0.8125rem;color: var(--text-muted);">
                 {% if vm.status == 'running' and vm.uptime %}
                   {{ vm.uptime_human }}
                 {% else %}
@@ -173,7 +173,7 @@
               </span>
             </td>
             <td style="vertical-align: middle;">
-              <span style="font-size: 0.82rem;color: var(--text-muted);">{{ vm.node }}</span>
+              <span style="font-size: 0.8125rem;color: var(--text-muted);">{{ vm.node }}</span>
             </td>
             <td style="vertical-align: middle;">
               <div class="vm-actions" style="justify-content: flex-end;">
@@ -186,39 +186,39 @@
                   <div class="dropdown-menu" role="menu" style="min-width: 180px;">
                     <div class="dropdown-content" style="padding: 0.35rem 0;">
                       {% if vm.status == 'running' %}
-                        <a class="dropdown-item" style="font-size: 0.82rem;"
+                        <a class="dropdown-item" style="font-size: 0.8125rem;"
                            hx-post="/inventory/{{ vm.vmid }}/action/shutdown/"
                            hx-target="#vm-row-{{ vm.vmid }}"
                            hx-swap="outerHTML"
                            hx-confirm="Gracefully shut down {{ vm.name }}?">
                           <i class="fas fa-power-off" style="width: 1.2rem;color: var(--warning-color);"></i> Shutdown
                         </a>
-                        <a class="dropdown-item" style="font-size: 0.82rem;"
+                        <a class="dropdown-item" style="font-size: 0.8125rem;"
                            hx-post="/inventory/{{ vm.vmid }}/action/stop/"
                            hx-target="#vm-row-{{ vm.vmid }}"
                            hx-swap="outerHTML"
                            hx-confirm="Force stop {{ vm.name }}? Unsaved data may be lost.">
                           <i class="fas fa-stop" style="width: 1.2rem;color: var(--danger-color);"></i> Force Stop
                         </a>
-                        <a class="dropdown-item" style="font-size: 0.82rem;"
+                        <a class="dropdown-item" style="font-size: 0.8125rem;"
                            hx-post="/inventory/{{ vm.vmid }}/action/reboot/"
                            hx-target="#vm-row-{{ vm.vmid }}"
                            hx-swap="outerHTML"
                            hx-confirm="Reboot {{ vm.name }}?">
                           <i class="fas fa-redo" style="width: 1.2rem;color: var(--link-color);"></i> Reboot
                         </a>
-                        <a class="dropdown-item" href="{% url 'vm_console' vm.vmid %}" target="_blank" style="font-size: 0.82rem;">
+                        <a class="dropdown-item" href="{% url 'vm_console' vm.vmid %}" target="_blank" style="font-size: 0.8125rem;">
                           <i class="fas fa-terminal" style="width: 1.2rem;color: var(--text-header);"></i> Console
                         </a>
                       {% elif vm.status == 'stopped' %}
-                        <a class="dropdown-item" style="font-size: 0.82rem;"
+                        <a class="dropdown-item" style="font-size: 0.8125rem;"
                            hx-post="/inventory/{{ vm.vmid }}/action/start/"
                            hx-target="#vm-row-{{ vm.vmid }}"
                            hx-swap="outerHTML">
                           <i class="fas fa-play" style="width: 1.2rem;color: var(--success-color);"></i> Start
                         </a>
                       {% elif vm.status == 'paused' %}
-                        <a class="dropdown-item" style="font-size: 0.82rem;"
+                        <a class="dropdown-item" style="font-size: 0.8125rem;"
                            hx-post="/inventory/{{ vm.vmid }}/action/resume/"
                            hx-target="#vm-row-{{ vm.vmid }}"
                            hx-swap="outerHTML">
@@ -226,18 +226,18 @@
                         </a>
                       {% endif %}
                       <hr class="dropdown-divider" style="margin: 0.25rem 0;">
-                      <a class="dropdown-item" href="{% url 'vm_clone' vm.vmid %}" style="font-size: 0.82rem;">
+                      <a class="dropdown-item" href="{% url 'vm_clone' vm.vmid %}" style="font-size: 0.8125rem;">
                         <i class="fas fa-clone" style="width: 1.2rem;color: var(--link-color);"></i> Clone
                       </a>
-                      <a class="dropdown-item" href="{% url 'export_options' vm.vmid %}" style="font-size: 0.82rem;">
+                      <a class="dropdown-item" href="{% url 'export_options' vm.vmid %}" style="font-size: 0.8125rem;">
                         <i class="fas fa-file-export" style="width: 1.2rem;color: var(--link-color);"></i> Export VM
                       </a>
-                      <a class="dropdown-item" href="{% url 'vm_detail' vm.vmid %}" style="font-size: 0.82rem;">
+                      <a class="dropdown-item" href="{% url 'vm_detail' vm.vmid %}" style="font-size: 0.8125rem;">
                         <i class="fas fa-info-circle" style="width: 1.2rem;color: var(--text-muted);"></i> Details
                       </a>
                       {% if vm.status == 'stopped' %}
                         <hr class="dropdown-divider" style="margin: 0.25rem 0;">
-                        <a class="dropdown-item" style="font-size: 0.82rem;color: var(--danger-color);"
+                        <a class="dropdown-item" style="font-size: 0.8125rem;color: var(--danger-color);"
                            onclick="event.preventDefault();toggleKebab(event, this.closest('.vm-kebab'));openDeleteModal('{{ vm.vmid }}', '{{ vm.name|escapejs }}')">
                           <i class="fas fa-trash-alt" style="width: 1.2rem;"></i> Delete
                         </a>
@@ -296,7 +296,7 @@
           This will destroy all disks and data. This action cannot be undone.
         </p>
         <div style="margin-top:1rem;">
-          <label class="label" style="font-size:0.85rem;">Type the VMID to confirm:</label>
+          <label class="label" style="font-size:0.875rem;">Type the VMID to confirm:</label>
           <input class="input" type="text" id="delete-confirm-input" placeholder="Enter VMID" autocomplete="off"
                  oninput="checkDeleteConfirm()">
         </div>
@@ -481,7 +481,7 @@
         '<div style="text-align:center;padding:2rem;">' +
           '<span class="spinner" style="width:2rem;height:2rem;border-width:3px;display:inline-block;margin-bottom:1rem;"></span>' +
           '<p style="font-weight:600;font-size:1rem;">Deleting VM…</p>' +
-          '<p style="color:var(--text-muted, #7a7a7a);font-size:0.85rem;">Waiting for Proxmox to remove disks and configuration.</p>' +
+          '<p style="color:var(--text-muted, #7a7a7a);font-size:0.875rem;">Waiting for Proxmox to remove disks and configuration.</p>' +
         '</div>';
     }
     var cancelBtn = document.querySelector('#delete-vm-modal .modal-card-foot .button.is-light');

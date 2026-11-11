@@ -7,13 +7,13 @@
      {% endif %}>
 
   {% if snap_error %}
-    <div class="notification is-warning is-light" style="margin-bottom: 1rem;padding: 0.75rem 1rem;font-size: 0.85rem;">
+    <div class="notification is-warning is-light" style="margin-bottom: 1rem;padding: 0.75rem 1rem;font-size: 0.875rem;">
       <i class="fas fa-exclamation-triangle" style="margin-right: 0.4rem;"></i> {{ snap_error }}
     </div>
   {% endif %}
 
   {% if snap_transitioning %}
-    <div style="display: flex;align-items: center;gap: 0.6rem;margin-bottom: 1rem;padding: 0.65rem 1rem;background: var(--bg-info-light);border-radius: 6px;font-size: 0.85rem;color: var(--link-color);font-weight: 600;">
+    <div style="display: flex;align-items: center;gap: 0.6rem;margin-bottom: 1rem;padding: 0.65rem 1rem;background: var(--bg-info-light);border-radius: 6px;font-size: 0.875rem;color: var(--link-color);font-weight: 600;">
       <span class="spinner" style="width: 14px;height: 14px;border-width: 2px;"></span>
       {{ snap_action_label|default:"Working…" }}
     </div>
@@ -47,7 +47,7 @@
 
   {# ── Snapshot table ── #}
   {% if snapshots %}
-    <table class="table is-fullwidth is-hoverable" style="font-size: 0.85rem;">
+    <table class="table is-fullwidth is-hoverable" style="font-size: 0.875rem;">
       <thead>
         <tr>
           <th style="font-size: 0.75rem;color: var(--text-muted);font-weight: 600;padding-left: 1.5rem;">Name</th>
@@ -59,7 +59,7 @@
       <tbody>
         {% for snap in snapshots %}
         <tr>
-          <td style="font-family: monospace;font-size: 0.82rem;padding-left: 1.5rem;font-weight: 600;">{{ snap.name }}</td>
+          <td style="font-family: var(--font-mono);font-size: 0.8125rem;padding-left: 1.5rem;font-weight: 600;">{{ snap.name }}</td>
           <td style="color: var(--text-semi);">{{ snap.description|default:"—" }}</td>
           <td style="white-space: nowrap;color: var(--text-muted);">
             {% if snap.snaptime %}

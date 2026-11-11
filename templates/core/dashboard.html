@@ -22,7 +22,7 @@
       </div>
       <div style="flex: 1;">
         <h2 style="font-size: 1.15rem;font-weight: 700;color: var(--text-header);margin-bottom: 0.4rem;">Setup Required</h2>
-        <p style="color: var(--text-muted);font-size: 0.9rem;margin-bottom: 1.25rem;line-height: 1.6;">
+        <p style="color: var(--text-muted);font-size: 0.875rem;margin-bottom: 1.25rem;line-height: 1.6;">
           ProxOrchestrator hasn't been connected to your Proxmox server yet. Run the setup wizard to configure your Proxmox host, SSH key authentication, API token, and default settings.
         </p>
         <a href="{% url 'wizard_step1' %}" class="button is-primary" style="font-weight: 600;">
@@ -37,7 +37,7 @@
 {% endif %}
 
 {% if cert_expiry_warning %}
-<div class="notification is-warning" style="margin-bottom:1.5rem;padding:0.75rem 1rem;border-radius:8px;font-size:0.85rem;">
+<div class="notification is-warning" style="margin-bottom:1.5rem;padding:0.75rem 1rem;border-radius:8px;font-size:0.875rem;">
   <i class="fas fa-exclamation-triangle" style="margin-right:0.4rem;"></i>
   TLS certificate expires in <strong>{{ cert_days_remaining }} days</strong>.
   <a href="{% url 'cert_settings' %}" style="margin-left:0.5rem;">Manage certificates &rarr;</a>
@@ -46,8 +46,19 @@
 
 {% if wizard_complete %}
 
+{# ===== NODE SUMMARY (loaded after the page; refreshes every 30s) ===== #}
+<div id="node-summary"
+     hx-get="{% url 'dashboard_node_summary' %}"
+     hx-trigger="load, every 30s"
+     hx-swap="innerHTML">
+  <div class="proxorchestrator-card node-summary">
+    <div class="card-header"><i class="fas fa-microchip" style="color: var(--link-color);"></i> Node Summary</div>
+    <div class="card-body ns-sub">Loading node status…</div>
+  </div>
+</div>
+
 {# ===== VM STAT CARDS ===== #}
-<div style="font-size: 0.78rem;text-transform: uppercase;letter-spacing: 1px;color: var(--text-muted);font-weight: 600;margin-bottom: 0.5rem;">
+<div style="font-size: 0.8125rem;text-transform: uppercase;letter-spacing: 1px;color: var(--text-muted);font-weight: 600;margin-bottom: 0.5rem;">
   <i class="fas fa-server" style="margin-right: 0.3rem;"></i> Virtual Machines
 </div>
 <div class="columns is-multiline" style="margin-bottom: 1rem;">
@@ -98,7 +109,7 @@
 </div>
 
 {# ===== CONTAINER STAT CARDS ===== #}
-<div style="font-size: 0.78rem;text-transform: uppercase;letter-spacing: 1px;color: var(--text-muted);font-weight: 600;margin-bottom: 0.5rem;">
+<div style="font-size: 0.8125rem;text-transform: uppercase;letter-spacing: 1px;color: var(--text-muted);font-weight: 600;margin-bottom: 0.5rem;">
   <i class="fas fa-cube" style="margin-right: 0.3rem;"></i> LXC Containers
 </div>
 <div class="columns is-multiline" style="margin-bottom: 0.5rem;">
@@ -187,12 +198,12 @@
           <table class="table is-fullwidth" style="margin: 0;">
             <thead>
               <tr style="background: var(--bg-main);">
-                <th style="font-size: 0.78rem;color: var(--text-muted);font-weight: 600;border-bottom: 1px solid var(--border-main);">Source</th>
-                <th style="font-size: 0.78rem;color: var(--text-muted);font-weight: 600;border-bottom: 1px solid var(--border-main);">Name</th>
-                <th style="font-size: 0.78rem;color: var(--text-muted);font-weight: 600;border-bottom: 1px solid var(--border-main);">Type</th>
-                <th style="font-size: 0.78rem;color: var(--text-muted);font-weight: 600;border-bottom: 1px solid var(--border-main);">Status</th>
-                <th style="font-size: 0.78rem;color: var(--text-muted);font-weight: 600;border-bottom: 1px solid var(--border-main);">Date</th>
-                <th style="font-size: 0.78rem;color: var(--text-muted);font-weight: 600;border-bottom: 1px solid var(--border-main);text-align: right;">Actions</th>
+                <th style="font-size: 0.8125rem;color: var(--text-muted);font-weight: 600;border-bottom: 1px solid var(--border-main);">Source</th>
+                <th style="font-size: 0.8125rem;color: var(--text-muted);font-weight: 600;border-bottom: 1px solid var(--border-main);">Name</th>
+                <th style="font-size: 0.8125rem;color: var(--text-muted);font-weight: 600;border-bottom: 1px solid var(--border-main);">Type</th>
+                <th style="font-size: 0.8125rem;color: var(--text-muted);font-weight: 600;border-bottom: 1px solid var(--border-main);">Status</th>
+                <th style="font-size: 0.8125rem;color: var(--text-muted);font-weight: 600;border-bottom: 1px solid var(--border-main);">Date</th>
+                <th style="font-size: 0.8125rem;color: var(--text-muted);font-weight: 600;border-bottom: 1px solid var(--border-main);text-align: right;">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -235,11 +246,11 @@
   <div class="card-body">
     <div class="columns">
       <div class="column is-4">
-        <div style="font-size: 0.78rem;text-transform: uppercase;letter-spacing: 1px;color: var(--text-muted);margin-bottom: 0.35rem;font-weight: 600;">Proxmox Host</div>
-        <div style="font-weight: 600;color: var(--text-header);font-family: monospace;">{{ proxmox_host|default:"Not configured" }}</div>
+        <div style="font-size: 0.8125rem;text-transform: uppercase;letter-spacing: 1px;color: var(--text-muted);margin-bottom: 0.35rem;font-weight: 600;">Proxmox Host</div>
+        <div style="font-weight: 600;color: var(--text-header);font-family: var(--font-mono);">{{ proxmox_host|default:"Not configured" }}</div>
       </div>
       <div class="column is-4">
-        <div style="font-size: 0.78rem;text-transform: uppercase;letter-spacing: 1px;color: var(--text-muted);margin-bottom: 0.35rem;font-weight: 600;">API Status</div>
+        <div style="font-size: 0.8125rem;text-transform: uppercase;letter-spacing: 1px;color: var(--text-muted);margin-bottom: 0.35rem;font-weight: 600;">API Status</div>
         <div>
           {% if api_ok %}
             <span class="status-dot is-online"></span>
@@ -251,7 +262,7 @@
         </div>
       </div>
       <div class="column is-4">
-        <div style="font-size: 0.78rem;text-transform: uppercase;letter-spacing: 1px;color: var(--text-muted);margin-bottom: 0.35rem;font-weight: 600;">SSH Key</div>
+        <div style="font-size: 0.8125rem;text-transform: uppercase;letter-spacing: 1px;color: var(--text-muted);margin-bottom: 0.35rem;font-weight: 600;">SSH Key</div>
         <div>
           {% if ssh_key_ok %}
             <span class="status-dot is-online"></span>

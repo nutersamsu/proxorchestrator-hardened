@@ -29,7 +29,7 @@
           </div>
           <div>
             <div style="font-weight: 700;color: var(--text-header);font-size: 1rem;">{{ ct_name }}</div>
-            <div style="font-size: 0.82rem;color: var(--text-muted);margin-top: 0.2rem;">
+            <div style="font-size: 0.8125rem;color: var(--text-muted);margin-top: 0.2rem;">
               CTID {{ vmid }}
               &nbsp;&bull;&nbsp;
               {% if ct_status == 'running' %}
@@ -54,7 +54,7 @@
             <div class="section-icon" style="background: var(--bg-info-light);color: var(--link-color);"><i class="fas fa-tag"></i></div>
             General
           </div>
-          <i class="fas fa-chevron-up section-toggle-icon" style="color: var(--text-muted);font-size: 0.8rem;"></i>
+          <i class="fas fa-chevron-up section-toggle-icon" style="color: var(--text-muted);font-size: 0.8125rem;"></i>
         </div>
         <div class="form-section-body is-open">
           <div class="columns">
@@ -92,7 +92,7 @@
             <div class="section-icon" style="background: var(--bg-success-light);color: var(--text-success-dark);"><i class="fas fa-server"></i></div>
             Target
           </div>
-          <i class="fas fa-chevron-up section-toggle-icon" style="color: var(--text-muted);font-size: 0.8rem;"></i>
+          <i class="fas fa-chevron-up section-toggle-icon" style="color: var(--text-muted);font-size: 0.8125rem;"></i>
         </div>
         <div class="form-section-body is-open">
           <div class="columns">
@@ -150,7 +150,7 @@
       <div class="card-header">
         <i class="fas fa-info-circle" style="color: var(--link-color);"></i> About Container Clone
       </div>
-      <div class="card-body" style="font-size: 0.85rem;color: var(--text-semi);line-height: 1.7;">
+      <div class="card-body" style="font-size: 0.875rem;color: var(--text-semi);line-height: 1.7;">
         <p style="margin-bottom: 0.75rem;">
           Cloning creates a full, independent copy of this container with a new CTID and hostname. The clone includes the complete rootfs and all configuration.
         </p>
@@ -158,7 +158,7 @@
           The cloned container is fully standalone — no dependency on the source. You can freely modify or delete either container afterwards.
         </p>
         <hr style="border: none;border-top: 1px solid var(--border-main);margin: 0.75rem 0;">
-        <p style="font-size: 0.78rem;color: var(--text-muted);">
+        <p style="font-size: 0.8125rem;color: var(--text-muted);">
           <i class="fas fa-network-wired" style="margin-right: 0.3rem;"></i>
           The clone will inherit the source container's network config. You may need to update the IP address in Proxmox after cloning to avoid conflicts.
         </p>

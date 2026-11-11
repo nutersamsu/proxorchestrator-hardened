@@ -28,7 +28,7 @@
     {# Disk flow info box #}
     <div class="info-box" style="margin-bottom: 1.5rem;">
       <div class="info-box-icon"><i class="fas fa-route"></i></div>
-      <div style="font-size: 0.85rem;">
+      <div style="font-size: 0.875rem;">
         <strong>Disk import flow:</strong>
         Browser upload &rarr; <strong>this server's disk</strong> (convert with qemu-img)
         &rarr; SFTP &rarr; <strong>Proxmox temp dir</strong>
@@ -45,13 +45,13 @@
 
         {# LEFT COLUMN — Proxmox resources #}
         <div class="column">
-          <div style="font-size: 0.78rem;text-transform: uppercase;letter-spacing: 1px;color: var(--text-muted);font-weight: 600;margin-bottom: 1rem;">
+          <div style="font-size: 0.8125rem;text-transform: uppercase;letter-spacing: 1px;color: var(--text-muted);font-weight: 600;margin-bottom: 1rem;">
             Proxmox Resources
           </div>
 
           {# Default Node #}
           <div class="field" style="margin-bottom: 1.25rem;">
-            <label class="label" style="font-weight: 600;color: var(--text-header);font-size: 0.9rem;">Default Node</label>
+            <label class="label" style="font-weight: 600;color: var(--text-header);font-size: 0.875rem;">Default Node</label>
             <div class="control">
               <div class="select is-fullwidth">
                 <select name="default_node" id="id_default_node">
@@ -71,7 +71,7 @@
 
           {# Default Storage #}
           <div class="field" style="margin-bottom: 1.25rem;">
-            <label class="label" style="font-weight: 600;color: var(--text-header);font-size: 0.9rem;">Default Storage</label>
+            <label class="label" style="font-weight: 600;color: var(--text-header);font-size: 0.875rem;">Default Storage</label>
             <div class="control">
               <div class="select is-fullwidth">
                 <select name="default_storage" id="id_default_storage">
@@ -91,7 +91,7 @@
 
           {# Default Bridge #}
           <div class="field" style="margin-bottom: 1.25rem;">
-            <label class="label" style="font-weight: 600;color: var(--text-header);font-size: 0.9rem;">Default Network Bridge</label>
+            <label class="label" style="font-weight: 600;color: var(--text-header);font-size: 0.875rem;">Default Network Bridge</label>
             <div class="control">
               <div class="select is-fullwidth">
                 <select name="default_bridge" id="id_default_bridge">
@@ -111,7 +111,7 @@
 
           {# Proxmox Temp Directory #}
           <div class="field">
-            <label class="label" style="font-weight: 600;color: var(--text-header);font-size: 0.9rem;">
+            <label class="label" style="font-weight: 600;color: var(--text-header);font-size: 0.875rem;">
               Proxmox Temp Directory
             </label>
             <div class="control" style="display: flex;gap: 0.5rem;">
@@ -140,14 +140,14 @@
 
         {# RIGHT COLUMN — VM defaults & VMID pool #}
         <div class="column">
-          <div style="font-size: 0.78rem;text-transform: uppercase;letter-spacing: 1px;color: var(--text-muted);font-weight: 600;margin-bottom: 1rem;">
+          <div style="font-size: 0.8125rem;text-transform: uppercase;letter-spacing: 1px;color: var(--text-muted);font-weight: 600;margin-bottom: 1rem;">
             VM Defaults
           </div>
 
           <div class="columns is-gapless" style="margin-bottom: 0;">
             <div class="column" style="padding-right: 0.5rem;">
               <div class="field" style="margin-bottom: 1.25rem;">
-                <label class="label" style="font-weight: 600;color: var(--text-header);font-size: 0.9rem;">CPU Cores</label>
+                <label class="label" style="font-weight: 600;color: var(--text-header);font-size: 0.875rem;">CPU Cores</label>
                 <div class="control has-icons-left">
                   <input class="input" type="number" name="default_cores"
                     value="{{ form.default_cores.value|default:2 }}" min="1" max="128">
@@ -157,7 +157,7 @@
             </div>
             <div class="column" style="padding-left: 0.5rem;">
               <div class="field" style="margin-bottom: 1.25rem;">
-                <label class="label" style="font-weight: 600;color: var(--text-header);font-size: 0.9rem;">RAM (MB)</label>
+                <label class="label" style="font-weight: 600;color: var(--text-header);font-size: 0.875rem;">RAM (MB)</label>
                 <div class="control has-icons-left">
                   <input class="input" type="number" name="default_memory_mb"
                     value="{{ form.default_memory_mb.value|default:2048 }}" min="256" step="256">
@@ -169,12 +169,12 @@
 
           {# VMID Pool #}
           <div style="background: var(--bg-main);border: 1px solid var(--border-main);border-radius: 8px;padding: 1rem;margin-bottom: 1.25rem;">
-            <div style="font-size: 0.78rem;text-transform: uppercase;letter-spacing: 1px;color: var(--text-muted);font-weight: 600;margin-bottom: 0.75rem;">
+            <div style="font-size: 0.8125rem;text-transform: uppercase;letter-spacing: 1px;color: var(--text-muted);font-weight: 600;margin-bottom: 0.75rem;">
               VMID Pool Range
             </div>
 
             {% if existing_vmids %}
-              <div style="font-size: 0.78rem;color: var(--text-muted);margin-bottom: 0.75rem;">
+              <div style="font-size: 0.8125rem;color: var(--text-muted);margin-bottom: 0.75rem;">
                 <i class="fas fa-info-circle" style="color: var(--link-color);margin-right: 0.3rem;"></i>
                 Existing VMIDs on cluster:
                 <strong>{{ existing_vmids|join:", " }}</strong>
@@ -185,7 +185,7 @@
             <div class="columns is-gapless">
               <div class="column" style="padding-right: 0.5rem;">
                 <div class="field">
-                  <label class="label" style="font-size: 0.85rem;font-weight: 600;color: var(--text-semi);">Pool Min</label>
+                  <label class="label" style="font-size: 0.875rem;font-weight: 600;color: var(--text-semi);">Pool Min</label>
                   <div class="control">
                     <input class="input" type="number" name="vmid_min"
                       value="{{ form.vmid_min.value|default:100 }}" min="100" max="999999999">
@@ -194,7 +194,7 @@
               </div>
               <div class="column" style="padding-left: 0.5rem;">
                 <div class="field">
-                  <label class="label" style="font-size: 0.85rem;font-weight: 600;color: var(--text-semi);">Pool Max</label>
+                  <label class="label" style="font-size: 0.875rem;font-weight: 600;color: var(--text-semi);">Pool Max</label>
                   <div class="control">
                     <input class="input" type="number" name="vmid_max"
                       value="{{ form.vmid_max.value|default:999 }}" min="100" max="999999999">
@@ -212,7 +212,7 @@
       </div>
       {# VirtIO Windows Drivers ISO #}
       <div class="field" style="margin-top: 0.75rem;padding-top: 1.25rem;border-top: 1px solid var(--border-main);">
-        <label class="label" style="font-weight: 600;color: var(--text-header);font-size: 0.9rem;">
+        <label class="label" style="font-weight: 600;color: var(--text-header);font-size: 0.875rem;">
           VirtIO Windows Drivers ISO
           <span style="font-weight: 400;color: var(--text-muted);"> — optional</span>
         </label>
@@ -263,7 +263,7 @@
   <div style="position: absolute;inset: 0;background: rgba(0,0,0,0.5);" onclick="closeDirBrowser()"></div>
   <div style="position: relative;background: var(--bg-card);border-radius: 12px;box-shadow: 0 20px 60px rgba(0,0,0,0.3);width: 100%;max-width: 520px;overflow: hidden;">
     <div style="display: flex;align-items: center;justify-content: space-between;padding: 0.875rem 1.25rem;background: var(--bg-sidebar);color: var(--bg-card);">
-      <span style="font-weight: 600;font-size: 0.95rem;">
+      <span style="font-weight: 600;font-size: 1rem;">
         <i class="fas fa-folder-open" style="margin-right: 0.5rem;color: var(--warning-color);"></i>
         Browse Proxmox Directories
       </span>

@@ -29,7 +29,7 @@
           </div>
           <div>
             <div style="font-weight:700;color:var(--text-main, #1a1a2e);font-size:1rem;">{{ vm_name }}</div>
-            <div style="font-size:0.82rem;color:var(--text-muted, #7a7a7a);margin-top:0.2rem;">
+            <div style="font-size:0.8125rem;color:var(--text-muted, #7a7a7a);margin-top:0.2rem;">
               VMID {{ vmid }}
               &nbsp;&bull;&nbsp;
               {% if vm_status == 'running' %}
@@ -54,7 +54,7 @@
             <div class="section-icon" style="background:#eff6ff;color:var(--link-color, #3273dc);"><i class="fas fa-tag"></i></div>
             General
           </div>
-          <i class="fas fa-chevron-up section-toggle-icon" style="color:var(--text-muted, #b5b5b5);font-size:0.8rem;"></i>
+          <i class="fas fa-chevron-up section-toggle-icon" style="color:var(--text-muted, #b5b5b5);font-size:0.8125rem;"></i>
         </div>
         <div class="form-section-body is-open">
           <div class="columns">
@@ -92,7 +92,7 @@
             <div class="section-icon" style="background:#f0fdf4;color:#257953;"><i class="fas fa-server"></i></div>
             Target
           </div>
-          <i class="fas fa-chevron-up section-toggle-icon" style="color:var(--text-muted, #b5b5b5);font-size:0.8rem;"></i>
+          <i class="fas fa-chevron-up section-toggle-icon" style="color:var(--text-muted, #b5b5b5);font-size:0.8125rem;"></i>
         </div>
         <div class="form-section-body is-open">
           <div class="columns">
@@ -147,7 +147,7 @@
       <div class="card-header">
         <i class="fas fa-info-circle" style="color:var(--link-color, #3273dc);"></i> About VM Clone
       </div>
-      <div class="card-body" style="font-size:0.85rem;color:var(--text-semi, #555);line-height:1.7;">
+      <div class="card-body" style="font-size:0.875rem;color:var(--text-semi, #555);line-height:1.7;">
         <p style="margin-bottom:0.75rem;">
           Cloning creates a copy of this VM with a new VMID and name. A <strong>full clone</strong> is completely independent — you can modify or delete either VM freely.
         </p>
@@ -155,7 +155,7 @@
           A <strong>linked clone</strong> shares the source VM's base disk and uses less space, but depends on the source VM's disk. Use linked clones for temporary or test VMs.
         </p>
         <hr style="border:none;border-top:1px solid var(--border-color, #e8ecf0);margin:0.75rem 0;">
-        <p style="font-size:0.78rem;color:var(--text-muted, #888);">
+        <p style="font-size:0.8125rem;color:var(--text-muted, #888);">
           <i class="fas fa-network-wired" style="margin-right:0.3rem;"></i>
           The clone inherits the source VM's network config including MAC address. Proxmox will generate a new MAC automatically, but you may need to update any static IP configuration inside the guest OS.
         </p>
