@@ -1565,3 +1565,41 @@ a.stat-card-link:hover {
   .pve-cpu, .pve-io, .pve-load { grid-column: 1; grid-row: auto; }
   .pve-line { flex-wrap: wrap; }
 }
+
+/* --------------------------------------------------------------------------
+   VM / CT Notes (PVE description: Markdown + HTML, sanitised)
+   -------------------------------------------------------------------------- */
+.pve-notes {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--text-header);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.pve-notes > :first-child { margin-top: 0; }
+.pve-notes img { max-width: 100%; max-height: 160px; height: auto; vertical-align: middle; }
+.pve-notes h1, .pve-notes h2, .pve-notes h3,
+.pve-notes h4, .pve-notes h5, .pve-notes h6 {
+  font-weight: 600;
+  margin: 0.9rem 0 0.4rem;
+  color: var(--text-header);
+}
+.pve-notes h1 { font-size: 1.25rem; }
+.pve-notes h2 { font-size: 1.125rem; }
+.pve-notes h3 { font-size: 1rem; }
+.pve-notes h4, .pve-notes h5, .pve-notes h6 { font-size: 0.875rem; }
+.pve-notes p, .pve-notes ul, .pve-notes ol, .pve-notes blockquote, .pve-notes pre, .pve-notes table { margin: 0 0 0.6rem; }
+.pve-notes ul { list-style: disc; padding-left: 1.4rem; }
+.pve-notes ol { list-style: decimal; padding-left: 1.4rem; }
+.pve-notes hr { margin: 0.75rem 0; background: var(--border-main); height: 1px; border: 0; }
+.pve-notes code { font-family: var(--font-mono); font-size: 0.8125rem; background: var(--bg-main); padding: 0.05rem 0.3rem; border-radius: 3px; color: inherit; }
+.pve-notes pre { background: var(--bg-main); padding: 0.5rem 0.75rem; overflow-x: auto; border-radius: 4px; }
+.pve-notes pre code { padding: 0; background: none; }
+.pve-notes blockquote { border-left: 3px solid var(--border-main); padding-left: 0.75rem; color: var(--text-muted); }
+.pve-notes table { border-collapse: collapse; width: auto; max-width: 100%; display: block; overflow-x: auto; background: transparent; }
+.pve-notes th, .pve-notes td { font-size: 0.8125rem; line-height: 1.4; border: 1px solid var(--border-main); padding: 0.2rem 0.6rem; text-align: left; vertical-align: top; color: inherit; }
+.pve-notes th { font-weight: 600; background: var(--bg-main); }
+.pve-notes thead:not(:has(th:not(:empty))) { display: none; }
+.pve-notes a { color: var(--link-color); }
+.pve-notes sub { font-size: 0.75rem; color: var(--text-muted); }
