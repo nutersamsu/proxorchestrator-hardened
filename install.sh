@@ -613,31 +613,32 @@ sudo -u "${APP_USER}" \
 echo "==> Creating admin user..."
 echo ""
 
-# Allow non-interactive install via environment variables
-DEFAULT_ADMIN_PASS="Password!"
+# Allow non-interactive install via environment variables.
+# There is no well-known default password: when none is given (blank answer,
+# no terminal, or the old "Password!" default) a random one is generated,
+# written to a root-only file and must be changed on first login.
+OLD_DEFAULT_PASS="Password!"
+ADMIN_PASS_FILE="/root/proxorchestrator-admin-password.txt"
 FORCE_CHANGE=false
+GENERATED_PASS=false
 
-if [[ -n "${PROXORCHESTRATOR_ADMIN_USER:-}" && -n "${PROXORCHESTRATOR_ADMIN_PASS:-}" ]]; then
+if [[ -n "${PROXORCHESTRATOR_ADMIN_USER:-}" && -n "${PROXORCHESTRATOR_ADMIN_PASS:-}" \
+      && "${PROXORCHESTRATOR_ADMIN_PASS}" != "${OLD_DEFAULT_PASS}" ]]; then
     ADMIN_USER="${PROXORCHESTRATOR_ADMIN_USER}"
     ADMIN_PASS="${PROXORCHESTRATOR_ADMIN_PASS}"
-    if [[ "${ADMIN_PASS}" == "${DEFAULT_ADMIN_PASS}" ]]; then
-        FORCE_CHANGE=true
-        echo "    Using credentials from environment variables (default password — will force change on first login)."
-    else
-        echo "    Using credentials from environment variables."
-    fi
+    echo "    Using credentials from environment variables."
+elif [[ -n "${PROXORCHESTRATOR_ADMIN_USER:-}" || ! -t 0 ]]; then
+    ADMIN_USER="${PROXORCHESTRATOR_ADMIN_USER:-admin}"
+    ADMIN_PASS=""
+    echo "    Non-interactive install: a random admin password will be generated."
 else
-    read -rp "    Admin username [admin]: " ADMIN_USER
+    read -rp "    Admin username [admin]: " ADMIN_USER || true
     ADMIN_USER="${ADMIN_USER:-admin}"
 
-    echo "    Leave password blank to use default '${DEFAULT_ADMIN_PASS}' with forced change on first login."
-    read -rsp "    Admin password: " ADMIN_PASS
+    echo "    Leave password blank to generate a random one (you must change it on first login)."
+    read -rsp "    Admin password: " ADMIN_PASS || true
     echo ""
-    if [[ -z "${ADMIN_PASS}" ]]; then
-        ADMIN_PASS="${DEFAULT_ADMIN_PASS}"
-        FORCE_CHANGE=true
-        echo "    Using default password — user will be required to change it on first login."
-    else
+    if [[ -n "${ADMIN_PASS}" ]]; then
         while true; do
             read -rsp "    Confirm password: " ADMIN_PASS2
             echo ""
@@ -650,6 +651,15 @@ else
             fi
         done
     fi
+fi
+
+if [[ -z "${ADMIN_PASS}" || "${ADMIN_PASS}" == "${OLD_DEFAULT_PASS}" ]]; then
+    ADMIN_PASS="$(python3 -c "import secrets; print(secrets.token_urlsafe(18))")"
+    FORCE_CHANGE=true
+    GENERATED_PASS=true
+    ( umask 077; printf 'ProxOrchestrator first-login credentials (change on first login, then delete this file)\nuser: %s\npassword: %s\n' \
+        "${ADMIN_USER}" "${ADMIN_PASS}" > "${ADMIN_PASS_FILE}" )
+    echo "    Random password generated and saved to ${ADMIN_PASS_FILE} (root only)."
 fi
 
 ADMIN_EMAIL=""
@@ -698,6 +708,10 @@ echo "============================================================"
 echo ""
 echo "  Access URL : https://${PRIMARY_IP}:${PORT}"
 echo "  Admin user : ${ADMIN_USER}"
+if [[ "${GENERATED_PASS}" == "true" ]]; then
+    echo "  Password   : ${ADMIN_PASS}"
+    echo "               (also in ${ADMIN_PASS_FILE}; you must change it on first login)"
+fi
 echo ""
 echo "  NOTE: Your browser will show a self-signed certificate"
 echo "  warning. This is expected. Click 'Advanced' and proceed."

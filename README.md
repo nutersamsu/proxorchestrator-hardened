@@ -2,7 +2,7 @@
 
 **Version 1.1.2** — Build `2026-04-10.1`
 
-> **To update an existing install:** `git pull origin main && sudo ./update.sh`
+> **To update an existing install:** `git pull origin hardening && sudo ./update.sh`
 
 > **Security-hardened fork (branch `hardening`).** Fixes an unauthenticated
 > Proxmox API exposure via `/vm-ws/`, open self-signup, MFA bypass, missing
@@ -151,10 +151,25 @@ sudo systemctl restart proxorchestrator-gunicorn
 
 ## Quick Install
 
+Requirements: a fresh **Debian 12/13 or Ubuntu 22.04+** VM or LXC (2 vCPU, 2 GB RAM,
+16 GB disk minimum; more disk if you will import large images), reachable from your
+Proxmox host. Do not install it on the Proxmox host itself and do not expose it to the
+internet.
+
 ```bash
-git clone https://github.com/ForgedIO/ProxOrchestrator.git
-cd ProxOrchestrator
+sudo apt-get update && sudo apt-get install -y git
+git clone -b hardening https://github.com/nutersamsu/proxorchestrator-hardened.git
+cd proxorchestrator-hardened
 sudo ./install.sh
+```
+
+Run it from a normal root shell (default `umask 022`); a restrictive umask leaves the
+static files unreadable by nginx.
+
+Unattended install (no prompts):
+
+```bash
+sudo PROXORCHESTRATOR_ADMIN_USER=admin ./install.sh      # random password, see below
 ```
 
 To use a custom HTTPS port:
@@ -179,8 +194,8 @@ After install, open `https://<your-server-ip>:8443` and log in with the admin ac
 To update an existing installation to the latest version:
 
 ```bash
-cd /path/to/ProxOrchestrator   # wherever you cloned the repo
-git pull origin main
+cd /path/to/proxorchestrator-hardened   # wherever you cloned the repo
+git pull origin hardening
 sudo ./update.sh
 ```
 
@@ -195,14 +210,13 @@ It does **not** touch your nginx config, TLS certificates, systemd unit files, o
 
 ## First Login
 
-The installer prompts you to create an admin account. If you pressed Enter to skip the password prompt, the defaults are:
+The installer prompts you to create an admin account. If you leave the password blank
+(or run it without a terminal, e.g. from `lxc-install.sh`), there is **no default
+password**: a random one is generated, shown at the end of the install and saved to
+`/root/proxorchestrator-admin-password.txt` (readable by root only).
 
-| Field | Value |
-|---|---|
-| Username | `admin` (or whatever you entered) |
-| Password | `Password!` |
-
-You will be **forced to change the password on first login** before you can access anything else. There is no security risk in the default password being known because it cannot be used without immediately setting a new one.
+You will be **forced to change that password on first login** before you can access
+anything else. Delete the file afterwards.
 
 After changing your password you are taken directly into the **Setup Wizard** to connect ProxOrchestrator to your Proxmox host.
 
@@ -507,13 +521,13 @@ Export a complete VM (configuration + all disks) as a `.px` package — a tar.gz
 Deploy ProxOrchestrator as a Proxmox LXC container with a single command — no manual setup required. Run this on your **Proxmox VE host** (not inside a VM or container):
 
 ```bash
-bash -c "$(wget -qLO - https://github.com/ForgedIO/ProxOrchestrator/raw/main/lxc-install.sh)"
+bash -c "$(wget -qLO - https://github.com/nutersamsu/proxorchestrator-hardened/raw/hardening/lxc-install.sh)"
 ```
 
 With options (use `--` to pass flags to the script):
 
 ```bash
-bash -c "$(wget -qLO - https://github.com/ForgedIO/ProxOrchestrator/raw/main/lxc-install.sh)" -- --storage nvme-pool2 --id 200 --ip 192.168.1.50/24 --gateway 192.168.1.1
+bash -c "$(wget -qLO - https://github.com/nutersamsu/proxorchestrator-hardened/raw/hardening/lxc-install.sh)" -- --storage nvme-pool2 --id 200 --ip 192.168.1.50/24 --gateway 192.168.1.1
 ```
 
 | Option | Default | Description |
@@ -549,12 +563,12 @@ pct enter <container-id>
 
 **Update ProxOrchestrator to the latest version** (run from inside the container):
 ```bash
-cd /opt/proxorchestrator-src && git pull origin main && sudo ./update.sh
+cd /opt/proxorchestrator-src && git pull origin hardening && sudo ./update.sh
 ```
 
 Or as a one-liner from the Proxmox host without entering the container:
 ```bash
-pct exec <container-id> -- bash -c "cd /opt/proxorchestrator-src && git pull origin main && sudo ./update.sh"
+pct exec <container-id> -- bash -c "cd /opt/proxorchestrator-src && git pull origin hardening && sudo ./update.sh"
 ```
 
 **Restart services** (from inside the container):

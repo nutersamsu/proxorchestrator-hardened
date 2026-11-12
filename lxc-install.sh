@@ -3,10 +3,10 @@
 # Runs on the Proxmox VE host — creates a Debian LXC container and installs ProxOrchestrator inside it.
 #
 # Usage:
-#   bash -c "$(wget -qLO - https://github.com/ForgedIO/ProxOrchestrator/raw/main/lxc-install.sh)"
+#   bash -c "$(wget -qLO - https://github.com/nutersamsu/proxorchestrator-hardened/raw/hardening/lxc-install.sh)"
 #
 # Or download and run:
-#   wget https://github.com/ForgedIO/ProxOrchestrator/raw/main/lxc-install.sh
+#   wget https://github.com/nutersamsu/proxorchestrator-hardened/raw/hardening/lxc-install.sh
 #   bash lxc-install.sh
 #
 # Options:
@@ -77,8 +77,8 @@ CT_IP="dhcp"
 CT_GW=""
 CT_DNS=""
 TEMPLATE="debian-12-standard"
-REPO_URL="https://github.com/ForgedIO/ProxOrchestrator.git"
-REPO_BRANCH="main"
+REPO_URL="${PROXORCHESTRATOR_REPO_URL:-https://github.com/nutersamsu/proxorchestrator-hardened.git}"
+REPO_BRANCH="${PROXORCHESTRATOR_REPO_BRANCH:-hardening}"
 
 # ---------------------------------------------------------------------------
 # Parse arguments
@@ -308,7 +308,13 @@ fi
 echo ""
 echo -e "  Container ID:   ${CT_ID}"
 echo -e "  Hostname:       ${CT_HOSTNAME}"
-echo -e "  Default login:  ${YW}admin / admin${NC} (you'll be prompted to change it)"
+CT_ADMIN_PASS=$(pct exec "${CT_ID}" -- awk '/^password:/{print $2}' /root/proxorchestrator-admin-password.txt 2>/dev/null || true)
+if [[ -n "${CT_ADMIN_PASS}" ]]; then
+    echo -e "  First login:    ${YW}admin / ${CT_ADMIN_PASS}${NC} (random; you'll be required to change it)"
+    echo -e "                  also saved in the container at /root/proxorchestrator-admin-password.txt"
+else
+    echo -e "  First login:    the admin account created by install.sh (see output above)"
+fi
 echo ""
 echo -e "  To enter the container:  ${BL}pct enter ${CT_ID}${NC}"
 echo -e "  To update ProxOrchestrator:   ${BL}pct exec ${CT_ID} -- bash -c 'cd /opt/proxorchestrator-src && git pull && sudo ./update.sh'${NC}"

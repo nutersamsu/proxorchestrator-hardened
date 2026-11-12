@@ -269,14 +269,20 @@ LOGIN_REDIRECT_URL = "/"
 # Logging — errors to gunicorn error log
 # ---------------------------------------------------------------------------
 
+_log_dir = os.environ.get("LOG_DIR", "/var/log/proxorchestrator")
+# Outside an installed system (tests, development) the log directory may not
+# exist; fall back to stderr instead of failing at start-up.
+_file_handler = (
+    {"class": "logging.FileHandler", "filename": os.path.join(_log_dir, "django.log")}
+    if os.path.isdir(_log_dir) and os.access(_log_dir, os.W_OK)
+    else {"class": "logging.StreamHandler"}
+)
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "handlers": {
-        "file": {
-            "class": "logging.FileHandler",
-            "filename": "/var/log/proxorchestrator/django.log",
-        },
+        "file": _file_handler,
     },
     "root": {
         "handlers": ["file"],

@@ -159,5 +159,14 @@ internet.
 - TOTP codes can be replayed within their 30–60 s window.
 - Community scripts download further code from the `main` branch at run time;
   they cannot be pinned to a commit from here.
-- The default first-run password (`Password!`, forced change on first login)
-  is kept for compatibility.
+
+## Fresh installs: no well-known admin password
+
+Upstream used `Password!` as the first-run password whenever the installer's
+password prompt was left blank (and always in the LXC one-liner, which runs
+without a terminal). Anyone on the network could log in first and take the
+admin account. `install.sh` now generates a random password in that case,
+prints it at the end, stores it in `/root/proxorchestrator-admin-password.txt`
+(mode 600) and still forces a change on first login. `Password!` passed via
+`PROXORCHESTRATOR_ADMIN_PASS` is treated the same way. The installers now
+clone this fork (`hardening` branch) instead of the unpatched upstream.

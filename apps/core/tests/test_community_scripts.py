@@ -11,6 +11,8 @@ from django.test import SimpleTestCase
 from apps.core.scripts import DIAGNOSTICS_OPT_OUT
 from apps.lxc.tasks import _build_env_string
 
+from ._redis import requires_redis
+
 
 class DiagnosticsOptOut(SimpleTestCase):
     """The core no longer honours var_diagnostics and blocks on a whiptail
@@ -128,6 +130,7 @@ class CompletionNoticeAfterReconnect(SimpleTestCase):
         self.assertEqual(len(received), 1)
 
 
+@requires_redis
 class ChannelLayerIdleWait(SimpleTestCase):
     """With redis-py >= 6 an idle receive() raised TimeoutError after 5 s,
     which closed every script terminal right after it opened."""

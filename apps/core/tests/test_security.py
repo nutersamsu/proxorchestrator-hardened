@@ -25,6 +25,8 @@ from django.test import Client, TestCase, override_settings
 from apps.core.models import UserProfile
 from apps.wizard.models import ProxmoxConfig
 
+from ._redis import requires_redis
+
 BASE_DIR = Path(settings.BASE_DIR)
 LOCMEM = {"default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"}}
 
@@ -245,6 +247,7 @@ class ConsoleProxyAuth(SecurityTestCase):
         self.assertEqual(self._auth(c).status_code, 403)
 
 
+@requires_redis
 class WebSocketHardening(SecurityTestCase):
     """The root-shell WebSockets accepted cross-site handshakes and any user."""
 
