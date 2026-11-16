@@ -12,9 +12,35 @@
 > **Credits.** ProxOrchestrator was created by **[ForgedIO](https://github.com/ForgedIO)**
 > — original project at <https://github.com/ForgedIO/ProxOrchestrator>, written mainly by
 > csd440 with contributions from Brett Verney. All the core application is their work,
-> released under the MIT License (kept unchanged in [LICENSE](LICENSE)). This fork only
-> adds security fixes and small improvements on top; please support and star the
-> original project.
+> released under the MIT License (kept unchanged in [LICENSE](LICENSE)). This fork adds
+> security fixes and the Proxmox-UI features listed below on top; please support and
+> star the original project.
+
+## What this fork adds
+
+Most things you would otherwise open the Proxmox web UI for, with a limited API
+token and without root on the Proxmox host:
+
+| Area | Added |
+|---|---|
+| **Tasks** | Task history with filters, live task log with *Stop*, recent-tasks bar on every page |
+| **Graphs** | CPU, memory, network, disk IO, load and pressure graphs for the node, VMs and containers (hour → year, average/maximum), rendered server-side as SVG |
+| **VMs** | Options (OS type, guest agent, protection, hotplug, tablet/ACPI/KVM, tags, display, SCSI controller), Cloud-Init (user, password, SSH keys, DNS, IPv4/IPv6 per NIC, regenerate image), guest-agent info (OS, IPs, file systems), move disk, convert to template, reset / pause / hibernate / resume, read-only list of passthrough and other hardware |
+| **Containers** | DNS and host name, console mode, move volume, convert to template |
+| **Backups** | Scheduled jobs with *Run now*, backup now (several guests), restore to a new ID or over the original, protect, notes, delete; a Backup card on every VM/CT page |
+| **Storage** | Usage of every storage and a content browser (backups, ISOs, templates, disks; orphan disks flagged) |
+| **Firewall** | Per-guest firewall: options, rules (macros, protocols, ports, aliases, IPSets), aliases, IPSets; datacenter, node and security groups shown read-only |
+| **Node** *(admins)* | Services, network, DNS/hosts/time, disks with S.M.A.R.T. and SSD wearout, LVM / LVM-thin / ZFS, repositories and package versions, certificates, PCI devices |
+| **Permissions** *(admins)* | Proxmox users, groups, ACLs, roles, pools and realms |
+| **Look** | A second, denser **"Ops" theme** (light/dark/system) next to the classic one, chosen per user; collapsible sidebar on phones |
+
+Actions the token is not allowed to perform are hidden or shown read-only with
+the missing privilege named: the app reads the token's effective privileges from
+`/access/permissions`. With the recommended token (`PVEVMAdmin` + `PVEDatastoreUser`
++ `PVEAuditor`) everything above works except changing the datacenter/node
+firewall, backup jobs, the node itself, users and ACLs (they need `Sys.Modify`,
+`Sys.PowerMgmt` or `User.Modify`), and the start/shutdown order of guests
+(`Sys.Modify`). Clusters (HA, replication, migration, Ceph, SDN) are not covered.
 
 A free, open-source, self-hosted web UI for Proxmox VE — built for administrators who need to import disk images, create VMs, and manage their virtual infrastructure without logging into the Proxmox web interface.
 
@@ -47,7 +73,7 @@ Come hang out, ask questions, share what you're building, and help shape where P
 - **Authentication** — local accounts, LDAP, and Microsoft Entra ID (Azure AD); login with username or email address
 - **Password recovery** — self-service password reset via email (requires SMTP or Microsoft Graph API to be configured); local accounts only — LDAP/Entra ID users manage passwords in their directory
 - **ACME certificate automation** — automated TLS certificates from Let's Encrypt or internal CAs (Smallstep, etc.); DNS-01 (Cloudflare, Route53, and more) and HTTP-01 challenge types; auto-renewal at half certificate validity
-- **Dark mode** — system-wide dark theme with toggle in the header; CSS variable architecture for consistent styling across all pages
+- **Themes** — classic and "Ops" themes, each light, dark or following the system; picker in the sidebar, saved per user; CSS variable architecture for consistent styling across all pages
 - **Self-signed or custom TLS** — runs HTTPS on port 8443 by default (configurable)
 
 ### VM Inventory

@@ -154,6 +154,36 @@ still use SSH as root on the Proxmox host — enable them only if you need them,
 and keep ProxOrchestrator on a management network, never exposed to the
 internet.
 
+Add `PVEAuditor` on `/` for the read-only pages (tasks, graphs, node,
+permissions, datacenter firewall). Optional extras, only if you want them:
+
+| Need | Privilege / role |
+|---|---|
+| Create VMs or NICs on a bridge through the API (Proxmox 8+) | `PVESDNUser` on `/sdn/zones/localnetwork` (`SDN.Use`) |
+| Edit backup jobs, datacenter/node firewall, start/shutdown order | `Sys.Modify` |
+| Delete ISOs, templates and orphan disks | `Datastore.Allocate` on the storage |
+
+The Proxmox-UI pages added by this fork use **only the API token** — never the
+root SSH key — so the token's privileges are the real limit. The app reads them
+from `/access/permissions` and hides what the token cannot do. Hook scripts can
+only be set by `root@pam` and are always read-only.
+
+### Security notes for the added pages
+
+- Every value sent to Proxmox (VMIDs, storage names, volume IDs, UPIDs,
+  firewall addresses and ports, cloud-init fields, tags…) is validated against
+  a whitelist or a strict pattern first; path components are URL-encoded.
+- Settings forms send only the values that changed.
+- Destructive actions ask for a typed confirmation (convert to template,
+  restore over an existing guest, delete a backup or volume); protected backups
+  cannot be deleted.
+- Firewall edits carry the Proxmox `digest`, so a concurrent change is refused
+  instead of editing the wrong rule.
+- *Node* and *Permissions* (host network, `/etc/hosts`, disks, users, ACLs)
+  are restricted to app administrators.
+- 169 automated tests; each feature was also exercised against a real
+  Proxmox VE 9.2 node on disposable guests.
+
 ## Still open / out of scope
 
 - TOTP codes can be replayed within their 30–60 s window.
