@@ -240,15 +240,13 @@
             <div class="control has-icons-left">
               <div class="select is-fullwidth">
                 <select id="theme-selector" onchange="updateTheme(this.value)">
-                  <option value="system">System Default</option>
-                  <option value="light">Light Mode</option>
-                  <option value="dark">Dark Mode</option>
+                  {% for key, label in theme_choices %}<option value="{{ key }}">{{ label }}</option>{% endfor %}
                 </select>
               </div>
               <span class="icon is-left"><i class="fas fa-palette" style="color: var(--text-muted);"></i></span>
             </div>
             <p class="field-hint">
-              Choose how ProxOrchestrator looks. This setting is saved to your browser.
+              Choose how ProxOrchestrator looks: the classic theme or the denser "Ops" theme, each light, dark or following your system. Saved to your account (also in the sidebar).
             </p>
           </div>
 
@@ -782,17 +780,9 @@
 
   // Dark Mode Theme Switcher
   function updateTheme(theme) {
-    localStorage.setItem('proxorchestrator_theme', theme);
-    if (window.applyTheme) window.applyTheme(theme);
+    if (window.setTheme) window.setTheme(theme);
   }
-
-  // Initialize theme selector
-  (function() {
-    const savedTheme = localStorage.getItem('proxorchestrator_theme') || 'system';
-    const selector = document.getElementById('theme-selector');
-    if (selector) {
-      selector.value = savedTheme;
-    }
-  })();
+  // The selector is synchronised by applyTheme() in base.html.
+  if (window.applyTheme) window.applyTheme();
 </script>
 {% endblock %}

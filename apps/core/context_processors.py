@@ -27,5 +27,25 @@ def _css_version():
     return "0"
 
 
+THEMES = [
+    ("system", "Classic — follow system"),
+    ("light", "Classic — light"),
+    ("dark", "Classic — dark"),
+    ("ops", "Ops — follow system"),
+    ("ops-light", "Ops — light"),
+    ("ops-dark", "Ops — dark"),
+]
+THEME_KEYS = {k for k, _ in THEMES}
+
+
 def asset_versions(request):
-    return {"css_version": _css_version()}
+    theme = ""
+    user = getattr(request, "user", None)
+    if user is not None and user.is_authenticated:
+        profile = getattr(user, "profile", None)
+        theme = getattr(profile, "ui_theme", "") or ""
+    return {
+        "css_version": _css_version(),
+        "user_theme": theme if theme in THEME_KEYS else "",
+        "theme_choices": THEMES,
+    }
