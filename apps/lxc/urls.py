@@ -1,6 +1,7 @@
 from django.urls import path
 
 from . import views
+from . import views_extra
 from apps.exporter import views as exporter_views
 
 
@@ -20,6 +21,8 @@ urlpatterns = [
     path("<int:vmid>/mountpoints/add/", views.lxc_mountpoint_add, name="lxc_mountpoint_add"),
     path("<int:vmid>/mountpoints/resize/", views.lxc_mountpoint_resize, name="lxc_mountpoint_resize"),
     path("<int:vmid>/mountpoints/detach/", views.lxc_mountpoint_detach, name="lxc_mountpoint_detach"),
+    path("<int:vmid>/volume/move/", views_extra.lxc_volume_move, name="lxc_volume_move"),
+    path("<int:vmid>/template/", views_extra.lxc_convert_template, name="lxc_convert_template"),
     # Network management
     path("<int:vmid>/networks/", views.lxc_networks, name="lxc_networks"),
     path("<int:vmid>/nic/<str:interface>/toggle/", views.lxc_nic_toggle, name="lxc_nic_toggle"),

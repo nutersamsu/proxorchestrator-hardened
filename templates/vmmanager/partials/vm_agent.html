@@ -1,0 +1,23 @@
+{# Guest agent information (loaded with HTMX) #}
+{% if error %}
+  <div class="ns-sub"><i class="fas fa-info-circle"></i> {{ error }}</div>
+{% else %}
+  <div class="cert-detail-row"><div class="cert-detail-label">Operating system</div><div class="cert-detail-value">{% firstof info.os.pretty_name info.os.name "—" %}</div></div>
+  {% if info.os.kernel_release %}<div class="cert-detail-row"><div class="cert-detail-label">Kernel</div><div class="cert-detail-value">{{ info.os.kernel_release }}</div></div>{% endif %}
+  {% if info.hostname %}<div class="cert-detail-row"><div class="cert-detail-label">Host name</div><div class="cert-detail-value">{{ info.hostname }}</div></div>{% endif %}
+  {% for iface in info.interfaces %}
+    <div class="cert-detail-row">
+      <div class="cert-detail-label mono-cell">{{ iface.name }}</div>
+      <div class="cert-detail-value mono-cell" style="word-break:break-all;">{% for a in iface.addresses %}{{ a }}<br>{% empty %}—{% endfor %}<span class="ns-sub">{{ iface.mac }}</span></div>
+    </div>
+  {% endfor %}
+  {% for fs in info.filesystems %}
+    <div class="cert-detail-row">
+      <div class="cert-detail-label mono-cell">{{ fs.mount }}</div>
+      <div class="cert-detail-value">
+        <div class="pve-bar{% if fs.pct >= 90 %} is-critical{% elif fs.pct >= 75 %} is-warning{% endif %}"><div style="width: {{ fs.pct|stringformat:'.1f' }}%"></div></div>
+        <span class="ns-sub">{{ fs.pct }}% ({{ fs.used }} of {{ fs.total }}, {{ fs.type }})</span>
+      </div>
+    </div>
+  {% endfor %}
+{% endif %}

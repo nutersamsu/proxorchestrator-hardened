@@ -42,6 +42,28 @@
       <span class="icon is-small"><i class="fas fa-redo"></i></span>
       <span>Reboot</span>
     </button>
+    <div class="dropdown is-hoverable is-right">
+      <div class="dropdown-trigger">
+        <button class="button is-light is-small" aria-haspopup="true" aria-controls="vm-more-power">
+          <span>More</span><span class="icon is-small"><i class="fas fa-angle-down"></i></span>
+        </button>
+      </div>
+      <div class="dropdown-menu" id="vm-more-power" role="menu">
+        <div class="dropdown-content">
+          {% for act, label, icon, question in power_more %}
+          <a class="dropdown-item" href="#"
+             hx-post="/inventory/{{ vm.vmid }}/action/{{ act }}/"
+             hx-confirm="{{ question }} {{ vm.name }}?"
+             hx-swap="none"
+             hx-on::after-request="htmx.ajax('GET','/inventory/{{ vm.vmid }}/detail-status/?action={{ act }}',{target:'#vm-status-banner',swap:'outerHTML'})">
+            <i class="fas {{ icon }}"></i>&nbsp; {{ label }}
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  {% elif vm.is_template %}
+    <span class="status-badge vm-status-unknown" title="Templates cannot be started; clone them instead."><i class="fas fa-copy"></i> Template</span>
   {% elif vm.status == 'stopped' %}
     <button class="button is-success is-small"
             hx-post="/inventory/{{ vm.vmid }}/action/start/"
@@ -69,6 +91,13 @@
     <span class="icon is-small"><i class="fas fa-file-export"></i></span>
     <span>Export VM</span>
   </a>
+  {% if vm.status == 'stopped' and not vm.is_template %}
+  &nbsp;
+  <button class="button is-light is-small" onclick="document.getElementById('template-vm-modal').classList.add('is-active')" title="Convert to template">
+    <span class="icon is-small"><i class="fas fa-copy"></i></span>
+    <span>Convert to template</span>
+  </button>
+  {% endif %}
   {% if vm.status == 'stopped' %}
   &nbsp;
   <button class="button is-danger is-small" onclick="document.getElementById('delete-vm-modal').classList.add('is-active')">
@@ -272,14 +301,38 @@
     </div>
   </div>
 
-  {# Display #}
-  <div class="column is-6">
+  {# Options + display/other hardware (with the Options modal) #}
+  {% include "vmmanager/partials/vm_options_card.html" %}
+
+  {# Guest agent #}
+  {% if vm.status == 'running' and vm.opt_agent %}
+  <div class="column is-12">
     <div class="proxorchestrator-card">
-      <div class="card-header"><i class="fas fa-desktop" style="color: var(--text-muted);"></i> Display</div>
-      <div class="card-body" style="padding: 1rem 1.5rem;">
-        <div class="cert-detail-row">
-          <div class="cert-detail-label">VGA Type</div>
-          <div class="cert-detail-value">{{ vm.vga|default:"std" }}</div>
+      <div class="card-header"><i class="fas fa-robot" style="color: var(--link-color);"></i> Guest agent</div>
+      <div class="card-body" style="padding:1rem 1.5rem;">
+        <div hx-get="{% url 'vm_agent_info' vmid %}" hx-trigger="load" hx-swap="innerHTML">
+          <div class="ns-sub">Asking the guest agent…</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  {# Cloud-Init #}
+  <div class="column is-12" id="cloudinit">
+    <div class="proxorchestrator-card">
+      <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;">
+        <span><i class="fas fa-cloud" style="color: var(--link-color);"></i> Cloud-Init</span>
+        {% if vm.has_cloudinit %}
+        <form method="post" action="{% url 'vm_cloudinit_regenerate' vmid %}" style="margin:0;">
+          {% csrf_token %}
+          <button class="button is-small is-light" type="submit" title="Rebuild the cloud-init drive with the current values"><i class="fas fa-sync-alt"></i>&nbsp; Regenerate image</button>
+        </form>
+        {% endif %}
+      </div>
+      <div class="card-body" style="padding:1rem 1.5rem;">
+        <div hx-get="{% url 'vm_cloudinit' vmid %}" hx-trigger="load" hx-swap="innerHTML">
+          <div class="ns-sub">Loading cloud-init…</div>
         </div>
       </div>
     </div>
@@ -574,6 +627,31 @@
 
 {# ===== Delete VM Confirmation Modal ===== #}
 {% if vm.status == 'stopped' %}
+<div class="modal" id="template-vm-modal">
+  <div class="modal-background" onclick="this.parentElement.classList.remove('is-active')"></div>
+  <div class="modal-card" style="max-width:480px;border-radius:12px;">
+    <header class="modal-card-head" style="background:#475569;border-radius:12px 12px 0 0;">
+      <p class="modal-card-title" style="color:#fff;font-size:1rem;font-weight:600;"><i class="fas fa-copy"></i>&nbsp; Convert VM {{ vm.vmid }} to a template</p>
+      <button class="delete" type="button" onclick="document.getElementById('template-vm-modal').classList.remove('is-active')"></button>
+    </header>
+    <form method="post" action="{% url 'vm_convert_template' vmid %}">
+      {% csrf_token %}
+      <section class="modal-card-body content">
+        <p>A template can no longer be started. You create new VMs from it with <strong>Clone</strong>
+           (a linked clone shares its disks and is created instantly).</p>
+        <p style="color:var(--danger-color);font-weight:600;"><i class="fas fa-exclamation-circle"></i> This cannot be undone from the web interface.</p>
+        <label class="label is-small">Type <strong>{{ vm.vmid }}</strong> to confirm:</label>
+        <input class="input" type="text" name="confirm_vmid" autocomplete="off"
+               oninput="document.getElementById('template-confirm-btn').disabled = (this.value !== '{{ vm.vmid }}')">
+      </section>
+      <footer class="modal-card-foot" style="justify-content:flex-end;gap:0.75rem;">
+        <button type="button" class="button is-light" onclick="document.getElementById('template-vm-modal').classList.remove('is-active')">Cancel</button>
+        <button type="submit" class="button is-dark" id="template-confirm-btn" disabled>Convert</button>
+      </footer>
+    </form>
+  </div>
+</div>
+
 <div class="modal" id="delete-vm-modal">
   <div class="modal-background" onclick="this.parentElement.classList.remove('is-active')"></div>
   <div class="modal-card" style="max-width:480px;border-radius:12px;">

@@ -29,7 +29,10 @@ Running containers show real-time CPU utilization percentage, current memory usa
 Basic container properties: CTID, hostname, OS type, architecture, and description. These can be changed in Proxmox's web UI directly — ProxOrchestrator reads but does not (currently) edit these fields.
 
 ### Options
-Container options and flags: privilege mode (unprivileged recommended for security), start-on-boot setting, startup order, protection flag, enabled features (e.g. nesting for Docker-in-LXC), hookscript path, lock state, and tags.
+Container options and flags: privilege mode (unprivileged recommended for security), start-on-boot setting, startup order, protection flag, enabled features (e.g. nesting for Docker-in-LXC), console mode and number of TTYs, hookscript path, lock state, and tags. Only the values you change are sent to Proxmox.
+
+- **Startup order** needs the `Sys.Modify` privilege; with the recommended API token it is read-only.
+- **Hookscript** can only be changed by `root@pam` (a Proxmox rule), so it is always read-only here.
 
 ### CPU
 Shows core count, CPU limit (0 = unlimited), and CPU units (scheduling weight relative to other containers, default 1024).
@@ -38,13 +41,15 @@ Shows core count, CPU limit (0 = unlimited), and CPU units (scheduling weight re
 Shows configured RAM and swap allocation in MB.
 
 ### DNS
-Hostname, DNS server addresses, search domain, and timezone. Values showing "Host settings" mean the container inherits these from the Proxmox host rather than having its own configuration.
+Hostname, DNS server addresses, search domain, and timezone. Values showing "Host settings" mean the container inherits these from the Proxmox host rather than having its own configuration. Click the pencil to change the host name, DNS servers and search domain; Proxmox applies them right away, even to a running container.
 
 ### Storage
 A table of all mount points attached to the container:
 - **Mount** — `rootfs`, `mp0`, `mp1`, etc.
 - **Storage** — which Proxmox storage pool the volume lives on
 - **Size** — volume size
+
+**Move** copies a volume to another storage that accepts container volumes (`rootdir`). The root disk can only be moved while the container is stopped; the progress opens in the task log.
 
 ### Network Interfaces
 Shows all NICs with their full configuration:
@@ -76,6 +81,10 @@ Click the delete button to remove a snapshot. This frees the disk space used by 
 - Give snapshots descriptive names (e.g. `before-nginx-upgrade`)
 - Don't keep too many snapshots — each one consumes extra disk space and can slow down I/O on some storage backends
 
-## Editing container configuration
+## Templates
 
-To edit container settings (add mounts, change CPU, etc.), use the Proxmox web UI directly. ProxOrchestrator currently provides read-only detail and power control only.
+**Convert to template** (stopped containers) turns the container into a template. Templates cannot be started; create new containers from them with **Clone**. This cannot be undone here.
+
+## Performance
+
+CPU, memory, network and disk graphs (hour to year, average or maximum) are at the bottom of the page.

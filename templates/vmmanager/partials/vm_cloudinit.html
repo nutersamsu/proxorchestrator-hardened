@@ -1,0 +1,95 @@
+{# Cloud-Init tab (loaded with HTMX into #cloudinit-body) #}
+{% if error %}
+  <div class="node-summary-error">Could not load cloud-init: {{ error }}</div>
+{% elif not ci.drive %}
+  <p class="ns-sub" style="margin-bottom:0.75rem;">This VM has no cloud-init drive. Cloud-init only works with images prepared for it (Debian/Ubuntu cloud images, most "genericcloud" images).</p>
+  <form method="post" action="{% url 'vm_cloudinit_add' vmid %}" style="display:flex;gap:0.5rem;align-items:flex-end;flex-wrap:wrap;">
+    {% csrf_token %}
+    <div class="field" style="margin:0;">
+      <label class="label is-small">Storage</label>
+      <div class="select is-small"><select name="storage">
+        {% for s in storage_pools %}<option value="{{ s.storage }}">{{ s.storage }}</option>{% endfor %}
+      </select></div>
+    </div>
+    <button class="button is-small is-link" type="submit"><i class="fas fa-plus"></i>&nbsp; Add cloud-init drive</button>
+  </form>
+{% else %}
+  {% if pending %}
+    <div class="notification is-warning is-light" style="padding:0.5rem 0.75rem;font-size:0.8125rem;">
+      <i class="fas fa-exclamation-triangle"></i> Not yet in the cloud-init image: <strong>{{ pending|join:", " }}</strong>.
+      Regenerate the image (the guest applies it on its next boot).
+    </div>
+  {% endif %}
+  <form method="post" action="{% url 'vm_cloudinit_save' vmid %}" autocomplete="off">
+    {% csrf_token %}
+    <div class="columns is-multiline is-variable is-2">
+      <div class="column is-4 field">
+        <label class="label is-small">User</label>
+        <input class="input is-small" name="ciuser" value="{{ ci.ciuser }}" placeholder="image default" maxlength="32">
+      </div>
+      <div class="column is-4 field">
+        <label class="label is-small">Password {% if ci.password_set %}<span class="ns-sub">(set — leave empty to keep)</span>{% endif %}</label>
+        <input class="input is-small" type="password" name="cipassword" autocomplete="new-password" maxlength="256">
+        {% if ci.password_set %}<label class="checkbox is-size-7"><input type="checkbox" name="clear_password" value="1"> Remove password</label>{% endif %}
+      </div>
+      <div class="column is-4 field">
+        <label class="label is-small">Type</label>
+        <div class="select is-small is-fullwidth"><select name="citype">
+          {% for k, label in citypes %}<option value="{{ k }}" {% if k == ci.citype %}selected{% endif %}>{{ label }}</option>{% endfor %}
+        </select></div>
+      </div>
+      <div class="column is-12 field">
+        <label class="label is-small">SSH public keys <span class="ns-sub">(one per line)</span></label>
+        <textarea class="textarea is-small mono-cell" name="sshkeys" rows="3" placeholder="ssh-ed25519 AAAA… user@host">{{ ci.sshkeys }}</textarea>
+      </div>
+      <div class="column is-6 field">
+        <label class="label is-small">DNS servers</label>
+        <input class="input is-small" name="nameserver" value="{{ ci.nameserver }}" placeholder="use host settings">
+      </div>
+      <div class="column is-6 field">
+        <label class="label is-small">DNS domain</label>
+        <input class="input is-small" name="searchdomain" value="{{ ci.searchdomain }}" placeholder="use host settings">
+      </div>
+      {% for n in ci.interfaces %}
+      <div class="column is-12">
+        <div class="ci-iface">
+          <strong class="mono-cell">{{ n.net }}</strong>
+          <div class="columns is-multiline is-variable is-2" style="margin-top:0.25rem;">
+            <div class="column is-3 field">
+              <label class="label is-small">IPv4</label>
+              <div class="select is-small is-fullwidth"><select name="mode4_{{ n.idx }}">
+                <option value="none" {% if n.mode4 == 'none' %}selected{% endif %}>Not set</option>
+                <option value="dhcp" {% if n.mode4 == 'dhcp' %}selected{% endif %}>DHCP</option>
+                <option value="static" {% if n.mode4 == 'static' %}selected{% endif %}>Static</option>
+              </select></div>
+            </div>
+            <div class="column is-5 field"><label class="label is-small">IPv4/CIDR</label><input class="input is-small" name="ip4_{{ n.idx }}" value="{{ n.ip4 }}" placeholder="192.168.1.50/24"></div>
+            <div class="column is-4 field"><label class="label is-small">Gateway</label><input class="input is-small" name="gw4_{{ n.idx }}" value="{{ n.gw4 }}" placeholder="192.168.1.1"></div>
+            <div class="column is-3 field">
+              <label class="label is-small">IPv6</label>
+              <div class="select is-small is-fullwidth"><select name="mode6_{{ n.idx }}">
+                <option value="none" {% if n.mode6 == 'none' %}selected{% endif %}>Not set</option>
+                <option value="dhcp" {% if n.mode6 == 'dhcp' %}selected{% endif %}>DHCP</option>
+                <option value="auto" {% if n.mode6 == 'auto' %}selected{% endif %}>SLAAC</option>
+                <option value="static" {% if n.mode6 == 'static' %}selected{% endif %}>Static</option>
+              </select></div>
+            </div>
+            <div class="column is-5 field"><label class="label is-small">IPv6/CIDR</label><input class="input is-small" name="ip6_{{ n.idx }}" value="{{ n.ip6 }}"></div>
+            <div class="column is-4 field"><label class="label is-small">Gateway</label><input class="input is-small" name="gw6_{{ n.idx }}" value="{{ n.gw6 }}"></div>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="column is-12 ns-sub">The VM has no network interface.</div>
+      {% endfor %}
+      <div class="column is-12">
+        <label class="checkbox is-size-7"><input type="checkbox" name="ciupgrade" value="1" {% if ci.ciupgrade %}checked{% endif %}> Upgrade packages on first boot</label>
+      </div>
+    </div>
+    <div class="buttons" style="justify-content:flex-end;margin-top:0.5rem;">
+      <button class="button is-small is-light" type="submit">Save</button>
+      <button class="button is-small is-link" type="submit" name="regenerate" value="1"><i class="fas fa-sync-alt"></i>&nbsp; Save &amp; regenerate image</button>
+    </div>
+  </form>
+  <p class="help">Drive: <span class="mono-cell">{{ ci.drive }}</span>. Cloud-init values are read by the guest only at boot.</p>
+{% endif %}

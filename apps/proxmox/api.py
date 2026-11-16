@@ -553,3 +553,53 @@ class ProxmoxAPI:
             path = f"/nodes/{node}/{kind}/{int(vmid)}/rrddata"
         result = self._get(path, params={"timeframe": timeframe, "cf": cf}, timeout=20)
         return result if isinstance(result, list) else []
+
+    # ------------------------------------------------------------------
+    # VM: more power actions, disks, templates, cloud-init, guest agent
+    # ------------------------------------------------------------------
+
+    def reset_vm(self, node, vmid):
+        return self._post(f"/nodes/{node}/qemu/{int(vmid)}/status/reset")
+
+    def suspend_vm(self, node, vmid, todisk=False):
+        """Pause (in RAM) or hibernate (state saved to disk, VM stops)."""
+        data = {"todisk": 1} if todisk else {}
+        return self._post(f"/nodes/{node}/qemu/{int(vmid)}/status/suspend", data, timeout=30)
+
+    def resume_vm(self, node, vmid):
+        return self._post(f"/nodes/{node}/qemu/{int(vmid)}/status/resume")
+
+    def move_vm_disk(self, node, vmid, disk, storage, delete=True, fmt=None):
+        data = {"disk": disk, "storage": storage, "delete": 1 if delete else 0}
+        if fmt:
+            data["format"] = fmt
+        return self._post(f"/nodes/{node}/qemu/{int(vmid)}/move_disk", data, timeout=30)
+
+    def convert_vm_to_template(self, node, vmid):
+        return self._post(f"/nodes/{node}/qemu/{int(vmid)}/template", timeout=30)
+
+    def regenerate_cloudinit(self, node, vmid):
+        return self._put(f"/nodes/{node}/qemu/{int(vmid)}/cloudinit", timeout=30)
+
+    def get_cloudinit_pending(self, node, vmid):
+        """Cloud-init values with their pending (not yet in the image) state."""
+        result = self._get(f"/nodes/{node}/qemu/{int(vmid)}/cloudinit")
+        return result if isinstance(result, list) else []
+
+    def agent_get(self, node, vmid, command, timeout=10):
+        """Read-only guest agent query, e.g. get-osinfo, get-fsinfo, get-host-name."""
+        result = self._get(f"/nodes/{node}/qemu/{int(vmid)}/agent/{command}", timeout=timeout)
+        if isinstance(result, dict) and "result" in result:
+            return result["result"]
+        return result
+
+    # ------------------------------------------------------------------
+    # LXC: move volume, template
+    # ------------------------------------------------------------------
+
+    def move_lxc_volume(self, node, vmid, volume, storage, delete=True):
+        data = {"volume": volume, "storage": storage, "delete": 1 if delete else 0}
+        return self._post(f"/nodes/{node}/lxc/{int(vmid)}/move_volume", data, timeout=30)
+
+    def convert_lxc_to_template(self, node, vmid):
+        return self._post(f"/nodes/{node}/lxc/{int(vmid)}/template", timeout=30)

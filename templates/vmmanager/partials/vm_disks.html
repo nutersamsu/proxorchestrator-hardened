@@ -121,6 +121,14 @@
               <span class="icon is-small"><i class="fas fa-eject"></i></span>
               <span>Detach</span>
             </button>
+            {% if storage_pools %}
+            <button class="button is-small is-light" style="font-weight:600;"
+                    onclick="openMoveDiskModal('{{ disk.interface }}', '{{ disk.storage }}')"
+                    title="Move disk to another storage">
+              <span class="icon is-small"><i class="fas fa-truck-moving"></i></span>
+              <span>Move</span>
+            </button>
+            {% endif %}
           {% endif %}
         </td>
       </tr>
@@ -129,6 +137,57 @@
   </table>
   {% else %}
     <div style="padding:1.5rem;color:var(--text-muted, #7a7a7a);font-size:0.875rem;">No disk information available.</div>
+  {% endif %}
+
+  {# -- Move disk modal -- #}
+  {% if storage_pools %}
+  <div class="modal" id="move-disk-modal">
+    <div class="modal-background" onclick="this.parentElement.classList.remove('is-active')"></div>
+    <div class="modal-card" style="max-width:460px;border-radius:12px;">
+      <header class="modal-card-head" style="border-radius:12px 12px 0 0;">
+        <p class="modal-card-title" style="font-size:1rem;font-weight:600;"><i class="fas fa-truck-moving"></i>&nbsp; Move disk <span id="move-disk-label" class="mono-cell"></span></p>
+        <button class="delete" type="button" onclick="document.getElementById('move-disk-modal').classList.remove('is-active')"></button>
+      </header>
+      <form method="post" action="{% url 'vm_disk_move' vmid %}">
+        {% csrf_token %}
+        <input type="hidden" name="disk" id="move-disk-input">
+        <section class="modal-card-body">
+          <div class="field">
+            <label class="label is-small">Target storage</label>
+            <div class="select is-small is-fullwidth"><select name="storage" id="move-disk-storage">
+              {% for s in storage_pools %}<option value="{{ s.storage }}">{{ s.storage }} ({{ s.type }})</option>{% endfor %}
+            </select></div>
+          </div>
+          <div class="field">
+            <label class="label is-small">Format</label>
+            <div class="select is-small is-fullwidth"><select name="format">
+              <option value="">Keep / storage default</option>
+              <option value="raw">raw</option>
+              <option value="qcow2">qcow2 (file storages only)</option>
+              <option value="vmdk">vmdk (file storages only)</option>
+            </select></div>
+          </div>
+          <label class="checkbox is-size-7"><input type="checkbox" name="delete_source" value="1" checked> Delete the source disk after the move</label>
+          <p class="help">Works while the VM is running. Progress opens in the task log.</p>
+        </section>
+        <footer class="modal-card-foot" style="justify-content:flex-end;gap:0.5rem;">
+          <button type="button" class="button is-small is-light" onclick="document.getElementById('move-disk-modal').classList.remove('is-active')">Cancel</button>
+          <button type="submit" class="button is-small is-link">Move disk</button>
+        </footer>
+      </form>
+    </div>
+  </div>
+  <script>
+    function openMoveDiskModal(disk, current) {
+      document.getElementById('move-disk-input').value = disk;
+      document.getElementById('move-disk-label').textContent = disk;
+      var sel = document.getElementById('move-disk-storage');
+      for (var i = 0; i < sel.options.length; i++) {
+        if (sel.options[i].value !== current) { sel.selectedIndex = i; break; }
+      }
+      document.getElementById('move-disk-modal').classList.add('is-active');
+    }
+  </script>
   {% endif %}
 
   {# -- Add disk form -- #}

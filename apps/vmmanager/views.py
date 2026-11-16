@@ -13,6 +13,15 @@ from django.shortcuts import render
 from django.views.decorators.http import require_POST
 
 from apps.core.console_auth import grant_console
+from apps.inventory.views import effective_status
+from apps.proxmox.perms import token_can
+from apps.vmmanager.vm_options import HOTPLUG_ITEMS
+from apps.vmmanager.vm_options import OSTYPES
+from apps.vmmanager.vm_options import SCSIHW
+from apps.vmmanager.vm_options import VGA_TYPES
+from apps.vmmanager.vm_options import build_options
+from apps.vmmanager.vm_options import find_cloudinit_drive
+from apps.vmmanager.vm_options import other_hardware
 from apps.proxmox.api import ProxmoxAPIError
 from apps.wizard.models import ProxmoxConfig
 
@@ -182,7 +191,14 @@ def _build_vm(raw_config, vm_status, node, vmid):
         "vmid": vmid,
         "name": vm_status.get("name") or raw_config.get("name", str(vmid)),
         "node": node,
-        "status": vm_status.get("status", "unknown"),
+        "status": effective_status(vm_status),
+        "is_template": bool(int(raw_config.get("template", 0) or 0)),
+        "lock": raw_config.get("lock", ""),
+        "hibernated": raw_config.get("lock", "") == "suspended",
+        # Options, cloud-init and the other hardware (see views_extra)
+        **build_options(raw_config),
+        "other_hardware": other_hardware(raw_config),
+        "has_cloudinit": find_cloudinit_drive(raw_config) is not None,
         # Runtime stats
         "cpu_pct": round(cpu_fraction * 100, 1),
         "mem_human": _bytes_human(mem_used),
@@ -321,6 +337,16 @@ def vm_detail(request, vmid):
             "bios_choices": BIOS_CHOICES,
             "storage_pools": storage_pools,
             "boot_devices": boot_devices,
+            "power_more": [
+                ("reset", "Reset", "fa-bolt", "Hard reset (like pressing the reset button) of"),
+                ("suspend", "Pause", "fa-pause", "Pause (freeze in RAM)"),
+                ("hibernate", "Hibernate", "fa-moon", "Hibernate (save RAM to disk and stop)"),
+            ],
+            "can_sys_modify": token_can("/", "Sys.Modify"),
+            "ostype_choices": OSTYPES,
+            "vga_choices": VGA_TYPES,
+            "scsihw_choices": SCSIHW,
+            "hotplug_items": HOTPLUG_ITEMS,
         },
     )
 

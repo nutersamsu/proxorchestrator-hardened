@@ -9,8 +9,13 @@ The action buttons shown in the top-right depend on the VM's current status:
 - **Shutdown** (running VMs) — Graceful ACPI shutdown. The guest OS will save data and power off cleanly. May take 30–60 seconds to complete.
 - **Force Stop** (running VMs) — Immediate power cut. Use only when the VM is frozen and won't respond to a graceful shutdown. Risk of data loss.
 - **Reboot** (running VMs) — Graceful restart via ACPI reboot signal.
-- **Start** (stopped VMs) — Boot the VM.
-- **Resume** (paused VMs) — Restore from suspended state.
+- **More** (running VMs):
+  - **Reset** — hard reset, like pressing the reset button. No clean shutdown.
+  - **Pause** — freezes the VM in RAM. **Resume** continues it.
+  - **Hibernate** — saves the RAM to disk and stops the VM. **Start** resumes it where it was.
+- **Start** (stopped VMs) — Boot the VM (or resume a hibernated one).
+- **Resume** (paused VMs) — Continue a paused VM.
+- **Convert to template** (stopped VMs) — turns the VM into a template. Templates cannot be started; create new VMs from them with **Clone** (a linked clone is instant and shares the template's disks). Cannot be undone here.
 
 After clicking an action, the status banner will update. The VM may take a few seconds to change state — refresh the page if the status doesn't update.
 
@@ -53,11 +58,25 @@ If you imported the VM with ProxOrchestrator, the primary disk should be `scsi0`
 ### Network Interfaces
 Shows all NICs, their model, bridge, MAC address, and VLAN tag. If a VM isn't getting network access, verify the bridge shown here matches your physical network setup in Proxmox.
 
-### Display
-VGA type configured for the VM. This affects the console experience in Proxmox's noVNC viewer. `std` is the safe default; `virtio` gives better performance with the VirtIO GPU driver.
+**Move** copies a disk to another storage (optionally converting it to qcow2/raw) and can delete the source afterwards. It works while the VM runs; the progress opens in the task log.
 
-## Editing VM configuration
+### Options
+The Proxmox *Options* tab: OS type, QEMU guest agent, protection, hotplug, tablet pointer, ACPI, KVM, RTC in local time, freeze CPU at startup, tags, display (VGA type and memory) and the SCSI controller. Only the values you change are sent to Proxmox.
 
-To edit VM settings (add disks, change CPU, etc.), use the Proxmox web UI directly. ProxOrchestrator currently provides read-only detail and power control only. Full edit capability is planned for a future release.
+**Start/shutdown order** needs the `Sys.Modify` privilege. With the recommended API token it is shown read-only.
 
-To access the VM console (keyboard/screen), use Proxmox's noVNC console by clicking the VM in Proxmox's web UI → Console.
+### Display & other hardware
+Display type, SCSI controller, machine type and devices the app does not edit (USB/PCI passthrough, serial ports, audio, RNG…). Adding passthrough devices needs root or resource mappings in Proxmox.
+
+### Guest agent
+Shown for running VMs with the agent enabled: operating system, host name, all IP addresses and file system usage, read from the QEMU guest agent inside the VM.
+
+### Cloud-Init
+User, password, SSH keys, DNS and the IP configuration of each network interface. Without a cloud-init drive, the card offers to add one. Values reach the guest only after **Regenerate image** and a boot; the card lists values that are not in the image yet.
+
+### Performance
+CPU, memory, network and disk graphs (hour to year, average or maximum).
+
+## Console
+
+**Console** (running VMs) opens the noVNC console in a new tab.

@@ -14,6 +14,10 @@ from django.core.paginator import Paginator
 from apps.core.console_auth import grant_console
 from apps.proxmox.api import ProxmoxAPIError
 from apps.vmcreator.stages import build_stages
+from apps.proxmox.perms import token_can
+from apps.vmmanager.vm_options import OptionError
+from apps.vmmanager.vm_options import only_changes
+from apps.vmmanager.vm_options import parse_ct_dns_form
 from apps.wizard.models import ProxmoxConfig
 
 from django.http import HttpResponseNotAllowed
@@ -222,6 +226,10 @@ def _build_ct(raw_config, ct_status, node, vmid):
         "nameserver": raw_config.get("nameserver", ""),
         "searchdomain": raw_config.get("searchdomain", ""),
         "timezone": raw_config.get("timezone", ""),
+        # Console, template
+        "cmode": raw_config.get("cmode", "tty"),
+        "tty": raw_config.get("tty", 2),
+        "is_template": bool(int(raw_config.get("template", 0) or 0)),
     }
 
 
@@ -295,6 +303,7 @@ def lxc_detail(request, vmid):
         "snapshots": snapshots,
         "error": error,
         "help_slug": "lxc-detail",
+        "can_sys_modify": token_can("/", "Sys.Modify"),
     })
 
 
@@ -1004,19 +1013,49 @@ def lxc_update_settings(request, vmid):
         else:
             delete_keys.append("hookscript")
 
+        # console mode and number of ttys
+        cmode = request.POST.get("cmode", "tty")
+        if cmode not in ("tty", "console", "shell"):
+            messages.error(request, "Unknown console mode.")
+            return redirect("lxc_detail", vmid=vmid)
+        kwargs["cmode"] = cmode
+        tty = request.POST.get("tty", "2").strip()
+        if not tty.isdigit() or int(tty) > 6:
+            messages.error(request, "TTY count must be between 0 and 6.")
+            return redirect("lxc_detail", vmid=vmid)
+        kwargs["tty"] = int(tty)
+
+    elif section == "dns":
+        try:
+            dns_kwargs, dns_delete = parse_ct_dns_form(request.POST)
+        except OptionError as exc:
+            messages.error(request, str(exc))
+            return redirect("lxc_detail", vmid=vmid)
+        kwargs.update(dns_kwargs)
+        delete_keys.extend(dns_delete)
+
     else:
         messages.error(request, "Unknown settings section.")
         return redirect("lxc_detail", vmid=vmid)
 
-    if delete_keys:
-        kwargs["delete"] = ",".join(delete_keys)
-
-    if not kwargs:
-        messages.error(request, "No changes provided.")
-        return redirect("lxc_detail", vmid=vmid)
-
     try:
         api = config.get_api_client()
+        # Send only what changed: 'startup' needs Sys.Modify and 'hookscript'
+        # root@pam, even when the value is left as it was.
+        kwargs, delete_keys = only_changes(api.get_lxc_config(node, vmid), kwargs, delete_keys)
+        if ("startup" in kwargs or "startup" in delete_keys) and not token_can("/", "Sys.Modify"):
+            messages.error(request, "Changing the start/shutdown order needs the Sys.Modify privilege, "
+                                    "which the API token does not have. Nothing was saved.")
+            return redirect("lxc_detail", vmid=vmid)
+        if "hookscript" in kwargs or "hookscript" in delete_keys:
+            messages.error(request, "Proxmox only lets root@pam change a hookscript. Nothing was saved.")
+            return redirect("lxc_detail", vmid=vmid)
+        if delete_keys:
+            kwargs["delete"] = ",".join(delete_keys)
+        if not kwargs:
+            messages.info(request, "No changes.")
+            return redirect("lxc_detail", vmid=vmid)
+
         api.update_lxc_config(node, vmid, **kwargs)
 
         status = api.get_lxc_status(node, vmid)
@@ -1118,6 +1157,7 @@ def lxc_mountpoints(request, vmid):
         "vmid": vmid,
         "mounts": mounts,
         "storage_pools": storage_pools,
+        "move_pools": [s for s in storage_pools if "rootdir" in (s.get("content", "") or "")],
         "mp_error": request.GET.get("error") or error,
         "mp_success": request.GET.get("success"),
     })

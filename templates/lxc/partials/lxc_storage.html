@@ -53,6 +53,14 @@
             <span>Detach</span>
           </button>
           {% endif %}
+          {% if move_pools|length > 1 and mp.storage|slice:":1" != "/" %}
+          <button class="button is-small is-light" style="font-weight:600;"
+                  onclick="openLxcMoveModal('{{ mp.interface }}', '{{ mp.storage }}')"
+                  title="Move volume to another storage">
+            <span class="icon is-small"><i class="fas fa-truck-moving"></i></span>
+            <span>Move</span>
+          </button>
+          {% endif %}
         </td>
       </tr>
       {% endfor %}
@@ -102,6 +110,48 @@
       </div>
     </form>
   </div>
+  {% endif %}
+
+  {# -- Move volume modal -- #}
+  {% if move_pools|length > 1 %}
+  <div class="modal" id="lxc-move-modal">
+    <div class="modal-background" onclick="this.parentElement.classList.remove('is-active')"></div>
+    <div class="modal-card" style="max-width:460px;border-radius:12px;">
+      <header class="modal-card-head" style="border-radius:12px 12px 0 0;">
+        <p class="modal-card-title" style="font-size:1rem;font-weight:600;"><i class="fas fa-truck-moving"></i>&nbsp; Move volume <span id="lxc-move-label" class="mono-cell"></span></p>
+        <button class="delete" type="button" onclick="document.getElementById('lxc-move-modal').classList.remove('is-active')"></button>
+      </header>
+      <form method="post" action="{% url 'lxc_volume_move' vmid %}">
+        {% csrf_token %}
+        <input type="hidden" name="volume" id="lxc-move-volume">
+        <section class="modal-card-body">
+          <div class="field">
+            <label class="label is-small">Target storage</label>
+            <div class="select is-small is-fullwidth"><select name="storage" id="lxc-move-storage">
+              {% for s in move_pools %}<option value="{{ s.storage }}">{{ s.storage }} ({{ s.type }})</option>{% endfor %}
+            </select></div>
+          </div>
+          <label class="checkbox is-size-7"><input type="checkbox" name="delete_source" value="1" checked> Delete the source volume after the move</label>
+          <p class="help">The root disk can only be moved while the container is stopped. Progress opens in the task log.</p>
+        </section>
+        <footer class="modal-card-foot" style="justify-content:flex-end;gap:0.5rem;">
+          <button type="button" class="button is-small is-light" onclick="document.getElementById('lxc-move-modal').classList.remove('is-active')">Cancel</button>
+          <button type="submit" class="button is-small is-link">Move volume</button>
+        </footer>
+      </form>
+    </div>
+  </div>
+  <script>
+    function openLxcMoveModal(volume, current) {
+      document.getElementById('lxc-move-volume').value = volume;
+      document.getElementById('lxc-move-label').textContent = volume;
+      var sel = document.getElementById('lxc-move-storage');
+      for (var i = 0; i < sel.options.length; i++) {
+        if (sel.options[i].value !== current) { sel.selectedIndex = i; break; }
+      }
+      document.getElementById('lxc-move-modal').classList.add('is-active');
+    }
+  </script>
   {% endif %}
 
   {# -- Resize modal -- #}

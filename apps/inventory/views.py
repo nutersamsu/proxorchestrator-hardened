@@ -3,6 +3,7 @@ import logging
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.http import JsonResponse
+from django.utils.html import escape
 from django.shortcuts import render
 from django.views.decorators.http import require_POST
 
@@ -11,7 +12,7 @@ from apps.wizard.models import ProxmoxConfig
 
 logger = logging.getLogger(__name__)
 
-VALID_ACTIONS = {"start", "stop", "shutdown", "reboot"}
+VALID_ACTIONS = {"start", "stop", "shutdown", "reboot", "reset", "suspend", "hibernate", "resume"}
 
 
 def _extract_ipv4(interfaces, primary_only=False):
@@ -112,6 +113,10 @@ ACTION_LABELS = {
     "stop": "Stopping",
     "shutdown": "Shutting down",
     "reboot": "Rebooting",
+    "reset": "Resetting",
+    "suspend": "Pausing",
+    "hibernate": "Hibernating",
+    "resume": "Resuming",
 }
 
 # The stable status we wait for before replacing the pending row
@@ -120,7 +125,19 @@ ACTION_TARGET_STATUS = {
     "stop": "stopped",
     "shutdown": "stopped",
     "reboot": "running",
+    "reset": "running",
+    "suspend": "paused",
+    "hibernate": "stopped",
+    "resume": "running",
 }
+
+
+def effective_status(vm):
+    """PVE reports a paused VM as status=running + qmpstatus=paused."""
+    status = vm.get("status", "unknown")
+    if status == "running" and vm.get("qmpstatus") in ("paused", "suspended"):
+        return "paused"
+    return status
 
 
 @login_required
@@ -152,6 +169,14 @@ def vm_action(request, vmid, action):
             api.shutdown_vm(node, vmid)
         elif action == "reboot":
             api.reboot_vm(node, vmid)
+        elif action == "reset":
+            api.reset_vm(node, vmid)
+        elif action == "suspend":
+            api.suspend_vm(node, vmid)
+        elif action == "hibernate":
+            api.suspend_vm(node, vmid, todisk=True)
+        elif action == "resume":
+            api.resume_vm(node, vmid)
 
     except ProxmoxAPIError as exc:
         logger.warning("vm_action %s vmid %s: %s", action, vmid, exc)
@@ -189,6 +214,7 @@ def vm_row_status(request, vmid):
         api = config.get_api_client()
         vm = api.get_vm_status(node, vmid)
         vm["node"] = node
+        vm["status"] = effective_status(vm)
         vm["cpu_pct"] = round((vm.get("cpu") or 0) * 100, 1)
         vm["uptime_human"] = _uptime_human(vm.get("uptime", 0))
     except ProxmoxAPIError as exc:
@@ -268,6 +294,7 @@ def vm_detail_status(request, vmid):
         api = config.get_api_client()
         vm = api.get_vm_status(node, vmid)
         vm["node"] = node
+        vm["status"] = effective_status(vm)
         vm["cpu_pct"] = round((vm.get("cpu") or 0) * 100, 1)
         vm["uptime_human"] = _uptime_human(vm.get("uptime", 0))
         mem_bytes = int(vm.get("mem") or 0)
@@ -283,7 +310,7 @@ def vm_detail_status(request, vmid):
         logger.warning("vm_detail_status vmid %s: %s", vmid, exc)
         return HttpResponse(
             f'<div id="vm-status-banner" style="padding:1rem;color:#f14668;">'
-            f'<i class="fas fa-exclamation-triangle"></i> Could not load VM status: {exc.message}</div>'
+            f'<i class="fas fa-exclamation-triangle"></i> Could not load VM status: {escape(exc.message)}</div>'
         )
 
     target_status = ACTION_TARGET_STATUS.get(action)

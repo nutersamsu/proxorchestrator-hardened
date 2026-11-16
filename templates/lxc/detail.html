@@ -42,7 +42,13 @@
       <span class="icon is-small"><i class="fas fa-redo"></i></span>
       <span>Reboot</span>
     </button>
+  {% elif ct.is_template %}
+    <span class="status-badge vm-status-unknown" title="Templates cannot be started; clone them instead."><i class="fas fa-copy"></i> Template</span>
   {% elif ct.status == 'stopped' %}
+    <button class="button is-light is-small" onclick="document.getElementById('lxc-template-modal').classList.add('is-active')" title="Convert to template">
+      <span class="icon is-small"><i class="fas fa-copy"></i></span>
+      <span>Convert to template</span>
+    </button>
     <button class="button is-success is-small"
             hx-post="/lxc/{{ ct.vmid }}/action/start/"
             hx-swap="none"
@@ -152,6 +158,10 @@
             {% endif %}
           </div>
         </div>
+        <div class="cert-detail-row">
+          <div class="cert-detail-label">Console mode / TTYs</div>
+          <div class="cert-detail-value">{{ ct.cmode }} / {{ ct.tty }}</div>
+        </div>
         {% if ct.hookscript %}
         <div class="cert-detail-row">
           <div class="cert-detail-label">Hookscript</div>
@@ -225,7 +235,12 @@
   {# DNS #}
   <div class="column is-6">
     <div class="proxorchestrator-card">
-      <div class="card-header"><i class="fas fa-globe" style="color: var(--link-color);"></i> DNS</div>
+      <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;">
+        <span><i class="fas fa-globe" style="color: var(--link-color);"></i> DNS</span>
+        <button class="button is-small is-white" onclick="document.getElementById('lxc-dns-modal').classList.add('is-active')" title="Edit DNS">
+          <i class="fas fa-pencil-alt" style="font-size:0.75rem;color:var(--text-muted);"></i>
+        </button>
+      </div>
       <div class="card-body" style="padding: 1rem 1.5rem;">
         <div class="cert-detail-row">
           <div class="cert-detail-label">Hostname</div>
@@ -312,6 +327,63 @@
 {# ===== Settings Modals ===== #}
 
 {# -- General (description) -- #}
+<div class="modal" id="lxc-dns-modal">
+  <div class="modal-background" onclick="this.parentElement.classList.remove('is-active')"></div>
+  <div class="modal-card" style="max-width:500px;border-radius:12px;">
+    <header class="modal-card-head" style="background:#2563eb;border-radius:12px 12px 0 0;">
+      <p class="modal-card-title" style="color:#fff;font-size:1rem;font-weight:600;"><i class="fas fa-globe"></i>&nbsp; DNS</p>
+      <button class="delete" type="button" onclick="document.getElementById('lxc-dns-modal').classList.remove('is-active')"></button>
+    </header>
+    <form method="post" action="{% url 'lxc_update_settings' ct.vmid %}">
+      {% csrf_token %}
+      <input type="hidden" name="section" value="dns">
+      <section class="modal-card-body">
+        <div class="field">
+          <label class="label is-small">Host name</label>
+          <input class="input is-small" name="hostname" value="{{ ct.hostname }}" required maxlength="253">
+        </div>
+        <div class="field">
+          <label class="label is-small">DNS servers <span class="ns-sub">(space separated, empty = host settings)</span></label>
+          <input class="input is-small" name="nameserver" value="{{ ct.nameserver }}">
+        </div>
+        <div class="field">
+          <label class="label is-small">DNS domain <span class="ns-sub">(empty = host settings)</span></label>
+          <input class="input is-small" name="searchdomain" value="{{ ct.searchdomain }}">
+        </div>
+        <p class="help">Applied immediately in a running container (/etc/hosts, /etc/hostname, /etc/resolv.conf managed by Proxmox).</p>
+      </section>
+      <footer class="modal-card-foot" style="justify-content:flex-end;gap:0.5rem;">
+        <button type="button" class="button is-small is-light" onclick="document.getElementById('lxc-dns-modal').classList.remove('is-active')">Cancel</button>
+        <button type="submit" class="button is-small is-link">Save</button>
+      </footer>
+    </form>
+  </div>
+</div>
+
+<div class="modal" id="lxc-template-modal">
+  <div class="modal-background" onclick="this.parentElement.classList.remove('is-active')"></div>
+  <div class="modal-card" style="max-width:480px;border-radius:12px;">
+    <header class="modal-card-head" style="background:#475569;border-radius:12px 12px 0 0;">
+      <p class="modal-card-title" style="color:#fff;font-size:1rem;font-weight:600;"><i class="fas fa-copy"></i>&nbsp; Convert CT {{ ct.vmid }} to a template</p>
+      <button class="delete" type="button" onclick="document.getElementById('lxc-template-modal').classList.remove('is-active')"></button>
+    </header>
+    <form method="post" action="{% url 'lxc_convert_template' ct.vmid %}">
+      {% csrf_token %}
+      <section class="modal-card-body content">
+        <p>A template can no longer be started; create new containers from it with <strong>Clone</strong>.</p>
+        <p style="color:var(--danger-color);font-weight:600;"><i class="fas fa-exclamation-circle"></i> This cannot be undone from the web interface.</p>
+        <label class="label is-small">Type <strong>{{ ct.vmid }}</strong> to confirm:</label>
+        <input class="input" type="text" name="confirm_vmid" autocomplete="off"
+               oninput="document.getElementById('lxc-template-confirm').disabled = (this.value !== '{{ ct.vmid }}')">
+      </section>
+      <footer class="modal-card-foot" style="justify-content:flex-end;gap:0.75rem;">
+        <button type="button" class="button is-light" onclick="document.getElementById('lxc-template-modal').classList.remove('is-active')">Cancel</button>
+        <button type="submit" class="button is-dark" id="lxc-template-confirm" disabled>Convert</button>
+      </footer>
+    </form>
+  </div>
+</div>
+
 <div class="modal" id="lxc-settings-modal-general">
   <div class="modal-background" onclick="closeLxcSettingsModal('general')"></div>
   <div class="modal-card" style="max-width:500px;border-radius:12px;">
@@ -426,7 +498,7 @@
         <div class="field">
           <label class="label" style="font-size:0.875rem;">Startup Order</label>
           <div class="control">
-            <input class="input" type="text" name="startup" value="{{ ct.startup }}" placeholder="order=1,up=30,down=30">
+            <input class="input" type="text" name="startup" value="{{ ct.startup }}" placeholder="order=1,up=30,down=30" {% if not can_sys_modify %}readonly title="Needs the Sys.Modify privilege, which the API token does not have"{% endif %}>
           </div>
           <p class="help"><code>order</code> = boot priority, <code>up</code>/<code>down</code> = seconds to wait after start/before stop. Leave empty for default.</p>
         </div>
@@ -462,10 +534,25 @@
           <p class="help">Semicolon-separated tags for organisation in Proxmox.</p>
         </div>
 
+        <div class="columns is-variable is-2" style="margin-bottom:0;">
+          <div class="column field">
+            <label class="label" style="font-size:0.875rem;">Console mode</label>
+            <div class="select is-fullwidth"><select name="cmode">
+              <option value="tty" {% if ct.cmode == 'tty' %}selected{% endif %}>tty (default)</option>
+              <option value="console" {% if ct.cmode == 'console' %}selected{% endif %}>/dev/console</option>
+              <option value="shell" {% if ct.cmode == 'shell' %}selected{% endif %}>shell (no login)</option>
+            </select></div>
+          </div>
+          <div class="column field">
+            <label class="label" style="font-size:0.875rem;">TTY count</label>
+            <input class="input" type="number" name="tty" min="0" max="6" value="{{ ct.tty }}">
+          </div>
+        </div>
+
         <div class="field">
           <label class="label" style="font-size:0.875rem;">Hookscript</label>
           <div class="control">
-            <input class="input" type="text" name="hookscript" value="{{ ct.hookscript }}" placeholder="local:snippets/hook.pl">
+            <input class="input" type="text" name="hookscript" value="{{ ct.hookscript }}" placeholder="local:snippets/hook.pl" readonly title="Only root@pam can change a hookscript (Proxmox rule)">
           </div>
           <p class="help">Optional volume reference to a hookscript executed at lifecycle events. Leave empty if unused.</p>
         </div>

@@ -1,6 +1,7 @@
 from django.urls import path
 
 from . import views
+from . import views_extra
 
 
 urlpatterns = [
@@ -23,6 +24,14 @@ urlpatterns = [
     path("<int:vmid>/disks/delete/", views.vm_disk_delete, name="vm_disk_delete"),
     path("<int:vmid>/networks/", views.vm_networks, name="vm_networks"),
     path("<int:vmid>/nic/<str:interface>/toggle/", views.vm_nic_toggle, name="vm_nic_toggle"),
+    path("<int:vmid>/options/", views_extra.vm_options_save, name="vm_options_save"),
+    path("<int:vmid>/cloudinit/", views_extra.vm_cloudinit, name="vm_cloudinit"),
+    path("<int:vmid>/cloudinit/save/", views_extra.vm_cloudinit_save, name="vm_cloudinit_save"),
+    path("<int:vmid>/cloudinit/regenerate/", views_extra.vm_cloudinit_regenerate, name="vm_cloudinit_regenerate"),
+    path("<int:vmid>/cloudinit/add/", views_extra.vm_cloudinit_add, name="vm_cloudinit_add"),
+    path("<int:vmid>/agent/", views_extra.vm_agent_info, name="vm_agent_info"),
+    path("<int:vmid>/disks/move/", views_extra.vm_disk_move, name="vm_disk_move"),
+    path("<int:vmid>/template/", views_extra.vm_convert_template, name="vm_convert_template"),
     path("<int:vmid>/snapshots/", views.vm_snapshots, name="vm_snapshots"),
     path("<int:vmid>/snapshots/create/", views.vm_snapshot_create, name="vm_snapshot_create"),
     path("<int:vmid>/snapshots/<str:snapname>/<str:action>/", views.vm_snapshot_action, name="vm_snapshot_action"),
