@@ -1,0 +1,279 @@
+{# One firewall level: options, rules, aliases, IPSets. Element ids are prefixed with the scope key. #}
+{% if error %}
+  <div class="node-summary-error">Could not load the firewall: {{ error }}</div>
+{% else %}
+
+{% if scope.kind == 'qemu' or scope.kind == 'lxc' or scope.kind == 'node' or scope.kind == 'group' %}
+  {% if not dc_enabled %}
+  <div class="notification is-warning is-light fw-note">
+    <i class="fas fa-exclamation-triangle"></i> The <strong>datacenter firewall is off</strong>: these settings are stored but <strong>not applied</strong>.
+    It is switched on in Proxmox (Datacenter → Firewall → Options); the API token cannot do it. Check the rules first so you do not lock yourself out.
+  </div>
+  {% endif %}
+{% endif %}
+{% if nics_without_fw %}
+  <div class="notification is-info is-light fw-note">
+    <i class="fas fa-info-circle"></i> Rules only filter network cards with the <em>Firewall</em> option ticked. Not ticked on: <strong>{{ nics_without_fw|join:", " }}</strong>
+    (Proxmox → {{ scope.label }} → Hardware → network device → Firewall).
+  </div>
+{% endif %}
+{% if not editable %}
+  <p class="help" style="margin-bottom:0.5rem;"><i class="fas fa-lock"></i> Read-only: changing the {{ scope.label }} firewall needs <code>{{ scope.edit_privilege }}</code>, which the API token does not have.</p>
+{% endif %}
+
+{# ---------------- Options ---------------- #}
+{% if scope.has_options %}
+<details class="fw-section" {% if scope.kind == 'qemu' or scope.kind == 'lxc' %}open{% endif %}>
+  <summary><strong>Options</strong> —
+    {% if options.enable == 1 or options.enable == "1" %}<span class="status-badge vm-status-running">enabled</span>{% else %}<span class="status-badge vm-status-stopped">disabled</span>{% endif %}
+    {% if options.policy_in %}<span class="ns-sub">in: {{ options.policy_in }}, out: {{ options.policy_out|default:"ACCEPT" }}</span>{% endif %}
+  </summary>
+  <form method="post" action="{% url 'firewall_options_save' key %}" class="fw-options">
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{ next_url }}">
+    <input type="hidden" name="digest" value="{{ options_digest }}">
+    <fieldset {% if not editable %}disabled{% endif %}>
+    <div class="fw-grid">
+      <label class="checkbox is-size-7"><input type="checkbox" name="enable" value="1" {% if options.enable == 1 or options.enable == "1" %}checked{% endif %}> <strong>Firewall enabled</strong></label>
+      {% if scope.kind == 'cluster' %}
+        <label class="checkbox is-size-7"><input type="checkbox" name="ebtables" value="1" {% if options.ebtables != 0 and options.ebtables != "0" %}checked{% endif %}> ebtables</label>
+      {% elif scope.kind == 'node' %}
+        <label class="checkbox is-size-7"><input type="checkbox" name="ndp" value="1" {% if options.ndp != 0 and options.ndp != "0" %}checked{% endif %}> NDP</label>
+        <label class="checkbox is-size-7"><input type="checkbox" name="nosmurfs" value="1" {% if options.nosmurfs != 0 and options.nosmurfs != "0" %}checked{% endif %}> SMURFS filter</label>
+        <label class="checkbox is-size-7"><input type="checkbox" name="tcpflags" value="1" {% if options.tcpflags == 1 or options.tcpflags == "1" %}checked{% endif %}> TCP flags filter</label>
+      {% else %}
+        <label class="checkbox is-size-7"><input type="checkbox" name="dhcp" value="1" {% if options.dhcp != 0 and options.dhcp != "0" %}checked{% endif %}> DHCP</label>
+        <label class="checkbox is-size-7"><input type="checkbox" name="ndp" value="1" {% if options.ndp != 0 and options.ndp != "0" %}checked{% endif %}> NDP</label>
+        <label class="checkbox is-size-7"><input type="checkbox" name="radv" value="1" {% if options.radv == 1 or options.radv == "1" %}checked{% endif %}> Router advertisement</label>
+        <label class="checkbox is-size-7"><input type="checkbox" name="macfilter" value="1" {% if options.macfilter != 0 and options.macfilter != "0" %}checked{% endif %}> MAC filter</label>
+        <label class="checkbox is-size-7"><input type="checkbox" name="ipfilter" value="1" {% if options.ipfilter == 1 or options.ipfilter == "1" %}checked{% endif %}> IP filter</label>
+      {% endif %}
+    </div>
+    <div class="fw-grid" style="margin-top:0.5rem;">
+      {% if scope.kind != 'node' %}
+      <div class="field"><label class="label is-small">Input policy</label>
+        <div class="select is-small"><select name="policy_in">{% for p in policies %}<option {% if options.policy_in|default:"DROP" == p %}selected{% endif %}>{{ p }}</option>{% endfor %}</select></div></div>
+      <div class="field"><label class="label is-small">Output policy</label>
+        <div class="select is-small"><select name="policy_out">{% for p in policies %}<option {% if options.policy_out|default:"ACCEPT" == p %}selected{% endif %}>{{ p }}</option>{% endfor %}</select></div></div>
+      {% endif %}
+      {% if scope.kind != 'cluster' %}
+      <div class="field"><label class="label is-small">Log level in</label>
+        <div class="select is-small"><select name="log_level_in">{% for l in log_levels %}<option {% if options.log_level_in|default:"nolog" == l %}selected{% endif %}>{{ l }}</option>{% endfor %}</select></div></div>
+      <div class="field"><label class="label is-small">Log level out</label>
+        <div class="select is-small"><select name="log_level_out">{% for l in log_levels %}<option {% if options.log_level_out|default:"nolog" == l %}selected{% endif %}>{{ l }}</option>{% endfor %}</select></div></div>
+      {% endif %}
+    </div>
+    {% if editable %}
+      {% if scope.kind == 'qemu' or scope.kind == 'lxc' %}<p class="help">With input policy DROP only what your rules accept reaches the guest — add an ACCEPT rule for SSH/web first.</p>{% endif %}
+      <button class="button is-small is-link" type="submit" style="margin-top:0.5rem;">Save options</button>
+    {% endif %}
+    </fieldset>
+  </form>
+</details>
+{% endif %}
+
+{# ---------------- Rules ---------------- #}
+<div class="fw-section">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem;">
+    <strong>Rules</strong>
+    {% if editable %}<button class="button is-small is-link is-light" type="button" onclick="fwOpenRule('{{ key }}', null)"><i class="fas fa-plus"></i>&nbsp; Add rule</button>{% endif %}
+  </div>
+  <div class="table-container">
+  <table class="table is-fullwidth task-table fw-rules" style="margin:0;">
+    <thead><tr><th>#</th><th>On</th><th>Dir</th><th>Action</th><th>What</th><th>Source</th><th>Destination</th><th>Iface</th><th>Log</th><th>Comment</th><th></th></tr></thead>
+    <tbody>
+    {% for r in rules %}
+      <tr class="{% if not r.enable %}fw-off{% endif %}">
+        <td>{{ r.pos }}</td>
+        <td>
+          {% if editable %}
+          <form method="post" action="{% url 'firewall_rule_toggle' key r.pos %}" style="display:inline;">
+            {% csrf_token %}<input type="hidden" name="next" value="{{ next_url }}"><input type="hidden" name="digest" value="{{ digest }}">
+            <input type="hidden" name="enable" value="{% if r.enable %}0{% else %}1{% endif %}">
+            <button class="button is-small is-white" type="submit" title="{% if r.enable %}Disable{% else %}Enable{% endif %}"><i class="fas {% if r.enable %}fa-toggle-on{% else %}fa-toggle-off{% endif %}" style="{% if r.enable %}color:var(--success-color);{% endif %}"></i></button>
+          </form>
+          {% else %}{% if r.enable %}<i class="fas fa-check"></i>{% else %}—{% endif %}{% endif %}
+        </td>
+        <td>{{ r.type }}</td>
+        <td><span class="fw-action fw-{{ r.action|lower }}">{{ r.action }}</span></td>
+        <td class="mono-cell">{{ r.summary }}</td>
+        <td class="mono-cell">{{ r.source|default:"any" }}</td>
+        <td class="mono-cell">{{ r.dest|default:"any" }}</td>
+        <td>{{ r.iface|default:"" }}</td>
+        <td>{{ r.log|default:"" }}</td>
+        <td>{{ r.comment|default:"" }}</td>
+        <td style="text-align:right;white-space:nowrap;">
+          {% if editable %}
+            {% if not forloop.first %}
+            <form method="post" action="{% url 'firewall_rule_move' key r.pos %}" style="display:inline;">{% csrf_token %}<input type="hidden" name="next" value="{{ next_url }}"><input type="hidden" name="digest" value="{{ digest }}"><input type="hidden" name="moveto" value="{{ r.pos|add:'-1' }}"><button class="button is-small is-white" title="Move up"><i class="fas fa-arrow-up"></i></button></form>
+            {% endif %}
+            {% if not forloop.last %}
+            <form method="post" action="{% url 'firewall_rule_move' key r.pos %}" style="display:inline;">{% csrf_token %}<input type="hidden" name="next" value="{{ next_url }}"><input type="hidden" name="digest" value="{{ digest }}"><input type="hidden" name="moveto" value="{{ r.pos|add:'2' }}"><button class="button is-small is-white" title="Move down"><i class="fas fa-arrow-down"></i></button></form>
+            {% endif %}
+            <button class="button is-small is-light" type="button" title="Edit" onclick="fwOpenRule('{{ key }}', this)"
+                    data-pos="{{ r.pos }}" data-type="{{ r.type }}" data-action="{{ r.action }}" data-enable="{{ r.enable|default:0 }}"
+                    data-macro="{{ r.macro|default:'' }}" data-proto="{{ r.proto|default:'' }}" data-source="{{ r.source|default:'' }}"
+                    data-dest="{{ r.dest|default:'' }}" data-sport="{{ r.sport|default:'' }}" data-dport="{{ r.dport|default:'' }}"
+                    data-icmp="{{ r.icmp_type }}" data-iface="{{ r.iface|default:'' }}"
+                    data-log="{{ r.log|default:'nolog' }}" data-comment="{{ r.comment|default:'' }}"><i class="fas fa-pencil-alt"></i></button>
+            <form method="post" action="{% url 'firewall_rule_delete' key r.pos %}" style="display:inline;" onsubmit="return confirm('Delete rule {{ r.pos }}?');">{% csrf_token %}<input type="hidden" name="next" value="{{ next_url }}"><input type="hidden" name="digest" value="{{ digest }}"><button class="button is-small is-danger is-light" title="Delete"><i class="fas fa-trash-alt"></i></button></form>
+          {% endif %}
+        </td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="11" class="ns-sub">No rules.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+</div>
+
+{# ---------------- Aliases & IPSets ---------------- #}
+{% if scope.has_objects %}
+<div class="columns" style="margin-top:0.25rem;">
+  <div class="column is-5">
+    <div class="fw-section">
+      <strong>Aliases</strong> <span class="ns-sub">(names for addresses, usable in rules)</span>
+      <table class="table is-fullwidth task-table" style="margin:0.25rem 0;">
+        <tbody>
+        {% for a in aliases %}
+          <tr><td class="mono-cell">{{ a.name }}</td><td class="mono-cell">{{ a.cidr }}</td><td>{{ a.comment|default:"" }}</td>
+            <td style="text-align:right;">{% if editable %}<form method="post" action="{% url 'firewall_alias_delete' key a.name %}" onsubmit="return confirm('Delete alias {{ a.name }}?');">{% csrf_token %}<input type="hidden" name="next" value="{{ next_url }}"><button class="button is-small is-danger is-light"><i class="fas fa-trash-alt"></i></button></form>{% endif %}</td></tr>
+        {% empty %}<tr><td class="ns-sub">No aliases.</td></tr>{% endfor %}
+        </tbody>
+      </table>
+      {% if editable %}
+      <form method="post" action="{% url 'firewall_alias_add' key %}" class="fw-inline-form">
+        {% csrf_token %}<input type="hidden" name="next" value="{{ next_url }}">
+        <input class="input is-small" name="name" placeholder="name" required maxlength="64">
+        <input class="input is-small" name="cidr" placeholder="192.168.1.0/24" required>
+        <input class="input is-small" name="comment" placeholder="comment">
+        <button class="button is-small is-link is-light"><i class="fas fa-plus"></i></button>
+      </form>
+      {% endif %}
+    </div>
+  </div>
+  <div class="column is-7">
+    <div class="fw-section">
+      <strong>IPSets</strong> <span class="ns-sub">(groups of addresses, used as +name)</span>
+      {% for s in ipsets %}
+        <div class="fw-ipset">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span class="mono-cell"><strong>+{{ s.name }}</strong></span> <span class="ns-sub">{{ s.comment|default:"" }}</span>
+            {% if editable and not s.entries %}<form method="post" action="{% url 'firewall_ipset_delete' key s.name %}" onsubmit="return confirm('Delete IPSet {{ s.name }}?');">{% csrf_token %}<input type="hidden" name="next" value="{{ next_url }}"><button class="button is-small is-danger is-light"><i class="fas fa-trash-alt"></i></button></form>{% endif %}
+          </div>
+          {% for e in s.entries %}
+            <div class="fw-ipset-entry"><span class="mono-cell">{% if e.nomatch %}!{% endif %}{{ e.cidr }}</span> <span class="ns-sub">{{ e.comment|default:"" }}</span>
+              {% if editable %}<form method="post" action="{% url 'firewall_ipset_entry_remove' key s.name %}" style="display:inline;">{% csrf_token %}<input type="hidden" name="next" value="{{ next_url }}"><input type="hidden" name="cidr" value="{{ e.cidr }}"><button class="button is-small is-white" title="Remove"><i class="fas fa-times"></i></button></form>{% endif %}
+            </div>
+          {% endfor %}
+          {% if editable %}
+          <form method="post" action="{% url 'firewall_ipset_entry_add' key s.name %}" class="fw-inline-form">
+            {% csrf_token %}<input type="hidden" name="next" value="{{ next_url }}">
+            <input class="input is-small" name="cidr" placeholder="10.0.0.0/8 or alias" required>
+            <input class="input is-small" name="comment" placeholder="comment">
+            <label class="checkbox is-size-7"><input type="checkbox" name="nomatch" value="1"> exclude</label>
+            <button class="button is-small is-light"><i class="fas fa-plus"></i></button>
+          </form>
+          {% endif %}
+        </div>
+      {% empty %}<p class="ns-sub">No IPSets.</p>{% endfor %}
+      {% if editable %}
+      <form method="post" action="{% url 'firewall_ipset_add' key %}" class="fw-inline-form">
+        {% csrf_token %}<input type="hidden" name="next" value="{{ next_url }}">
+        <input class="input is-small" name="name" placeholder="new IPSet name" required maxlength="64">
+        <input class="input is-small" name="comment" placeholder="comment">
+        <button class="button is-small is-link is-light"><i class="fas fa-plus"></i>&nbsp; Create</button>
+      </form>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{# ---------------- Rule modal (add / edit) ---------------- #}
+{% if editable %}
+<div class="modal" id="fw-{{ key }}-rule-modal">
+  <div class="modal-background" onclick="this.parentElement.classList.remove('is-active')"></div>
+  <div class="modal-card" style="max-width:620px;border-radius:12px;">
+    <header class="modal-card-head" style="border-radius:12px 12px 0 0;">
+      <p class="modal-card-title" style="font-size:1rem;font-weight:600;"><i class="fas fa-shield-alt"></i>&nbsp; <span class="fw-rule-title">Add rule</span> — {{ scope.label }}</p>
+      <button class="delete" type="button" onclick="document.getElementById('fw-{{ key }}-rule-modal').classList.remove('is-active')"></button>
+    </header>
+    <form method="post" action="{% url 'firewall_rule_add' key %}" data-add-action="{% url 'firewall_rule_add' key %}" data-edit-action="{% url 'firewall_rule_edit' key 0 %}">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ next_url }}">
+      <input type="hidden" name="digest" value="">
+      <section class="modal-card-body">
+        <div class="columns is-multiline is-variable is-2">
+          <div class="column is-3 field"><label class="label is-small">Direction</label>
+            <div class="select is-small is-fullwidth"><select name="type" onchange="fwTypeChanged(this)">
+              <option value="in">in</option><option value="out">out</option>{% if groups %}<option value="group">group</option>{% endif %}
+            </select></div></div>
+          <div class="column is-3 field"><label class="label is-small">Action</label>
+            <div class="select is-small is-fullwidth"><select name="action" data-actions="{{ actions|join:',' }}" data-groups="{{ groups|join:',' }}">
+              {% for a in actions %}<option>{{ a }}</option>{% endfor %}
+            </select></div></div>
+          <div class="column is-6 field fw-not-group"><label class="label is-small">Macro <span class="ns-sub">(predefined service)</span></label>
+            <div class="select is-small is-fullwidth"><select name="macro"><option value="">— none —</option>
+              {% for m, d in macros %}<option value="{{ m }}" title="{{ d }}">{{ m }}</option>{% endfor %}
+            </select></div></div>
+          <div class="column is-3 field fw-not-group"><label class="label is-small">Protocol</label>
+            <div class="select is-small is-fullwidth"><select name="proto"><option value="">any</option>{% for p in protocols %}<option>{{ p }}</option>{% endfor %}</select></div></div>
+          <div class="column is-3 field fw-not-group"><label class="label is-small">Dest. port</label><input class="input is-small" name="dport" placeholder="22, 80:90"></div>
+          <div class="column is-3 field fw-not-group"><label class="label is-small">Source port</label><input class="input is-small" name="sport"></div>
+          <div class="column is-3 field fw-not-group"><label class="label is-small">ICMP type</label><input class="input is-small" name="icmp-type" placeholder="echo-request"></div>
+          <div class="column is-6 field fw-not-group"><label class="label is-small">Source</label><input class="input is-small" name="source" placeholder="any — IP, CIDR, a-b, alias, +ipset"></div>
+          <div class="column is-6 field fw-not-group"><label class="label is-small">Destination</label><input class="input is-small" name="dest" placeholder="any"></div>
+          <div class="column is-3 field"><label class="label is-small">Interface</label><input class="input is-small" name="iface" placeholder="{% if scope.kind == 'qemu' or scope.kind == 'lxc' %}net0{% else %}any{% endif %}"></div>
+          <div class="column is-3 field fw-not-group"><label class="label is-small">Log</label>
+            <div class="select is-small is-fullwidth"><select name="log">{% for l in log_levels %}<option>{{ l }}</option>{% endfor %}</select></div></div>
+          <div class="column is-6 field"><label class="label is-small">Comment</label><input class="input is-small" name="comment" maxlength="255"></div>
+          <div class="column is-12"><label class="checkbox is-size-7"><input type="checkbox" name="enable" value="1" checked> Enabled</label></div>
+        </div>
+        <p class="help">New rules go to the top. Rules are checked from top to bottom; the first match wins.</p>
+      </section>
+      <footer class="modal-card-foot" style="justify-content:flex-end;gap:0.5rem;">
+        <button type="button" class="button is-small is-light" onclick="document.getElementById('fw-{{ key }}-rule-modal').classList.remove('is-active')">Cancel</button>
+        <button type="submit" class="button is-small is-link">Save rule</button>
+      </footer>
+    </form>
+  </div>
+</div>
+<input type="hidden" id="fw-{{ key }}-digest" value="{{ digest }}">
+<script>
+  window.fwTypeChanged = function (sel) {
+    var form = sel.form, isGroup = sel.value === 'group';
+    var act = form.elements['action'];
+    var opts = (isGroup ? act.dataset.groups : act.dataset.actions).split(',').filter(Boolean);
+    var current = act.value;
+    act.innerHTML = '';
+    opts.forEach(function (o) { var e = document.createElement('option'); e.textContent = o; act.appendChild(e); });
+    if (opts.indexOf(current) >= 0) act.value = current;
+    form.querySelectorAll('.fw-not-group').forEach(function (el) { el.style.display = isGroup ? 'none' : ''; });
+  };
+  window.fwOpenRule = function (key, btn) {
+    var modal = document.getElementById('fw-' + key + '-rule-modal');
+    var form = modal.querySelector('form');
+    var d = btn ? btn.dataset : {};
+    form.reset();
+    var editing = !!btn;
+    form.action = editing ? form.dataset.editAction.replace(/\/0\/edit\/$/, '/' + d.pos + '/edit/') : form.dataset.addAction;
+    form.elements['digest'].value = editing ? document.getElementById('fw-' + key + '-digest').value : '';
+    modal.querySelector('.fw-rule-title').textContent = editing ? 'Edit rule ' + d.pos : 'Add rule';
+    form.elements['type'].value = d.type || 'in';
+    window.fwTypeChanged(form.elements['type']);
+    if (editing) {
+      form.elements['action'].value = d.action;
+      ['macro', 'proto', 'source', 'dest', 'sport', 'dport', 'iface', 'comment'].forEach(function (k) {
+        if (form.elements[k]) form.elements[k].value = d[k] || '';
+      });
+      form.elements['icmp-type'].value = d.icmp || '';
+      form.elements['log'].value = d.log || 'nolog';
+      form.elements['enable'].checked = d.enable === '1';
+    }
+    modal.classList.add('is-active');
+  };
+</script>
+{% endif %}
+{% endif %}

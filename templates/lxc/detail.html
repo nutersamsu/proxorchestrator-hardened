@@ -308,6 +308,18 @@
     </div>
   </div>
 
+  {# ── Firewall ── #}
+  <div class="column is-12" id="firewall">
+    <div class="proxorchestrator-card">
+      <div class="card-header"><i class="fas fa-shield-alt" style="color: var(--link-color);"></i> Firewall</div>
+      <div class="card-body" style="padding:1rem 1.5rem;">
+        <div hx-get="/firewall/ct-{{ ct.vmid }}/panel/?next=/lxc/{{ ct.vmid }}/detail/%23firewall" hx-trigger="load" hx-swap="innerHTML">
+          <div class="ns-sub">Loading firewall…</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   {# ── Backups ── #}
   <div class="column is-12" id="backups">
     <div class="proxorchestrator-card">

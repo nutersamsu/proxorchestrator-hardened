@@ -84,6 +84,7 @@ INSTALLED_APPS = [
     "apps.lxc",
     "apps.tasks",
     "apps.backups",
+    "apps.firewall",
     # Django Channels (WebSocket support)
     "channels",
 ]

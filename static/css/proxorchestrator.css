@@ -1688,3 +1688,21 @@ tr.task-failed td { background: var(--bg-danger-light); }
 .restore-overwrite { border: 1px dashed var(--danger-color); border-radius: 6px; padding: 0.6rem 0.75rem; }
 .ci-iface { border: 1px solid var(--border-main); border-radius: 6px; padding: 0.5rem 0.75rem; }
 .task-table .button.is-small { height: 1.75rem; }
+
+/* --------------------------------------------------------------------------
+   Firewall (apps/firewall)
+   -------------------------------------------------------------------------- */
+.fw-note { padding: 0.5rem 0.75rem; font-size: 0.8125rem; margin-bottom: 0.75rem !important; }
+.fw-section { border: 1px solid var(--border-main); border-radius: 6px; padding: 0.6rem 0.75rem; margin-bottom: 0.75rem; }
+.fw-section > summary { cursor: pointer; }
+.fw-section fieldset { border: 0; padding: 0; margin: 0.5rem 0 0; }
+.fw-grid { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; align-items: flex-end; }
+.fw-grid .field { margin-bottom: 0; }
+.fw-rules tr.fw-off td { opacity: 0.55; }
+.fw-action { font-weight: 600; font-size: 0.75rem; padding: 0.1rem 0.4rem; border-radius: 4px; }
+.fw-accept { background: var(--bg-success-light); color: var(--success-color); }
+.fw-drop, .fw-reject { background: var(--bg-danger-light); color: var(--text-danger-dark); }
+.fw-inline-form { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; margin-top: 0.4rem; }
+.fw-inline-form .input { width: auto; flex: 1 1 8rem; }
+.fw-ipset { border-top: 1px solid var(--border-main); padding: 0.4rem 0; }
+.fw-ipset-entry { padding-left: 1rem; font-size: 0.8125rem; }
