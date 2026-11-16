@@ -603,3 +603,72 @@ class ProxmoxAPI:
 
     def convert_lxc_to_template(self, node, vmid):
         return self._post(f"/nodes/{node}/lxc/{int(vmid)}/template", timeout=30)
+
+    # ------------------------------------------------------------------
+    # Backups (vzdump), restore and storage content
+    # ------------------------------------------------------------------
+
+    def get_content(self, node, storage, content=None, vmid=None):
+        params = {}
+        if content:
+            params["content"] = content
+        if vmid:
+            params["vmid"] = int(vmid)
+        result = self._get(f"/nodes/{node}/storage/{storage}/content", params=params or None, timeout=30)
+        return result if isinstance(result, list) else []
+
+    def vzdump(self, node, **params):
+        """Start a backup task; returns the UPID."""
+        return self._post(f"/nodes/{node}/vzdump", params, timeout=30)
+
+    def get_backup_jobs(self):
+        result = self._get("/cluster/backup")
+        return result if isinstance(result, list) else []
+
+    def get_backup_job(self, job_id):
+        return self._get(f"/cluster/backup/{quote(job_id, safe='')}")
+
+    def extract_backup_config(self, node, volid):
+        """Guest configuration stored inside a backup archive (text)."""
+        return self._get(f"/nodes/{node}/vzdump/extractconfig", params={"volume": volid}, timeout=60)
+
+    def restore_vm(self, node, vmid, archive, storage=None, force=False, unique=False, start=False):
+        data = {"vmid": int(vmid), "archive": archive}
+        if storage:
+            data["storage"] = storage
+        if force:
+            data["force"] = 1
+        if unique:
+            data["unique"] = 1
+        if start:
+            data["start"] = 1
+        return self._post(f"/nodes/{node}/qemu", data, timeout=60)
+
+    def restore_lxc(self, node, vmid, archive, storage=None, force=False, unique=False,
+                    start=False, unprivileged=None):
+        data = {"vmid": int(vmid), "ostemplate": archive, "restore": 1}
+        if storage:
+            data["storage"] = storage
+        if force:
+            data["force"] = 1
+        if unique:
+            data["unique"] = 1
+        if start:
+            data["start"] = 1
+        if unprivileged is not None:
+            data["unprivileged"] = 1 if unprivileged else 0
+        return self._post(f"/nodes/{node}/lxc", data, timeout=60)
+
+    def get_volume_attributes(self, node, storage, volid):
+        return self._get(f"/nodes/{node}/storage/{storage}/content/{quote(volid, safe='')}")
+
+    def update_volume(self, node, storage, volid, notes=None, protected=None):
+        data = {}
+        if notes is not None:
+            data["notes"] = notes
+        if protected is not None:
+            data["protected"] = 1 if protected else 0
+        return self._put(f"/nodes/{node}/storage/{storage}/content/{quote(volid, safe='')}", data)
+
+    def delete_volume(self, node, storage, volid):
+        return self._delete(f"/nodes/{node}/storage/{storage}/content/{quote(volid, safe='')}", timeout=60)

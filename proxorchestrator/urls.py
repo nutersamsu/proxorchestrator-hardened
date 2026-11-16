@@ -19,6 +19,8 @@ urlpatterns = [
     path("exporter/", include("apps.exporter.urls")),
     path("lxc/", include("apps.lxc.urls")),
     path("tasks/", include("apps.tasks.urls")),
+    path("backups/", include("apps.backups.urls")),
+    path("datastore/", include("apps.backups.urls_storage")),
     path("settings/proxmox/", proxmox_settings, name="proxmox_settings"),
     path("settings/auth/", include("apps.authconfig.urls")),
     path("settings/email/", include("apps.emailconfig.urls")),

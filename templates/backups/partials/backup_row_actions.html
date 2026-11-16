@@ -1,0 +1,15 @@
+{# Actions for one backup row: restore, notes, protect, delete. Needs b and next_url. #}
+<a class="button is-small is-link is-light" href="{% url 'backup_restore' %}?volid={{ b.volid|urlencode }}" title="Restore"><i class="fas fa-undo"></i>&nbsp;Restore</a>
+<button class="button is-small is-light" type="button" data-volid="{{ b.volid }}" data-notes="{{ b.notes }}" onclick="openVolNotes(this)" title="Edit notes"><i class="fas fa-sticky-note"></i></button>
+<form method="post" action="{% url 'backup_protect' %}" style="display:inline;">
+  {% csrf_token %}
+  <input type="hidden" name="volid" value="{{ b.volid }}">
+  <input type="hidden" name="next" value="{{ next_url }}">
+  <input type="hidden" name="protected" value="{% if b.protected %}0{% else %}1{% endif %}">
+  <button class="button is-small is-light" type="submit" title="{% if b.protected %}Remove protection{% else %}Protect (cannot be pruned or deleted){% endif %}">
+    <i class="fas {% if b.protected %}fa-lock{% else %}fa-lock-open{% endif %}"{% if b.protected %} style="color:var(--warning-color);"{% endif %}></i>
+  </button>
+</form>
+{% if b.can_delete and not b.protected %}
+<button class="button is-small is-danger is-light" type="button" data-volid="{{ b.volid }}" data-name="{{ b.name }}" onclick="openVolDelete(this)" title="Delete"><i class="fas fa-trash-alt"></i></button>
+{% endif %}

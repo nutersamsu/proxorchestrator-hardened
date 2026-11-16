@@ -1679,3 +1679,12 @@ tr.task-failed td { background: var(--bg-danger-light); }
 .taskbar-status .status-badge { font-size: 0.6875rem; padding: 0.05rem 0.45rem; }
 .taskbar-empty { font-size: 0.75rem; color: var(--text-muted); padding: 0.3rem 0; }
 @media (max-width: 768px) { .taskbar-user, .taskbar-table td:nth-child(2) { display: none; } }
+
+/* --------------------------------------------------------------------------
+   Backups / storage (apps/backups) and VM options / cloud-init
+   -------------------------------------------------------------------------- */
+.backup-guest-list { max-height: 22rem; overflow-y: auto; border: 1px solid var(--border-main); border-radius: 6px; padding: 0.5rem 0.75rem; }
+.guest-backup-form { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin-bottom: 0.75rem; }
+.restore-overwrite { border: 1px dashed var(--danger-color); border-radius: 6px; padding: 0.6rem 0.75rem; }
+.ci-iface { border: 1px solid var(--border-main); border-radius: 6px; padding: 0.5rem 0.75rem; }
+.task-table .button.is-small { height: 1.75rem; }

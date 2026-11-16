@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}{{ storage }} — Storage — ProxOrchestrator{% endblock %}
+{% block page_title %}Storage: {{ storage }}{% endblock %}
+{% block help_slug %}storage{% endblock %}
+
+{% block page_actions %}
+  <a href="{% url 'datastore_list' %}" class="button is-light is-small"><span class="icon is-small"><i class="fas fa-arrow-left"></i></span><span>All storages</span></a>
+{% endblock %}
+
+{% block content %}
+{% if error %}<div class="notification is-danger is-light">Could not load content: {{ error }}</div>{% endif %}
+<div class="tabs is-small is-boxed" style="margin-bottom:0;">
+  <ul>
+    {% for t in types %}
+      <li class="{% if t == content %}is-active{% endif %}"><a href="?content={{ t }}">{% for k, v in labels.items %}{% if k == t %}{{ v }}{% endif %}{% endfor %}{% if t not in labels %}{{ t }}{% endif %}</a></li>
+    {% endfor %}
+  </ul>
+</div>
+<div class="proxorchestrator-card" style="border-top-left-radius:0;">
+  <div class="table-container">
+    <table class="table is-fullwidth is-hoverable task-table" style="margin:0;">
+      <thead><tr><th>Name</th>{% if content == 'backup' or content == 'images' or content == 'rootdir' %}<th>Guest</th>{% endif %}<th>Date</th><th>Format</th><th>Size</th>{% if content == 'backup' %}<th>Notes</th>{% endif %}<th></th></tr></thead>
+      <tbody>
+        {% for i in items %}
+        <tr>
+          <td class="mono-cell" style="word-break:break-all;">{{ i.name }}{% if i.protected %} <i class="fas fa-lock" style="color:var(--warning-color);" title="Protected"></i>{% endif %}</td>
+          {% if content == 'backup' or content == 'images' or content == 'rootdir' %}
+          <td>{% if i.vmid %}{{ i.vmid }} {{ i.guest_name }}{% if not i.guest_exists %} <span class="tag is-warning is-light" title="No guest with this ID uses it">orphan?</span>{% endif %}{% endif %}</td>
+          {% endif %}
+          <td>{{ i.date|date:"Y-m-d H:i"|default:"—" }}</td>
+          <td>{{ i.format }}</td>
+          <td>{{ i.size_h }}</td>
+          {% if content == 'backup' %}<td>{{ i.notes }}</td>{% endif %}
+          <td style="text-align:right;white-space:nowrap;">
+            {% if content == 'backup' %}
+              {% include "backups/partials/backup_row_actions.html" with b=i next_url=next_url %}
+            {% elif i.can_delete %}
+              <button class="button is-small is-danger is-light" type="button" data-volid="{{ i.volid }}" data-name="{{ i.name }}" onclick="openVolDelete(this)" title="Delete"><i class="fas fa-trash-alt"></i></button>
+            {% endif %}
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="7" class="ns-sub">Nothing here.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <p class="help" style="padding:0 1.25rem 0.75rem;">
+    Deleting ISO images, templates and orphan disks needs the <code>Datastore.Allocate</code> privilege; uploading needs <code>Datastore.AllocateTemplate</code>.
+    Buttons only appear when the API token has them. ISO uploads are also possible from a VM's Disks card.
+  </p>
+</div>
+{% include "backups/partials/volume_modals.html" with next_url=next_url %}
+{% endblock %}

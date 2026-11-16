@@ -308,6 +308,18 @@
     </div>
   </div>
 
+  {# ── Backups ── #}
+  <div class="column is-12" id="backups">
+    <div class="proxorchestrator-card">
+      <div class="card-header"><i class="fas fa-archive" style="color: var(--link-color);"></i> Backup</div>
+      <div class="card-body" style="padding:1rem 1.5rem;">
+        <div hx-get="{% url 'guest_backups' 'lxc' ct.vmid %}" hx-trigger="load" hx-swap="innerHTML">
+          <div class="ns-sub">Loading backups…</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   {# ── Performance (RRD) ── #}
   <div class="column is-12" id="performance">
     <div class="proxorchestrator-card">

@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}Backups — ProxOrchestrator{% endblock %}
+{% block page_title %}Backups{% endblock %}
+{% block help_slug %}backups{% endblock %}
+
+{% block page_actions %}
+  <a href="{% url 'backup_new' %}" class="button is-link is-small">
+    <span class="icon is-small"><i class="fas fa-save"></i></span><span>Backup now</span>
+  </a>
+{% endblock %}
+
+{% block content %}
+{% if error %}<div class="notification is-danger is-light">Could not load backups: {{ error }}</div>{% endif %}
+{% for e in errors %}<div class="notification is-warning is-light">{{ e }}</div>{% endfor %}
+
+<div class="proxorchestrator-card" style="margin-bottom:1.5rem;">
+  <div class="card-header"><i class="fas fa-calendar-alt" style="color: var(--link-color);"></i> Backup jobs</div>
+  <div class="table-container">
+    <table class="table is-fullwidth task-table" style="margin:0;">
+      <thead><tr><th>Enabled</th><th>Schedule</th><th>Next run</th><th>Selection</th><th>Storage</th><th>Mode</th><th>Retention</th><th>Comment</th><th></th></tr></thead>
+      <tbody>
+        {% for j in jobs %}
+        <tr>
+          <td>{% if j.enabled_b %}<i class="fas fa-check" style="color:var(--success-color);"></i>{% else %}<i class="fas fa-times" style="color:var(--text-muted);"></i>{% endif %}</td>
+          <td class="mono-cell">{{ j.schedule }}</td>
+          <td>{% if j.next and j.enabled_b %}{{ j.next|date:"D d/m H:i" }}{% else %}—{% endif %}</td>
+          <td>{{ j.selection }}</td>
+          <td>{{ j.storage|default:"—" }}</td>
+          <td>{{ j.mode|default:"snapshot" }}{% if j.compress %} / {{ j.compress }}{% endif %}</td>
+          <td>{{ j.retention }}</td>
+          <td>{{ j.comment|default:"" }}{% if j.has_script %} <span class="ns-sub" title="Hook script {{ j.script }}"><i class="fas fa-scroll"></i></span>{% endif %}</td>
+          <td style="text-align:right;white-space:nowrap;">
+            <form method="post" action="{% url 'backup_job_run' j.id %}" style="display:inline;" onsubmit="return confirm('Run this backup job now?{% if j.has_script %} The hook script will not run (root@pam only).{% endif %}');">
+              {% csrf_token %}
+              <button class="button is-small is-light" type="submit"><i class="fas fa-play"></i>&nbsp; Run now</button>
+            </form>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="9" class="ns-sub">No scheduled backup jobs.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% if not can_edit_jobs %}
+  <p class="help" style="padding:0 1.25rem 0.75rem;"><i class="fas fa-lock"></i> Creating or editing jobs needs the <code>Sys.Modify</code> privilege, which the API token does not have. Use the Proxmox UI (Datacenter → Backup) for that.</p>
+  {% endif %}
+</div>
+
+<div class="proxorchestrator-card">
+  <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">
+    <span><i class="fas fa-archive" style="color: var(--link-color);"></i> Backup files <span class="ns-sub">({{ backups|length }}, {{ total_size }})</span></span>
+    <form method="get" style="display:flex;gap:0.5rem;align-items:center;">
+      <input class="input is-small" name="vmid" value="{{ filter_vmid }}" placeholder="VMID" style="width:6rem;" inputmode="numeric">
+      <div class="select is-small"><select name="storage">
+        <option value="">All storages</option>
+        {% for s in storages %}<option value="{{ s.storage }}" {% if s.storage == filter_storage %}selected{% endif %}>{{ s.storage }}</option>{% endfor %}
+      </select></div>
+      <button class="button is-small is-light" type="submit"><i class="fas fa-filter"></i></button>
+    </form>
+  </div>
+  <div class="table-container">
+    <table class="table is-fullwidth is-hoverable task-table" style="margin:0;">
+      <thead><tr><th>Guest</th><th>Date</th><th>Notes</th><th>Size</th><th>Storage</th><th></th></tr></thead>
+      <tbody>
+        {% for b in backups %}
+        <tr>
+          <td>
+            <span class="tag is-light">{% if b.subtype == 'lxc' %}CT{% else %}VM{% endif %} {{ b.vmid }}</span>
+            {% if b.guest_name %}{{ b.guest_name }}{% else %}<span class="ns-sub">(guest no longer exists)</span>{% endif %}
+            {% if b.protected %}<i class="fas fa-lock" style="color:var(--warning-color);" title="Protected"></i>{% endif %}
+          </td>
+          <td>{{ b.date|date:"Y-m-d H:i" }}</td>
+          <td>{{ b.notes|default:"" }}</td>
+          <td>{{ b.size_h }}</td>
+          <td>{{ b.storage }}</td>
+          <td style="text-align:right;white-space:nowrap;">{% include "backups/partials/backup_row_actions.html" with b=b next_url=request.get_full_path %}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6" class="ns-sub">No backups found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% include "backups/partials/volume_modals.html" with next_url=request.get_full_path %}
+{% endblock %}

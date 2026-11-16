@@ -83,6 +83,7 @@ INSTALLED_APPS = [
     "apps.vmcreator",
     "apps.lxc",
     "apps.tasks",
+    "apps.backups",
     # Django Channels (WebSocket support)
     "channels",
 ]

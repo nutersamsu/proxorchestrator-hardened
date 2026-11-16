@@ -1,0 +1,38 @@
+{# Backup card body on the VM / CT pages (HTMX). #}
+{% if error %}<div class="node-summary-error">{{ error }}</div>{% endif %}
+{% if storages %}
+<form method="post" action="{% url 'guest_backup_now' kind vmid %}" class="guest-backup-form">
+  {% csrf_token %}
+  <div class="select is-small"><select name="storage" title="Storage">
+    {% for s in storages %}<option value="{{ s.storage }}">{{ s.storage }}</option>{% endfor %}
+  </select></div>
+  <div class="select is-small"><select name="mode" title="Mode">
+    {% for k, label in modes %}<option value="{{ k }}">{{ label }}</option>{% endfor %}
+  </select></div>
+  <div class="select is-small"><select name="compress" title="Compression">
+    {% for k, label in compress %}<option value="{{ k }}">{{ label }}</option>{% endfor %}
+  </select></div>
+  <input class="input is-small" name="notes" value="{% templatetag openvariable %}guestname{% templatetag closevariable %}" placeholder="Notes" style="max-width:14rem;" maxlength="1024">
+  <label class="checkbox is-size-7"><input type="checkbox" name="protected" value="1"> Protected</label>
+  <button class="button is-small is-link" type="submit"><i class="fas fa-save"></i>&nbsp; Backup now</button>
+</form>
+{% endif %}
+<div class="table-container">
+  <table class="table is-fullwidth task-table" style="margin:0;">
+    <thead><tr><th>Date</th><th>Notes</th><th>Size</th><th>Storage</th><th></th></tr></thead>
+    <tbody>
+      {% for b in backups %}
+      <tr>
+        <td>{{ b.date|date:"Y-m-d H:i" }} {% if b.protected %}<i class="fas fa-lock" style="color:var(--warning-color);" title="Protected"></i>{% endif %}</td>
+        <td>{{ b.notes }}</td>
+        <td>{{ b.size_h }}</td>
+        <td>{{ b.storage }}</td>
+        <td style="text-align:right;white-space:nowrap;">{% include "backups/partials/backup_row_actions.html" with b=b next_url=next_url %}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="5" class="ns-sub">No backups of this guest yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% include "backups/partials/volume_modals.html" with next_url=next_url %}
