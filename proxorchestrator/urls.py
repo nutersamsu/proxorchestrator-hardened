@@ -22,6 +22,8 @@ urlpatterns = [
     path("backups/", include("apps.backups.urls")),
     path("datastore/", include("apps.backups.urls_storage")),
     path("firewall/", include("apps.firewall.urls")),
+    path("node/", include("apps.node.urls")),
+    path("pveaccess/", include("apps.node.urls_access")),
     path("settings/proxmox/", proxmox_settings, name="proxmox_settings"),
     path("settings/auth/", include("apps.authconfig.urls")),
     path("settings/email/", include("apps.emailconfig.urls")),

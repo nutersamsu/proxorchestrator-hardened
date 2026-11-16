@@ -99,6 +99,14 @@
       <a href="{% url 'firewall_index' %}" class="{% if 'firewall' in request.resolver_match.url_name %}is-active{% endif %}">
         <i class="fas fa-shield-alt"></i> Firewall
       </a>
+      {% if user.is_staff %}
+      <a href="{% url 'pveaccess_page' %}" class="{% if 'pveaccess' in request.resolver_match.url_name %}is-active{% endif %}">
+        <i class="fas fa-user-lock"></i> Permissions
+      </a>
+      <a href="{% url 'node_page' %}" class="{% if 'node_' in request.resolver_match.url_name and request.resolver_match.url_name != 'dashboard_node_summary' %}is-active{% endif %}">
+        <i class="fas fa-server"></i> Node
+      </a>
+      {% endif %}
 
       <div class="nav-label">Settings</div>
       <a href="{% url 'proxmox_settings' %}" class="{% if 'proxmox_settings' in request.resolver_match.url_name %}is-active{% endif %}">

@@ -1,0 +1,16 @@
+{% if error %}
+  <div class="node-summary-error">Could not read S.M.A.R.T. for {{ disk }}: {{ error }}</div>
+{% else %}
+  <div class="fw-section">
+    <strong class="mono-cell">{{ disk }}</strong> — health
+    {% if smart.health == 'PASSED' or smart.health == 'OK' %}<span class="status-badge vm-status-running">{{ smart.health }}</span>{% else %}<span class="status-badge vm-status-stopped">{{ smart.health|default:"?" }}</span>{% endif %}
+    {% if attrs %}
+      <div class="table-container"><table class="table is-fullwidth task-table" style="margin:0.5rem 0 0;">
+        <thead><tr><th>ID</th><th>Attribute</th><th>Value</th><th>Worst</th><th>Threshold</th><th>Raw</th><th>Flags</th></tr></thead>
+        <tbody>{% for a in attrs %}<tr><td>{{ a.id }}</td><td>{{ a.name }}</td><td>{{ a.value }}</td><td>{{ a.worst }}</td><td>{{ a.threshold }}</td><td class="mono-cell">{{ a.raw }}</td><td class="mono-cell">{{ a.flags }}</td></tr>{% endfor %}</tbody>
+      </table></div>
+    {% else %}
+      <pre class="task-log" style="border-radius:6px;margin-top:0.5rem;">{{ text }}</pre>
+    {% endif %}
+  </div>
+{% endif %}

@@ -85,6 +85,7 @@ INSTALLED_APPS = [
     "apps.tasks",
     "apps.backups",
     "apps.firewall",
+    "apps.node",
     # Django Channels (WebSocket support)
     "channels",
 ]

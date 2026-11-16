@@ -79,6 +79,9 @@ ADMIN_ONLY_PREFIXES = (
     "/wizard/local-mkdir/",
     "/lxc/new/community-scripts/",
     "/vm/new/community-scripts/",
+    # Host details (network, disks, hosts file) and Proxmox users/ACLs.
+    "/node/",
+    "/pveaccess/",
 )
 # The wizard index only redirects to a step; keep it admin-only as well.
 ADMIN_ONLY_EXACT = ("/wizard/",)

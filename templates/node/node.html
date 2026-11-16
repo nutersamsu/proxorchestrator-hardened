@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+{% block title %}Node {{ node }} — ProxOrchestrator{% endblock %}
+{% block page_title %}Node {{ node }}{% endblock %}
+{% block help_slug %}node{% endblock %}
+
+{% block content %}
+<div class="tabs is-small is-boxed" style="margin-bottom:0;">
+  <ul>{% for k, label in tabs %}<li class="{% if k == tab %}is-active{% endif %}"><a href="{% url 'node_tab' k %}">{{ label }}</a></li>{% endfor %}</ul>
+</div>
+<div class="proxorchestrator-card" style="border-top-left-radius:0;">
+  <div class="card-body" style="padding:1rem 1.25rem;">
+  {% if error %}<div class="node-summary-error">Could not load: {{ error }}</div>{% endif %}
+  {% if not can_modify %}<p class="help" style="margin:0 0 0.75rem;"><i class="fas fa-lock"></i> Read-only: changing the node (services, network, DNS, updates, reboot) needs <code>Sys.Modify</code> / <code>Sys.PowerMgmt</code>, which the API token does not have. Use the Proxmox UI for changes.</p>{% endif %}
+
+  {% if tab == 'services' and data %}
+    <div class="table-container"><table class="table is-fullwidth task-table" style="margin:0;">
+      <thead><tr><th>Service</th><th>Description</th><th>State</th><th>Active</th><th>Unit</th></tr></thead>
+      <tbody>{% for s in data %}
+        <tr><td class="mono-cell">{{ s.name }}</td><td>{{ s.desc }}</td>
+          <td>{% if s.state == 'running' %}<span class="status-badge vm-status-running">running</span>{% else %}<span class="status-badge {% if s.ok %}vm-status-unknown{% else %}vm-status-stopped{% endif %}">{{ s.state }}</span>{% endif %}</td>
+          <td>{{ s.active_state }}</td><td>{{ s.unit_state }}</td></tr>
+      {% endfor %}</tbody></table></div>
+      <p class="help">"dead" is normal for services that are not used on a single node (corosync) or that are replaced by another (systemd-timesyncd when chrony runs).</p>
+
+  {% elif tab == 'network' and data %}
+    <div class="table-container"><table class="table is-fullwidth task-table" style="margin:0;">
+      <thead><tr><th>Name</th><th>Type</th><th>Active</th><th>Autostart</th><th>Ports/Slaves</th><th>CIDR</th><th>Gateway</th><th>Comment</th></tr></thead>
+      <tbody>{% for i in data %}
+        <tr><td class="mono-cell"><strong>{{ i.iface }}</strong>{% if i.altnames %}<br><span class="ns-sub">{{ i.altnames|join:", " }}</span>{% endif %}</td>
+          <td>{{ i.type }}</td><td>{% if i.active_b %}Yes{% else %}No{% endif %}</td><td>{% if i.autostart_b %}Yes{% else %}No{% endif %}</td>
+          <td class="mono-cell">{{ i.ports }}</td><td class="mono-cell">{{ i.cidr|default:"" }}{% if i.cidr6 %}<br>{{ i.cidr6 }}{% endif %}</td>
+          <td class="mono-cell">{{ i.gateway|default:"" }}</td><td>{{ i.comments|default:"" }}</td></tr>
+      {% endfor %}</tbody></table></div>
+
+  {% elif tab == 'dns' and data %}
+    <div class="columns">
+      <div class="column is-5">
+        <div class="cert-detail-row"><div class="cert-detail-label">Search domain</div><div class="cert-detail-value">{{ data.dns.search|default:"—" }}</div></div>
+        <div class="cert-detail-row"><div class="cert-detail-label">DNS server 1</div><div class="cert-detail-value mono-cell">{{ data.dns.dns1|default:"—" }}</div></div>
+        <div class="cert-detail-row"><div class="cert-detail-label">DNS server 2</div><div class="cert-detail-value mono-cell">{{ data.dns.dns2|default:"—" }}</div></div>
+        <div class="cert-detail-row"><div class="cert-detail-label">DNS server 3</div><div class="cert-detail-value mono-cell">{{ data.dns.dns3|default:"—" }}</div></div>
+        <div class="cert-detail-row"><div class="cert-detail-label">Time zone</div><div class="cert-detail-value">{{ data.time.timezone }}</div></div>
+        <div class="cert-detail-row"><div class="cert-detail-label">Server time</div><div class="cert-detail-value">{{ data.time.now|date:"Y-m-d H:i:s" }}</div></div>
+      </div>
+      <div class="column is-7">
+        <div class="label is-small">/etc/hosts</div>
+        <pre class="task-log" style="border-radius:6px;">{{ data.hosts }}</pre>
+      </div>
+    </div>
+
+  {% elif tab == 'disks' and data %}
+    <div class="table-container"><table class="table is-fullwidth task-table" style="margin:0;">
+      <thead><tr><th>Device</th><th>Type</th><th>Usage</th><th>Size</th><th>Model</th><th>Serial</th><th>S.M.A.R.T.</th><th>Wearout</th><th></th></tr></thead>
+      <tbody>{% for d in data.disks %}
+        <tr><td class="mono-cell">{{ d.devpath }}</td><td>{{ d.type }}{% if d.rpm and d.rpm != 0 and d.rpm != '0' %} ({{ d.rpm }} rpm){% endif %}</td><td>{{ d.used|default:"" }}</td>
+          <td>{{ d.size_h }}</td><td>{{ d.model }}</td><td class="mono-cell">{{ d.serial }}</td>
+          <td>{% if d.health == 'PASSED' or d.health == 'OK' %}<span class="status-badge vm-status-running">{{ d.health }}</span>{% else %}<span class="status-badge vm-status-stopped">{{ d.health|default:"?" }}</span>{% endif %}</td>
+          <td>{{ d.wearout_h }}</td>
+          <td><button class="button is-small is-light" hx-get="{% url 'node_smart' %}?disk={{ d.devpath|urlencode }}" hx-target="#smart-out" hx-swap="innerHTML">Show S.M.A.R.T.</button></td></tr>
+      {% endfor %}</tbody></table></div>
+      <p class="help">Wearout is the remaining life of an SSD (100% = new).</p>
+      <div id="smart-out" style="margin-top:0.75rem;"></div>
+
+      <div class="columns" style="margin-top:0.5rem;">
+        <div class="column is-6">
+          <div class="label is-small">LVM volume groups</div>
+          <table class="table is-fullwidth task-table"><thead><tr><th>VG</th><th>Size</th><th>Free</th><th>LVs</th><th>Physical volumes</th></tr></thead>
+          <tbody>{% for v in data.vgs %}<tr><td>{{ v.name }}</td><td>{{ v.size_h }}</td><td>{{ v.free_h }}</td><td>{{ v.lvcount }}</td><td class="mono-cell">{{ v.pvs|join:", " }}</td></tr>{% empty %}<tr><td class="ns-sub">None</td></tr>{% endfor %}</tbody></table>
+        </div>
+        <div class="column is-6">
+          <div class="label is-small">LVM-thin pools</div>
+          <table class="table is-fullwidth task-table"><thead><tr><th>Pool</th><th>Size</th><th>Data</th><th>Metadata</th></tr></thead>
+          <tbody>{% for t in data.thin %}<tr><td>{{ t.vg }}/{{ t.lv }}</td><td>{{ t.size_h }}</td>
+            <td><div class="pve-bar{% if t.pct >= 90 %} is-critical{% elif t.pct >= 75 %} is-warning{% endif %}"><div style="width: {{ t.pct|stringformat:'.1f' }}%"></div></div><span class="ns-sub">{{ t.pct }}%</span></td>
+            <td><span class="ns-sub">{{ t.meta_pct }}%</span></td></tr>{% empty %}<tr><td class="ns-sub">None</td></tr>{% endfor %}</tbody></table>
+        </div>
+      </div>
+      <div class="columns">
+        <div class="column is-6">
+          <div class="label is-small">ZFS pools</div>
+          <table class="table is-fullwidth task-table"><tbody>{% for z in data.zfs %}<tr><td>{{ z.name }}</td><td>{{ z.health }}</td><td>{{ z.size_h }}</td><td>{{ z.free_h }} free</td></tr>{% empty %}<tr><td class="ns-sub">None</td></tr>{% endfor %}</tbody></table>
+        </div>
+        <div class="column is-6">
+          <div class="label is-small">Directories (systemd mounts)</div>
+          <table class="table is-fullwidth task-table"><tbody>{% for d in data.dirs %}<tr><td class="mono-cell">{{ d.path }}</td><td class="mono-cell">{{ d.device }}</td><td>{{ d.type }}</td></tr>{% empty %}<tr><td class="ns-sub">None</td></tr>{% endfor %}</tbody></table>
+        </div>
+      </div>
+
+  {% elif tab == 'updates' and data %}
+    <div class="columns">
+      <div class="column is-5">
+        <div class="label is-small">Subscription</div>
+        <div class="cert-detail-row"><div class="cert-detail-label">Status</div><div class="cert-detail-value">{{ data.subscription.status|default:"—" }}</div></div>
+        {% if data.subscription.message %}<div class="cert-detail-row"><div class="cert-detail-label">Message</div><div class="cert-detail-value">{{ data.subscription.message }}</div></div>{% endif %}
+        <div class="cert-detail-row"><div class="cert-detail-label">Running kernel</div><div class="cert-detail-value mono-cell">{{ data.running_kernel }}</div></div>
+        <div class="label is-small" style="margin-top:0.75rem;">Proxmox repositories</div>
+        {% for r in data.std %}
+          <div class="cert-detail-row"><div class="cert-detail-label">{{ r.name }}</div><div class="cert-detail-value">{% if r.status == 1 %}<span class="status-badge vm-status-running">enabled</span>{% else %}<span class="status-badge vm-status-unknown">disabled</span>{% endif %}</div></div>
+        {% endfor %}
+        {% for e in data.errors %}<div class="node-summary-error">{{ e.path }}: {{ e.error }}</div>{% endfor %}
+      </div>
+      <div class="column is-7">
+        <div class="label is-small">Main package versions</div>
+        <table class="table is-fullwidth task-table"><tbody>
+          {% for v in data.main %}<tr><td class="mono-cell">{{ v.Package }}</td><td class="mono-cell">{{ v.Version }}</td><td>{% if v.OldVersion and v.OldVersion != v.Version %}<span class="tag is-warning is-light">installed {{ v.OldVersion }}</span>{% endif %}</td></tr>{% endfor %}
+        </tbody></table>
+        {% if not data.can_list_updates %}
+        <p class="help"><i class="fas fa-lock"></i> The list of <strong>available updates</strong> needs <code>Sys.Modify</code> (Proxmox: Node → Updates).</p>
+        {% endif %}
+      </div>
+    </div>
+    <div class="label is-small">APT sources</div>
+    <div class="table-container"><table class="table is-fullwidth task-table" style="margin:0;">
+      <thead><tr><th>File</th><th>Enabled</th><th>Types</th><th>URIs</th><th>Suites</th><th>Components</th></tr></thead>
+      <tbody>{% for f in data.files %}<tr class="{% if not f.enabled %}fw-off{% endif %}"><td class="mono-cell">{{ f.path }}</td><td>{% if f.enabled %}Yes{% else %}No{% endif %}</td><td>{{ f.types }}</td><td class="mono-cell">{{ f.uris }}</td><td>{{ f.suites }}</td><td>{{ f.components }}</td></tr>{% endfor %}</tbody>
+    </table></div>
+    <details style="margin-top:0.75rem;"><summary class="ns-sub">All {{ data.versions|length }} package versions</summary>
+      <table class="table is-fullwidth task-table"><tbody>{% for v in data.versions %}<tr><td class="mono-cell">{{ v.Package }}</td><td class="mono-cell">{{ v.Version }}</td><td>{{ v.CurrentState }}</td></tr>{% endfor %}</tbody></table>
+    </details>
+
+  {% elif tab == 'certificates' and data %}
+    {% for c in data %}
+      <div class="fw-section">
+        <strong class="mono-cell">{{ c.filename }}</strong>
+        {% if c.days_left is not None %}{% if c.days_left < 30 %}<span class="status-badge vm-status-stopped">expires in {{ c.days_left }} days</span>{% else %}<span class="status-badge vm-status-running">{{ c.days_left }} days left</span>{% endif %}{% endif %}
+        <div class="cert-detail-row"><div class="cert-detail-label">Subject</div><div class="cert-detail-value mono-cell" style="word-break:break-all;">{{ c.subject }}</div></div>
+        <div class="cert-detail-row"><div class="cert-detail-label">Issuer</div><div class="cert-detail-value mono-cell" style="word-break:break-all;">{{ c.issuer }}</div></div>
+        <div class="cert-detail-row"><div class="cert-detail-label">Valid</div><div class="cert-detail-value">{{ c.not_before|date:"Y-m-d" }} → {{ c.not_after|date:"Y-m-d" }}</div></div>
+        {% if c.san %}<div class="cert-detail-row"><div class="cert-detail-label">Names</div><div class="cert-detail-value mono-cell">{{ c.san|join:", " }}</div></div>{% endif %}
+        <div class="cert-detail-row"><div class="cert-detail-label">Key</div><div class="cert-detail-value">{{ c.key }}</div></div>
+        <div class="cert-detail-row"><div class="cert-detail-label">SHA-256</div><div class="cert-detail-value mono-cell" style="word-break:break-all;">{{ c.fingerprint }}</div></div>
+      </div>
+    {% endfor %}
+
+  {% elif tab == 'hardware' and data %}
+    <div class="table-container"><table class="table is-fullwidth task-table" style="margin:0;">
+      <thead><tr><th>ID</th><th>IOMMU group</th><th>Vendor</th><th>Device</th><th>Subsystem</th></tr></thead>
+      <tbody>{% for p in data %}<tr><td class="mono-cell">{{ p.id }}</td><td>{{ p.iommugroup }}</td><td>{{ p.vendor_name }}</td><td>{{ p.device_name }}</td><td>{{ p.subsystem_vendor_name|default:"" }}</td></tr>{% endfor %}</tbody>
+    </table></div>
+    <p class="help">IOMMU group −1 means IOMMU is not enabled; PCI passthrough needs it.</p>
+  {% endif %}
+  </div>
+</div>
+{% endblock %}
