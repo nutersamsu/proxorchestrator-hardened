@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Tasks — ProxOrchestrator{% endblock %}
+{% block page_title %}Tasks{% endblock %}
+{% block help_slug %}tasks{% endblock %}
+
+{% block content %}
+<div class="proxorchestrator-card" style="margin-bottom:1rem;">
+  <div class="card-body" style="padding:0.75rem 1.25rem;">
+    <form method="get" class="task-filters">
+      <div class="field">
+        <label class="label is-small">VMID</label>
+        <input class="input is-small" type="text" name="vmid" value="{{ filters.vmid }}" inputmode="numeric" style="width:6rem;">
+      </div>
+      <div class="field">
+        <label class="label is-small">Type</label>
+        <div class="select is-small">
+          <select name="type">
+            <option value="">All</option>
+            {% for key, label in type_choices %}
+              <option value="{{ key }}" {% if filters.type == key %}selected{% endif %}>{{ label }} ({{ key }})</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label class="label is-small">User</label>
+        <input class="input is-small" type="text" name="user" value="{{ filters.user }}" placeholder="root@pam" style="width:12rem;">
+      </div>
+      <label class="checkbox is-size-7"><input type="checkbox" name="errors" value="1" {% if filters.errors %}checked{% endif %}> Errors only</label>
+      <label class="checkbox is-size-7"><input type="checkbox" name="running" value="1" {% if filters.running %}checked{% endif %}> Running only</label>
+      <button class="button is-small is-link" type="submit"><i class="fas fa-filter"></i>&nbsp; Filter</button>
+      <a class="button is-small is-light" href="{% url 'task_list' %}">Clear</a>
+    </form>
+  </div>
+</div>
+
+{% if error %}
+  <div class="notification is-danger is-light">Could not load tasks: {{ error }}</div>
+{% endif %}
+
+<div class="proxorchestrator-card">
+  <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;">
+    <span><i class="fas fa-list-alt" style="color: var(--link-color);"></i> Task history <span class="ns-sub">({{ total }})</span></span>
+  </div>
+  <div class="table-container">
+    <table class="table is-fullwidth is-hoverable task-table" style="margin:0;">
+      <thead>
+        <tr><th>Start time</th><th>End time</th><th>Node</th><th>User</th><th>Description</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        {% for t in tasks %}
+          <tr class="{% if t.failed %}task-failed{% elif t.running %}task-running{% endif %}">
+            <td><a href="{% url 'task_detail' t.upid %}">{{ t.start|date:"Y-m-d H:i:s" }}</a></td>
+            <td>{% if t.end %}{{ t.end|date:"Y-m-d H:i:s" }}{% else %}—{% endif %}</td>
+            <td>{{ t.node }}</td>
+            <td class="mono-cell">{{ t.user_display }}</td>
+            <td>
+              <a href="{% url 'task_detail' t.upid %}">{{ t.label }}</a>
+              {% if t.guest_url %}<a href="{{ t.guest_url }}" title="Open guest" class="ns-sub">&nbsp;<i class="fas fa-external-link-alt"></i></a>{% endif %}
+            </td>
+            <td>{% include "tasks/partials/status_badge.html" with t=t %}</td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="6" class="ns-sub">No tasks.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% if pages > 1 %}
+    <nav class="pagination is-small" style="padding:0.75rem 1.25rem;margin:0;">
+      {% if has_prev %}<a class="pagination-previous" href="?{{ query }}&page={{ page|add:'-1' }}">Previous</a>{% endif %}
+      {% if has_next %}<a class="pagination-next" href="?{{ query }}&page={{ page|add:'1' }}">Next</a>{% endif %}
+      <span class="ns-sub">Page {{ page }} of {{ pages }}</span>
+    </nav>
+  {% endif %}
+</div>
+{% endblock %}

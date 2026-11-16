@@ -82,6 +82,7 @@ INSTALLED_APPS = [
     "apps.certificates",
     "apps.vmcreator",
     "apps.lxc",
+    "apps.tasks",
     # Django Channels (WebSocket support)
     "channels",
 ]
@@ -172,7 +173,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # ---------------------------------------------------------------------------
 
 LANGUAGE_CODE = "en-us"
-TIME_ZONE = "UTC"
+# Dates in the UI (task times, chart axes). Example: TIME_ZONE=Europe/Rome in .env
+TIME_ZONE = os.environ.get("TIME_ZONE", "UTC") or "UTC"
 USE_I18N = True
 USE_TZ = True
 

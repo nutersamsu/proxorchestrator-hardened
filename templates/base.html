@@ -86,6 +86,11 @@
         <i class="fas fa-file-export"></i> Export &amp; Import
       </a>
 
+      <div class="nav-label">Datacenter</div>
+      <a href="{% url 'task_list' %}" class="{% if 'task' in request.resolver_match.url_name %}is-active{% endif %}">
+        <i class="fas fa-list-alt"></i> Tasks
+      </a>
+
       <div class="nav-label">Settings</div>
       <a href="{% url 'proxmox_settings' %}" class="{% if 'proxmox_settings' in request.resolver_match.url_name %}is-active{% endif %}">
         <i class="fas fa-server"></i> Proxmox
@@ -155,6 +160,29 @@
 
       {% block content %}{% endblock %}
     </div>
+
+    {# ===== Task bar (like the PVE "Tasks" log at the bottom) ===== #}
+    <div class="taskbar" id="taskbar">
+      <div class="taskbar-header" onclick="toggleTaskbar()">
+        <span><i class="fas fa-list-alt"></i> Recent tasks</span>
+        <span>
+          <a href="{% url 'task_list' %}" onclick="event.stopPropagation();" class="taskbar-all">All tasks</a>
+          <i class="fas fa-chevron-up taskbar-chevron"></i>
+        </span>
+      </div>
+      <div class="taskbar-body" id="taskbar-body"
+           hx-get="{% url 'tasks_recent' %}" hx-trigger="load, every 10s" hx-swap="innerHTML"></div>
+    </div>
+    <script>
+      function toggleTaskbar() {
+        var bar = document.getElementById('taskbar');
+        bar.classList.toggle('is-collapsed');
+        try { localStorage.setItem('po_taskbar_collapsed', bar.classList.contains('is-collapsed') ? '1' : '0'); } catch (e) {}
+      }
+      (function () {
+        try { if (localStorage.getItem('po_taskbar_collapsed') === '1') document.getElementById('taskbar').classList.add('is-collapsed'); } catch (e) {}
+      })();
+    </script>
 
     <div class="footer-bar">
       ProxOrchestrator &mdash; by ForgedIO &mdash; Free &amp; Open Source

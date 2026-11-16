@@ -1,0 +1,17 @@
+{% if error %}
+  <div class="taskbar-empty">Tasks unavailable: {{ error|truncatechars:80 }}</div>
+{% else %}
+  <table class="taskbar-table">
+    {% for t in tasks %}
+      <tr class="{% if t.failed %}task-failed{% elif t.running %}task-running{% endif %}">
+        <td class="taskbar-time">{{ t.start|date:"M d H:i:s" }}</td>
+        <td class="taskbar-time">{% if t.end %}{{ t.end|date:"H:i:s" }}{% else %}—{% endif %}</td>
+        <td class="taskbar-user">{{ t.user_display }}</td>
+        <td><a href="{% url 'task_detail' t.upid %}">{{ t.label }}</a></td>
+        <td class="taskbar-status">{% include "tasks/partials/status_badge.html" with t=t %}</td>
+      </tr>
+    {% empty %}
+      <tr><td class="taskbar-empty">No recent tasks.</td></tr>
+    {% endfor %}
+  </table>
+{% endif %}

@@ -293,6 +293,20 @@
     </div>
   </div>
 
+  {# ── Performance (RRD) ── #}
+  <div class="column is-12" id="performance">
+    <div class="proxorchestrator-card">
+      <div class="card-header">
+        <i class="fas fa-chart-area" style="color: var(--link-color);"></i> Performance
+      </div>
+      <div class="card-body" style="padding:1rem 1.5rem;">
+        <div id="rrd-lxc-{{ ct.vmid }}" hx-get="{% url 'rrd_guest' 'lxc' ct.vmid %}" hx-trigger="load" hx-swap="innerHTML">
+          <div class="ns-sub">Loading statistics…</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 {# ===== Settings Modals ===== #}

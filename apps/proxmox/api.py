@@ -1,5 +1,7 @@
 import logging
 
+from urllib.parse import quote
+
 import requests
 from requests.exceptions import ConnectionError as ConnError
 from requests.exceptions import RequestException
@@ -60,11 +62,11 @@ class ProxmoxAPI:
             self._session_obj = session
         return self._session_obj
 
-    def _get(self, path, timeout=15):
+    def _get(self, path, timeout=15, params=None):
         url = f"{self.base_url}{path}"
-        logger.debug("Proxmox API GET %s", url)
+        logger.debug("Proxmox API GET %s params=%s", url, params)
         try:
-            resp = self._session.get(url, timeout=timeout)
+            resp = self._session.get(url, params=params, timeout=timeout)
         except Timeout:
             raise ProxmoxAPIError(f"Request timed out: GET {path}")
         except ConnError as exc:
@@ -476,3 +478,78 @@ class ProxmoxAPI:
         Note: Proxmox only allows growing volumes, never shrinking.
         """
         return self._put(f"/nodes/{node}/lxc/{vmid}/resize", {"disk": disk, "size": size})
+
+    # ------------------------------------------------------------------
+    # Permissions, tasks and RRD statistics
+    # ------------------------------------------------------------------
+
+    def get_permissions(self):
+        """Effective privileges of the API token: {path: {privilege: 1}}."""
+        result = self._get("/access/permissions")
+        return result if isinstance(result, dict) else {}
+
+    def get_tasks(self, node, start=0, limit=50, vmid=None, typefilter=None,
+                  statusfilter=None, userfilter=None, errors=False, source="all"):
+        """Return (total, tasks) from the node task index, newest first."""
+        params = {"start": int(start), "limit": int(limit), "source": source}
+        if vmid:
+            params["vmid"] = int(vmid)
+        if typefilter:
+            params["typefilter"] = typefilter
+        if statusfilter:
+            params["statusfilter"] = statusfilter
+        if userfilter:
+            params["userfilter"] = userfilter
+        if errors:
+            params["errors"] = 1
+        url = f"{self.base_url}/nodes/{node}/tasks"
+        try:
+            resp = self._session.get(url, params=params, timeout=15)
+        except RequestException as exc:
+            raise ProxmoxAPIError(f"Request failed: GET /nodes/{node}/tasks — {exc}")
+        if not resp.ok:
+            raise ProxmoxAPIError(
+                f"GET /nodes/{node}/tasks returned HTTP {resp.status_code}: {resp.text[:200]}",
+                status_code=resp.status_code,
+            )
+        try:
+            body = resp.json()
+        except ValueError as exc:
+            raise ProxmoxAPIError(f"Invalid JSON from GET /nodes/{node}/tasks: {exc}")
+        tasks = body.get("data") or []
+        return int(body.get("total") or len(tasks)), tasks
+
+    def get_task_log(self, node, upid, start=0, limit=500):
+        """Return (total_lines, [{'n': line_no, 't': text}, ...])."""
+        path = f"/nodes/{node}/tasks/{quote(upid, safe='')}/log"
+        url = f"{self.base_url}{path}"
+        try:
+            resp = self._session.get(url, params={"start": int(start), "limit": int(limit)}, timeout=15)
+        except RequestException as exc:
+            raise ProxmoxAPIError(f"Request failed: GET {path} — {exc}")
+        if not resp.ok:
+            raise ProxmoxAPIError(
+                f"GET {path} returned HTTP {resp.status_code}: {resp.text[:200]}",
+                status_code=resp.status_code,
+            )
+        try:
+            body = resp.json()
+        except ValueError as exc:
+            raise ProxmoxAPIError(f"Invalid JSON from GET {path}: {exc}")
+        lines = body.get("data") or []
+        return int(body.get("total") or len(lines)), lines
+
+    def get_task_status_by_upid(self, node, upid):
+        return self._get(f"/nodes/{node}/tasks/{quote(upid, safe='')}/status")
+
+    def stop_task(self, node, upid):
+        return self._delete(f"/nodes/{node}/tasks/{quote(upid, safe='')}")
+
+    def get_rrddata(self, node, timeframe="hour", cf="AVERAGE", kind="node", vmid=None):
+        """RRD samples for the node or a guest (kind 'qemu' / 'lxc')."""
+        if kind == "node":
+            path = f"/nodes/{node}/rrddata"
+        else:
+            path = f"/nodes/{node}/{kind}/{int(vmid)}/rrddata"
+        result = self._get(path, params={"timeframe": timeframe, "cf": cf}, timeout=20)
+        return result if isinstance(result, list) else []

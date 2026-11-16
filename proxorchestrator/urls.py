@@ -18,6 +18,7 @@ urlpatterns = [
     path("vm/new/", include("apps.vmcreator.urls")),
     path("exporter/", include("apps.exporter.urls")),
     path("lxc/", include("apps.lxc.urls")),
+    path("tasks/", include("apps.tasks.urls")),
     path("settings/proxmox/", proxmox_settings, name="proxmox_settings"),
     path("settings/auth/", include("apps.authconfig.urls")),
     path("settings/email/", include("apps.emailconfig.urls")),

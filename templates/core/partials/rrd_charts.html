@@ -1,0 +1,45 @@
+{# RRD charts. Lives inside a container with id="{{ target_id }}"; refreshes itself every minute on the hour view. #}
+<div class="rrd-toolbar">
+  <div class="buttons has-addons" style="margin-bottom:0;">
+    {% for tf in timeframes %}
+      <button class="button is-small {% if tf == timeframe %}is-link is-selected{% else %}is-light{% endif %}"
+              hx-get="{{ base_url }}?timeframe={{ tf }}&cf={{ cf }}"
+              hx-target="#{{ target_id }}" hx-swap="innerHTML">{{ tf|capfirst }}</button>
+    {% endfor %}
+  </div>
+  <div class="buttons has-addons" style="margin-bottom:0;">
+    <button class="button is-small {% if cf == 'AVERAGE' %}is-link is-selected{% else %}is-light{% endif %}"
+            hx-get="{{ base_url }}?timeframe={{ timeframe }}&cf=AVERAGE"
+            hx-target="#{{ target_id }}" hx-swap="innerHTML">Average</button>
+    <button class="button is-small {% if cf == 'MAX' %}is-link is-selected{% else %}is-light{% endif %}"
+            hx-get="{{ base_url }}?timeframe={{ timeframe }}&cf=MAX"
+            hx-target="#{{ target_id }}" hx-swap="innerHTML">Maximum</button>
+  </div>
+</div>
+
+{% if error %}
+  <div class="node-summary-error"><i class="fas fa-exclamation-triangle"></i> Could not load statistics: {{ error }}</div>
+{% else %}
+  <div class="rrd-grid">
+    {% for c in charts %}
+      <div class="rrd-chart">
+        <div class="rrd-chart-title">{{ c.title }}</div>
+        {% if c.empty %}
+          <div class="rrd-empty">No data for this period.</div>
+        {% else %}
+          {{ c.svg|safe }}
+        {% endif %}
+        <div class="rrd-legend">
+          {% for l in c.legend %}
+            <span><i class="rrd-swatch {{ l.css }}"></i>{{ l.label }} <strong>{{ l.last }}</strong> <span class="rrd-max">max {{ l.max }}</span></span>
+          {% endfor %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+{% if timeframe == 'hour' %}
+  <div hx-get="{{ base_url }}?timeframe=hour&cf={{ cf }}" hx-trigger="every 60s"
+       hx-target="#{{ target_id }}" hx-swap="innerHTML" style="display:none;"></div>
+{% endif %}

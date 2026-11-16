@@ -1,0 +1,42 @@
+{# Swapped into #task-log; polls every 2 s while the task is running. #}
+<div class="proxorchestrator-card"
+     {% if running %}hx-get="{% url 'task_log' upid %}" hx-trigger="every 2s" hx-target="#task-log" hx-swap="innerHTML"{% endif %}>
+  <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;">
+    <span>
+      <i class="fas fa-file-alt" style="color: var(--link-color);"></i> Output
+      &nbsp;
+      {% if error %}
+        <span class="status-badge task-badge-error">error</span>
+      {% elif running %}
+        <span class="status-badge task-badge-running"><i class="fas fa-spinner fa-spin"></i> running</span>
+      {% elif ok %}
+        <span class="status-badge vm-status-running">OK</span>
+      {% elif warning %}
+        <span class="status-badge task-badge-warning">{{ exitstatus }}</span>
+      {% else %}
+        <span class="status-badge task-badge-error">{{ exitstatus|default:"stopped" }}</span>
+      {% endif %}
+    </span>
+    {% if running %}
+      <form method="post" action="{% url 'task_stop' upid %}" onsubmit="return confirm('Stop this task?');" style="margin:0;">
+        {% csrf_token %}
+        <button class="button is-small is-danger" type="submit"><i class="fas fa-stop"></i>&nbsp; Stop</button>
+      </form>
+    {% endif %}
+  </div>
+  <div class="card-body" style="padding:0;">
+    {% if error %}
+      <div class="node-summary-error" style="padding:1rem 1.5rem;">{{ error }}</div>
+    {% else %}
+      <pre class="task-log" id="task-log-pre">{% for line in lines %}{{ line }}
+{% empty %}(no output yet){% endfor %}</pre>
+      {% if truncated %}<div class="ns-sub" style="padding:0.5rem 1.5rem;">Showing the first {{ lines|length }} of {{ total }} lines.</div>{% endif %}
+    {% endif %}
+  </div>
+</div>
+<script>
+  (function () {
+    var pre = document.getElementById('task-log-pre');
+    if (pre) { pre.scrollTop = pre.scrollHeight; }
+  })();
+</script>

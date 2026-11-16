@@ -57,6 +57,16 @@
   </div>
 </div>
 
+{# ===== NODE PERFORMANCE (RRD) ===== #}
+<div class="proxorchestrator-card" style="margin-bottom:1.5rem;">
+  <div class="card-header"><i class="fas fa-chart-area" style="color: var(--link-color);"></i> Node performance</div>
+  <div class="card-body" style="padding:1rem 1.5rem;">
+    <div id="rrd-node-node" hx-get="{% url 'rrd_node' 'node' %}" hx-trigger="load" hx-swap="innerHTML">
+      <div class="ns-sub">Loading statistics…</div>
+    </div>
+  </div>
+</div>
+
 {# ===== VM STAT CARDS ===== #}
 <div style="font-size: 0.8125rem;text-transform: uppercase;letter-spacing: 1px;color: var(--text-muted);font-weight: 600;margin-bottom: 0.5rem;">
   <i class="fas fa-server" style="margin-right: 0.3rem;"></i> Virtual Machines

@@ -1603,3 +1603,79 @@ a.stat-card-link:hover {
 .pve-notes thead:not(:has(th:not(:empty))) { display: none; }
 .pve-notes a { color: var(--link-color); }
 .pve-notes sub { font-size: 0.75rem; color: var(--text-muted); }
+
+/* --------------------------------------------------------------------------
+   RRD performance charts (server-rendered SVG, apps/core/charts.py)
+   -------------------------------------------------------------------------- */
+:root {
+  --chart-1: #2563eb;
+  --chart-2: #d97706;
+  --chart-grid: #e5e7eb;
+  --chart-axis: #6b7280;
+}
+[data-theme='dark'] {
+  --chart-1: #60a5fa;
+  --chart-2: #fbbf24;
+  --chart-grid: #334155;
+  --chart-axis: #94a3b8;
+}
+.rrd-toolbar { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: space-between; margin-bottom: 0.75rem; }
+.rrd-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 1rem; }
+.rrd-chart { border: 1px solid var(--border-main); border-radius: 8px; padding: 0.5rem 0.75rem 0.6rem; min-width: 0; }
+.rrd-chart-title { font-size: 0.8125rem; font-weight: 600; color: var(--text-main); margin-bottom: 0.25rem; }
+.rrd-empty { font-size: 0.8125rem; color: var(--text-muted); padding: 2rem 0; text-align: center; }
+.po-chart { width: 100%; height: 190px; display: block; overflow: visible; }
+.po-chart .grid { stroke: var(--chart-grid); stroke-width: 1; }
+.po-chart .axis { fill: var(--chart-axis); font-size: 10px; font-family: var(--font-sans); }
+.po-chart .line { fill: none; stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+.po-chart .line.s0 { stroke: var(--chart-1); }
+.po-chart .line.s1 { stroke: var(--chart-2); }
+.po-chart .area.s0 { fill: var(--chart-1); opacity: 0.18; }
+.po-chart .hover { fill: transparent; }
+.po-chart .hover:hover { fill: var(--chart-axis); opacity: 0.12; }
+.rrd-legend { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem; }
+.rrd-legend strong { color: var(--text-main); font-weight: 600; }
+.rrd-legend .rrd-max { opacity: 0.8; }
+.rrd-swatch { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 0.3rem; vertical-align: -1px; }
+.rrd-swatch.s0 { background: var(--chart-1); }
+.rrd-swatch.s1 { background: var(--chart-2); }
+
+/* --------------------------------------------------------------------------
+   Tasks (apps/tasks) and the recent-tasks bar
+   -------------------------------------------------------------------------- */
+.task-filters { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 0.75rem; }
+.task-filters .field { margin-bottom: 0; }
+.task-table td, .task-table th { font-size: 0.8125rem; vertical-align: middle; }
+.mono-cell { font-family: var(--font-mono); font-size: 0.75rem; }
+tr.task-failed td { background: var(--bg-danger-light); }
+.status-badge.task-badge-running { background: var(--bg-info-light); color: var(--text-info-dark); }
+.status-badge.task-badge-warning { background: var(--bg-warning-light); color: var(--text-warning-dark); }
+.status-badge.task-badge-error { background: var(--bg-danger-light); color: var(--text-danger-dark); }
+.task-log {
+  font-family: var(--font-mono); font-size: 0.75rem; line-height: 1.45;
+  background: #0f172a; color: #e2e8f0; margin: 0; padding: 0.75rem 1rem;
+  max-height: 65vh; overflow: auto; white-space: pre-wrap; word-break: break-word;
+  border-radius: 0 0 8px 8px;
+}
+.taskbar {
+  position: sticky; bottom: 0; z-index: 20;
+  background: var(--bg-card); border-top: 1px solid var(--border-main);
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.06);
+}
+.taskbar-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0.3rem 1.25rem; font-size: 0.75rem; font-weight: 600; color: var(--text-muted);
+  cursor: pointer; user-select: none;
+}
+.taskbar-header i { margin-right: 0.3rem; }
+.taskbar-all { margin-right: 0.75rem; font-weight: 400; }
+.taskbar-body { max-height: 9.5rem; overflow-y: auto; padding: 0 1.25rem 0.4rem; }
+.taskbar.is-collapsed .taskbar-body { display: none; }
+.taskbar.is-collapsed .taskbar-chevron { transform: rotate(180deg); }
+.taskbar-table { width: 100%; font-size: 0.75rem; border-collapse: collapse; }
+.taskbar-table td { padding: 0.15rem 0.5rem 0.15rem 0; color: var(--text-main); white-space: nowrap; }
+.taskbar-table td:nth-child(4) { white-space: normal; width: 100%; }
+.taskbar-time, .taskbar-user { color: var(--text-muted) !important; font-family: var(--font-mono); }
+.taskbar-status .status-badge { font-size: 0.6875rem; padding: 0.05rem 0.45rem; }
+.taskbar-empty { font-size: 0.75rem; color: var(--text-muted); padding: 0.3rem 0; }
+@media (max-width: 768px) { .taskbar-user, .taskbar-table td:nth-child(2) { display: none; } }
