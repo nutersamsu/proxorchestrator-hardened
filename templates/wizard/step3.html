@@ -11,59 +11,39 @@
       </div>
       <h2>Create API Token</h2>
     </div>
-    <p class="subtitle">ProxOrchestrator needs a Proxmox API token to manage VMs. Follow these steps in your Proxmox web interface.</p>
+    <p class="subtitle">ProxOrchestrator needs a Proxmox API token to manage VMs. Create one with limited privileges in two minutes.</p>
   </div>
 
   <div class="wizard-card-body">
 
-    {# Step-by-step guide #}
-    <div style="margin-bottom: 1.75rem;">
-      <div style="font-size: 0.8125rem;text-transform: uppercase;letter-spacing: 1px;color: var(--text-muted);font-weight: 600;margin-bottom: 0.75rem;">
-        Steps in Proxmox Web UI
+    {# Commands to run on the Proxmox host #}
+    <div style="margin-bottom: 1.5rem;">
+      <div style="font-size: 0.8125rem;text-transform: uppercase;letter-spacing: 1px;color: var(--text-muted);font-weight: 600;margin-bottom: 0.5rem;">
+        Run in the Proxmox shell
       </div>
-      <ol class="step-guide">
-        <li>
-          <div class="step-guide-num">1</div>
-          <div class="step-guide-text">
-            Open your Proxmox web interface at
-            <code>https://{{ proxmox_host }}:{{ api_port }}</code>
-            and log in as <strong>root</strong>.
-          </div>
-        </li>
-        <li>
-          <div class="step-guide-num">2</div>
-          <div class="step-guide-text">
-            Navigate to:
-            <strong>Datacenter</strong> &rarr;
-            <strong>Permissions</strong> &rarr;
-            <strong>API Tokens</strong> &rarr;
-            click <strong>Add</strong>.
-          </div>
-        </li>
-        <li>
-          <div class="step-guide-num">3</div>
-          <div class="step-guide-text">
-            Set: <strong>User</strong> = <code>root@pam</code>,
-            <strong><strong>Token ID</strong> = <code>proxorchestrator</code>,
-            and <strong>uncheck</strong> "Privilege Separation" so the token inherits root permissions.
-          </div>
-        </li>
-        <li>
-          <div class="step-guide-num">4</div>
-          <div class="step-guide-text">
-            Click <strong>Add</strong>. Proxmox will show the token secret <strong>once only</strong>.
-            Copy it immediately — you cannot retrieve it again.
-          </div>
-        </li>
-      </ol>
-    </div>
-
-    {# Warning about token secret #}
-    <div class="info-box is-warning" style="margin-bottom: 1.75rem;">
-      <div class="info-box-icon"><i class="fas fa-exclamation-triangle"></i></div>
-      <div>
-        <strong>Copy the secret now.</strong> Proxmox only shows the API token secret once, immediately after creation. If you miss it, you'll need to delete the token and create a new one.
+      <p class="field-hint" style="margin-bottom: 0.5rem;">
+        In the Proxmox web UI at <code>https://{{ proxmox_host }}:{{ api_port }}</code> open
+        <strong>your node &rarr; Shell</strong> and paste these lines. They create a dedicated user with
+        only the privileges ProxOrchestrator needs (not root) and a token for it.
+      </p>
+      <div class="key-display" id="token-cmds" style="white-space: pre;overflow-x: auto;">pveum user add proxorchestrator@pve --comment ProxOrchestrator
+pveum acl modify / --users proxorchestrator@pve --roles PVEVMAdmin,PVEDatastoreUser,PVEAuditor
+pveum acl modify /sdn/zones/localnetwork --users proxorchestrator@pve --roles PVESDNUser
+pveum user token add proxorchestrator@pve app --privsep 0</div>
+      <div style="margin-top: 0.5rem;">
+        <button type="button" class="button is-small is-light" onclick="copyBox('token-cmds', 'copy-cmds-feedback')">
+          <span class="icon is-small"><i class="fas fa-copy"></i></span>
+          <span>Copy commands</span>
+        </button>
+        <span id="copy-cmds-feedback" style="display: none;margin-left: 0.5rem;color: var(--success-color);font-size: 0.8125rem;">
+          <i class="fas fa-check"></i> Copied!
+        </span>
       </div>
+      <p class="field-hint" style="margin-top: 0.75rem;">
+        The last command prints a table: copy the <strong>value</strong> row into <em>Token Secret</em> below.
+        The token ID is <code>proxorchestrator@pve!app</code>. If the user already exists, the first line just
+        reports it — that is fine. On Proxmox 7 the <code>/sdn</code> line can be skipped.
+      </p>
     </div>
 
     {# Error display #}
@@ -92,8 +72,8 @@
                 type="text"
                 name="api_token_id"
                 id="id_api_token_id"
-                value="{{ form.api_token_id.value|default:'root@pam!proxorchestrator' }}"
-                placeholder="root@pam!proxorchestrator"
+                value="{{ form.api_token_id.value|default:'proxorchestrator@pve!app' }}"
+                placeholder="proxorchestrator@pve!app"
                 required
               >
               <span class="icon is-left"><i class="fas fa-tag" style="color: var(--text-muted);"></i></span>
@@ -155,6 +135,13 @@
 
 {% block extra_scripts %}
 <script>
+  function copyBox(boxId, feedbackId) {
+    navigator.clipboard.writeText(document.getElementById(boxId).innerText).then(() => {
+      const fb = document.getElementById(feedbackId);
+      fb.style.display = 'inline';
+      setTimeout(() => { fb.style.display = 'none'; }, 2500);
+    });
+  }
   document.getElementById('step3-form').addEventListener('submit', function() {
     document.getElementById('step3-spinner').style.display = 'flex';
     document.getElementById('step3-btn').disabled = true;

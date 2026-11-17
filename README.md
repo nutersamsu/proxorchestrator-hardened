@@ -1,8 +1,9 @@
 # ProxOrchestrator
 
-**Version 1.1.2** — Build `2026-04-10.1`
+Hardened fork of ProxOrchestrator 1.1.2 (branch `hardening`).
 
-> **To update an existing install:** `git pull origin hardening && sudo ./update.sh`
+> **New install:** one command in the Proxmox shell — see [Quick Install](#quick-install).
+> **Update:** `git pull origin hardening && sudo ./update.sh`
 
 > **Security-hardened fork (branch `hardening`).** Fixes an unauthenticated
 > Proxmox API exposure via `/vm-ws/`, open self-signup, MFA bypass, missing
@@ -114,7 +115,10 @@ Come hang out, ask questions, share what you're building, and help shape where P
 
 ProxOrchestrator is designed to run on a dedicated Linux server that connects to Proxmox over the network — not on the Proxmox host itself.
 
-| Family | Tested distros |
+This fork is tested on **Debian 12 and 13** (the LXC installer uses them); the other
+distributions below are supported by the installer of the original project.
+
+| Family | Distros |
 |---|---|
 | **Debian / Ubuntu** | Ubuntu 22.04 LTS, Ubuntu 24.04 LTS, Debian 11, Debian 12 |
 | **RHEL / CentOS Stream / Rocky** | CentOS Stream 9 (EOL ~May 2027), CentOS Stream 10 (EOL ~2030), Rocky Linux 8/9, AlmaLinux 8/9, RHEL 8/9 |
@@ -177,34 +181,72 @@ sudo systemctl restart proxorchestrator-gunicorn
 
 ## Quick Install
 
-Requirements: a fresh **Debian 12/13 or Ubuntu 22.04+** VM or LXC (2 vCPU, 2 GB RAM,
-16 GB disk minimum; more disk if you will import large images), reachable from your
-Proxmox host. Do not install it on the Proxmox host itself and do not expose it to the
-internet.
+### Option A — one command on the Proxmox host (recommended)
+
+Open **your node → Shell** in the Proxmox web UI and paste:
+
+```bash
+bash -c "$(wget -qLO - https://github.com/nutersamsu/proxorchestrator-hardened/raw/hardening/lxc-install.sh)"
+```
+
+It shows a summary, asks once for confirmation and then does everything:
+
+1. creates an unprivileged Debian 13 (or 12) container — 2 cores, 2 GB RAM, 16 GB disk,
+   DHCP on `vmbr0`, next free ID;
+2. installs ProxOrchestrator inside it;
+3. **connects it to this Proxmox host** — creates the user `proxorchestrator@pve` with
+   least-privilege roles (`PVEVMAdmin` + `PVEDatastoreUser` + `PVEAuditor` on `/`,
+   `PVESDNUser` on `/sdn/zones/localnetwork`) and an API token, authorises the
+   container's SSH key for root on the host, and pins the host's real SSH keys and API
+   certificate in the app;
+4. prints the address and a random first-login password.
+
+Open the address, log in as `admin` with that password, choose a new password and
+confirm the defaults (node, storage, bridge) — that's it.
+
+Useful options (put them after `--`):
+
+```bash
+bash -c "$(wget -qLO - https://github.com/nutersamsu/proxorchestrator-hardened/raw/hardening/lxc-install.sh)" -- \
+    --id 200 --storage local-lvm --bridge vmbr0 --ip 192.168.1.50/24 --gateway 192.168.1.1
+```
+
+| Option | Default | |
+|---|---|---|
+| `--id`, `--hostname` | next free ID, `proxorchestrator` | |
+| `--storage`, `--disk`, `--ram`, `--cores` | `local-lvm`, 16 GB, 2048 MB, 2 | |
+| `--bridge`, `--ip` + `--gateway`, `--dns` | `vmbr0`, DHCP, host DNS | |
+| `--port` | `8443` | web UI port |
+| `--pve-host <ip>` | this host's IP on `--bridge` | address the app uses to reach Proxmox |
+| `--pve-user <user@pve>` | `proxorchestrator@pve` | Proxmox user that owns the app's token (use a different one per install if you want separate permissions) |
+| `--no-connect` | | only install; connect later in the web wizard |
+| `--yes` | | no confirmation prompt |
+
+To remove everything later: `pct destroy <id>`, `pveum user token remove proxorchestrator@pve ct<id>`
+and delete the `proxorchestrator@<hostname>` line from `/root/.ssh/authorized_keys` (the
+script prints these commands at the end).
+
+### Option B — your own VM or server
+
+Use a fresh **Debian 12/13 or Ubuntu 22.04+** machine (2 vCPU, 2 GB RAM, 16 GB disk minimum;
+more disk if you will import large images) that can reach Proxmox on ports 8006 and 22.
+Do not install it on the Proxmox host itself and do not expose it to the internet.
 
 ```bash
 sudo apt-get update && sudo apt-get install -y git
 git clone -b hardening https://github.com/nutersamsu/proxorchestrator-hardened.git
 cd proxorchestrator-hardened
-sudo ./install.sh
+sudo ./install.sh                 # or: sudo ./install.sh --port 9443
 ```
 
 Run it from a normal root shell (default `umask 022`); a restrictive umask leaves the
-static files unreadable by nginx.
+static files unreadable by nginx. For an unattended install use
+`sudo PROXORCHESTRATOR_ADMIN_USER=admin ./install.sh` (random password, see below).
 
-Unattended install (no prompts):
+Then open the address it prints; the web wizard connects to Proxmox and shows the exact
+commands to paste in the Proxmox shell (see [First-Run Wizard](#first-run-wizard)).
 
-```bash
-sudo PROXORCHESTRATOR_ADMIN_USER=admin ./install.sh      # random password, see below
-```
-
-To use a custom HTTPS port:
-
-```bash
-sudo ./install.sh --port 9443
-```
-
-The installer:
+What `install.sh` does (both options):
 1. Creates a dedicated `proxorchestrator` system user
 2. Installs Python, Redis, nginx, and `qemu-utils`
 3. Sets up a Python virtualenv and installs all dependencies
@@ -213,7 +255,8 @@ The installer:
 6. Creates and enables systemd services for gunicorn and Celery (auto-start on reboot)
 7. Runs database migrations and creates an admin account
 
-After install, open `https://<your-server-ip>:8443` and log in with the admin account created during installation.
+After install, open `https://<server-ip>:8443` (accept the self-signed certificate warning)
+and log in with the admin account created during installation.
 
 ## Updating
 
@@ -248,13 +291,24 @@ After changing your password you are taken directly into the **Setup Wizard** to
 
 ## First-Run Wizard
 
-The wizard walks through:
+With Option A the connection is already done and the wizard opens directly on
+**Defaults**. With Option B it walks through:
 
-1. **Proxmox connection** — hostname/IP, API port
-2. **API token** — create a token in Proxmox (`Datacenter → Permissions → API Tokens`) with `VM.Allocate`, `VM.Console`, `Datastore.AllocateSpace`, and `Sys.Audit` privileges
-3. **SSH key** — ProxOrchestrator generates a key pair and copies the public key to Proxmox for `qm importdisk` operations
-4. **Environment discovery** — nodes, storage pools, networks, and existing VMIDs
-5. **Defaults** — default node, storage, bridge, CPU, memory, VMID range, and VirtIO Windows Drivers ISO
+1. **Proxmox host** — IP/hostname, SSH port (22) and API port (8006).
+2. **SSH key** — copies the app's key to `root` on Proxmox using the root password
+   (used once, never stored). If root password login is disabled, open
+   *"Add the key yourself instead"*: it shows one line to paste in the Proxmox shell and a
+   button to test it.
+3. **API token** — shows the commands to paste in the Proxmox shell; they create
+   `proxorchestrator@pve` with least-privilege roles and the token
+   `proxorchestrator@pve!app`. Paste the printed secret. Do not use a `root@pam` token.
+4. **Discovery** — nodes, storage, bridges and existing VMIDs.
+5. **Defaults** — node, storage, bridge, CPU, memory, VMID range, VirtIO ISO.
+6. **Done.**
+
+The SSH host key and the API certificate are pinned on first contact; after a legitimate
+change on Proxmox run `python manage.py forget_proxmox_hostkey <host>` (see
+[SECURITY-HARDENING.md](SECURITY-HARDENING.md)).
 
 ## Windows VMs and VirtIO Drivers
 

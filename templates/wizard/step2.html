@@ -50,6 +50,38 @@
       </div>
     </div>
 
+    {# Alternative without the root password #}
+    <details style="margin-bottom: 1.5rem;" {% if verify_error %}open{% endif %}>
+      <summary style="cursor: pointer;font-weight: 600;color: var(--text-header);">
+        Root password login disabled? Add the key yourself instead
+      </summary>
+      <p class="field-hint" style="margin: 0.5rem 0;">
+        In the Proxmox web UI open <strong>your node &rarr; Shell</strong>, paste this line, then click
+        <em>I added it</em>.
+      </p>
+      <div class="key-display" id="add-key-cmd" style="white-space: pre;overflow-x: auto;">echo '{{ public_key }}' &gt;&gt; /root/.ssh/authorized_keys</div>
+      <div style="margin-top: 0.5rem;display: flex;align-items: center;gap: 0.5rem;flex-wrap: wrap;">
+        <button type="button" class="button is-small is-light" onclick="copyBox('add-key-cmd', 'copy-cmd-feedback')">
+          <span class="icon is-small"><i class="fas fa-copy"></i></span>
+          <span>Copy command</span>
+        </button>
+        <form method="post" action="{% url 'wizard_step2' %}" style="display: inline;">
+          {% csrf_token %}
+          <input type="hidden" name="mode" value="verify">
+          <button type="submit" class="button is-small is-primary">
+            <span class="icon is-small"><i class="fas fa-check"></i></span>
+            <span>I added it — test the key</span>
+          </button>
+        </form>
+        <span id="copy-cmd-feedback" style="display: none;color: var(--success-color);font-size: 0.8125rem;">
+          <i class="fas fa-check"></i> Copied!
+        </span>
+      </div>
+      {% if verify_error %}
+        <p class="help is-danger" style="margin-top: 0.5rem;">{{ verify_error }}</p>
+      {% endif %}
+    </details>
+
     {# Form #}
     <form method="post" action="{% url 'wizard_step2' %}" id="step2-form">
       {% csrf_token %}
@@ -120,6 +152,14 @@
 
 {% block extra_scripts %}
 <script>
+  function copyBox(boxId, feedbackId) {
+    navigator.clipboard.writeText(document.getElementById(boxId).innerText).then(() => {
+      const fb = document.getElementById(feedbackId);
+      fb.style.display = 'inline';
+      setTimeout(() => { fb.style.display = 'none'; }, 2500);
+    });
+  }
+
   function copyPublicKey() {
     const keyText = document.getElementById('public-key-box').innerText;
     navigator.clipboard.writeText(keyText).then(() => {

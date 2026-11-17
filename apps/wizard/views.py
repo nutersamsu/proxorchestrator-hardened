@@ -20,6 +20,7 @@ from apps.wizard.forms import Step1Form
 from apps.wizard.forms import Step2Form
 from apps.wizard.forms import Step3Form
 from apps.wizard.forms import Step5Form
+from apps.wizard.discovery import run_discovery
 from apps.wizard.models import DiscoveredEnvironment
 from apps.wizard.models import ProxmoxConfig
 
@@ -112,8 +113,31 @@ def step2(request):
     public_key_content, key_path = _read_public_key()
     error = None
     success = None
+    verify_error = None
 
-    if request.method == "POST":
+    if request.method == "POST" and request.POST.get("mode") == "verify":
+        # The administrator added the key by hand (root password login disabled).
+        form = Step2Form()
+        if not public_key_content:
+            verify_error = "SSH public key not found. Please ensure the install script has been run."
+        else:
+            try:
+                with ProxmoxSSH(
+                    host=config.host,
+                    port=config.ssh_port,
+                    key_path=key_path.replace(".pub", ""),
+                ) as ssh_test:
+                    ssh_test.run_checked(["echo", "proxorchestrator-ok"])
+                config.wizard_step = 3
+                config.save()
+                return redirect("/wizard/step/3/")
+            except Exception as exc:
+                logger.warning("step2 key verification failed: %s", exc)
+                verify_error = (
+                    "The key does not work yet. Check that the whole line was pasted in the "
+                    f"Shell of {config.host} and try again. ({exc.__class__.__name__})"
+                )
+    elif request.method == "POST":
         form = Step2Form(request.POST)
         if form.is_valid():
             password = form.cleaned_data["root_password"]
@@ -173,6 +197,7 @@ def step2(request):
             "form": form,
             "error": error,
             "success": success,
+            "verify_error": verify_error,
             "public_key": public_key_content or "(key not found)",
             "proxmox_host": config.host or "",
             "ssh_port": config.ssh_port,
@@ -246,54 +271,12 @@ def step4_run(request):
     existing_vmids = []
 
     try:
-        api = config.get_api_client()
-        nodes = api.get_nodes()
-
-        node_name = nodes[0]["node"] if nodes else config.default_node or "pve"
-
-        storage_raw = api.get_storage(node_name)
-        networks_raw = api.get_networks(node_name)
-        vms = api.get_vms(node_name)
-        existing_vmids = [int(vm["vmid"]) for vm in vms if "vmid" in vm]
-
-        # Friendly storage list with GB available
-        for s in storage_raw:
-            avail = s.get("avail", 0) or 0
-            s["avail_gb"] = avail / 1024 / 1024 / 1024
-            s["shared"] = bool(s.get("shared", 0))
-            storage_pools.append(s)
-
-        # Only include bridge-type interfaces for network list
-        network_bridges = [
-            n["iface"] for n in networks_raw
-            if n.get("type") in ("bridge", "bond", "eth", "vlan") or n["iface"].startswith("vmbr")
-        ]
-        if not network_bridges:
-            network_bridges = [n["iface"] for n in networks_raw]
-
-        # CPU info via SSH
-        try:
-            with config.get_ssh_client() as ssh:
-                stdout, _stderr, _rc = ssh.run(["grep", "model name", "/proc/cpuinfo"])
-                for line in stdout.splitlines():
-                    if "model name" in line:
-                        cpu_info = line.split(":", 1)[-1].strip()
-                        break
-        except Exception as ssh_exc:
-            logger.warning("step4_run: SSH CPU info failed: %s", ssh_exc)
-            cpu_info = "Unknown (SSH not available)"
-
-        # Persist discovery results
-        env, _created = DiscoveredEnvironment.objects.get_or_create(config=config)
-        env.nodes_json = json.dumps(nodes)
-        env.storage_json = json.dumps(storage_raw)
-        env.networks_json = json.dumps(networks_raw)
-        env.host_cpu_info = cpu_info[:500]
-        env.existing_vmids_json = json.dumps(existing_vmids)
-        env.save()
-
-        config.wizard_step = max(config.wizard_step, 5)
-        config.save()
+        result = run_discovery(config)
+        nodes = result["nodes"]
+        storage_pools = result["storage_pools"]
+        network_bridges = result["network_bridges"]
+        cpu_info = result["cpu_info"]
+        existing_vmids = result["existing_vmids"]
 
     except ProxmoxAPIError as exc:
         error = f"API error: {exc.message}"
