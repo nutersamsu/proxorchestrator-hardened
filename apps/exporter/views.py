@@ -8,15 +8,18 @@ import uuid
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import FileResponse
+from django.http import StreamingHttpResponse
 from django.http import Http404
 from django.http import HttpResponse
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
+from django.utils import timezone
 from django.views.decorators.http import require_POST
 
 from apps.exporter.models import ExportJob
+from apps.exporter.models import export_retention_hours
 from apps.exporter.models import LxcExportJob
 from apps.exporter.models import LxcPxImportJob
 from apps.exporter.models import PxImportJob
@@ -31,6 +34,117 @@ from apps.wizard.models import DiscoveredEnvironment
 from apps.wizard.models import ProxmoxConfig
 
 logger = logging.getLogger(__name__)
+
+
+# ── Download of finished packages ────────────────────────────────────────────
+
+DOWNLOAD_CHUNK = 1024 * 1024
+
+
+def _finish_download(job_model, job_id):
+    """Record a completed download and, if asked, remove the package from disk."""
+    job = job_model.objects.filter(pk=job_id).first()
+    if job is None:
+        return
+    job.downloaded_at = timezone.now()
+    fields = ["downloaded_at", "updated_at"]
+    if job.delete_after_download and job.output_path:
+        try:
+            os.remove(job.output_path)
+            logger.info("%s %d: package removed after a complete download", job_model.__name__, job_id)
+        except FileNotFoundError:
+            pass
+        except OSError as exc:
+            logger.warning("%s %d: could not remove package after download: %s",
+                           job_model.__name__, job_id, exc)
+        job.output_path = ""
+        fields.append("output_path")
+    job.save(update_fields=fields)
+
+
+def _stream_package(job, filename):
+    """Stream a .px package; act on the download only after the last byte left.
+
+    nginx buffering is switched off for this response (X-Accel-Buffering: no),
+    so if the browser cancels, nginx closes the upstream connection, gunicorn
+    stops iterating and the generator never reaches the end: nothing is deleted
+    and the download can be retried.
+    """
+    path = job.output_path
+    size = os.path.getsize(path)
+    job_model, job_id = type(job), job.pk
+
+    def chunks():
+        sent = 0
+        with open(path, "rb") as fh:
+            while True:
+                block = fh.read(DOWNLOAD_CHUNK)
+                if not block:
+                    break
+                sent += len(block)
+                yield block
+        if sent == size:
+            _finish_download(job_model, job_id)
+
+    response = StreamingHttpResponse(chunks(), content_type="application/octet-stream")
+    response["Content-Length"] = str(size)
+    response["Content-Disposition"] = f'attachment; filename="{filename}"'
+    response["X-Accel-Buffering"] = "no"
+    response["Cache-Control"] = "no-store"
+    return response
+
+
+def _safe_filename(label):
+    return "".join(c if c.isalnum() or c in "-_." else "_" for c in label) or "export"
+
+
+def _download_state(job):
+    return JsonResponse({
+        "downloaded_at": job.downloaded_at.isoformat() if job.downloaded_at else "",
+        "file": job.file_available,
+    })
+
+
+def _delete_package(request, job, label):
+    """Remove the package file but keep the job (history shows it was downloaded)."""
+    if job.output_path:
+        try:
+            os.remove(job.output_path)
+        except FileNotFoundError:
+            pass
+        except OSError as exc:
+            logger.warning("%s %d: could not remove package: %s", type(job).__name__, job.pk, exc)
+            messages.error(request, f"Could not remove the package of {label}: {exc}")
+            return
+        job.output_path = ""
+        job.save(update_fields=["output_path", "updated_at"])
+    messages.success(request, f"Package of {label} removed from this server.")
+
+
+@login_required
+def export_download_state(request, job_id):
+    return _download_state(get_object_or_404(ExportJob, pk=job_id))
+
+
+@login_required
+@require_POST
+def export_delete_package(request, job_id):
+    job = get_object_or_404(ExportJob, pk=job_id)
+    _delete_package(request, job, job.vm_name or f"VM {job.vmid}")
+    return redirect("export_progress", job_id=job.pk)
+
+
+@login_required
+def lxc_export_download_state(request, job_id):
+    return _download_state(get_object_or_404(LxcExportJob, pk=job_id))
+
+
+@login_required
+@require_POST
+def lxc_export_delete_package(request, job_id):
+    job = get_object_or_404(LxcExportJob, pk=job_id)
+    _delete_package(request, job, job.ct_name or f"CT {job.vmid}")
+    return redirect("lxc_export_progress", job_id=job.pk)
 
 UPLOAD_ROOT = getattr(settings, "UPLOAD_ROOT", "/opt/proxorchestrator/uploads")
 EXPORT_ROOT = os.path.join(UPLOAD_ROOT, "exports")
@@ -90,6 +204,7 @@ def export_index(request):
     export_jobs = ExportJob.objects.select_related("created_by").order_by("-created_at")[:20]
     px_import_jobs = PxImportJob.objects.select_related("created_by").order_by("-created_at")[:10]
     return render(request, "exporter/export_index.html", {
+        "export_retention_hours": export_retention_hours(),
         "export_jobs": export_jobs,
         "px_import_jobs": px_import_jobs,
         "help_slug": "exporter",
@@ -102,6 +217,7 @@ def lxc_export_index(request):
     lxc_export_jobs = LxcExportJob.objects.select_related("created_by").order_by("-created_at")[:20]
     lxc_px_import_jobs = LxcPxImportJob.objects.select_related("created_by").order_by("-created_at")[:10]
     return render(request, "exporter/lxc_export_index.html", {
+        "export_retention_hours": export_retention_hours(),
         "lxc_export_jobs": lxc_export_jobs,
         "lxc_px_import_jobs": lxc_px_import_jobs,
         "help_slug": "lxc-export",
@@ -143,6 +259,7 @@ def export_options(request, vmid):
         "is_running": is_running,
         "api_error": api_error,
         "help_slug": "exporter-options",
+        "export_retention_hours": export_retention_hours(),
     })
 
 
@@ -165,6 +282,7 @@ def export_trigger(request, vmid):
     job = ExportJob.objects.create(
         vmid=vmid,
         node=config.default_node or "",
+        delete_after_download=request.POST.get("delete_after_download") == "on",
         vm_config_json=json.dumps({
             "export_mode": export_mode,
             "restart_after": restart_after,
@@ -217,14 +335,8 @@ def export_download(request, job_id):
     if not job.output_path or not os.path.exists(job.output_path):
         raise Http404("Package file not found — it may have expired.")
 
-    vm_label = job.vm_name or str(job.vmid)
-    filename = f"{vm_label}-{job.vmid}.px"
-    return FileResponse(
-        open(job.output_path, "rb"),
-        content_type="application/octet-stream",
-        as_attachment=True,
-        filename=filename,
-    )
+    vm_label = _safe_filename(job.vm_name or str(job.vmid))
+    return _stream_package(job, f"{vm_label}-{job.vmid}.px")
 
 
 @login_required
@@ -523,6 +635,7 @@ def lxc_export_options(request, vmid):
         "is_running": is_running,
         "api_error": api_error,
         "help_slug": "lxc-export",
+        "export_retention_hours": export_retention_hours(),
     })
 
 
@@ -542,6 +655,7 @@ def lxc_export_trigger(request, vmid):
     job = LxcExportJob.objects.create(
         vmid=vmid,
         node=config.default_node or "",
+        delete_after_download=request.POST.get("delete_after_download") == "on",
         created_by=request.user if request.user.is_authenticated else None,
     )
 
@@ -588,14 +702,8 @@ def lxc_export_download(request, job_id):
     if not job.output_path or not os.path.exists(job.output_path):
         raise Http404("Package file not found — it may have expired.")
 
-    ct_label = job.ct_name or str(job.vmid)
-    filename = f"{ct_label}-ct{job.vmid}.px"
-    return FileResponse(
-        open(job.output_path, "rb"),
-        content_type="application/octet-stream",
-        as_attachment=True,
-        filename=filename,
-    )
+    ct_label = _safe_filename(job.ct_name or str(job.vmid))
+    return _stream_package(job, f"{ct_label}-ct{job.vmid}.px")
 
 
 @login_required

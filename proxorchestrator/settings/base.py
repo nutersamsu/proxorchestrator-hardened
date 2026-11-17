@@ -193,6 +193,10 @@ UPLOAD_ROOT = os.environ.get("UPLOAD_ROOT", "/opt/proxorchestrator/uploads")
 MEDIA_URL = "/media/"
 MEDIA_ROOT = UPLOAD_ROOT
 
+# Finished VM/CT export packages (.px) that were not downloaded are removed by
+# the hourly cleanup after this many hours.
+EXPORT_RETENTION_HOURS = int(os.environ.get("EXPORT_RETENTION_HOURS", "24") or 24)
+
 # Where Django writes large upload temp files before the view saves them.
 # Defaults to the OS temp dir (/tmp on Linux, often a small tmpfs).
 # Set UPLOAD_TEMP_DIR in .env to a path on a disk with enough free space

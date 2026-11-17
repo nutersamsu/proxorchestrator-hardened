@@ -18,7 +18,7 @@ You'll see a success message with options to:
 - **Back to Container** — return to the container's detail page
 - **All Exports** — go to the export/import hub
 
-The download link is available for **24 hours** after export completes.
+The package stays on the server for **24 hours** by default (`EXPORT_RETENTION_HOURS` in `.env`). If *Remove the package from this server after I download it* was ticked, it is deleted as soon as one download finishes completely; an interrupted download leaves it in place.
 
 ## If the export fails
 

@@ -1,13 +1,36 @@
 import json
 import logging
+import os
+from datetime import timedelta
 
 from django.conf import settings
 from django.db import models
 
 logger = logging.getLogger(__name__)
 
+def export_retention_hours():
+    return int(getattr(settings, "EXPORT_RETENTION_HOURS", 24) or 24)
 
-class ExportJob(models.Model):
+
+class DownloadableExportMixin:
+    """Shared helpers for finished export packages (.px) kept on this server."""
+
+    @property
+    def file_available(self):
+        return bool(self.stage == "DONE" and self.output_path and os.path.exists(self.output_path))
+
+    @property
+    def expires_at(self):
+        """When the hourly cleanup removes a package that was not downloaded."""
+        return self.updated_at + timedelta(hours=export_retention_hours())
+
+    @property
+    def retention_hours(self):
+        return export_retention_hours()
+
+
+
+class ExportJob(DownloadableExportMixin, models.Model):
     """Tracks a VM export pipeline job."""
 
     STAGE_QUEUED = "QUEUED"
@@ -39,6 +62,11 @@ class ExportJob(models.Model):
     error = models.TextField(blank=True)
     vm_config_json = models.TextField(default="{}")
     output_path = models.CharField(max_length=1000, blank=True)
+    delete_after_download = models.BooleanField(
+        default=False,
+        help_text="Remove the package without asking as soon as one download has completed.",
+    )
+    downloaded_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(
@@ -154,7 +182,7 @@ class PxImportJob(models.Model):
         logger.debug("PxImportJob %d stage -> %s (%s)", self.pk, stage, message)
 
 
-class LxcExportJob(models.Model):
+class LxcExportJob(DownloadableExportMixin, models.Model):
     """Tracks an LXC container export pipeline job."""
 
     STAGE_QUEUED = "QUEUED"
@@ -184,6 +212,11 @@ class LxcExportJob(models.Model):
     error = models.TextField(blank=True)
     ct_config_json = models.TextField(default="{}")
     output_path = models.CharField(max_length=1000, blank=True)
+    delete_after_download = models.BooleanField(
+        default=False,
+        help_text="Remove the package without asking as soon as one download has completed.",
+    )
+    downloaded_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(

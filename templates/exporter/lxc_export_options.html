@@ -60,6 +60,8 @@
             stays running during the export with no downtime.
           </div>
 
+          {% include "exporter/partials/delete_after_download_option.html" %}
+
           <div style="display: flex;justify-content: flex-end;gap: 1rem;margin-top: 0.5rem;">
             <a href="javascript:history.back()" class="button is-light is-medium" style="font-weight: 600;">Cancel</a>
             <button type="submit" class="button is-info is-medium" style="font-weight: 600;">
@@ -92,7 +94,7 @@
         <hr style="border: none;border-top: 1px solid var(--border-main);margin: 0.75rem 0;">
         <p style="font-size: 0.8125rem;color: var(--text-muted);">
           <i class="fas fa-clock" style="margin-right: 0.3rem;"></i>
-          Completed exports are automatically deleted after 24 hours.
+          Completed exports are deleted after {{ export_retention_hours }} hours, or as soon as they are downloaded when that option is on.
         </p>
       </div>
     </div>

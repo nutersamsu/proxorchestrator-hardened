@@ -18,7 +18,7 @@ The exports table shows all recent export jobs with their status:
 - **In Progress** — click View Progress for real-time pipeline status.
 - **Failed** — the export encountered an error.
 
-Completed exports are **automatically deleted after 24 hours**. Download them promptly.
+Completed exports are **automatically deleted after 24 hours** (`EXPORT_RETENTION_HOURS` in `.env`), or right after a complete download when *Remove the package from this server after I download it* is ticked (the default).
 
 You can delete any export job by clicking the trash icon.
 

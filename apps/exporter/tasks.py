@@ -29,6 +29,10 @@ from apps.wizard.models import ProxmoxConfig
 logger = logging.getLogger(__name__)
 
 UPLOAD_ROOT = getattr(settings, "UPLOAD_ROOT", "/opt/proxorchestrator/uploads")
+
+
+def _retention_hours():
+    return int(getattr(settings, "EXPORT_RETENTION_HOURS", 24) or 24)
 EXPORT_ROOT = os.path.join(UPLOAD_ROOT, "exports")
 PX_IMPORT_ROOT = os.path.join(UPLOAD_ROOT, "px-imports")
 
@@ -847,8 +851,8 @@ def _fail_px_import(job, error_message, vmid, config):
 
 @shared_task(name="exporter.cleanup_old_exports")
 def cleanup_old_exports():
-    """Delete completed ExportJobs and their .px files older than 24 hours."""
-    cutoff = timezone.now() - timedelta(hours=24)
+    """Delete completed ExportJobs and their .px files older than EXPORT_RETENTION_HOURS (default 24)."""
+    cutoff = timezone.now() - timedelta(hours=_retention_hours())
     old_jobs = ExportJob.objects.filter(
         stage=ExportJob.STAGE_DONE,
         updated_at__lt=cutoff,
@@ -1373,8 +1377,8 @@ def run_lxc_px_import_pipeline(self, job_id):
 
 @shared_task(name="exporter.cleanup_old_lxc_exports")
 def cleanup_old_lxc_exports():
-    """Delete completed LxcExportJobs and their .px files older than 24 hours."""
-    cutoff = timezone.now() - timedelta(hours=24)
+    """Delete completed LxcExportJobs and their .px files older than EXPORT_RETENTION_HOURS (default 24)."""
+    cutoff = timezone.now() - timedelta(hours=_retention_hours())
     old_jobs = LxcExportJob.objects.filter(
         stage=LxcExportJob.STAGE_DONE,
         updated_at__lt=cutoff,

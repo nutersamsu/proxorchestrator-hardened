@@ -10,6 +10,8 @@ urlpatterns = [
     path("<int:job_id>/progress/", views.export_progress, name="export_progress"),
     path("<int:job_id>/status/", views.export_status, name="export_status"),
     path("<int:job_id>/download/", views.export_download, name="export_download"),
+    path("<int:job_id>/download/state/", views.export_download_state, name="export_download_state"),
+    path("<int:job_id>/package/delete/", views.export_delete_package, name="export_delete_package"),
     path("<int:job_id>/delete/", views.export_delete_job, name="export_delete_job"),
 
     # .px Import

@@ -28,7 +28,7 @@
       <div class="card-header">
         <i class="fas fa-file-export" style="color: var(--link-color);"></i> Container Exports
         <span style="margin-left: auto;font-size: 0.8125rem;color: var(--text-muted);font-weight: 400;">
-          Completed exports expire after 24 hours
+          Completed exports expire after {{ export_retention_hours }} hours
         </span>
       </div>
       <div class="card-body" style="padding: 0;">
@@ -52,6 +52,11 @@
                   <td style="padding: 0.75rem 1rem;vertical-align: middle;">
                     {% if job.stage == 'DONE' %}
                       <span class="status-badge vm-status-running">Complete</span>
+                      {% if job.downloaded_at and not job.output_path %}
+                        <div style="font-size: 0.75rem;color: var(--text-muted);margin-top: 0.2rem;">downloaded, removed from server</div>
+                      {% elif job.output_path %}
+                        <div style="font-size: 0.75rem;color: var(--text-muted);margin-top: 0.2rem;">kept until {{ job.expires_at|date:"d/m H:i" }}</div>
+                      {% endif %}
                     {% elif job.stage == 'FAILED' %}
                       <span class="status-badge vm-status-stopped">Failed</span>
                     {% else %}
@@ -185,7 +190,7 @@
         <hr style="border: none;border-top: 1px solid var(--border-main);margin: 0.75rem 0;">
         <p style="font-size: 0.8125rem;color: var(--text-muted);">
           <i class="fas fa-clock" style="margin-right: 0.3rem;"></i>
-          Completed exports are automatically deleted after 24 hours.
+          Completed exports are deleted after {{ export_retention_hours }} hours, or as soon as they are downloaded when that option is on.
         </p>
       </div>
     </div>

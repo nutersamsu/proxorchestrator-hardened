@@ -74,15 +74,10 @@
         <div class="card-body" style="padding: 1.5rem;text-align: center;">
           <i class="fas fa-check-circle" style="font-size: 2rem;color: var(--success-color);margin-bottom: 1rem;display: block;"></i>
           <h3 style="font-size: 1.1rem;font-weight: 700;color: var(--text-header);margin-bottom: 0.5rem;">Export Complete!</h3>
-          <p style="color: var(--text-muted);font-size: 0.875rem;margin-bottom: 1.5rem;">
-            <strong>{{ job.ct_name }}</strong> has been packaged and is ready to download.
-            The file will be available for <strong>24 hours</strong>.
-          </p>
-          <div style="display: flex;gap: 1rem;justify-content: center;flex-wrap: wrap;">
-            <a href="{% url 'lxc_export_download' job.pk %}" class="button is-primary is-medium" style="font-weight: 600;">
-              <span class="icon"><i class="fas fa-download"></i></span>
-              <span>Download .px Package</span>
-            </a>
+          {% url 'lxc_export_download' job.pk as download_url %}
+          {% url 'lxc_export_download_state' job.pk as state_url %}
+          {% url 'lxc_export_delete_package' job.pk as delete_url %}
+          {% include "exporter/partials/package_ready.html" with download_url=download_url state_url=state_url delete_url=delete_url label=job.ct_name %}
             <a href="{% url 'lxc_detail' job.vmid %}" class="button is-light is-medium" style="font-weight: 600;">
               <span class="icon"><i class="fas fa-cube"></i></span>
               <span>Back to Container</span>
