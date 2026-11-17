@@ -179,3 +179,132 @@ class ExportExpiryTests(TestCase):
         job, _ = self._old_job(ExportJob, 0)
         job.refresh_from_db()
         self.assertAlmostEqual((job.expires_at - job.updated_at).total_seconds(), 48 * 3600)
+
+
+class FakeProxmoxShell:
+    """Mimics `qm importdisk` / `qm config` / `qm set` on a Proxmox host."""
+
+    def __init__(self, vmid):
+        self.vmid = vmid
+        self.unused = []          # volumes created by importdisk, not yet attached
+        self.slots = {}
+        self.created = None
+        self.next_disk = 0
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        return False
+
+    def _config(self):
+        lines = [f"{slot}: {vol}" for slot, vol in self.slots.items()]
+        lines += [f"unused{i}: {vol}" for i, vol in enumerate(self.unused)]
+        return "\n".join(lines)
+
+    def run(self, args):
+        if args[:2] == ["qm", "config"]:
+            return self._config(), "", 0
+        return "", "", 0
+
+    def run_checked(self, args):
+        if args[:2] == ["qm", "create"]:
+            self.created = args
+        elif args[:2] == ["qm", "importdisk"]:
+            vol = f"{args[4]}:vm-{self.vmid}-disk-{self.next_disk}"
+            self.next_disk += 1
+            self.unused.append(vol)
+            # real output varies between PVE versions; the pipeline must not rely on it
+            return f"importing disk '{args[3]}' to VM {self.vmid} ...\ntransferred 100%"
+        elif args[:2] == ["qm", "set"]:
+            for i, a in enumerate(args):
+                if a.startswith("--sata") or a.startswith("--scsi") and a[6:].isdigit():
+                    vol = args[i + 1].split(",", 1)[0]
+                    self.slots[a[2:]] = vol
+                    if vol in self.unused:
+                        self.unused.remove(vol)
+        return ""
+
+
+class PxImportDiskMappingTests(TestCase):
+    """Regression: a 3-disk VM was restored with disk-0 in all three slots."""
+
+    def test_each_disk_goes_to_its_own_slot(self):
+        import json
+        from apps.exporter.models import PxImportJob
+        from apps.exporter.tasks import run_px_import_pipeline
+
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        disks = []
+        for n, slot in enumerate(("sata0", "sata1", "sata2")):
+            name = f"disk-{slot}.qcow2"
+            with open(os.path.join(tmp.name, name), "wb") as fh:
+                fh.write(b"x" * (n + 1))
+            disks.append({"slot": slot, "bus": "sata", "archive_file": name})
+        cfg = ProxmoxConfig.objects.create(host="192.0.2.10", is_configured=True,
+                                           default_node="pve", default_storage="local-lvm")
+        job = PxImportJob.objects.create(
+            node="pve", vmid=103, extract_dir=tmp.name, upload_path="",
+            manifest_json=json.dumps({"version": "1", "vm": {"name": "xpenology-teste"},
+                                      "disks": disks}),
+            vm_config_json=json.dumps({
+                "vm_name": "xpenology-teste", "storage_pool": "local-lvm", "disk_bus": "sata",
+                "machine": "q35", "serial_port": True, "description": "notes",
+                "net_bridge": "vmbr0", "net_model": "virtio",
+            }),
+        )
+        shell = FakeProxmoxShell(103)
+        sftp = mock.MagicMock()
+        sftp.__enter__.return_value = sftp
+        with mock.patch.object(ProxmoxConfig, "get_ssh_client", return_value=shell), \
+             mock.patch.object(ProxmoxConfig, "get_sftp_client", return_value=sftp), \
+             mock.patch.object(ProxmoxConfig, "get_api_client", return_value=mock.Mock()):
+            run_px_import_pipeline(job.pk)
+
+        job.refresh_from_db()
+        self.assertEqual(job.stage, "DONE", job.error)
+        self.assertEqual(shell.slots, {
+            "sata0": "local-lvm:vm-103-disk-0",
+            "sata1": "local-lvm:vm-103-disk-1",
+            "sata2": "local-lvm:vm-103-disk-2",
+        })
+        self.assertEqual(shell.unused, [])
+        created = " ".join(shell.created)
+        self.assertIn("--machine q35", created)
+        self.assertIn("--serial0 socket", created)
+        self.assertIn("--description notes", created)
+
+
+class PxManifestTests(TestCase):
+    def test_manifest_read_stops_at_first_member(self):
+        import io as _io
+        import json
+        import tarfile
+        from apps.exporter.views import _parse_manifest
+
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        px = os.path.join(tmp.name, "vm.px")
+        with tarfile.open(px, "w:gz") as tar:
+            data = json.dumps({"version": "1", "vm": {"name": "x"}}).encode()
+            info = tarfile.TarInfo("manifest.json"); info.size = len(data)
+            tar.addfile(info, _io.BytesIO(data))
+            big = os.urandom(1024 * 1024)
+            info = tarfile.TarInfo("disk-sata0.qcow2"); info.size = len(big)
+            tar.addfile(info, _io.BytesIO(big))
+        with mock.patch("tarfile.TarFile.getmember", side_effect=AssertionError("full scan")):
+            self.assertEqual(_parse_manifest(px)["vm"]["name"], "x")
+
+
+class ManifestBalloonTests(TestCase):
+    def test_balloon_zero_from_api_means_disabled(self):
+        from apps.exporter.tasks import _build_manifest
+        for raw in (0, "0"):
+            vm = _build_manifest(103, "x", {"balloon": raw, "memory": 4096}, [])["vm"]
+            self.assertFalse(vm["ballooning"], raw)
+        vm = _build_manifest(103, "x", {"balloon": 1024, "memory": 4096}, [])["vm"]
+        self.assertTrue(vm["ballooning"])
+        self.assertEqual(vm["balloon_min_mb"], 1024)
+        vm = _build_manifest(103, "x", {"serial0": "socket", "memory": 4096}, [])["vm"]
+        self.assertTrue(vm["serial_port"])

@@ -94,6 +94,20 @@ def _stream_package(job, filename):
     return response
 
 
+def _save_upload(uploaded, dest_path):
+    """Store an uploaded .px; large uploads are moved, not copied again."""
+    temp_path = getattr(uploaded, "temporary_file_path", lambda: None)()
+    if temp_path and os.path.exists(temp_path):
+        # Already on disk in FILE_UPLOAD_TEMP_DIR: a move avoids writing
+        # several GB a second time.
+        shutil.move(temp_path, dest_path)
+        os.chmod(dest_path, 0o644)
+        return
+    with open(dest_path, "wb") as out:
+        for chunk in uploaded.chunks():
+            out.write(chunk)
+
+
 def _safe_filename(label):
     return "".join(c if c.isalnum() or c in "-_." else "_" for c in label) or "export"
 
@@ -163,9 +177,14 @@ def _parse_manifest(px_path):
     """
     try:
         with tarfile.open(px_path, "r:gz") as tar:
-            try:
-                member = tar.getmember("manifest.json")
-            except KeyError:
+            # Exports write manifest.json first; stop there instead of letting
+            # getmember() decompress the whole (multi-GB) archive.
+            member = None
+            for candidate in tar:
+                if candidate.name == "manifest.json":
+                    member = candidate
+                    break
+            if member is None:
                 raise ValueError(
                     "Invalid .px package: manifest.json not found in archive."
                 )
@@ -376,9 +395,7 @@ def px_upload(request):
             os.makedirs(dest_dir, exist_ok=True)
             dest_path = os.path.join(dest_dir, uploaded.name)
 
-            with open(dest_path, "wb") as out:
-                for chunk in uploaded.chunks():
-                    out.write(chunk)
+            _save_upload(uploaded, dest_path)
 
             try:
                 manifest = _parse_manifest(dest_path)
@@ -489,6 +506,8 @@ def px_configure(request, job_id):
         primary_disk = manifest_disks[0] if manifest_disks else {}
         initial = {
             "vm_name": manifest_vm.get("name", job.vm_name or ""),
+            "description": manifest_vm.get("description", ""),
+            "serial_port": manifest_vm.get("serial_port", False),
             "node": config.default_node,
             "cores": manifest_vm.get("cores", config.default_cores),
             "memory_mb": manifest_vm.get("memory_mb", config.default_memory_mb),
@@ -742,9 +761,7 @@ def lxc_px_upload(request):
             os.makedirs(dest_dir, exist_ok=True)
             dest_path = os.path.join(dest_dir, uploaded.name)
 
-            with open(dest_path, "wb") as out:
-                for chunk in uploaded.chunks():
-                    out.write(chunk)
+            _save_upload(uploaded, dest_path)
 
             try:
                 manifest = _parse_manifest(dest_path)

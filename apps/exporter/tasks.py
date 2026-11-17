@@ -33,6 +33,17 @@ UPLOAD_ROOT = getattr(settings, "UPLOAD_ROOT", "/opt/proxorchestrator/uploads")
 
 def _retention_hours():
     return int(getattr(settings, "EXPORT_RETENTION_HOURS", 24) or 24)
+
+def _unused_volumes(ssh, vmid):
+    """Return the set of volume IDs listed as unusedN in `qm config`."""
+    cfg_out, _, _ = ssh.run(["qm", "config", str(vmid)])
+    volumes = set()
+    for line in cfg_out.splitlines():
+        key, sep, value = line.partition(":")
+        if sep and re.fullmatch(r"unused\d+", key.strip()):
+            volumes.add(value.strip().split(",", 1)[0])
+    return volumes
+
 EXPORT_ROOT = os.path.join(UPLOAD_ROOT, "exports")
 PX_IMPORT_ROOT = os.path.join(UPLOAD_ROOT, "px-imports")
 
@@ -200,7 +211,9 @@ def _build_manifest(vmid, vm_name, raw_config, disks):
     memory_mb = int(raw_config.get("memory", 2048))
 
     # Balloon
+    # The API returns numbers as JSON numbers (balloon: 0), qm config as text.
     balloon_val = raw_config.get("balloon")
+    balloon_val = None if balloon_val is None else str(balloon_val).strip()
     ballooning = balloon_val != "0" if balloon_val is not None else True
     balloon_min_mb = int(balloon_val) if balloon_val and balloon_val != "0" else None
 
@@ -231,6 +244,7 @@ def _build_manifest(vmid, vm_name, raw_config, disks):
             "os_type": raw_config.get("ostype", "l26"),
             "bios": raw_config.get("bios", "seabios"),
             "machine": raw_config.get("machine", "q35"),
+            "serial_port": bool(raw_config.get("serial0")),
             "cpu_type": cpu_type,
             "sockets": int(raw_config.get("sockets", 1)),
             "cores": int(raw_config.get("cores", 2)),
@@ -659,6 +673,11 @@ def run_px_import_pipeline(self, job_id):
             qm_create_args += ["--protection", "1"]
         if vm_config.get("numa"):
             qm_create_args += ["--numa", "1"]
+        machine = (vm_config.get("machine") or "").strip()
+        if machine and machine != "pc":
+            qm_create_args += ["--machine", machine]
+        if vm_config.get("serial_port"):
+            qm_create_args += ["--serial0", "socket"]
 
         description = vm_config.get("description", "").strip()
         if description:
@@ -678,34 +697,25 @@ def run_px_import_pipeline(self, job_id):
             for i, (disk_meta, remote_path) in enumerate(remote_disk_paths):
                 slot = f"{disk_bus}{i}"
 
+                unused_before = _unused_volumes(ssh, vmid)
                 import_out = ssh.run_checked(
                     ["qm", "importdisk", str(vmid), remote_path, storage_pool]
                 )
                 logger.info(
                     "PxImportJob %d: importdisk[%s] output: %s",
-                    job_id, slot, import_out[:300],
+                    job_id, slot, import_out[-300:],
                 )
 
-                # Parse disk reference from importdisk output
-                disk_ref = None
-                match = re.search(r"unused\d+:(\S+)", import_out)
-                if match:
-                    disk_ref = match.group(1).strip("'\"")
-
-                if not disk_ref:
-                    # Fallback: read qm config for unused disk
-                    cfg_out, _, _ = ssh.run(["qm", "config", str(vmid)])
-                    for line in cfg_out.splitlines():
-                        if line.startswith("unused"):
-                            disk_ref = line.split(":", 1)[1].strip()
-                            break
-
-                if not disk_ref:
-                    disk_ref = f"{storage_pool}:vm-{vmid}-disk-{i}"
-                    logger.warning(
-                        "PxImportJob %d: fallback disk_ref for slot %s: %s",
-                        job_id, slot, disk_ref,
+                # The disk this import created is the one unused volume that was
+                # not there before. (Earlier versions took the *first* unusedN
+                # line, so with several disks every slot got disk-0.)
+                new_volumes = _unused_volumes(ssh, vmid) - unused_before
+                if len(new_volumes) != 1:
+                    raise RuntimeError(
+                        f"Could not identify the imported volume for {slot} "
+                        f"(new unused volumes: {sorted(new_volumes) or 'none'})"
                     )
+                disk_ref = new_volumes.pop()
 
                 attached_slots.append((slot, disk_ref, disk_meta, i == 0))
                 logger.info(
