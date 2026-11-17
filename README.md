@@ -32,7 +32,7 @@ token and without root on the Proxmox host:
 | **Firewall** | Per-guest firewall: options, rules (macros, protocols, ports, aliases, IPSets), aliases, IPSets; datacenter, node and security groups shown read-only |
 | **Node** *(admins)* | Services, network, DNS/hosts/time, disks with S.M.A.R.T. and SSD wearout, LVM / LVM-thin / ZFS, repositories and package versions, certificates, PCI devices |
 | **Permissions** *(admins)* | Proxmox users, groups, ACLs, roles, pools and realms |
-| **Look** | A second, denser **"Ops" theme** (light/dark/system) next to the classic one, chosen per user; collapsible sidebar on phones |
+| **Look** | Three themes chosen per user: **Classic** and the denser **Ops** (each light/dark/system) and **NEXUS — Dark Premium** (Fluent-inspired, glass only on floating chrome); collapsible sidebar on phones |
 
 Actions the token is not allowed to perform are hidden or shown read-only with
 the missing privilege named: the app reads the token's effective privileges from
@@ -73,7 +73,7 @@ Come hang out, ask questions, share what you're building, and help shape where P
 - **Authentication** — local accounts, LDAP, and Microsoft Entra ID (Azure AD); login with username or email address
 - **Password recovery** — self-service password reset via email (requires SMTP or Microsoft Graph API to be configured); local accounts only — LDAP/Entra ID users manage passwords in their directory
 - **ACME certificate automation** — automated TLS certificates from Let's Encrypt or internal CAs (Smallstep, etc.); DNS-01 (Cloudflare, Route53, and more) and HTTP-01 challenge types; auto-renewal at half certificate validity
-- **Themes** — classic and "Ops" themes, each light, dark or following the system; picker in the sidebar, saved per user; CSS variable architecture for consistent styling across all pages
+- **Themes** — classic and "Ops" themes (each light, dark or following the system) and the dark "NEXUS — Dark Premium" theme; picker in the sidebar, saved per user; CSS variable architecture for consistent styling across all pages
 - **Self-signed or custom TLS** — runs HTTPS on port 8443 by default (configurable)
 
 ### VM Inventory

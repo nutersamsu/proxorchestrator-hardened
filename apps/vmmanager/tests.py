@@ -146,6 +146,19 @@ class CloudInitParsingTests(TestCase):
                 vo.parse_ct_dns_form(bad)
 
 
+class BalloonTests(TestCase):
+    def test_balloon_semantics(self):
+        from apps.vmmanager.views import _build_vm
+        off = _build_vm({"memory": "12288", "balloon": "0"}, {"status": "running"}, "pve", 100)
+        self.assertFalse(off["balloon_enabled"])          # balloon=0 disables ballooning
+        on_default = _build_vm({"memory": "4096"}, {"status": "running"}, "pve", 100)
+        self.assertTrue(on_default["balloon_enabled"])     # no key: enabled, min = memory
+        self.assertEqual(on_default["balloon_min_mb"], "4096")
+        on_min = _build_vm({"memory": "4096", "balloon": 1024}, {"status": "running"}, "pve", 100)
+        self.assertTrue(on_min["balloon_enabled"])
+        self.assertEqual(on_min["balloon_min_mb"], 1024)
+
+
 class StatusTests(TestCase):
     def test_paused(self):
         self.assertEqual(effective_status({"status": "running", "qmpstatus": "paused"}), "paused")

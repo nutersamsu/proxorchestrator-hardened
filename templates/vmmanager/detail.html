@@ -257,11 +257,11 @@
         </div>
         <div class="cert-detail-row">
           <div class="cert-detail-label">Balloon Min</div>
-          <div class="cert-detail-value">{{ vm.balloon|default:"0" }} MB</div>
+          <div class="cert-detail-value">{% if vm.balloon_enabled %}{{ vm.balloon_min_mb }} MB{% else %}—{% endif %}</div>
         </div>
         <div class="cert-detail-row">
           <div class="cert-detail-label">Ballooning</div>
-          <div class="cert-detail-value">{% if vm.balloon %}Enabled{% else %}Disabled{% endif %}</div>
+          <div class="cert-detail-value">{% if vm.balloon_enabled %}Enabled{% else %}Disabled{% endif %}</div>
         </div>
       </div>
     </div>

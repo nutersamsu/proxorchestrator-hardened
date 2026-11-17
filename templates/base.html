@@ -10,11 +10,11 @@
   <link rel="stylesheet" href="/static/css/proxorchestrator.css?v={{ css_version }}">
   <meta name="csrf-token" content="{{ csrf_token }}">
   <script>
-    /* Theme = skin + mode. Skins: classic (original) and ops. Modes: system, light, dark.
-       Stored values: system | light | dark | ops | ops-light | ops-dark.
+    /* Theme = skin + mode. Skins: classic (original), ops, nexus (dark only). Modes: system, light, dark.
+       Stored values: system | light | dark | ops | ops-light | ops-dark | nexus.
        The user's choice lives in their profile (every browser) and in localStorage (fast first paint). */
     (function () {
-      var THEMES = ['system', 'light', 'dark', 'ops', 'ops-light', 'ops-dark'];
+      var THEMES = ['system', 'light', 'dark', 'ops', 'ops-light', 'ops-dark', 'nexus'];
       var serverTheme = "{{ user_theme|escapejs }}";
 
       function stored() {
@@ -25,6 +25,7 @@
         return THEMES.indexOf(t) >= 0 ? t : 'system';
       }
       function parse(t) {
+        if (t === 'nexus') return { skin: 'nexus', mode: 'dark' };
         if (t.indexOf('ops') === 0) return { skin: 'ops', mode: t === 'ops' ? 'system' : t.slice(4) };
         return { skin: 'classic', mode: t };
       }
@@ -35,9 +36,15 @@
         var dark = p.mode === 'dark' || (p.mode === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
         var root = document.documentElement;
         root.setAttribute('data-theme', dark ? 'dark' : 'light');
-        if (p.skin === 'ops') { root.setAttribute('data-skin', 'ops'); } else { root.removeAttribute('data-skin'); }
+        if (p.skin !== 'classic') { root.setAttribute('data-skin', p.skin); } else { root.removeAttribute('data-skin'); }
         var cb = document.getElementById('theme-toggle-cb');
-        if (cb) { cb.checked = dark; }
+        if (cb) {
+          cb.checked = dark;
+          /* NEXUS is a dark-only theme: the light/dark switch does not apply to it. */
+          cb.disabled = p.skin === 'nexus';
+          var sw = cb.closest('.theme-switch');
+          if (sw) { sw.title = cb.disabled ? 'NEXUS is a dark theme — choose another theme below for light mode' : 'Toggle dark mode'; }
+        }
         ['theme-selector', 'theme-selector-side'].forEach(function (id) {
           var sel = document.getElementById(id);
           if (sel) { sel.value = theme; }
@@ -61,6 +68,7 @@
 
       window.toggleTheme = function () {
         var p = parse(current());
+        if (p.skin === 'nexus') { window.applyTheme(); return; }
         var next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
         window.setTheme(p.skin === 'ops' ? 'ops-' + next : next);
       };

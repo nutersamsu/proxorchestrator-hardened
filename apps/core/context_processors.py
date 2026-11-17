@@ -34,6 +34,7 @@ THEMES = [
     ("ops", "Ops — follow system"),
     ("ops-light", "Ops — light"),
     ("ops-dark", "Ops — dark"),
+    ("nexus", "NEXUS — Dark Premium"),
 ]
 THEME_KEYS = {k for k, _ in THEMES}
 

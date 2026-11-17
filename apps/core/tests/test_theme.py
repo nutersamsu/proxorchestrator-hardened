@@ -62,6 +62,25 @@ class ThemeTests(TestCase):
         self.assertIn('name="csrf-token"', html)
         self.assertIn('class="nav-toggle-btn"', html)
 
+    def test_nexus_theme(self):
+        self.assertEqual(self.c.post("/account/theme/", {"theme": "nexus"}).status_code, 204)
+        self.assertEqual(self._profile().ui_theme, "nexus")
+        req = RequestFactory().get("/")
+        req.user = User.objects.get(pk=self.user.pk)
+        html = render_to_string("base.html", {}, request=req)
+        self.assertIn('var serverTheme = "nexus"', html)
+        self.assertIn("NEXUS — Dark Premium", html)
+        self.assertIn("'nexus'", html)          # accepted by the theme script
+        self.assertIn("skin: 'nexus', mode: 'dark'", html)
+
+    def test_nexus_css_present(self):
+        from pathlib import Path
+        from django.conf import settings
+        css = (Path(settings.BASE_DIR) / "static" / "css" / "proxorchestrator.css").read_text()
+        self.assertIn("[data-skin='nexus']", css)
+        self.assertIn("--nx-border-control: #567391", css)
+        self.assertIn("@supports not ((backdrop-filter", css)
+
     def test_no_theme_chosen_yet(self):
         req = RequestFactory().get("/")
         req.user = User.objects.get(pk=self.user.pk)

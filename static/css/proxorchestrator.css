@@ -1708,6 +1708,9 @@ tr.task-failed td { background: var(--bg-danger-light); }
 .fw-ipset { border-top: 1px solid var(--border-main); padding: 0.4rem 0; }
 .fw-ipset-entry { padding-left: 1rem; font-size: 0.8125rem; }
 
+/* Secondary / helper text used across the newer pages (all themes) */
+.ns-sub { color: var(--text-muted); font-size: 0.8125rem; font-weight: 400; }
+
 /* Small screens (all themes): the sidebar becomes an off-canvas menu */
 .nav-toggle-btn, .sidebar-overlay { display: none; }
 @media (max-width: 900px) {
@@ -1986,4 +1989,286 @@ tr.task-failed td { background: var(--bg-danger-light); }
 @media (max-width: 768px) {
   [data-skin='ops'] .page-header { padding: 0.6rem 1rem; }
   [data-skin='ops'] .page-body { padding: 0.75rem 1rem; }
+}
+
+/* ==========================================================================
+   "NEXUS — Dark Premium" theme (data-skin="nexus", always dark).
+   Built with the NEXUS UI skills (fluent-glass, ui-architect, ui-auditor):
+   Fluent-inspired structure, deep neutral canvas, cool surface layers,
+   blue/cyan accents. Glass ONLY on floating chrome (top bar, task bar,
+   dropdowns, modal header/backdrop); dense content stays on opaque surfaces.
+   Tokens from the NEXUS design system (design-system/tokens.json); every
+   text pair >= 4.5:1, control borders >= 3:1 (WCAG 2.2 AA, calculated).
+   ========================================================================== */
+[data-skin='nexus'] {
+  color-scheme: dark;
+  /* NEXUS tokens */
+  --nx-canvas: #0B1118;
+  --nx-surface: #111B26;
+  --nx-surface-raised: #172433;
+  --nx-surface-overlay: #1B2A3A;
+  --nx-glass-tint: rgba(23, 36, 51, 0.76);
+  --nx-glass-border: rgba(179, 193, 207, 0.18);
+  --nx-border: #2A3B4D;
+  --nx-border-strong: #3A536B;
+  --nx-border-control: #567391;           /* 3.2:1 on raised — WCAG 1.4.11 */
+  --nx-text-primary: #F2F6FA;
+  --nx-text-secondary: #B3C1CF;
+  --nx-text-muted: #8193A5;
+  --nx-accent: #4DA3FF;
+  --nx-accent-hover: #78B8FF;
+  --nx-accent-pressed: #267ED6;
+  --nx-on-accent: #0B1118;                 /* 7.2:1 on accent */
+  --nx-cyan: #55D6E8;
+  --nx-success: #42C98A;
+  --nx-warning: #F0B44D;
+  --nx-danger: #F07178;
+  --nx-info: #70B7F5;
+  --nx-radius-sm: 6px;
+  --nx-radius-md: 10px;
+  --nx-radius-lg: 14px;
+  --nx-shadow-panel: 0 8px 24px rgba(0, 0, 0, 0.22);
+  --nx-shadow-overlay: 0 18px 48px rgba(0, 0, 0, 0.38);
+  --nx-fast: 120ms;
+  --nx-normal: 180ms;
+  --nx-easing: cubic-bezier(.2, .8, .2, 1);
+  --font-sans: "Segoe UI Variable", "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue",
+               "Noto Sans", "Liberation Sans", Arial, sans-serif;
+}
+
+/* Map NEXUS tokens onto the app's semantic tokens (overrides the dark mode values) */
+[data-skin='nexus'][data-theme='dark'] {
+  --bg-main: var(--nx-canvas);
+  --bg-card: var(--nx-surface);
+  --bg-header: var(--nx-glass-tint);
+  --bg-sidebar: #0E1620;
+  --bg-sidebar-hover: rgba(77, 163, 255, 0.08);
+  --text-main: var(--nx-text-primary);
+  --text-semi: var(--nx-text-secondary);
+  --text-header: var(--nx-text-primary);
+  --text-sidebar: var(--nx-text-secondary);
+  --text-sidebar-active: var(--nx-text-primary);
+  --text-muted: var(--nx-text-muted);
+  --border-main: var(--nx-border);
+  --border-light: #16212D;
+  --border-sidebar: var(--nx-border);
+  --border-input: var(--nx-border-control);
+  --primary-color: var(--nx-accent);
+  --link-color: var(--nx-accent);
+  --success-color: var(--nx-success);
+  --danger-color: var(--nx-danger);
+  --warning-color: var(--nx-warning);
+  --info-color: var(--nx-info);
+  --purple-color: #A79BFF;
+  --bg-success-light: rgba(66, 201, 138, 0.13);
+  --bg-danger-light: rgba(240, 113, 120, 0.13);
+  --bg-warning-light: rgba(240, 180, 77, 0.13);
+  --bg-info-light: rgba(77, 163, 255, 0.13);
+  --bg-purple-light: rgba(167, 155, 255, 0.13);
+  --text-success-dark: var(--nx-success);
+  --text-danger-dark: var(--nx-danger);
+  --text-warning-dark: var(--nx-warning);
+  --text-info-dark: var(--nx-info);
+  --bg-hover-light: rgba(77, 163, 255, 0.06);
+  --nx-row-hover: rgba(77, 163, 255, 0.06);
+  --chart-1: var(--nx-accent);
+  --chart-2: var(--nx-cyan);
+  --chart-grid: var(--nx-border);
+  --chart-axis: var(--nx-text-muted);
+  --pve-bar-track: var(--nx-surface-raised);
+  --pve-bar-fill: var(--nx-accent);
+  --pve-bar-warning: var(--nx-warning);
+  --pve-bar-critical: var(--nx-danger);
+}
+
+/* ---- Shell: Fluent navigation rail (opaque) ---- */
+[data-skin='nexus'] body { font-family: var(--font-sans); background: var(--nx-canvas); }
+[data-skin='nexus'] .main-content { background: var(--nx-canvas) !important; }
+[data-skin='nexus'] .sidebar { background: var(--bg-sidebar); border-right: 1px solid var(--nx-border); }
+[data-skin='nexus'] .sidebar-logo { padding: 1.1rem 1.25rem; border-bottom-color: var(--nx-border); }
+[data-skin='nexus'] .sidebar-nav { padding: 0.5rem 0; }
+[data-skin='nexus'] .sidebar-nav .nav-label {
+  color: var(--nx-text-muted); font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.08em;
+  padding: 0.85rem 1.25rem 0.3rem; margin-top: 0;
+}
+[data-skin='nexus'] .sidebar-nav a {
+  position: relative; margin: 1px 0.6rem; padding: 0.5rem 0.75rem; border-left: 0;
+  border-radius: var(--nx-radius-sm); color: var(--nx-text-secondary); font-size: 0.875rem;
+  transition: background-color var(--nx-fast) var(--nx-easing), color var(--nx-fast) var(--nx-easing);
+}
+[data-skin='nexus'] .sidebar-nav a i { width: 1.1rem; text-align: center; color: var(--nx-text-muted); }
+[data-skin='nexus'] .sidebar-nav a:hover { background: var(--bg-sidebar-hover); color: var(--nx-text-primary); }
+[data-skin='nexus'] .sidebar-nav a.is-active { background: rgba(77, 163, 255, 0.14); color: var(--nx-text-primary); }
+[data-skin='nexus'] .sidebar-nav a.is-active i { color: var(--nx-accent); }
+[data-skin='nexus'] .sidebar-nav a.is-active::before {
+  content: ""; position: absolute; left: 0; top: 22%; bottom: 22%; width: 3px;
+  border-radius: 3px; background: var(--nx-accent);
+}
+
+/* ---- Glass chrome: top bar and task bar (floating, little content) ---- */
+[data-skin='nexus'] .page-header,
+[data-skin='nexus'] .taskbar {
+  background: var(--nx-glass-tint) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  backdrop-filter: blur(18px) saturate(140%);
+  box-shadow: none;
+}
+[data-skin='nexus'] .page-header { border-bottom: 1px solid var(--nx-glass-border) !important; padding: 0.8rem 1.75rem; }
+[data-skin='nexus'] .taskbar { border-top: 1px solid var(--nx-glass-border); }
+[data-skin='nexus'] .page-header h1 { font-size: 1.125rem; font-weight: 600; letter-spacing: -0.005em; }
+[data-skin='nexus'] .page-body { padding: 1.25rem 1.75rem; }
+[data-skin='nexus'] .footer-bar { background: transparent; color: var(--nx-text-muted); border-top: 1px solid var(--nx-border); }
+
+/* ---- Opaque work surfaces ---- */
+[data-skin='nexus'] .proxorchestrator-card,
+[data-skin='nexus'] .stat-card {
+  background: var(--nx-surface); border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius-lg); box-shadow: none;
+}
+[data-skin='nexus'] .proxorchestrator-card { margin-bottom: 1rem; }
+[data-skin='nexus'] .proxorchestrator-card .card-header {
+  padding: 0.75rem 1.15rem; font-size: 0.875rem; font-weight: 600; background: transparent;
+  border-bottom: 1px solid var(--nx-border); border-radius: var(--nx-radius-lg) var(--nx-radius-lg) 0 0;
+}
+[data-skin='nexus'] .proxorchestrator-card .card-body { padding: 1rem 1.15rem; }
+[data-skin='nexus'] .stat-card-icon { border-radius: var(--nx-radius-md); }
+[data-skin='nexus'] .cert-detail-row { border-color: var(--nx-border); }
+[data-skin='nexus'] .cert-detail-label { color: var(--nx-text-muted); }
+[data-skin='nexus'] .rrd-chart,
+[data-skin='nexus'] .fw-section { background: var(--nx-surface); border-color: var(--nx-border); border-radius: var(--nx-radius-md); }
+[data-skin='nexus'] .task-log { background: #070C12; color: #DCE6F0; border: 1px solid var(--nx-border); }
+[data-skin='nexus'] #help-panel { background: var(--nx-surface-raised); box-shadow: var(--nx-shadow-overlay); }
+[data-skin='nexus'] #help-panel-header { background: var(--nx-surface-overlay); color: var(--nx-text-primary); border-bottom: 1px solid var(--nx-border); }
+
+/* ---- Data grids ---- */
+[data-skin='nexus'] .table { background: transparent !important; color: var(--nx-text-primary) !important; font-size: 0.84rem; }
+[data-skin='nexus'] .table thead th {
+  background: var(--nx-surface-raised) !important; color: var(--nx-text-secondary) !important;
+  font-size: 0.75rem; font-weight: 600; letter-spacing: 0.02em;
+  border-bottom: 1px solid var(--nx-border-strong) !important; padding: 0.55rem 0.75rem; white-space: nowrap;
+}
+[data-skin='nexus'] .table td { padding: 0.5rem 0.75rem; height: 40px; vertical-align: middle; border-color: var(--nx-border) !important; }
+[data-skin='nexus'] .table tbody tr { transition: background-color var(--nx-fast) var(--nx-easing); }
+[data-skin='nexus'] .table tbody tr:hover { background: var(--nx-row-hover) !important; }
+[data-skin='nexus'] .table td,
+[data-skin='nexus'] .mono-cell,
+[data-skin='nexus'] .rrd-legend,
+[data-skin='nexus'] .stat-card { font-variant-numeric: tabular-nums; }
+
+/* ---- Status: pill + dot + text (never colour alone) ---- */
+[data-skin='nexus'] .status-badge {
+  display: inline-flex; align-items: center; gap: 0.35rem; border-radius: 999px;
+  padding: 0.12rem 0.6rem; font-size: 0.6875rem; letter-spacing: 0.04em;
+}
+[data-skin='nexus'] .status-badge::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex: none; }
+[data-skin='nexus'] .vm-status-running { background: var(--bg-success-light) !important; color: var(--nx-success) !important; }
+[data-skin='nexus'] .vm-status-stopped { background: var(--bg-danger-light) !important; color: var(--nx-danger) !important; }
+[data-skin='nexus'] .vm-status-paused { background: var(--bg-warning-light) !important; color: var(--nx-warning) !important; }
+[data-skin='nexus'] .vm-status-unknown { background: var(--nx-surface-raised) !important; color: var(--nx-text-secondary) !important; }
+
+/* ---- Controls ---- */
+[data-skin='nexus'] .button {
+  border-radius: var(--nx-radius-sm); font-weight: 600;
+  transition: background-color var(--nx-fast) var(--nx-easing), border-color var(--nx-fast) var(--nx-easing);
+}
+[data-skin='nexus'] .button.is-link:not(.is-light),
+[data-skin='nexus'] .button.is-primary:not(.is-light),
+[data-skin='nexus'] .button.is-success:not(.is-light) {
+  background: var(--nx-accent) !important; color: var(--nx-on-accent) !important; border-color: transparent !important;
+}
+[data-skin='nexus'] .button.is-link:not(.is-light):hover,
+[data-skin='nexus'] .button.is-primary:not(.is-light):hover,
+[data-skin='nexus'] .button.is-success:not(.is-light):hover { background: var(--nx-accent-hover) !important; }
+[data-skin='nexus'] .button.is-link:not(.is-light):active,
+[data-skin='nexus'] .button.is-primary:not(.is-light):active,
+[data-skin='nexus'] .button.is-success:not(.is-light):active { background: var(--nx-accent-pressed) !important; }
+[data-skin='nexus'] .button.is-link.is-light { background: rgba(77, 163, 255, 0.14) !important; color: var(--nx-accent) !important; border-color: transparent !important; }
+[data-skin='nexus'] .button.is-warning:not(.is-light) { background: var(--bg-warning-light) !important; color: var(--nx-warning) !important; border: 1px solid rgba(240, 180, 77, 0.45) !important; }
+[data-skin='nexus'] .button.is-danger:not(.is-light) { background: var(--bg-danger-light) !important; color: var(--nx-danger) !important; border: 1px solid rgba(240, 113, 120, 0.5) !important; }
+[data-skin='nexus'] .button.is-info:not(.is-light) { background: var(--bg-info-light) !important; color: var(--nx-info) !important; border: 1px solid rgba(112, 183, 245, 0.45) !important; }
+[data-skin='nexus'] .button.is-dark:not(.is-light),
+[data-skin='nexus'] .button.is-light:not(.is-link):not(.is-danger):not(.is-warning):not(.is-info):not(.is-success) {
+  background: var(--nx-surface-raised) !important; color: var(--nx-text-primary) !important; border: 1px solid var(--nx-border-strong) !important;
+}
+[data-skin='nexus'] .button.is-white { background: transparent !important; color: var(--nx-text-secondary) !important; }
+[data-skin='nexus'] .input,
+[data-skin='nexus'] .textarea,
+[data-skin='nexus'] .select select {
+  background-color: var(--nx-surface-raised) !important; color: var(--nx-text-primary) !important;
+  border: 1px solid var(--nx-border-control) !important; border-radius: var(--nx-radius-sm); box-shadow: none;
+}
+[data-skin='nexus'] .input::placeholder,
+[data-skin='nexus'] .textarea::placeholder { color: var(--nx-text-muted) !important; }
+[data-skin='nexus'] .input:focus,
+[data-skin='nexus'] .textarea:focus,
+[data-skin='nexus'] .select select:focus { border-color: var(--nx-accent) !important; box-shadow: 0 0 0 3px rgba(77, 163, 255, 0.28) !important; }
+[data-skin='nexus'] .select:not(.is-multiple):not(.is-loading)::after { border-color: var(--nx-text-secondary) !important; }
+[data-skin='nexus'] .tabs a { border-bottom-color: var(--nx-border) !important; color: var(--nx-text-secondary) !important; }
+[data-skin='nexus'] .tabs li.is-active a { color: var(--nx-accent) !important; border-bottom-color: var(--nx-accent) !important; }
+[data-skin='nexus'] .tabs.is-boxed li.is-active a { background: var(--nx-surface) !important; border-color: var(--nx-border) var(--nx-border) transparent !important; }
+[data-skin='nexus'] .tag { border-radius: var(--nx-radius-sm); }
+[data-skin='nexus'] .notification { border-radius: var(--nx-radius-md); border: 1px solid var(--nx-border); }
+[data-skin='nexus'] .theme-picker select { background: var(--nx-surface-raised); border-color: var(--nx-border-strong); color: var(--nx-text-primary); }
+
+/* ---- Glass overlays: dropdowns, modal chrome ---- */
+[data-skin='nexus'] .dropdown-content {
+  background: var(--nx-glass-tint) !important; border: 1px solid var(--nx-glass-border);
+  -webkit-backdrop-filter: blur(18px) saturate(140%); backdrop-filter: blur(18px) saturate(140%);
+  box-shadow: var(--nx-shadow-overlay); border-radius: var(--nx-radius-md);
+}
+[data-skin='nexus'] .dropdown-item { color: var(--nx-text-primary) !important; }
+[data-skin='nexus'] .dropdown-item:hover { background: rgba(77, 163, 255, 0.12) !important; }
+[data-skin='nexus'] .modal-background {
+  background-color: rgba(5, 9, 14, 0.62);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+}
+[data-skin='nexus'] .modal-card { border-radius: var(--nx-radius-lg) !important; overflow: hidden; box-shadow: var(--nx-shadow-overlay); border: 1px solid var(--nx-border); }
+/* Templates colour modal headers inline; NEXUS turns them into one glass surface with a semantic accent strip */
+[data-skin='nexus'] .modal-card-head,
+[data-skin='nexus'] .modal-card-head[style] {
+  background: var(--nx-surface-overlay) !important;
+  border: 0 !important; border-bottom: 1px solid var(--nx-border) !important;
+  box-shadow: inset 0 3px 0 var(--nx-accent); border-radius: 0 !important;
+}
+/* The strip is an inset shadow: the dark-mode rule forces border colours with !important */
+[data-skin='nexus'] .modal-card-head[style*="danger"] { box-shadow: inset 0 3px 0 var(--nx-danger); }
+[data-skin='nexus'] .modal-card-head[style*="success"] { box-shadow: inset 0 3px 0 var(--nx-success); }
+[data-skin='nexus'] .modal-card-head[style*="f59e0b"] { box-shadow: inset 0 3px 0 var(--nx-warning); }
+[data-skin='nexus'] .modal-card-head[style*="purple"],
+[data-skin='nexus'] .modal-card-head[style*="7c3aed"] { box-shadow: inset 0 3px 0 #A79BFF; }
+[data-skin='nexus'] .modal-card-head[style*="475569"],
+[data-skin='nexus'] .modal-card-head[style*="sidebar"],
+[data-skin='nexus'] .modal-card-head[style*="1a1a2e"] { box-shadow: inset 0 3px 0 var(--nx-border-strong); }
+/* Plain .button (no colour modifier) is white in Bulma: give it the raised surface */
+[data-skin='nexus'] .button:not(.is-link):not(.is-primary):not(.is-success):not(.is-danger):not(.is-warning):not(.is-info):not(.is-dark):not(.is-light):not(.is-white):not(.is-text):not(.is-ghost) {
+  background: var(--nx-surface-raised) !important; color: var(--nx-text-primary) !important; border: 1px solid var(--nx-border-strong) !important;
+}
+[data-skin='nexus'] .button:not(.is-link):not(.is-primary):not(.is-success):not(.is-danger):not(.is-warning):not(.is-info):not(.is-dark):not(.is-light):not(.is-white):not(.is-text):not(.is-ghost):hover { border-color: var(--nx-border-control) !important; }
+[data-skin='nexus'] .modal-card-title,
+[data-skin='nexus'] .modal-card-title[style] { color: var(--nx-text-primary) !important; }
+[data-skin='nexus'] .modal-card-body { background: var(--nx-surface-raised) !important; }
+[data-skin='nexus'] .modal-card-foot { background: var(--nx-surface-overlay) !important; border-top: 1px solid var(--nx-border) !important; }
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  [data-skin='nexus'] .page-header, [data-skin='nexus'] .taskbar, [data-skin='nexus'] .dropdown-content { background: var(--nx-surface-overlay) !important; }
+}
+
+/* ---- Keyboard focus and motion ---- */
+[data-skin='nexus'] a:focus-visible,
+[data-skin='nexus'] button:focus-visible,
+[data-skin='nexus'] .button:focus-visible,
+[data-skin='nexus'] summary:focus-visible,
+[data-skin='nexus'] select:focus-visible,
+[data-skin='nexus'] input[type="checkbox"]:focus-visible {
+  outline: 2px solid var(--nx-accent) !important; outline-offset: 2px; box-shadow: none !important;
+}
+[data-skin='nexus'] .sidebar-nav a:focus-visible { outline-offset: -2px; }
+[data-skin='nexus'] .theme-switch:has(input:disabled) { opacity: 0.4; cursor: not-allowed; }
+@media (prefers-reduced-motion: reduce) {
+  [data-skin='nexus'] *, [data-skin='nexus'] *::before, [data-skin='nexus'] *::after {
+    transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; scroll-behavior: auto !important;
+  }
+}
+@media (max-width: 768px) {
+  [data-skin='nexus'] .page-header { padding: 0.55rem 1rem; }
+  [data-skin='nexus'] .page-body { padding: 0.75rem 1rem; }
 }

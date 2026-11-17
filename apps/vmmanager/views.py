@@ -223,6 +223,9 @@ def _build_vm(raw_config, vm_status, node, vmid):
         # Memory
         "memory": raw_config.get("memory", ""),
         "balloon": raw_config.get("balloon", ""),
+        # PVE: balloon=0 disables ballooning; no key = enabled with min = memory
+        "balloon_enabled": str(raw_config.get("balloon", "")).strip() not in ("0",),
+        "balloon_min_mb": raw_config.get("balloon") or raw_config.get("memory", ""),
         # Disks & NICs
         "disks": disks,
         "networks": networks,
