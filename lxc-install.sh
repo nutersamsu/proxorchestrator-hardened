@@ -247,10 +247,15 @@ fi
 # ---------------------------------------------------------------------------
 info "Checking for a Debian template..."
 
+# Proxmox 9 lists templates for several architectures: only take this host's.
+HOST_ARCH=$(dpkg --print-architecture 2>/dev/null || echo amd64)
+
 find_template() {
     local t
     for t in "${TEMPLATES[@]}"; do
-        pveam available --section system 2>/dev/null | awk -v t="${t}" '$2 ~ "^"t {print $2}' | sort -V | tail -1 | grep . && return 0
+        pveam available --section system 2>/dev/null \
+            | awk -v t="${t}" -v a="_${HOST_ARCH}." '$2 ~ "^"t && index($2, a) {print $2}' \
+            | sort -V | tail -1 | grep . && return 0
     done
     return 1
 }
@@ -319,7 +324,11 @@ msg "Container ${CT_ID} created."
 # Start container
 # ---------------------------------------------------------------------------
 info "Starting container ${CT_ID}..."
-pct start "${CT_ID}"
+if ! pct start "${CT_ID}"; then
+    err "Container ${CT_ID} did not start — removing it again."
+    pct destroy "${CT_ID}" --purge >/dev/null 2>&1 || true
+    exit 1
+fi
 
 # Wait for container to be fully up
 info "Waiting for container to be ready..."
