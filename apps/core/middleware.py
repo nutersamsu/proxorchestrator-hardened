@@ -34,7 +34,8 @@ class WizardRedirectMiddleware:
     def __call__(self, request):
         if request.user.is_authenticated and not self._is_exempt(request.path):
             if not self._wizard_complete():
-                return redirect("/wizard/step/1/")
+                # /wizard/ resumes at the saved step (step 5 after lxc-install.sh)
+                return redirect("/wizard/")
 
         return self.get_response(request)
 

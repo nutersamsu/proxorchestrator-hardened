@@ -223,7 +223,7 @@ bash -c "$(wget -qLO - https://github.com/nutersamsu/proxorchestrator-hardened/r
 | `--yes` | | no confirmation prompt |
 
 To remove everything later: `pct destroy <id>`, `pveum user token remove proxorchestrator@pve ct<id>`
-and delete the `proxorchestrator@<hostname>` line from `/root/.ssh/authorized_keys` (the
+and delete the line ending in `proxorchestrator-ct<id>` from `/root/.ssh/authorized_keys` (the
 script prints these commands at the end).
 
 ### Option B — your own VM or server

@@ -377,6 +377,7 @@ fi
 # ---------------------------------------------------------------------------
 CONNECTED=0
 PO_TOKEN="ct${CT_ID}"
+KEY_LABEL="proxorchestrator-ct${CT_ID}"
 
 connect_to_proxmox() {
     local pubkey secret fp keyfile out roles
@@ -412,7 +413,9 @@ connect_to_proxmox() {
     touch /root/.ssh/authorized_keys
     if ! grep -qF "$(awk '{print $2}' <<<"${pubkey}")" /root/.ssh/authorized_keys; then
         cp -a /root/.ssh/authorized_keys "/root/authorized_keys.before-proxorchestrator-ct${CT_ID}"
-        printf '%s\n' "${pubkey}" >> /root/.ssh/authorized_keys
+        # unique label so the line can be found (and removed) without touching other keys
+        printf '%s %s %s\n' "$(awk '{print $1}' <<<"${pubkey}")" "$(awk '{print $2}' <<<"${pubkey}")" \
+            "${KEY_LABEL}" >> /root/.ssh/authorized_keys
     fi
     msg "SSH key of the container authorised for root on this host."
 
@@ -501,5 +504,7 @@ echo ""
 echo -e "  To enter the container:  ${BL}pct enter ${CT_ID}${NC}"
 echo -e "  To update ProxOrchestrator:   ${BL}pct exec ${CT_ID} -- bash -c 'cd /opt/proxorchestrator-src && git pull && sudo ./update.sh'${NC}"
 echo -e "  To remove everything:    ${BL}pct stop ${CT_ID}; pct destroy ${CT_ID}; pveum user token remove ${PO_USER} ${PO_TOKEN}${NC}"
-echo -e "                           and delete the 'proxorchestrator@${CT_HOSTNAME}' line from /root/.ssh/authorized_keys"
+if [[ "${CONNECTED}" -eq 1 ]]; then
+    echo -e "                           and delete the line ending in '${KEY_LABEL}' from /root/.ssh/authorized_keys"
+fi
 echo ""

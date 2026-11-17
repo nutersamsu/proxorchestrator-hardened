@@ -142,6 +142,14 @@ class WizardShortcutTests(TestCase):
         self.client.force_login(self.user)
         ProxmoxConfig.objects.create(host="192.0.2.10", wizard_step=2)
 
+    def test_unconfigured_app_resumes_at_saved_step(self):
+        # lxc-install.sh leaves the wizard on step 5; the dashboard must not restart at step 1
+        ProxmoxConfig.objects.update(wizard_step=5)
+        r = self.client.get("/")
+        self.assertRedirects(r, "/wizard/", fetch_redirect_response=False)
+        r = self.client.get("/wizard/")
+        self.assertRedirects(r, "/wizard/step/5/", fetch_redirect_response=False)
+
     def test_step3_suggests_least_privilege_token(self):
         ProxmoxConfig.objects.update(wizard_step=3)
         html = self.client.get("/wizard/step/3/").content.decode()
