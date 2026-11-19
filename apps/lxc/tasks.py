@@ -17,7 +17,8 @@ import re as _re
 from apps.lxc.models import CommunityScriptJob, LxcCloneJob, LxcCreateJob
 
 # Regex to strip ANSI escape sequences (colors, cursor movement, clear screen)
-_ANSI_RE = _re.compile(r'\x1b\[[0-9;]*[a-zA-Z]|\x1b\][^\x07]*\x07|\x1b\(B')
+# Includes DEC private modes (ESC[?1049h, ESC[?25l) used by whiptail dialogs.
+_ANSI_RE = _re.compile(r'\x1b\[[0-9;?]*[a-zA-Z]|\x1b\][^\x07]*\x07|\x1b[()][0-9A-Za-z]|\x1b[=>]')
 
 # Braille spinner characters used by Node.js spinners (ora, listr, etc.)
 _SPINNER_CHARS = frozenset('⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏')

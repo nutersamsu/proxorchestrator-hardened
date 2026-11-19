@@ -34,7 +34,9 @@ _detached_lock = threading.Lock()
 
 def _clean_terminal_output(text):
     """Strip ANSI escapes and process carriage returns."""
-    ansi_re = re.compile(r'\x1b\[[0-9;]*[a-zA-Z]|\x1b\][^\x07]*\x07|\x1b\(B')
+    # Also strip DEC private modes such as ESC[?1049h / ESC[?25l (whiptail's
+    # full-screen dialogs); they used to survive and fill the saved log.
+    ansi_re = re.compile(r'\x1b\[[0-9;?]*[a-zA-Z]|\x1b\][^\x07]*\x07|\x1b[()][0-9A-Za-z]|\x1b[=>]')
     text = ansi_re.sub('', text)
     lines = text.split('\n')
     cleaned = []
@@ -45,6 +47,21 @@ def _clean_terminal_output(text):
         if stripped:
             cleaned.append(line)
     return '\n'.join(cleaned) if cleaned else ''
+
+
+def _node_vmids(node):
+    """VMIDs (VMs and containers) on ``node``, or None if the API cannot be read."""
+    try:
+        api = ProxmoxConfig.get_config().get_api_client()
+        ids = {int(v["vmid"]) for v in api.get_vms(node)}
+        try:
+            ids |= {int(c["vmid"]) for c in api.get_lxcs(node)}
+        except Exception:
+            pass
+        return ids
+    except Exception as exc:
+        logger.info("Could not list VMIDs on %s: %s", node, exc)
+        return None
 
 
 class VmCommunityScriptTerminalConsumer(WebsocketConsumer):
@@ -149,6 +166,10 @@ class VmCommunityScriptTerminalConsumer(WebsocketConsumer):
 
         screen_name = f"pm-vm-cs-{self.job.pk}"
 
+        # Snapshot of existing guests: many VM scripts (e.g. MikroTik) never
+        # print their VMID, so the new VM is found by comparing before/after.
+        self._vmids_before = _node_vmids(self.job.node)
+
         self.bridge = SSHTerminalBridge(
             host=config.host,
             port=config.ssh_port,
@@ -229,6 +250,13 @@ class VmCommunityScriptTerminalConsumer(WebsocketConsumer):
                 vmid_match = _VMID_RE2.search(_ANSI_RE.sub("", raw))
             if vmid_match:
                 self.job.vmid = int(vmid_match.group(1))
+            else:
+                before = getattr(self, "_vmids_before", None)
+                after = _node_vmids(self.job.node) if before is not None else None
+                if before is not None and after is not None:
+                    new_ids = after - before
+                    if len(new_ids) == 1:
+                        self.job.vmid = new_ids.pop()
 
             self.job.set_stage(
                 VmCommunityScriptJob.STAGE_DONE,

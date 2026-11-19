@@ -113,11 +113,20 @@
 
 {% block extra_scripts %}
 <script>
-  document.addEventListener('htmx:afterSwap', function(evt) {
-    var el = document.getElementById('pipeline-status');
-    if (el && el.dataset.terminal === 'true') {
-      location.reload();
-    }
-  });
+  // Reload once when the pipeline reaches a terminal state. Any htmx swap on the
+  // page (e.g. the recent-tasks bar every 10 s) fires afterSwap, so a page that
+  // was already terminal when loaded must never reload, or it loops forever.
+  (function () {
+    var start = document.getElementById('pipeline-status');
+    var reloaded = !!(start && start.dataset.terminal === 'true');
+    document.addEventListener('htmx:afterSwap', function () {
+      if (reloaded) return;
+      var el = document.getElementById('pipeline-status');
+      if (el && el.dataset.terminal === 'true') {
+        reloaded = true;
+        location.reload();
+      }
+    });
+  })();
 </script>
 {% endblock %}
