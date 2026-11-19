@@ -15,6 +15,41 @@
                "Liberation Mono", Menlo, monospace;
 }
 
+/* Self-hosted Fira Sans / Fira Code (SIL OFL 1.1, see static/fonts/fira/OFL-*.txt).
+   Used by the Ops and NEXUS skins; browsers only download a face when it is used. */
+@font-face { font-family: "Fira Sans"; font-style: normal; font-display: swap; font-weight: 400;
+  src: url(../fonts/fira/fira-sans-latin-400-normal.woff2) format("woff2");
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+@font-face { font-family: "Fira Sans"; font-style: normal; font-display: swap; font-weight: 500;
+  src: url(../fonts/fira/fira-sans-latin-500-normal.woff2) format("woff2");
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+@font-face { font-family: "Fira Sans"; font-style: normal; font-display: swap; font-weight: 600;
+  src: url(../fonts/fira/fira-sans-latin-600-normal.woff2) format("woff2");
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+@font-face { font-family: "Fira Sans"; font-style: normal; font-display: swap; font-weight: 700;
+  src: url(../fonts/fira/fira-sans-latin-700-normal.woff2) format("woff2");
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+@font-face { font-family: "Fira Sans"; font-style: normal; font-display: swap; font-weight: 400;
+  src: url(../fonts/fira/fira-sans-latin-ext-400-normal.woff2) format("woff2");
+  unicode-range: U+0100-02AF,U+0304,U+0308,U+0329,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF; }
+@font-face { font-family: "Fira Sans"; font-style: normal; font-display: swap; font-weight: 500;
+  src: url(../fonts/fira/fira-sans-latin-ext-500-normal.woff2) format("woff2");
+  unicode-range: U+0100-02AF,U+0304,U+0308,U+0329,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF; }
+@font-face { font-family: "Fira Sans"; font-style: normal; font-display: swap; font-weight: 600;
+  src: url(../fonts/fira/fira-sans-latin-ext-600-normal.woff2) format("woff2");
+  unicode-range: U+0100-02AF,U+0304,U+0308,U+0329,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF; }
+@font-face { font-family: "Fira Sans"; font-style: normal; font-display: swap; font-weight: 700;
+  src: url(../fonts/fira/fira-sans-latin-ext-700-normal.woff2) format("woff2");
+  unicode-range: U+0100-02AF,U+0304,U+0308,U+0329,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF; }
+@font-face { font-family: "Fira Code"; font-style: normal; font-display: swap; font-weight: 300 700;
+  src: url(../fonts/fira/fira-code-latin-wght-normal.woff2) format("woff2-variations"),
+       url(../fonts/fira/fira-code-latin-wght-normal.woff2) format("woff2");
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+@font-face { font-family: "Fira Code"; font-style: normal; font-display: swap; font-weight: 300 700;
+  src: url(../fonts/fira/fira-code-latin-ext-wght-normal.woff2) format("woff2-variations"),
+       url(../fonts/fira/fira-code-latin-ext-wght-normal.woff2) format("woff2");
+  unicode-range: U+0100-02AF,U+0304,U+0308,U+0329,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF; }
+
 html { font-size: 15px; }
 
 body,
@@ -1740,6 +1775,24 @@ tr.task-failed td { background: var(--bg-danger-light); }
 }
 .theme-picker select option { color: #0f172a; background: #ffffff; }
 
+/* Language selector (top right of every page, login and setup wizard) */
+.lang-switch { display: inline-flex; align-items: center; gap: 0.35rem; margin: 0; }
+.lang-switch-icon { color: var(--text-muted); font-size: 0.8125rem; line-height: 1; }
+.lang-switch .select select { font-size: 0.8125rem; padding-top: 0; padding-bottom: 0; height: 2em; }
+.lang-switch .select:not(.is-multiple):not(.is-loading)::after { right: 0.75em; }
+.lang-switch-public { position: fixed; top: 0.9rem; right: 1rem; z-index: 50; }
+.lang-switch-wizard { margin-right: 1rem; }
+.lang-switch-wizard .lang-switch-icon { color: rgba(255, 255, 255, 0.55); }
+.lang-switch-wizard .select select {
+  background: rgba(255, 255, 255, 0.08); color: #fff; border-color: rgba(255, 255, 255, 0.22);
+}
+.lang-switch-wizard .select:not(.is-multiple):not(.is-loading)::after { border-color: rgba(255, 255, 255, 0.7); }
+.lang-switch-wizard select option, .lang-switch-public select option { color: #0f172a; background: #ffffff; }
+@media (max-width: 768px) {
+  .lang-switch-icon { display: none; }
+  .lang-switch-wizard { margin-right: 0.5rem; }
+}
+
 /* ==========================================================================
    "Ops" theme (data-skin="ops") — selectable next to the classic theme.
    Designed with the UI UX Pro Max guidance: Developer-Tool / API-portal
@@ -2032,8 +2085,10 @@ tr.task-failed td { background: var(--bg-danger-light); }
   --nx-fast: 120ms;
   --nx-normal: 180ms;
   --nx-easing: cubic-bezier(.2, .8, .2, 1);
-  --font-sans: "Segoe UI Variable", "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue",
-               "Noto Sans", "Liberation Sans", Arial, sans-serif;
+  --font-sans: "Fira Sans", "Segoe UI Variable", "Segoe UI", system-ui, -apple-system, Roboto,
+               "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif;
+  --font-mono: "Fira Code", "JetBrains Mono", ui-monospace, "Cascadia Mono", "SF Mono", Consolas,
+               "Liberation Mono", Menlo, monospace;
 }
 
 /* Map NEXUS tokens onto the app's semantic tokens (overrides the dark mode values) */
@@ -2271,4 +2326,159 @@ tr.task-failed td { background: var(--bg-danger-light); }
 @media (max-width: 768px) {
   [data-skin='nexus'] .page-header { padding: 0.55rem 1rem; }
   [data-skin='nexus'] .page-body { padding: 0.75rem 1rem; }
+}
+
+/* ==========================================================================
+   NEXUS — modern refinements (Fira Sans / Fira Code).
+   Depth from tone + hairline highlights instead of heavy shadows; ambient
+   light lives on the fixed canvas only (no blur, no animation, nothing that
+   repaints while scrolling). Data surfaces stay opaque.
+   ========================================================================== */
+[data-skin='nexus'] {
+  --nx-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.045);
+  --nx-accent-grad: linear-gradient(135deg, #4DA3FF 0%, #55C2F0 100%);
+  --nx-surface-grad: linear-gradient(180deg, #13202D 0%, var(--nx-surface) 100%);
+  --nx-ring: 0 0 0 3px rgba(77, 163, 255, 0.28);
+  --nx-radius-lg: 16px;
+}
+
+/* Typography: Fira's real weights, tighter display sizes, OpenType numerals */
+[data-skin='nexus'] body {
+  font-feature-settings: "kern", "liga", "calt";
+  -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  letter-spacing: 0.003em;
+}
+[data-skin='nexus'] h1, [data-skin='nexus'] h2, [data-skin='nexus'] h3,
+[data-skin='nexus'] .title, [data-skin='nexus'] .page-header h1 { letter-spacing: -0.012em; }
+[data-skin='nexus'] .page-header h1 { font-size: 1.1875rem; font-weight: 600; }
+[data-skin='nexus'] code, [data-skin='nexus'] pre, [data-skin='nexus'] .mono-cell,
+[data-skin='nexus'] .is-monospace, [data-skin='nexus'] .task-log {
+  font-feature-settings: "calt" 0, "liga" 0, "zero" 1;  /* no ligatures in IDs/commands, slashed zero */
+}
+[data-skin='nexus'] ::selection { background: rgba(77, 163, 255, 0.35); color: var(--nx-text-primary); }
+
+/* Canvas: two faint, fixed light sources give depth behind the opaque surfaces */
+[data-skin='nexus'] body,
+[data-skin='nexus'] .main-content {
+  background:
+    radial-gradient(1100px 520px at 88% -8%, rgba(77, 163, 255, 0.075), transparent 62%),
+    radial-gradient(800px 460px at 12% 108%, rgba(85, 214, 232, 0.045), transparent 60%),
+    var(--nx-canvas) !important;
+  background-attachment: fixed !important;
+}
+
+/* Thin, themed scrollbars */
+[data-skin='nexus'] * { scrollbar-width: thin; scrollbar-color: #2E4257 transparent; }
+[data-skin='nexus'] ::-webkit-scrollbar { width: 10px; height: 10px; }
+[data-skin='nexus'] ::-webkit-scrollbar-thumb { background: #2E4257; border-radius: 10px; border: 3px solid transparent; background-clip: content-box; }
+[data-skin='nexus'] ::-webkit-scrollbar-thumb:hover { background-color: #3E5872; }
+[data-skin='nexus'] ::-webkit-scrollbar-track { background: transparent; }
+
+/* Navigation rail: brand mark, softer active pill */
+[data-skin='nexus'] .sidebar { background: linear-gradient(180deg, #0F1923 0%, #0C141D 100%); }
+[data-skin='nexus'] .sidebar-logo .logo-title {
+  font-weight: 700; letter-spacing: -0.015em;
+  background: linear-gradient(90deg, #F2F6FA 0%, #9FD0FF 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+[data-skin='nexus'] .sidebar-nav .nav-label { text-transform: uppercase; font-size: 0.65rem; letter-spacing: 0.1em; }
+[data-skin='nexus'] .sidebar-nav a { padding: 0.48rem 0.75rem; }
+[data-skin='nexus'] .sidebar-nav a.is-active {
+  background: linear-gradient(90deg, rgba(77, 163, 255, 0.18) 0%, rgba(77, 163, 255, 0.06) 100%);
+  box-shadow: var(--nx-highlight);
+}
+[data-skin='nexus'] .sidebar-nav a.is-active::before { background: var(--nx-accent-grad); box-shadow: 0 0 8px rgba(77, 163, 255, 0.55); }
+
+/* Glass chrome gets a top hairline highlight (reads as a lit edge) */
+[data-skin='nexus'] .page-header { box-shadow: var(--nx-highlight); }
+[data-skin='nexus'] .taskbar { box-shadow: var(--nx-highlight), 0 -8px 24px rgba(0, 0, 0, 0.18); }
+
+/* Work surfaces: subtle vertical tone + lit top edge, hover sharpens the border */
+[data-skin='nexus'] .proxorchestrator-card,
+[data-skin='nexus'] .stat-card {
+  background: var(--nx-surface-grad);
+  box-shadow: var(--nx-highlight), 0 1px 2px rgba(0, 0, 0, 0.25);
+  transition: border-color var(--nx-normal) var(--nx-easing), box-shadow var(--nx-normal) var(--nx-easing);
+}
+[data-skin='nexus'] .proxorchestrator-card:hover,
+[data-skin='nexus'] .stat-card:hover { border-color: var(--nx-border-strong); }
+[data-skin='nexus'] .proxorchestrator-card .card-header { font-size: 0.8125rem; letter-spacing: 0.01em; color: var(--nx-text-primary); }
+[data-skin='nexus'] .proxorchestrator-card .card-header i { color: var(--nx-accent); }
+[data-skin='nexus'] .stat-card { padding: 1.1rem 1.25rem; }
+[data-skin='nexus'] .stat-card-icon { width: 44px; height: 44px; box-shadow: var(--nx-highlight); }
+[data-skin='nexus'] .stat-card-value { font-size: 1.875rem; font-weight: 600; letter-spacing: -0.02em; line-height: 1.1; }
+[data-skin='nexus'] .stat-card-label { text-transform: uppercase; font-size: 0.6875rem; letter-spacing: 0.08em; font-weight: 500; }
+
+/* Data grids: quieter header, zebra-free, clear hover */
+[data-skin='nexus'] .table thead th {
+  background: #142130 !important; text-transform: uppercase; font-size: 0.6875rem;
+  letter-spacing: 0.07em; color: var(--nx-text-muted) !important;
+}
+[data-skin='nexus'] .table thead th:first-child { border-top-left-radius: var(--nx-radius-sm); }
+[data-skin='nexus'] .table thead th:last-child { border-top-right-radius: var(--nx-radius-sm); }
+[data-skin='nexus'] .table tbody tr:hover { box-shadow: inset 2px 0 0 var(--nx-accent); }
+
+/* Usage bars and Bulma progress: rounded, gradient fill */
+[data-skin='nexus'] .pve-bar { height: 6px; border-radius: 999px; }
+[data-skin='nexus'] .pve-bar > div { border-radius: 999px; background: var(--nx-accent-grad); }
+[data-skin='nexus'] .pve-bar.is-warning > div { background: linear-gradient(90deg, #E8A33A, var(--nx-warning)); }
+[data-skin='nexus'] .pve-bar.is-critical > div { background: linear-gradient(90deg, #E0565E, var(--nx-danger)); }
+[data-skin='nexus'] .progress { background-color: var(--nx-surface-raised) !important; border-radius: 999px; }
+[data-skin='nexus'] .progress::-webkit-progress-bar { background-color: var(--nx-surface-raised); }
+[data-skin='nexus'] .progress::-webkit-progress-value { background: var(--nx-accent-grad); border-radius: 999px; }
+[data-skin='nexus'] .progress::-moz-progress-bar { background: var(--nx-accent-grad); border-radius: 999px; }
+
+/* Status: running dot gets a static halo (no pulsing animation) */
+[data-skin='nexus'] .vm-status-running::before { box-shadow: 0 0 0 3px rgba(66, 201, 138, 0.18); }
+[data-skin='nexus'] .vm-status-stopped::before { box-shadow: 0 0 0 3px rgba(240, 113, 120, 0.16); }
+[data-skin='nexus'] .status-badge { font-weight: 600; }
+
+/* Controls: primary with gradient + lit edge, tactile press, consistent height */
+[data-skin='nexus'] .button { letter-spacing: 0.01em; transition: background-color var(--nx-fast) var(--nx-easing), border-color var(--nx-fast) var(--nx-easing), transform var(--nx-fast) var(--nx-easing), box-shadow var(--nx-fast) var(--nx-easing); }
+[data-skin='nexus'] .button:active:not([disabled]) { transform: translateY(1px); }
+[data-skin='nexus'] .button.is-link:not(.is-light),
+[data-skin='nexus'] .button.is-primary:not(.is-light),
+[data-skin='nexus'] .button.is-success:not(.is-light) {
+  background: var(--nx-accent-grad) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28), 0 4px 14px rgba(77, 163, 255, 0.22);
+}
+[data-skin='nexus'] .button.is-link:not(.is-light):hover,
+[data-skin='nexus'] .button.is-primary:not(.is-light):hover,
+[data-skin='nexus'] .button.is-success:not(.is-light):hover {
+  background: linear-gradient(135deg, #78B8FF 0%, #7AD3F5 100%) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.32), 0 6px 18px rgba(77, 163, 255, 0.30);
+}
+[data-skin='nexus'] .button.is-link:not(.is-light):active,
+[data-skin='nexus'] .button.is-primary:not(.is-light):active,
+[data-skin='nexus'] .button.is-success:not(.is-light):active { background: var(--nx-accent-pressed) !important; box-shadow: none; }
+[data-skin='nexus'] .input:hover:not(:focus),
+[data-skin='nexus'] .textarea:hover:not(:focus),
+[data-skin='nexus'] .select select:hover:not(:focus) { border-color: #6A88A6 !important; }
+[data-skin='nexus'] .input, [data-skin='nexus'] .textarea, [data-skin='nexus'] .select select {
+  background-color: #132030 !important; box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+/* Tabs: underline becomes a soft pill on the active item */
+[data-skin='nexus'] .tabs:not(.is-boxed) li.is-active a {
+  background: rgba(77, 163, 255, 0.08) !important; border-radius: var(--nx-radius-sm) var(--nx-radius-sm) 0 0;
+}
+[data-skin='nexus'] .tabs a:hover { color: var(--nx-text-primary) !important; }
+
+/* Tags and notifications: pill tags, left accent bar on notifications */
+[data-skin='nexus'] .tag:not(.is-delete) { border-radius: 999px; font-weight: 500; }
+[data-skin='nexus'] .notification { box-shadow: var(--nx-highlight); }
+[data-skin='nexus'] .notification.is-danger { border-left: 3px solid var(--nx-danger); }
+[data-skin='nexus'] .notification.is-warning { border-left: 3px solid var(--nx-warning); }
+[data-skin='nexus'] .notification.is-success { border-left: 3px solid var(--nx-success); }
+[data-skin='nexus'] .notification.is-info { border-left: 3px solid var(--nx-info); }
+
+/* Overlays: lit edge on glass menus and modals */
+[data-skin='nexus'] .dropdown-content { box-shadow: var(--nx-highlight), var(--nx-shadow-overlay); }
+[data-skin='nexus'] .modal-card { box-shadow: var(--nx-shadow-overlay), 0 0 0 1px rgba(255, 255, 255, 0.02); }
+
+@media (prefers-reduced-motion: reduce) {
+  [data-skin='nexus'] .button:active:not([disabled]) { transform: none; }
+}
+@supports not ((background-clip: text) or (-webkit-background-clip: text)) {
+  [data-skin='nexus'] .sidebar-logo .logo-title { background: none; color: var(--nx-text-primary); }
 }
