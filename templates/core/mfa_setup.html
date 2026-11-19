@@ -1,8 +1,9 @@
 {% extends "base.html" %}
+{% load i18n %}
 {% load static %}
-{% block title %}MFA Setup — ProxOrchestrator{% endblock %}
-{% block page_title %}Multi-Factor Authentication{% endblock %}
-{% block help_slug %}mfa{% endblock %}
+{% block title %}{% translate "MFA Setup — ProxOrchestrator" %}{% endblock %}
+{% block page_title %}{% translate "Multi-Factor Authentication" %}{% endblock %}
+{% block help_slug %}{% translate "mfa" %}{% endblock %}
 
 {% block content %}
 <div class="columns is-centered">
@@ -11,9 +12,9 @@
     {% if already_enabled %}
       <div class="notification is-success is-light" style="margin-bottom: 1.5rem;">
         <i class="fas fa-check-circle" style="margin-right: 0.4rem;"></i>
-        <strong>MFA is enabled</strong> for your account.
+        <strong>{% translate "MFA is enabled" %}</strong> {% translate "for your account." %}
         {% if not enforced %}
-          You can disable it below or re-scan the QR code to set up a new device.
+          {% translate "You can disable it below or re-scan the QR code to set up a new device." %}
         {% endif %}
       </div>
     {% endif %}
@@ -21,21 +22,20 @@
     <div class="proxorchestrator-card" style="margin-bottom: 1.5rem;">
       <div class="card-header">
         <i class="fas fa-shield-alt" style="color: var(--link-color);"></i>
-        {% if already_enabled %}Re-configure MFA{% else %}Set Up MFA{% endif %}
+        {% if already_enabled %}{% translate "Re-configure MFA" %}{% else %}{% translate "Set Up MFA" %}{% endif %}
       </div>
       <div class="card-body" style="text-align: center;">
 
         <p style="color: var(--text-semi);font-size: 0.875rem;margin-bottom: 1.5rem;line-height: 1.6;">
-          Scan the QR code below with your authenticator app
-          (Google Authenticator, Authy, Microsoft Authenticator, etc.)
+          {% translate "Scan the QR code below with your authenticator app (Google Authenticator, Authy, Microsoft Authenticator, etc.)" %}
         </p>
 
         <div style="margin-bottom: 1.5rem;">
-          <img src="{{ qr_data_uri }}" alt="MFA QR Code" style="border-radius: 8px;border: 1px solid var(--border-main);">
+          <img src="{{ qr_data_uri }}" alt="{% translate "MFA QR Code" %}" style="border-radius: 8px;border: 1px solid var(--border-main);">
         </div>
 
         <div style="background: var(--bg-main);border: 1px solid var(--border-main);border-radius: 8px;padding: 0.75rem 1rem;margin-bottom: 1.5rem;">
-          <p style="font-size: 0.8125rem;color: var(--text-muted);margin-bottom: 0.3rem;">Can't scan? Enter this key manually:</p>
+          <p style="font-size: 0.8125rem;color: var(--text-muted);margin-bottom: 0.3rem;">{% translate "Can't scan? Enter this key manually:" %}</p>
           <code style="font-size: 1rem;color: var(--text-header);font-weight: 600;letter-spacing: 0.15rem;word-break: break-all;">{{ secret }}</code>
         </div>
 
@@ -43,7 +43,7 @@
           {% csrf_token %}
           <div class="field" style="margin-bottom: 1.25rem;">
             <label class="label" style="font-size: 0.875rem;color: var(--text-semi);font-weight: 600;">
-              Enter the 6-digit code from your app to verify
+              {% translate "Enter the 6-digit code from your app to verify" %}
             </label>
             <div class="control" style="max-width: 250px;margin: 0 auto;">
               <input
@@ -61,7 +61,7 @@
           </div>
           <button type="submit" class="button is-primary" style="font-weight: 600;">
             <span class="icon"><i class="fas fa-check"></i></span>
-            <span>Verify &amp; Enable MFA</span>
+            <span>{% translate "Verify &amp; Enable MFA" %}</span>
           </button>
         </form>
       </div>
@@ -70,23 +70,23 @@
     {% if already_enabled and not enforced %}
       <div class="proxorchestrator-card">
         <div class="card-header">
-          <i class="fas fa-times-circle" style="color: var(--danger-color);"></i> Disable MFA
+          <i class="fas fa-times-circle" style="color: var(--danger-color);"></i> {% translate "Disable MFA" %}
         </div>
         <div class="card-body">
           <p style="color: var(--text-muted);font-size: 0.875rem;margin-bottom: 1rem;">
-            Enter your password to confirm disabling MFA. You will no longer need an authenticator code to sign in.
+            {% translate "Enter your password to confirm disabling MFA. You will no longer need an authenticator code to sign in." %}
           </p>
           <form method="post" action="{% url 'mfa_disable' %}">
             {% csrf_token %}
             <div class="field" style="margin-bottom: 1rem;">
               <div class="control" style="max-width: 300px;">
-                <input class="input" type="password" name="password" placeholder="Enter your password" required>
+                <input class="input" type="password" name="password" placeholder="{% translate "Enter your password" %}" required>
               </div>
             </div>
             <button type="submit" class="button is-danger is-light" style="font-weight: 600;"
-                    onclick="return confirm('Are you sure you want to disable MFA?')">
+                    onclick="return confirm('{{ _("Are you sure you want to disable MFA?")|escapejs }}')">
               <span class="icon"><i class="fas fa-times"></i></span>
-              <span>Disable MFA</span>
+              <span>{% translate "Disable MFA" %}</span>
             </button>
           </form>
         </div>

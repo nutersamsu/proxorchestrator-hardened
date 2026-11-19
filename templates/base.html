@@ -1,9 +1,10 @@
+{% load i18n %}{% get_current_language as HTML_LANG %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ HTML_LANG }}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block title %}ProxOrchestrator{% endblock %}</title>
+  <title>{% block title %}{% translate "ProxOrchestrator" %}{% endblock %}</title>
   <link rel="icon" type="image/svg+xml" href="/static/images/favicon.svg">
   <link rel="stylesheet" href="/static/vendor/css/bulma.min.css">
   <link rel="stylesheet" href="/static/vendor/css/all.min.css">
@@ -43,7 +44,7 @@
           /* NEXUS is a dark-only theme: the light/dark switch does not apply to it. */
           cb.disabled = p.skin === 'nexus';
           var sw = cb.closest('.theme-switch');
-          if (sw) { sw.title = cb.disabled ? 'NEXUS is a dark theme — choose another theme below for light mode' : 'Toggle dark mode'; }
+          if (sw) { sw.title = cb.disabled ? '{{ _("NEXUS is a dark theme — choose another theme below for light mode")|escapejs }}' : '{{ _("Toggle dark mode")|escapejs }}'; }
         }
         ['theme-selector', 'theme-selector-side'].forEach(function (id) {
           var sel = document.getElementById(id);
@@ -103,98 +104,98 @@
   </script>
   <div class="sidebar" id="app-sidebar">
     <div class="sidebar-logo">
-      <div class="logo-title">&#9889; ProxOrchestrator</div>
+      <div class="logo-title">{% translate "&#9889; ProxOrchestrator" %}</div>
       <div style="display: flex;align-items: center;gap: 0.5rem;margin-top: 0.25rem;">
-        <img src="/static/images/forged_io_logo.png" alt="ForgedIO" style="width: 22px;height: 22px;border-radius: 50%;opacity: 0.7;flex-shrink: 0;">
-        <div class="logo-subtitle" style="margin-top: 0;">by ForgedIO</div>
+        <img src="/static/images/forged_io_logo.png" alt="{% translate "ForgedIO" %}" style="width: 22px;height: 22px;border-radius: 50%;opacity: 0.7;flex-shrink: 0;">
+        <div class="logo-subtitle" style="margin-top: 0;">{% translate "by ForgedIO" %}</div>
       </div>
     </div>
     <nav class="sidebar-nav">
-      <div class="nav-label">Main</div>
+      <div class="nav-label">{% translate "Main" %}</div>
       <a href="{% url 'dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}is-active{% endif %}">
-        <i class="fas fa-tachometer-alt"></i> Dashboard
+        <i class="fas fa-tachometer-alt"></i> {% translate "Dashboard" %}
       </a>
 
-      <div class="nav-label">Virtual Machines</div>
+      <div class="nav-label">{% translate "Virtual Machines" %}</div>
       <a href="{% url 'vmcreator_create' %}" class="{% if 'vmcreator' in request.resolver_match.url_name %}is-active{% endif %}">
-        <i class="fas fa-plus-circle"></i> New VM
+        <i class="fas fa-plus-circle"></i> {% translate "New VM" %}
       </a>
       <a href="{% url 'importer_upload' %}" class="{% if 'importer' in request.resolver_match.url_name %}is-active{% endif %}">
-        <i class="fas fa-upload"></i> Import Disk
+        <i class="fas fa-upload"></i> {% translate "Import Disk" %}
       </a>
       <a href="{% url 'inventory' %}" class="{% if request.resolver_match.url_name == 'inventory' %}is-active{% endif %}">
-        <i class="fas fa-server"></i> VM Inventory
+        <i class="fas fa-server"></i> {% translate "VM Inventory" %}
       </a>
       <a href="{% url 'vm_community_scripts' %}" class="{% if 'vm_community_scripts' in request.resolver_match.url_name %}is-active{% endif %}">
-        <i class="fas fa-store"></i> Community Scripts
+        <i class="fas fa-store"></i> {% translate "Community Scripts" %}
       </a>
       <a href="{% url 'export_index' %}" class="{% if 'lxc' not in request.resolver_match.url_name and 'export' in request.resolver_match.url_name or 'px_' in request.resolver_match.url_name and 'lxc' not in request.resolver_match.url_name %}is-active{% endif %}">
-        <i class="fas fa-file-export"></i> Export &amp; Import
+        <i class="fas fa-file-export"></i> {% translate "Export &amp; Import" %}
       </a>
 
-      <div class="nav-label">LXC Containers</div>
+      <div class="nav-label">{% translate "LXC Containers" %}</div>
       <a href="{% url 'lxc_create' %}" class="{% if request.resolver_match.url_name == 'lxc_create' or request.resolver_match.url_name == 'lxc_configure' %}is-active{% endif %}">
-        <i class="fas fa-plus-circle"></i> New Container
+        <i class="fas fa-plus-circle"></i> {% translate "New Container" %}
       </a>
       <a href="{% url 'lxc_list' %}" class="{% if request.resolver_match.url_name == 'lxc_list' %}is-active{% endif %}">
-        <i class="fas fa-cube"></i> Container Inventory
+        <i class="fas fa-cube"></i> {% translate "Container Inventory" %}
       </a>
       <a href="{% url 'lxc_community_scripts' %}" class="{% if 'lxc_community_scripts' in request.resolver_match.url_name %}is-active{% endif %}">
-        <i class="fas fa-store"></i> Community Scripts
+        <i class="fas fa-store"></i> {% translate "Community Scripts" %}
       </a>
       <a href="{% url 'lxc_export_index' %}" class="{% if 'lxc_export' in request.resolver_match.url_name or 'lxc_px' in request.resolver_match.url_name %}is-active{% endif %}">
-        <i class="fas fa-file-export"></i> Export &amp; Import
+        <i class="fas fa-file-export"></i> {% translate "Export &amp; Import" %}
       </a>
 
-      <div class="nav-label">Datacenter</div>
+      <div class="nav-label">{% translate "Datacenter" %}</div>
       <a href="{% url 'task_list' %}" class="{% if 'task' in request.resolver_match.url_name %}is-active{% endif %}">
-        <i class="fas fa-list-alt"></i> Tasks
+        <i class="fas fa-list-alt"></i> {% translate "Tasks" %}
       </a>
       <a href="{% url 'backups_index' %}" class="{% if 'backup' in request.resolver_match.url_name %}is-active{% endif %}">
-        <i class="fas fa-archive"></i> Backups
+        <i class="fas fa-archive"></i> {% translate "Backups" %}
       </a>
       <a href="{% url 'datastore_list' %}" class="{% if 'datastore' in request.resolver_match.url_name %}is-active{% endif %}">
-        <i class="fas fa-database"></i> Storage
+        <i class="fas fa-database"></i> {% translate "Storage" %}
       </a>
       <a href="{% url 'firewall_index' %}" class="{% if 'firewall' in request.resolver_match.url_name %}is-active{% endif %}">
-        <i class="fas fa-shield-alt"></i> Firewall
+        <i class="fas fa-shield-alt"></i> {% translate "Firewall" %}
       </a>
       {% if user.is_staff %}
       <a href="{% url 'pveaccess_page' %}" class="{% if 'pveaccess' in request.resolver_match.url_name %}is-active{% endif %}">
-        <i class="fas fa-user-lock"></i> Permissions
+        <i class="fas fa-user-lock"></i> {% translate "Permissions" %}
       </a>
       <a href="{% url 'node_page' %}" class="{% if 'node_' in request.resolver_match.url_name and request.resolver_match.url_name != 'dashboard_node_summary' %}is-active{% endif %}">
-        <i class="fas fa-server"></i> Node
+        <i class="fas fa-server"></i> {% translate "Node" %}
       </a>
       {% endif %}
 
-      <div class="nav-label">Settings</div>
+      <div class="nav-label">{% translate "Settings" %}</div>
       <a href="{% url 'proxmox_settings' %}" class="{% if 'proxmox_settings' in request.resolver_match.url_name %}is-active{% endif %}">
-        <i class="fas fa-server"></i> Proxmox
+        <i class="fas fa-server"></i> {% translate "Proxmox" %}
       </a>
       <a href="{% url 'auth_settings' %}" class="{% if 'auth' in request.resolver_match.url_name %}is-active{% endif %}">
-        <i class="fas fa-shield-alt"></i> Authentication
+        <i class="fas fa-shield-alt"></i> {% translate "Authentication" %}
       </a>
       <a href="{% url 'email_settings' %}" class="{% if 'email' in request.resolver_match.url_name %}is-active{% endif %}">
-        <i class="fas fa-envelope"></i> Email
+        <i class="fas fa-envelope"></i> {% translate "Email" %}
       </a>
       <a href="{% url 'cert_settings' %}" class="{% if 'cert' in request.resolver_match.url_name %}is-active{% endif %}">
-        <i class="fas fa-certificate"></i> Certificates
+        <i class="fas fa-certificate"></i> {% translate "Certificates" %}
       </a>
       <a href="{% url 'storage_management' %}" class="{% if 'storage' in request.resolver_match.url_name %}is-active{% endif %}">
-        <i class="fas fa-hdd"></i> Import files
+        <i class="fas fa-hdd"></i> {% translate "Import files" %}
       </a>
 
-      <div class="nav-label">Account</div>
-      <a href="{% url 'user_list' %}"><i class="fas fa-users"></i> Users</a>
-      <a href="{% url 'mfa_setup' %}"><i class="fas fa-shield-alt"></i> MFA</a>
+      <div class="nav-label">{% translate "Account" %}</div>
+      <a href="{% url 'user_list' %}"><i class="fas fa-users"></i> {% translate "Users" %}</a>
+      <a href="{% url 'mfa_setup' %}"><i class="fas fa-shield-alt"></i> {% translate "MFA" %}</a>
     </nav>
     <div style="padding: 1rem 1.5rem;border-top: 1px solid var(--border-sidebar);">
       <div style="display: flex;align-items: center;justify-content: space-between;">
         <div style="color: var(--text-sidebar);font-size: 0.75rem;">
           <i class="fas fa-user-circle" style="margin-right: 0.3rem;"></i>{{ request.user.username }}
         </div>
-        <label class="theme-switch" title="Toggle dark mode">
+        <label class="theme-switch" title="{% translate "Toggle dark mode" %}">
           <input type="checkbox" id="theme-toggle-cb" onchange="toggleTheme()">
           <span class="theme-slider">
             <svg class="theme-icon theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
@@ -203,15 +204,15 @@
         </label>
       </div>
       <div class="theme-picker">
-        <label for="theme-selector-side"><i class="fas fa-palette" aria-hidden="true"></i><span class="is-sr-only">Theme</span></label>
-        <select id="theme-selector-side" onchange="setTheme(this.value)" aria-label="Theme">
+        <label for="theme-selector-side"><i class="fas fa-palette" aria-hidden="true"></i><span class="is-sr-only">{% translate "Theme" %}</span></label>
+        <select id="theme-selector-side" onchange="setTheme(this.value)" aria-label="{% translate "Theme" %}">
           {% for key, label in theme_choices %}<option value="{{ key }}">{{ label }}</option>{% endfor %}
         </select>
       </div>
       <form method="post" action="{% url 'logout' %}">
         {% csrf_token %}
         <button type="submit" style="background: none;border: none;color: var(--text-sidebar);font-size: 0.75rem;cursor: pointer;padding: 0;margin-top: 0.35rem;">
-          <i class="fas fa-sign-out-alt"></i> Sign out
+          <i class="fas fa-sign-out-alt"></i> {% translate "Sign out" %}
         </button>
       </form>
     </div>
@@ -220,15 +221,16 @@
   {# ===== Main Content ===== #}
   <div class="main-content">
     <div class="page-header">
-      <button class="nav-toggle-btn" type="button" aria-label="Open menu" aria-controls="app-sidebar" aria-expanded="false" onclick="toggleSidebar(true)">
+      <button class="nav-toggle-btn" type="button" aria-label="{% translate "Open menu" %}" aria-controls="app-sidebar" aria-expanded="false" onclick="toggleSidebar(true)">
         <i class="fas fa-bars" aria-hidden="true"></i>
       </button>
-      <h1>{% block page_title %}Dashboard{% endblock %}</h1>
+      <h1>{% block page_title %}{% translate "Dashboard" %}{% endblock %}</h1>
       <div style="display: flex;gap: 0.75rem;align-items: center;">
         {% block page_actions %}{% endblock %}
+        {% include "core/partials/language_switcher.html" %}
         <button class="button is-light is-small" onclick="openHelp()">
           <span class="icon is-small"><i class="fas fa-question-circle"></i></span>
-          <span>Help</span>
+          <span>{% translate "Help" %}</span>
         </button>
       </div>
     </div>
@@ -250,9 +252,9 @@
     {# ===== Task bar (like the PVE "Tasks" log at the bottom) ===== #}
     <div class="taskbar" id="taskbar">
       <div class="taskbar-header" onclick="toggleTaskbar()">
-        <span><i class="fas fa-list-alt"></i> Recent tasks</span>
+        <span><i class="fas fa-list-alt"></i> {% translate "Recent tasks" %}</span>
         <span>
-          <a href="{% url 'task_list' %}" onclick="event.stopPropagation();" class="taskbar-all">All tasks</a>
+          <a href="{% url 'task_list' %}" onclick="event.stopPropagation();" class="taskbar-all">{% translate "All tasks" %}</a>
           <i class="fas fa-chevron-up taskbar-chevron"></i>
         </span>
       </div>
@@ -271,7 +273,7 @@
     </script>
 
     <div class="footer-bar">
-      ProxOrchestrator &mdash; by ForgedIO &mdash; Free &amp; Open Source
+      {% translate "ProxOrchestrator &mdash; by ForgedIO &mdash; Free &amp; Open Source" %}
     </div>
   </div>
 
@@ -279,18 +281,19 @@
   <div id="help-overlay" onclick="closeHelp()"></div>
   <div id="help-panel">
     <div id="help-panel-header">
-      <span><i class="fas fa-question-circle" style="margin-right: 0.5rem;"></i>Help</span>
+      <span><i class="fas fa-question-circle" style="margin-right: 0.5rem;"></i>{% translate "Help" %}</span>
       <button onclick="closeHelp()" style="background: none;border: none;color:  var(--bg-card);cursor: pointer;font-size: 1.1rem;line-height: 1;">
         <i class="fas fa-times"></i>
       </button>
     </div>
     <div id="help-panel-body">
-      <p style="color: var(--text-muted);font-style: italic;">Click Help to load content for this page.</p>
+      <p style="color: var(--text-muted);font-style: italic;">{% translate "Click Help to load content for this page." %}</p>
     </div>
   </div>
 
 {% else %}
   {# ===== Unauthenticated: just render public content (login page) ===== #}
+  <div class="lang-switch-public">{% include "core/partials/language_switcher.html" %}</div>
   {% block public_content %}{% endblock %}
 {% endif %}
 

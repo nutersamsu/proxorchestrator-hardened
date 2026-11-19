@@ -1,12 +1,13 @@
 {% extends "base.html" %}
-{% block title %}Export {{ ct_name }} — ProxOrchestrator{% endblock %}
-{% block page_title %}Export Container{% endblock %}
-{% block help_slug %}lxc-export{% endblock %}
+{% load i18n %}
+{% block title %}{% blocktranslate trimmed %}Export {{ ct_name }} — ProxOrchestrator{% endblocktranslate %}{% endblock %}
+{% block page_title %}{% translate "Export Container" %}{% endblock %}
+{% block help_slug %}{% translate "lxc-export" %}{% endblock %}
 
 {% block page_actions %}
   <a href="javascript:history.back()" class="button is-light is-small">
     <span class="icon is-small"><i class="fas fa-arrow-left"></i></span>
-    <span>Back</span>
+    <span>{% translate "Back" %}</span>
   </a>
 {% endblock %}
 
@@ -17,7 +18,7 @@
     {% if api_error %}
       <div class="notification is-warning is-light" style="margin-bottom: 1.25rem;">
         <i class="fas fa-exclamation-triangle" style="margin-right: 0.5rem;"></i>
-        Could not fetch container info — using defaults. ({{ api_error }})
+        {% blocktranslate trimmed %}Could not fetch container info — using defaults. ({{ api_error }}){% endblocktranslate %}
       </div>
     {% endif %}
 
@@ -31,12 +32,11 @@
           <div>
             <div style="font-weight: 700;color: var(--text-header);font-size: 1rem;">{{ ct_name }}</div>
             <div style="font-size: 0.8125rem;color: var(--text-muted);margin-top: 0.2rem;">
-              CTID {{ vmid }}
-              &nbsp;&bull;&nbsp;
+              {% blocktranslate trimmed %}CTID {{ vmid }} &nbsp;&bull;&nbsp;{% endblocktranslate %}
               {% if is_running %}
-                <span style="color: var(--success-color);font-weight: 600;"><i class="fas fa-circle" style="font-size: 0.5rem;vertical-align: middle;margin-right: 0.25rem;"></i>Running</span>
+                <span style="color: var(--success-color);font-weight: 600;"><i class="fas fa-circle" style="font-size: 0.5rem;vertical-align: middle;margin-right: 0.25rem;"></i>{% translate "Running" %}</span>
               {% else %}
-                <span style="color: var(--text-muted);"><i class="fas fa-circle" style="font-size: 0.5rem;vertical-align: middle;margin-right: 0.25rem;"></i>Stopped</span>
+                <span style="color: var(--text-muted);"><i class="fas fa-circle" style="font-size: 0.5rem;vertical-align: middle;margin-right: 0.25rem;"></i>{% translate "Stopped" %}</span>
               {% endif %}
             </div>
           </div>
@@ -50,23 +50,22 @@
 
       <div class="proxorchestrator-card">
         <div class="card-header">
-          <i class="fas fa-file-export" style="color: var(--link-color);"></i> Export Container
+          <i class="fas fa-file-export" style="color: var(--link-color);"></i> {% translate "Export Container" %}
         </div>
         <div class="card-body">
 
           <div class="notification is-info is-light" style="margin-bottom: 1.25rem;border-radius: 8px;">
             <i class="fas fa-info-circle" style="margin-right: 0.5rem;"></i>
-            Container export uses Proxmox <strong>vzdump</strong> in snapshot mode — the container
-            stays running during the export with no downtime.
+            {% translate "Container export uses Proxmox" %} <strong>{% translate "vzdump" %}</strong> {% translate "in snapshot mode — the container stays running during the export with no downtime." %}
           </div>
 
           {% include "exporter/partials/delete_after_download_option.html" %}
 
           <div style="display: flex;justify-content: flex-end;gap: 1rem;margin-top: 0.5rem;">
-            <a href="javascript:history.back()" class="button is-light is-medium" style="font-weight: 600;">Cancel</a>
+            <a href="javascript:history.back()" class="button is-light is-medium" style="font-weight: 600;">{% translate "Cancel" %}</a>
             <button type="submit" class="button is-info is-medium" style="font-weight: 600;">
               <span class="icon"><i class="fas fa-file-export"></i></span>
-              <span>Start Export</span>
+              <span>{% translate "Start Export" %}</span>
             </button>
           </div>
 
@@ -80,21 +79,20 @@
   <div class="column is-5">
     <div class="proxorchestrator-card">
       <div class="card-header">
-        <i class="fas fa-info-circle" style="color: var(--link-color);"></i> About Container Export
+        <i class="fas fa-info-circle" style="color: var(--link-color);"></i> {% translate "About Container Export" %}
       </div>
       <div class="card-body" style="font-size: 0.8125rem;color: var(--text-semi);line-height: 1.7;">
         <p style="margin-bottom: 0.75rem;">
-          Exports the container's full configuration and rootfs as a portable
-          <code>.px</code> package that can be imported on any ProxOrchestrator server.
+          {% translate "Exports the container's full configuration and rootfs as a portable" %}
+          <code>.px</code> {% translate "package that can be imported on any ProxOrchestrator server." %}
         </p>
         <p style="margin-bottom: 0.75rem;">
-          The export uses <strong>vzdump snapshot mode</strong> — the container
-          continues running with zero downtime during the process.
+          {% translate "The export uses" %} <strong>{% translate "vzdump snapshot mode" %}</strong> {% translate "— the container continues running with zero downtime during the process." %}
         </p>
         <hr style="border: none;border-top: 1px solid var(--border-main);margin: 0.75rem 0;">
         <p style="font-size: 0.8125rem;color: var(--text-muted);">
           <i class="fas fa-clock" style="margin-right: 0.3rem;"></i>
-          Completed exports are deleted after {{ export_retention_hours }} hours, or as soon as they are downloaded when that option is on.
+          {% blocktranslate trimmed %}Completed exports are deleted after {{ export_retention_hours }} hours, or as soon as they are downloaded when that option is on.{% endblocktranslate %}
         </p>
       </div>
     </div>

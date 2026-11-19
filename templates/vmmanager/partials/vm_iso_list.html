@@ -1,3 +1,4 @@
+{% load i18n %}
 {# ISO browser partial — loaded into the CD-ROM mount modal via HTMX #}
 <div id="iso-browser">
   {% if iso_error %}
@@ -9,9 +10,9 @@
       <table class="table is-fullwidth is-hoverable is-narrow" style="margin:0;font-size:0.8125rem;">
         <thead>
           <tr>
-            <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;padding:0.5rem 0.75rem;position:sticky;top:0;background:var(--bg-card, #fff);">ISO File</th>
-            <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;position:sticky;top:0;background:var(--bg-card, #fff);">Storage</th>
-            <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;position:sticky;top:0;background:var(--bg-card, #fff);">Size</th>
+            <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;padding:0.5rem 0.75rem;position:sticky;top:0;background:var(--bg-card, #fff);">{% translate "ISO File" %}</th>
+            <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;position:sticky;top:0;background:var(--bg-card, #fff);">{% translate "Storage" %}</th>
+            <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;position:sticky;top:0;background:var(--bg-card, #fff);">{% translate "Size" %}</th>
             <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;text-align:right;padding-right:0.75rem;position:sticky;top:0;background:var(--bg-card, #fff);"></th>
           </tr>
         </thead>
@@ -24,7 +25,7 @@
             <td style="text-align:right;padding-right:0.75rem;">
               <button type="button" class="button is-small is-success is-light" style="font-weight:600;"
                       onclick="selectIso('{{ iso.volid|escapejs }}', '{{ iso.filename|escapejs }}')">
-                <i class="fas fa-check"></i> Select
+                <i class="fas fa-check"></i> {% translate "Select" %}
               </button>
             </td>
           </tr>
@@ -35,7 +36,7 @@
   {% else %}
     <div style="padding:1.5rem;text-align:center;color:var(--text-muted, #7a7a7a);font-size:0.875rem;">
       <i class="fas fa-compact-disc" style="margin-right:0.4rem;opacity:0.5;"></i>
-      No ISO files found. Upload ISOs to a storage pool with ISO content type in Proxmox.
+      {% translate "No ISO files found. Upload ISOs to a storage pool with ISO content type in Proxmox." %}
     </div>
   {% endif %}
 </div>

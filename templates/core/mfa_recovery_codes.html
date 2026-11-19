@@ -1,6 +1,7 @@
 {% extends "base.html" %}
-{% block title %}Recovery Codes — ProxOrchestrator{% endblock %}
-{% block page_title %}MFA Recovery Codes{% endblock %}
+{% load i18n %}
+{% block title %}{% translate "Recovery Codes — ProxOrchestrator" %}{% endblock %}
+{% block page_title %}{% translate "MFA Recovery Codes" %}{% endblock %}
 
 {% block content %}
 <div class="columns is-centered">
@@ -8,14 +9,13 @@
 
     <div class="notification is-warning" style="margin-bottom: 1.5rem;">
       <i class="fas fa-exclamation-triangle" style="margin-right: 0.4rem;"></i>
-      <strong>Save these recovery codes now!</strong><br>
-      Each code can only be used once. Store them somewhere safe — you will not be able to see them again.
-      If you lose your authenticator device and don't have these codes, you will need an administrator to reset your MFA.
+      <strong>{% translate "Save these recovery codes now!" %}</strong><br>
+      {% translate "Each code can only be used once. Store them somewhere safe — you will not be able to see them again. If you lose your authenticator device and don't have these codes, you will need an administrator to reset your MFA." %}
     </div>
 
     <div class="proxorchestrator-card">
       <div class="card-header">
-        <i class="fas fa-key" style="color: var(--warning-color);"></i> Your Recovery Codes
+        <i class="fas fa-key" style="color: var(--warning-color);"></i> {% translate "Your Recovery Codes" %}
       </div>
       <div class="card-body" style="text-align: center;">
         <div id="recovery-codes" style="background: var(--bg-sidebar);border-radius: 8px;padding: 1.5rem;margin-bottom: 1.5rem;">
@@ -29,17 +29,17 @@
         <div style="display: flex;gap: 0.75rem;justify-content: center;margin-bottom: 1.5rem;">
           <button class="button is-light" onclick="copyRecoveryCodes()" style="font-weight: 600;">
             <span class="icon"><i class="fas fa-copy"></i></span>
-            <span>Copy</span>
+            <span>{% translate "Copy" %}</span>
           </button>
           <button class="button is-light" onclick="window.print()" style="font-weight: 600;">
             <span class="icon"><i class="fas fa-print"></i></span>
-            <span>Print</span>
+            <span>{% translate "Print" %}</span>
           </button>
         </div>
 
         <a href="/" class="button is-primary" style="font-weight: 600;">
           <span class="icon"><i class="fas fa-check"></i></span>
-          <span>I've Saved My Codes — Continue</span>
+          <span>{% translate "I've Saved My Codes — Continue" %}</span>
         </a>
       </div>
     </div>
@@ -58,7 +58,7 @@ function copyRecoveryCodes() {
   navigator.clipboard.writeText(codes.join('\n')).then(() => {
     const btn = event.target.closest('button');
     const origHTML = btn.innerHTML;
-    btn.innerHTML = '<span class="icon"><i class="fas fa-check"></i></span><span>Copied!</span>';
+    btn.innerHTML = '<span class="icon"><i class="fas fa-check"></i></span><span>{{ _("Copied!")|escapejs }}</span>';
     setTimeout(() => { btn.innerHTML = origHTML; }, 2000);
   });
 }

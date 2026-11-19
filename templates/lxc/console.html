@@ -1,9 +1,10 @@
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Console — {{ vnc.ct_name|default:vmid }}</title>
+  <title>{% blocktranslate with ct_name=vnc.ct_name|default:vmid trimmed %}Console — {{ ct_name }}{% endblocktranslate %}</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -203,23 +204,23 @@
       <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>
     </svg>
     {{ vnc.ct_name|default:vmid }}
-    <span class="badge">CTID {{ vmid }}</span>
+    <span class="badge">{% blocktranslate trimmed %}CTID {{ vmid }}{% endblocktranslate %}</span>
   </div>
   <div class="spacer"></div>
 
   {% if not error %}
-  <button class="toolbar-btn" id="btn-fullscreen" title="Fullscreen">
+  <button class="toolbar-btn" id="btn-fullscreen" title="{% translate "Fullscreen" %}">
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
       <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
     </svg>
-    Fullscreen
+    {% translate "Fullscreen" %}
   </button>
   <button class="toolbar-btn" id="btn-clipboard">
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
       <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
       <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
     </svg>
-    Clipboard
+    {% translate "Clipboard" %}
   </button>
   {% endif %}
 
@@ -227,13 +228,13 @@
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
       <path d="M19 12H5M12 19l-7-7 7-7"/>
     </svg>
-    Back to Container
+    {% translate "Back to Container" %}
   </a>
-  <button class="toolbar-btn" onclick="window.close()" title="Close this console tab" style="color:#f14668;">
+  <button class="toolbar-btn" onclick="window.close()" title="{% translate "Close this console tab" %}" style="color:#f14668;">
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
       <path d="M18 6L6 18M6 6l12 12"/>
     </svg>
-    Close
+    {% translate "Close" %}
   </button>
 </div>
 
@@ -244,42 +245,42 @@
         <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
       </svg>
       <div style="color: var(--danger-color);font-size: 0.875rem;">{{ error }}</div>
-      <a class="toolbar-btn" href="{% url 'lxc_detail' vmid %}" style="margin-top: 0.5rem;">Back to Container</a>
+      <a class="toolbar-btn" href="{% url 'lxc_detail' vmid %}" style="margin-top: 0.5rem;">{% translate "Back to Container" %}</a>
     {% else %}
       <div class="status-spinner"></div>
-      <div class="status-text" id="status-text">Connecting to console…</div>
+      <div class="status-text" id="status-text">{% translate "Connecting to console…" %}</div>
     {% endif %}
   </div>
 
   {# Clipboard panel — floats over console #}
   <div id="clipboard-panel">
     <div class="clipboard-header">
-      <span>Clipboard</span>
-      <button id="btn-clipboard-close" title="Close">&#10005;</button>
+      <span>{% translate "Clipboard" %}</span>
+      <button id="btn-clipboard-close" title="{% translate "Close" %}">&#10005;</button>
     </div>
     <div class="clipboard-tabs">
-      <button class="clipboard-tab active" id="tab-paste">Paste → CT</button>
-      <button class="clipboard-tab" id="tab-copy">Copy ← CT</button>
+      <button class="clipboard-tab active" id="tab-paste">{% translate "Paste → CT" %}</button>
+      <button class="clipboard-tab" id="tab-copy">{% translate "Copy ← CT" %}</button>
     </div>
     <div class="clipboard-body" id="pane-paste">
       <textarea class="clipboard-textarea" id="paste-text" placeholder="Type or paste text here, then click Send…"></textarea>
-      <div class="clipboard-hint">Each character is typed into the container as a keystroke. Works in any terminal — no clipboard integration required.</div>
+      <div class="clipboard-hint">{% translate "Each character is typed into the container as a keystroke. Works in any terminal — no clipboard integration required." %}</div>
       <div class="clipboard-actions">
-        <button class="clipboard-btn" id="btn-paste-from-browser">Paste from browser</button>
-        <button class="clipboard-btn primary" id="btn-send-to-vm">Send to Container</button>
+        <button class="clipboard-btn" id="btn-paste-from-browser">{% translate "Paste from browser" %}</button>
+        <button class="clipboard-btn primary" id="btn-send-to-vm">{% translate "Send to Container" %}</button>
       </div>
     </div>
     <div class="clipboard-body" id="pane-copy" style="display: none;">
       <textarea class="clipboard-textarea" id="copy-text" placeholder="Text copied by the container will appear here automatically…" readonly></textarea>
-      <div class="clipboard-hint">When you copy text inside the container, it syncs here. Click Copy to put it on your local clipboard.</div>
+      <div class="clipboard-hint">{% translate "When you copy text inside the container, it syncs here. Click Copy to put it on your local clipboard." %}</div>
       <div class="clipboard-actions">
-        <button class="clipboard-btn" id="btn-clear-copy">Clear</button>
-        <button class="clipboard-btn primary" id="btn-copy-to-browser">Copy to clipboard</button>
+        <button class="clipboard-btn" id="btn-clear-copy">{% translate "Clear" %}</button>
+        <button class="clipboard-btn primary" id="btn-copy-to-browser">{% translate "Copy to clipboard" %}</button>
       </div>
     </div>
   </div>
 
-  <div id="clipboard-toast">Copied to clipboard</div>
+  <div id="clipboard-toast">{% translate "Copied to clipboard" %}</div>
 </div>
 
 {% if not error %}
@@ -297,7 +298,7 @@
   const wsUrl = `${wsProto}//${window.location.host}/vm-ws/nodes/${d.node}/lxc/${d.vmid}/vncwebsocket` +
                 `?port=${d.vnc_port}&vncticket=${encodeURIComponent(d.ticket)}`;
 
-  document.getElementById('status-text').textContent = 'Loading console…';
+  document.getElementById('status-text').textContent = '{{ _("Loading console…")|escapejs }}';
 
   const { default: RFB } = await import('{% static "novnc/core/rfb.js" %}');
 
@@ -335,9 +336,9 @@
     if (!text) return;
     document.getElementById('copy-text').value = text;
     navigator.clipboard.writeText(text).then(() => {
-      showToast('Container clipboard synced to local clipboard');
+      showToast('{{ _("Container clipboard synced to local clipboard")|escapejs }}');
     }).catch(() => {
-      showToast('Container copied text — open Clipboard panel to copy');
+      showToast('{{ _("Container copied text — open Clipboard panel to copy")|escapejs }}');
     });
   });
 
@@ -382,7 +383,7 @@
       document.getElementById('paste-text').value = text;
     } catch {
       document.getElementById('paste-text').focus();
-      document.getElementById('paste-text').placeholder = 'Clipboard access denied — paste here manually with Ctrl+V then click Send.';
+      document.getElementById('paste-text').placeholder = '{{ _("Clipboard access denied — paste here manually with Ctrl+V then click Send.")|escapejs }}';
     }
   });
 
@@ -393,7 +394,7 @@
 
     const btn = document.getElementById('btn-send-to-vm');
     btn.disabled = true;
-    btn.textContent = 'Sending…';
+    btn.textContent = '{{ _("Sending…")|escapejs }}';
 
     const text = raw.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
 
@@ -431,8 +432,8 @@
     }
 
     btn.disabled = false;
-    btn.textContent = 'Send to Container';
-    showToast('Sent to container');
+    btn.textContent = '{{ _("Send to Container")|escapejs }}';
+    showToast('{{ _("Sent to container")|escapejs }}');
   });
 
   // Copy tab: copy container text to host clipboard
@@ -441,11 +442,11 @@
     if (!text) return;
     try {
       await navigator.clipboard.writeText(text);
-      showToast('Copied to local clipboard');
+      showToast('{{ _("Copied to local clipboard")|escapejs }}');
     } catch {
       document.getElementById('copy-text').select();
       document.execCommand('copy');
-      showToast('Copied to local clipboard');
+      showToast('{{ _("Copied to local clipboard")|escapejs }}');
     }
   });
 

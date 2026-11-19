@@ -17,6 +17,7 @@ import sys
 from pathlib import Path
 
 import requests
+from django.utils.translation import gettext
 
 logger = logging.getLogger(__name__)
 
@@ -233,7 +234,7 @@ def rebuild_catalog():
             "success": False,
             "script_count": 0,
             "category_count": 0,
-            "error": "Build script not found. Update ProxOrchestrator to enable catalog refresh.",
+            "error": gettext("Build script not found. Update ProxOrchestrator to enable catalog refresh."),
         }
 
     try:
@@ -250,7 +251,7 @@ def rebuild_catalog():
                 "success": False,
                 "script_count": 0,
                 "category_count": 0,
-                "error": f"Build script failed: {result.stderr[-500:]}",
+                "error": gettext('Build script failed: %(stderr_500)s') % {"stderr_500": result.stderr[-500:]},
             }
 
         # Save the latest SHA so the next update check knows we're current
@@ -280,7 +281,7 @@ def rebuild_catalog():
             "success": False,
             "script_count": 0,
             "category_count": 0,
-            "error": "Catalog rebuild timed out after 5 minutes.",
+            "error": gettext("Catalog rebuild timed out after 5 minutes."),
         }
     except Exception as exc:
         logger.error("Catalog rebuild failed: %s", exc, exc_info=True)

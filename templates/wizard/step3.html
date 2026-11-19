@@ -1,5 +1,6 @@
 {% extends "wizard/base_wizard.html" %}
-{% block title %}Step 3: API Token — Setup Wizard{% endblock %}
+{% load i18n %}
+{% block title %}{% translate "Step 3: API Token — Setup Wizard" %}{% endblock %}
 {% block current_step_display %}3{% endblock %}
 
 {% block wizard_content %}
@@ -9,9 +10,9 @@
       <div style="width: 40px;height: 40px;border-radius: 10px;background: var(--bg-warning-badge);display: flex;align-items: center;justify-content: center;flex-shrink: 0;">
         <i class="fas fa-id-badge" style="color: var(--warning-color);font-size: 1.1rem;"></i>
       </div>
-      <h2>Create API Token</h2>
+      <h2>{% translate "Create API Token" %}</h2>
     </div>
-    <p class="subtitle">ProxOrchestrator needs a Proxmox API token to manage VMs. Create one with limited privileges in two minutes.</p>
+    <p class="subtitle">{% translate "ProxOrchestrator needs a Proxmox API token to manage VMs. Create one with limited privileges in two minutes." %}</p>
   </div>
 
   <div class="wizard-card-body">
@@ -19,30 +20,24 @@
     {# Commands to run on the Proxmox host #}
     <div style="margin-bottom: 1.5rem;">
       <div style="font-size: 0.8125rem;text-transform: uppercase;letter-spacing: 1px;color: var(--text-muted);font-weight: 600;margin-bottom: 0.5rem;">
-        Run in the Proxmox shell
+        {% translate "Run in the Proxmox shell" %}
       </div>
       <p class="field-hint" style="margin-bottom: 0.5rem;">
-        In the Proxmox web UI at <code>https://{{ proxmox_host }}:{{ api_port }}</code> open
-        <strong>your node &rarr; Shell</strong> and paste these lines. They create a dedicated user with
-        only the privileges ProxOrchestrator needs (not root) and a token for it.
+        {% translate "In the Proxmox web UI at" %} <code>https://{{ proxmox_host }}:{{ api_port }}</code> {% translate "open" %}
+        <strong>{% translate "your node &rarr; Shell" %}</strong> {% translate "and paste these lines. They create a dedicated user with only the privileges ProxOrchestrator needs (not root) and a token for it." %}
       </p>
-      <div class="key-display" id="token-cmds" style="white-space: pre;overflow-x: auto;">pveum user add proxorchestrator@pve --comment ProxOrchestrator
-pveum acl modify / --users proxorchestrator@pve --roles PVEVMAdmin,PVEDatastoreUser,PVEAuditor
-pveum acl modify /sdn/zones/localnetwork --users proxorchestrator@pve --roles PVESDNUser
-pveum user token add proxorchestrator@pve app --privsep 0</div>
+      <div class="key-display" id="token-cmds" style="white-space: pre;overflow-x: auto;">{% translate "pveum user add proxorchestrator@pve --comment ProxOrchestrator pveum acl modify / --users proxorchestrator@pve --roles PVEVMAdmin,PVEDatastoreUser,PVEAuditor pveum acl modify /sdn/zones/localnetwork --users proxorchestrator@pve --roles PVESDNUser pveum user token add proxorchestrator@pve app --privsep 0" %}</div>
       <div style="margin-top: 0.5rem;">
         <button type="button" class="button is-small is-light" onclick="copyBox('token-cmds', 'copy-cmds-feedback')">
           <span class="icon is-small"><i class="fas fa-copy"></i></span>
-          <span>Copy commands</span>
+          <span>{% translate "Copy commands" %}</span>
         </button>
         <span id="copy-cmds-feedback" style="display: none;margin-left: 0.5rem;color: var(--success-color);font-size: 0.8125rem;">
-          <i class="fas fa-check"></i> Copied!
+          <i class="fas fa-check"></i> {% translate "Copied!" %}
         </span>
       </div>
       <p class="field-hint" style="margin-top: 0.75rem;">
-        The last command prints a table: copy the <strong>value</strong> row into <em>Token Secret</em> below.
-        The token ID is <code>proxorchestrator@pve!app</code>. If the user already exists, the first line just
-        reports it — that is fine. On Proxmox 7 the <code>/sdn</code> line can be skipped.
+        {% translate "The last command prints a table: copy the" %} <strong>{% translate "value" %}</strong> {% translate "row into" %} <em>{% translate "Token Secret" %}</em> {% translate "below. The token ID is" %} <code>proxorchestrator@pve!app</code>{% translate ". If the user already exists, the first line just reports it — that is fine. On Proxmox 7 the" %} <code>/sdn</code> {% translate "line can be skipped." %}
       </p>
     </div>
 
@@ -50,7 +45,7 @@ pveum user token add proxorchestrator@pve app --privsep 0</div>
     {% if error %}
       <div class="notification is-danger is-light" style="font-size: 0.875rem;margin-bottom: 1.25rem;">
         <button class="delete" onclick="this.parentElement.remove()"></button>
-        <strong><i class="fas fa-exclamation-triangle" style="margin-right: 0.4rem;"></i>Token verification failed</strong>
+        <strong><i class="fas fa-exclamation-triangle" style="margin-right: 0.4rem;"></i>{% translate "Token verification failed" %}</strong>
         <p style="margin-top: 0.35rem;">{{ error }}</p>
       </div>
     {% endif %}
@@ -63,7 +58,7 @@ pveum user token add proxorchestrator@pve app --privsep 0</div>
         <div class="column is-7">
           <div class="field">
             <label class="label" style="font-weight: 600;color: var(--text-header);">
-              Full Token ID
+              {% translate "Full Token ID" %}
               <span style="color: var(--danger-color);">*</span>
             </label>
             <div class="control has-icons-left">
@@ -73,7 +68,7 @@ pveum user token add proxorchestrator@pve app --privsep 0</div>
                 name="api_token_id"
                 id="id_api_token_id"
                 value="{{ form.api_token_id.value|default:'proxorchestrator@pve!app' }}"
-                placeholder="proxorchestrator@pve!app"
+                placeholder="{% translate "proxorchestrator@pve!app" %}"
                 required
               >
               <span class="icon is-left"><i class="fas fa-tag" style="color: var(--text-muted);"></i></span>
@@ -81,14 +76,14 @@ pveum user token add proxorchestrator@pve app --privsep 0</div>
             {% for error in form.api_token_id.errors %}
               <p class="help is-danger">{{ error }}</p>
             {% endfor %}
-            <p class="field-hint">Format: <code>user@realm!tokenid</code></p>
+            <p class="field-hint">{% translate "Format:" %} <code>user@realm!tokenid</code></p>
           </div>
         </div>
 
         <div class="column is-5">
           <div class="field">
             <label class="label" style="font-weight: 600;color: var(--text-header);">
-              Token Secret
+              {% translate "Token Secret" %}
               <span style="color: var(--danger-color);">*</span>
             </label>
             <div class="control has-icons-left">
@@ -97,7 +92,7 @@ pveum user token add proxorchestrator@pve app --privsep 0</div>
                 type="password"
                 name="api_token_secret"
                 id="id_api_token_secret"
-                placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+                placeholder="{% translate "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" %}"
                 autocomplete="off"
                 required
               >
@@ -116,16 +111,16 @@ pveum user token add proxorchestrator@pve app --privsep 0</div>
   <div class="wizard-card-footer">
     <a href="{% url 'wizard_step2' %}" class="button is-light" style="font-weight: 500;">
       <span class="icon"><i class="fas fa-arrow-left"></i></span>
-      <span>Back</span>
+      <span>{% translate "Back" %}</span>
     </a>
     <div style="display: flex;align-items: center;gap: 0.75rem;">
       <span id="step3-spinner" style="display: none;">
         <span class="spinner"></span>
-        <span style="font-size: 0.875rem;color: var(--text-muted);margin-left: 0.4rem;">Verifying token...</span>
+        <span style="font-size: 0.875rem;color: var(--text-muted);margin-left: 0.4rem;">{% translate "Verifying token..." %}</span>
       </span>
       <button type="submit" form="step3-form" class="button is-primary is-medium" style="font-weight: 600;min-width: 200px;" id="step3-btn">
         <span class="icon"><i class="fas fa-check-circle"></i></span>
-        <span>Verify Token</span>
+        <span>{% translate "Verify Token" %}</span>
         <span class="icon"><i class="fas fa-arrow-right"></i></span>
       </button>
     </div>

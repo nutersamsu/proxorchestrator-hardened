@@ -1,3 +1,4 @@
+{% load i18n %}
 {% comment %}
 HTMX partial: pipeline stage list for VM create job progress.
 Included in progress.html and returned by the polling endpoint.
@@ -17,14 +18,14 @@ Uses id="pipeline-status" for HTMX swap targeting.
     <div class="card-header">
       <i class="fas fa-tasks" style="color: var(--text-muted);"></i>
       {% if job.source_type == 'iso' %}
-        ISO Install Pipeline
+        {% translate "ISO Install Pipeline" %}
       {% else %}
-        VM Creation Pipeline
+        {% translate "VM Creation Pipeline" %}
       {% endif %}
       {% if job.stage != 'DONE' and job.stage != 'FAILED' %}
         <span style="margin-left: auto;font-size: 0.75rem;color: var(--text-muted);font-weight: 400;">
           <span class="spinner" style="margin-right: 0.3rem;"></span>
-          Auto-updating every 2s
+          {% translate "Auto-updating every 2s" %}
         </span>
       {% endif %}
     </div>
@@ -58,15 +59,15 @@ Uses id="pipeline-status" for HTMX swap targeting.
               <div class="stage-name">{{ stage.label }}</div>
               <div class="stage-status">
                 {% if stage.state == 'DONE' %}
-                  <span style="color: var(--text-success-dark);font-size: 0.8125rem;font-weight: 600;">Done</span>
+                  <span style="color: var(--text-success-dark);font-size: 0.8125rem;font-weight: 600;">{% translate "Done" %}</span>
                 {% elif stage.state == 'ACTIVE' or stage.state == 'RUNNING' %}
                   {% if stage.duration %}
                     <span style="color: var(--text-muted);font-size: 0.8125rem;">{{ stage.duration }}</span>
                   {% endif %}
                 {% elif stage.state == 'FAILED' %}
-                  <span style="color: var(--danger-color);font-size: 0.8125rem;font-weight: 600;">Failed</span>
+                  <span style="color: var(--danger-color);font-size: 0.8125rem;font-weight: 600;">{% translate "Failed" %}</span>
                 {% elif stage.state == 'SKIPPED' %}
-                  <span style="color: var(--text-muted);font-size: 0.8125rem;">Skipped</span>
+                  <span style="color: var(--text-muted);font-size: 0.8125rem;">{% translate "Skipped" %}</span>
                 {% endif %}
               </div>
             </div>
@@ -101,7 +102,7 @@ Uses id="pipeline-status" for HTMX swap targeting.
         {% for i in "12345" %}
         <div class="pipeline-stage is-queued">
           <div class="stage-icon"><i class="far fa-circle" style="color: var(--border-light);"></i></div>
-          <div class="stage-name" style="color: var(--text-muted);">Waiting to start...</div>
+          <div class="stage-name" style="color: var(--text-muted);">{% translate "Waiting to start..." %}</div>
         </div>
         {% endfor %}
       {% endfor %}
@@ -111,15 +112,15 @@ Uses id="pipeline-status" for HTMX swap targeting.
         <div style="margin-top: 1rem;padding-top: 1rem;border-top: 1px solid var(--border-light);display: flex;align-items: center;justify-content: space-between;">
           <div style="font-size: 0.8125rem;color: var(--text-muted);">
             {% if job.stage == 'DONE' %}
-              All stages complete
+              {% translate "All stages complete" %}
             {% elif job.stage == 'FAILED' %}
-              Pipeline stopped due to error
+              {% translate "Pipeline stopped due to error" %}
             {% else %}
-              Running...
+              {% translate "Running..." %}
             {% endif %}
           </div>
           <div style="font-size: 0.8125rem;color: var(--text-semi);font-weight: 600;">
-            {{ stages_done_count|default:0 }} / {{ stages|length }} stages
+            {% blocktranslate with stages_done_count=stages_done_count|default:0 stages=stages|length trimmed %}{{ stages_done_count }} / {{ stages }} stages{% endblocktranslate %}
           </div>
         </div>
       {% endif %}

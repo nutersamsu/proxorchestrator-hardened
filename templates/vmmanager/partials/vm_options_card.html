@@ -1,39 +1,40 @@
+{% load i18n %}
 {# Options card (PVE "Options" tab) + other hardware (read-only) + edit modal #}
 <div class="column is-6">
   <div class="proxorchestrator-card">
     <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;">
-      <span><i class="fas fa-sliders-h" style="color: var(--link-color);"></i> Options</span>
-      <button class="button is-small is-white" onclick="openSettingsModal('options')" title="Edit options">
+      <span><i class="fas fa-sliders-h" style="color: var(--link-color);"></i> {% translate "Options" %}</span>
+      <button class="button is-small is-white" onclick="openSettingsModal('options')" title="{% translate "Edit options" %}">
         <i class="fas fa-pencil-alt" style="font-size:0.75rem;color:var(--text-muted);"></i>
       </button>
     </div>
     <div class="card-body" style="padding:1rem 1.5rem;">
-      <div class="cert-detail-row"><div class="cert-detail-label">Start at boot</div><div class="cert-detail-value">{% if vm.onboot %}Yes{% else %}No{% endif %}</div></div>
-      <div class="cert-detail-row"><div class="cert-detail-label">Start/Shutdown order</div><div class="cert-detail-value">{% if vm.opt_startup_raw %}{{ vm.opt_startup_raw }}{% else %}order=any{% endif %}</div></div>
-      <div class="cert-detail-row"><div class="cert-detail-label">OS type</div><div class="cert-detail-value">{{ vm.ostype|default:"—" }}</div></div>
-      <div class="cert-detail-row"><div class="cert-detail-label">QEMU guest agent</div><div class="cert-detail-value">{% if vm.opt_agent %}Enabled{% if vm.opt_agent_fstrim %} (fstrim after clone/move){% endif %}{% else %}Disabled{% endif %}</div></div>
-      <div class="cert-detail-row"><div class="cert-detail-label">Protection</div><div class="cert-detail-value">{% if vm.opt_protection %}<span style="color:var(--success-color);">Yes</span>{% else %}No{% endif %}</div></div>
-      <div class="cert-detail-row"><div class="cert-detail-label">Hotplug</div><div class="cert-detail-value">{{ vm.opt_hotplug_text }}</div></div>
-      <div class="cert-detail-row"><div class="cert-detail-label">Tablet pointer / ACPI / KVM</div><div class="cert-detail-value">{% if vm.opt_tablet %}Yes{% else %}No{% endif %} / {% if vm.opt_acpi %}Yes{% else %}No{% endif %} / {% if vm.opt_kvm %}Yes{% else %}No{% endif %}</div></div>
-      <div class="cert-detail-row"><div class="cert-detail-label">RTC local time / Freeze CPU</div><div class="cert-detail-value">{% if vm.opt_localtime %}Yes{% else %}No{% endif %} / {% if vm.opt_freeze %}Yes{% else %}No{% endif %}</div></div>
-      <div class="cert-detail-row"><div class="cert-detail-label">Tags</div><div class="cert-detail-value">{% for t in vm.opt_tags %}<span class="tag is-light is-info" style="margin-right:0.25rem;">{{ t }}</span>{% empty %}—{% endfor %}</div></div>
+      <div class="cert-detail-row"><div class="cert-detail-label">{% translate "Start at boot" %}</div><div class="cert-detail-value">{% if vm.onboot %}{% translate "Yes" %}{% else %}{% translate "No" %}{% endif %}</div></div>
+      <div class="cert-detail-row"><div class="cert-detail-label">{% translate "Start/Shutdown order" %}</div><div class="cert-detail-value">{% if vm.opt_startup_raw %}{{ vm.opt_startup_raw }}{% else %}{% translate "order=any" %}{% endif %}</div></div>
+      <div class="cert-detail-row"><div class="cert-detail-label">{% translate "OS type" %}</div><div class="cert-detail-value">{{ vm.ostype|default:"—" }}</div></div>
+      <div class="cert-detail-row"><div class="cert-detail-label">{% translate "QEMU guest agent" %}</div><div class="cert-detail-value">{% if vm.opt_agent %}{% translate "Enabled" %}{% if vm.opt_agent_fstrim %} {% translate "(fstrim after clone/move)" %}{% endif %}{% else %}{% translate "Disabled" %}{% endif %}</div></div>
+      <div class="cert-detail-row"><div class="cert-detail-label">{% translate "Protection" %}</div><div class="cert-detail-value">{% if vm.opt_protection %}<span style="color:var(--success-color);">{% translate "Yes" %}</span>{% else %}{% translate "No" %}{% endif %}</div></div>
+      <div class="cert-detail-row"><div class="cert-detail-label">{% translate "Hotplug" %}</div><div class="cert-detail-value">{{ vm.opt_hotplug_text }}</div></div>
+      <div class="cert-detail-row"><div class="cert-detail-label">{% translate "Tablet pointer / ACPI / KVM" %}</div><div class="cert-detail-value">{% if vm.opt_tablet %}{% translate "Yes" %}{% else %}{% translate "No" %}{% endif %} / {% if vm.opt_acpi %}{% translate "Yes" %}{% else %}{% translate "No" %}{% endif %} / {% if vm.opt_kvm %}{% translate "Yes" %}{% else %}{% translate "No" %}{% endif %}</div></div>
+      <div class="cert-detail-row"><div class="cert-detail-label">{% translate "RTC local time / Freeze CPU" %}</div><div class="cert-detail-value">{% if vm.opt_localtime %}{% translate "Yes" %}{% else %}{% translate "No" %}{% endif %} / {% if vm.opt_freeze %}{% translate "Yes" %}{% else %}{% translate "No" %}{% endif %}</div></div>
+      <div class="cert-detail-row"><div class="cert-detail-label">{% translate "Tags" %}</div><div class="cert-detail-value">{% for t in vm.opt_tags %}<span class="tag is-light is-info" style="margin-right:0.25rem;">{{ t }}</span>{% empty %}—{% endfor %}</div></div>
     </div>
   </div>
 </div>
 
 <div class="column is-6">
   <div class="proxorchestrator-card">
-    <div class="card-header"><i class="fas fa-desktop" style="color: var(--text-muted);"></i> Display &amp; other hardware</div>
+    <div class="card-header"><i class="fas fa-desktop" style="color: var(--text-muted);"></i> {% translate "Display &amp; other hardware" %}</div>
     <div class="card-body" style="padding:1rem 1.5rem;">
-      <div class="cert-detail-row"><div class="cert-detail-label">Display</div><div class="cert-detail-value">{{ vm.opt_vga }}{% if vm.opt_vga_memory %} ({{ vm.opt_vga_memory }} MiB){% endif %}</div></div>
-      <div class="cert-detail-row"><div class="cert-detail-label">SCSI controller</div><div class="cert-detail-value">{{ vm.opt_scsihw }}</div></div>
-      <div class="cert-detail-row"><div class="cert-detail-label">Machine</div><div class="cert-detail-value">{{ vm.opt_machine|default:"i440fx (default)" }}</div></div>
+      <div class="cert-detail-row"><div class="cert-detail-label">{% translate "Display" %}</div><div class="cert-detail-value">{{ vm.opt_vga }}{% if vm.opt_vga_memory %} {% blocktranslate with opt_vga_memory=vm.opt_vga_memory trimmed %}({{ opt_vga_memory }} MiB){% endblocktranslate %}{% endif %}</div></div>
+      <div class="cert-detail-row"><div class="cert-detail-label">{% translate "SCSI controller" %}</div><div class="cert-detail-value">{{ vm.opt_scsihw }}</div></div>
+      <div class="cert-detail-row"><div class="cert-detail-label">{% translate "Machine" %}</div><div class="cert-detail-value">{{ vm.opt_machine|default:"i440fx (default)" }}</div></div>
       {% for hw in vm.other_hardware %}
         {% if hw.key != "vga" and hw.key != "scsihw" and hw.key != "machine" %}
         <div class="cert-detail-row"><div class="cert-detail-label">{{ hw.key }}</div><div class="cert-detail-value mono-cell" style="word-break:break-all;">{{ hw.value }}</div></div>
         {% endif %}
       {% endfor %}
-      <p class="help" style="margin-top:0.5rem;">USB/PCI passthrough and serial ports are shown read-only: adding them needs root or resource mappings in Proxmox.</p>
+      <p class="help" style="margin-top:0.5rem;">{% translate "USB/PCI passthrough and serial ports are shown read-only: adding them needs root or resource mappings in Proxmox." %}</p>
     </div>
   </div>
 </div>
@@ -43,7 +44,7 @@
   <div class="modal-background" onclick="closeSettingsModal('options')"></div>
   <div class="modal-card" style="max-width:600px;border-radius:12px;">
     <header class="modal-card-head" style="background:#2563eb;border-radius:12px 12px 0 0;">
-      <p class="modal-card-title" style="color:#fff;font-size:1rem;font-weight:600;"><i class="fas fa-sliders-h"></i>&nbsp; Options</p>
+      <p class="modal-card-title" style="color:#fff;font-size:1rem;font-weight:600;"><i class="fas fa-sliders-h"></i>{% translate "&nbsp; Options" %}</p>
       <button class="delete" type="button" onclick="closeSettingsModal('options')"></button>
     </header>
     <form method="post" action="{% url 'vm_options_save' vmid %}">
@@ -51,69 +52,69 @@
       <section class="modal-card-body">
         <div class="columns is-multiline is-variable is-2">
           <div class="column is-6 field">
-            <label class="label is-small">OS type</label>
+            <label class="label is-small">{% translate "OS type" %}</label>
             <div class="select is-small is-fullwidth"><select name="ostype">
               {% for k, label in ostype_choices %}<option value="{{ k }}" {% if k == vm.opt_ostype %}selected{% endif %}>{{ label }}</option>{% endfor %}
             </select></div>
           </div>
           <div class="column is-6 field">
-            <label class="label is-small">Tags <span class="ns-sub">(separated by ; or space)</span></label>
+            <label class="label is-small">{% translate "Tags" %} <span class="ns-sub">{% translate "(separated by ; or space)" %}</span></label>
             <input class="input is-small" name="tags" value="{{ vm.opt_tags_text }}" maxlength="500">
           </div>
           <div class="column is-4 field">
-            <label class="label is-small">Start order</label>
-            <input class="input is-small" name="startup_order" value="{{ vm.opt_startup_order }}" inputmode="numeric" placeholder="any" {% if not can_sys_modify %}readonly{% endif %}>
+            <label class="label is-small">{% translate "Start order" %}</label>
+            <input class="input is-small" name="startup_order" value="{{ vm.opt_startup_order }}" inputmode="numeric" placeholder="{% translate "any" %}" {% if not can_sys_modify %}readonly{% endif %}>
           </div>
           <div class="column is-4 field">
-            <label class="label is-small">Startup delay (s)</label>
-            <input class="input is-small" name="startup_up" value="{{ vm.opt_startup_up }}" inputmode="numeric" placeholder="default" {% if not can_sys_modify %}readonly{% endif %}>
+            <label class="label is-small">{% translate "Startup delay (s)" %}</label>
+            <input class="input is-small" name="startup_up" value="{{ vm.opt_startup_up }}" inputmode="numeric" placeholder="{% translate "default" %}" {% if not can_sys_modify %}readonly{% endif %}>
           </div>
           <div class="column is-4 field">
-            <label class="label is-small">Shutdown timeout (s)</label>
-            <input class="input is-small" name="startup_down" value="{{ vm.opt_startup_down }}" inputmode="numeric" placeholder="default" {% if not can_sys_modify %}readonly{% endif %}>
+            <label class="label is-small">{% translate "Shutdown timeout (s)" %}</label>
+            <input class="input is-small" name="startup_down" value="{{ vm.opt_startup_down }}" inputmode="numeric" placeholder="{% translate "default" %}" {% if not can_sys_modify %}readonly{% endif %}>
           </div>
           {% if not can_sys_modify %}
-          <div class="column is-12" style="padding-top:0;"><p class="help"><i class="fas fa-lock"></i> Start/shutdown order is read-only: it needs the <code>Sys.Modify</code> privilege, which the API token does not have.</p></div>
+          <div class="column is-12" style="padding-top:0;"><p class="help"><i class="fas fa-lock"></i> {% translate "Start/shutdown order is read-only: it needs the" %} <code>Sys.Modify</code> {% translate "privilege, which the API token does not have." %}</p></div>
           {% endif %}
           <div class="column is-6 field">
-            <label class="label is-small">Display</label>
+            <label class="label is-small">{% translate "Display" %}</label>
             <div class="select is-small is-fullwidth"><select name="vga">
               {% for k, label in vga_choices %}<option value="{{ k }}" {% if k == vm.opt_vga %}selected{% endif %}>{{ label }}</option>{% endfor %}
             </select></div>
           </div>
           <div class="column is-6 field">
-            <label class="label is-small">Display memory (MiB)</label>
-            <input class="input is-small" name="vga_memory" value="{{ vm.opt_vga_memory }}" inputmode="numeric" placeholder="default">
+            <label class="label is-small">{% translate "Display memory (MiB)" %}</label>
+            <input class="input is-small" name="vga_memory" value="{{ vm.opt_vga_memory }}" inputmode="numeric" placeholder="{% translate "default" %}">
           </div>
           <div class="column is-12 field">
-            <label class="label is-small">SCSI controller</label>
+            <label class="label is-small">{% translate "SCSI controller" %}</label>
             <div class="select is-small is-fullwidth"><select name="scsihw">
               {% for k, label in scsihw_choices %}<option value="{{ k }}" {% if k == vm.opt_scsihw %}selected{% endif %}>{{ label }}</option>{% endfor %}
             </select></div>
           </div>
           <div class="column is-6">
-            <label class="checkbox is-size-7"><input type="checkbox" name="agent" value="1" {% if vm.opt_agent %}checked{% endif %}> QEMU guest agent</label><br>
-            <label class="checkbox is-size-7" style="margin-left:1.2rem;"><input type="checkbox" name="agent_fstrim" value="1" {% if vm.opt_agent_fstrim %}checked{% endif %}> Run fstrim after moving/cloning a disk</label><br>
-            <label class="checkbox is-size-7"><input type="checkbox" name="protection" value="1" {% if vm.opt_protection %}checked{% endif %}> Protection (block remove)</label><br>
-            <label class="checkbox is-size-7"><input type="checkbox" name="tablet" value="1" {% if vm.opt_tablet %}checked{% endif %}> Use tablet for pointer</label><br>
-            <label class="checkbox is-size-7"><input type="checkbox" name="acpi" value="1" {% if vm.opt_acpi %}checked{% endif %}> ACPI support</label><br>
-            <label class="checkbox is-size-7"><input type="checkbox" name="kvm" value="1" {% if vm.opt_kvm %}checked{% endif %}> KVM hardware virtualization</label><br>
-            <label class="checkbox is-size-7"><input type="checkbox" name="localtime" value="1" {% if vm.opt_localtime %}checked{% endif %}> RTC in local time</label><br>
-            <label class="checkbox is-size-7"><input type="checkbox" name="freeze" value="1" {% if vm.opt_freeze %}checked{% endif %}> Freeze CPU at startup</label>
+            <label class="checkbox is-size-7"><input type="checkbox" name="agent" value="1" {% if vm.opt_agent %}checked{% endif %}> {% translate "QEMU guest agent" %}</label><br>
+            <label class="checkbox is-size-7" style="margin-left:1.2rem;"><input type="checkbox" name="agent_fstrim" value="1" {% if vm.opt_agent_fstrim %}checked{% endif %}> {% translate "Run fstrim after moving/cloning a disk" %}</label><br>
+            <label class="checkbox is-size-7"><input type="checkbox" name="protection" value="1" {% if vm.opt_protection %}checked{% endif %}> {% translate "Protection (block remove)" %}</label><br>
+            <label class="checkbox is-size-7"><input type="checkbox" name="tablet" value="1" {% if vm.opt_tablet %}checked{% endif %}> {% translate "Use tablet for pointer" %}</label><br>
+            <label class="checkbox is-size-7"><input type="checkbox" name="acpi" value="1" {% if vm.opt_acpi %}checked{% endif %}> {% translate "ACPI support" %}</label><br>
+            <label class="checkbox is-size-7"><input type="checkbox" name="kvm" value="1" {% if vm.opt_kvm %}checked{% endif %}> {% translate "KVM hardware virtualization" %}</label><br>
+            <label class="checkbox is-size-7"><input type="checkbox" name="localtime" value="1" {% if vm.opt_localtime %}checked{% endif %}> {% translate "RTC in local time" %}</label><br>
+            <label class="checkbox is-size-7"><input type="checkbox" name="freeze" value="1" {% if vm.opt_freeze %}checked{% endif %}> {% translate "Freeze CPU at startup" %}</label>
           </div>
           <div class="column is-6">
-            <label class="label is-small">Hotplug</label>
+            <label class="label is-small">{% translate "Hotplug" %}</label>
             {% for h in hotplug_items %}
               <label class="checkbox is-size-7"><input type="checkbox" name="hotplug_{{ h }}" value="1" {% if h in vm.opt_hotplug %}checked{% endif %}> {{ h|capfirst }}</label><br>
             {% endfor %}
-            <p class="help">Memory and CPU hotplug also need NUMA and guest support.</p>
+            <p class="help">{% translate "Memory and CPU hotplug also need NUMA and guest support." %}</p>
           </div>
         </div>
-        <p class="help">Start at boot is set in <em>Firmware &amp; Boot</em>.</p>
+        <p class="help">{% translate "Start at boot is set in" %} <em>{% translate "Firmware &amp; Boot" %}</em>.</p>
       </section>
       <footer class="modal-card-foot" style="justify-content:flex-end;border-radius:0 0 12px 12px;">
-        <button type="button" class="button is-small" onclick="closeSettingsModal('options')">Cancel</button>
-        <button type="submit" class="button is-small is-link">Save</button>
+        <button type="button" class="button is-small" onclick="closeSettingsModal('options')">{% translate "Cancel" %}</button>
+        <button type="submit" class="button is-small is-link">{% translate "Save" %}</button>
       </footer>
     </form>
   </div>

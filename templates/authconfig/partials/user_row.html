@@ -1,3 +1,4 @@
+{% load i18n %}
 {% comment %}
 Partial: single user <tr>. Used by users.html and HTMX toggle responses.
 Context: u (User), current_user (request.user)
@@ -7,7 +8,7 @@ Context: u (User), current_user (request.user)
     <span class="icon" style="margin-right: 0.3rem;color: var(--text-muted);"><i class="fas fa-user"></i></span>
     {{ u.username }}
     {% if u == current_user %}
-      <span class="tag is-light" style="font-size: 0.75rem;margin-left: 0.3rem;">You</span>
+      <span class="tag is-light" style="font-size: 0.75rem;margin-left: 0.3rem;">{% translate "You" %}</span>
     {% endif %}
   </td>
   <td style="vertical-align: middle;font-size: 0.875rem;color: var(--text-semi);">
@@ -20,30 +21,30 @@ Context: u (User), current_user (request.user)
              class="input is-small"
              style="font-size: 0.8125rem;padding: 0.15rem 0.4rem;height: auto;flex: 1;min-width: 0;"
              oninput="this.form.querySelector('.email-save').style.display='inline-flex';"
-             title="Click to edit email">
+             title="{% translate "Click to edit email" %}">
       <button type="submit"
               class="button is-small is-light email-save"
               style="display: none;font-size: 0.75rem;padding: 0 0.4rem;height: auto;"
-              title="Save email">
+              title="{% translate "Save email" %}">
         <i class="fas fa-check" style="color: var(--success-color);"></i>
       </button>
     </form>
   </td>
   <td style="vertical-align: middle;">
     {% if u.profile.auth_source == 'ldap' %}
-      <span class="auth-badge auth-badge-ldap">LDAP</span>
+      <span class="auth-badge auth-badge-ldap">{% translate "LDAP" %}</span>
     {% elif u.profile.auth_source == 'entra' %}
-      <span class="auth-badge auth-badge-entra">Entra ID</span>
+      <span class="auth-badge auth-badge-entra">{% translate "Entra ID" %}</span>
     {% else %}
-      <span class="auth-badge auth-badge-local">Local</span>
+      <span class="auth-badge auth-badge-local">{% translate "Local" %}</span>
     {% endif %}
   </td>
   <td style="vertical-align: middle;text-align: center;">
     <span id="admin-status-{{ u.id }}">
       {% if u.is_superuser %}
-        <i class="fas fa-check-circle" style="color: var(--success-color);" title="Admin"></i>
+        <i class="fas fa-check-circle" style="color: var(--success-color);" title="{% translate "Admin" %}"></i>
       {% else %}
-        <i class="fas fa-minus-circle" style="color: var(--border-light);" title="Not admin"></i>
+        <i class="fas fa-minus-circle" style="color: var(--border-light);" title="{% translate "Not admin" %}"></i>
       {% endif %}
     </span>
     {% if u != current_user %}
@@ -51,35 +52,35 @@ Context: u (User), current_user (request.user)
               hx-post="{% url 'user_toggle_admin' u.id %}"
               hx-target="#user-row-{{ u.id }}"
               hx-swap="outerHTML"
-              title="Toggle admin">
+              title="{% translate "Toggle admin" %}">
         <i class="fas fa-exchange-alt" style="font-size: 0.75rem;color: var(--text-muted);"></i>
       </button>
     {% endif %}
   </td>
   <td style="vertical-align: middle;text-align: center;">
     {% if u.is_active %}
-      <span class="status-badge vm-status-running" style="font-size: 0.75rem;">Active</span>
+      <span class="status-badge vm-status-running" style="font-size: 0.75rem;">{% translate "Active" %}</span>
     {% else %}
-      <span class="status-badge vm-status-stopped" style="font-size: 0.75rem;">Inactive</span>
+      <span class="status-badge vm-status-stopped" style="font-size: 0.75rem;">{% translate "Inactive" %}</span>
     {% endif %}
   </td>
   <td style="vertical-align: middle;text-align: center;">
     {% if u.profile.auth_source == 'entra' %}
-      <span style="font-size: 0.75rem;color: var(--text-muted);" title="MFA managed by Entra ID">—</span>
+      <span style="font-size: 0.75rem;color: var(--text-muted);" title="{% translate "MFA managed by Entra ID" %}">—</span>
     {% elif u.profile.mfa_enabled %}
-      <i class="fas fa-shield-alt" style="color: var(--success-color);" title="MFA enabled"></i>
+      <i class="fas fa-shield-alt" style="color: var(--success-color);" title="{% translate "MFA enabled" %}"></i>
     {% else %}
-      <i class="fas fa-shield-alt" style="color: var(--border-light);" title="MFA not set up"></i>
+      <i class="fas fa-shield-alt" style="color: var(--border-light);" title="{% translate "MFA not set up" %}"></i>
     {% endif %}
   </td>
   <td style="vertical-align: middle;font-size: 0.8125rem;color: var(--text-muted);">
-    {% if u.last_login %}{{ u.last_login|timesince }} ago{% else %}Never{% endif %}
+    {% if u.last_login %}{% blocktranslate with last_login=u.last_login|timesince trimmed %}{{ last_login }} ago{% endblocktranslate %}{% else %}{% translate "Never" %}{% endif %}
   </td>
   <td style="vertical-align: middle;">
     <div class="vm-actions" style="justify-content: flex-end;">
       {% if u == current_user %}
         {# Own row: only change password #}
-        <button class="button is-small is-light" title="Change my password"
+        <button class="button is-small is-light" title="{% translate "Change my password" %}"
                 onclick="showChangePasswordModal()">
           <i class="fas fa-key" style="color: var(--link-color);"></i>
         </button>
@@ -96,21 +97,21 @@ Context: u (User), current_user (request.user)
           {% endif %}
         </button>
         {% if u.profile.auth_source == 'local' %}
-          <button class="button is-small is-light" title="Reset password"
+          <button class="button is-small is-light" title="{% translate "Reset password" %}"
                   onclick="showResetPasswordModal({{ u.id }}, '{{ u.username }}')">
             <i class="fas fa-key" style="color: var(--warning-color);"></i>
           </button>
         {% endif %}
         {% if u.profile.mfa_enabled %}
-          <button class="button is-small is-light" title="Reset MFA"
+          <button class="button is-small is-light" title="{% translate "Reset MFA" %}"
                   hx-post="{% url 'user_reset_mfa' u.id %}"
                   hx-target="#user-row-{{ u.id }}"
                   hx-swap="outerHTML"
-                  hx-confirm="Reset MFA for {{ u.username }}? They will need to set up their authenticator again.">
+                  hx-confirm="{% blocktranslate with username=u.username trimmed %}Reset MFA for {{ username }}? They will need to set up their authenticator again.{% endblocktranslate %}">
             <i class="fas fa-shield-alt" style="color: var(--warning-color);"></i>
           </button>
         {% endif %}
-        <button class="button is-small is-light" title="Delete user"
+        <button class="button is-small is-light" title="{% translate "Delete user" %}"
                 onclick="confirmDeleteUser({{ u.id }}, '{{ u.username }}')">
           <i class="fas fa-trash" style="color: var(--danger-color);"></i>
         </button>

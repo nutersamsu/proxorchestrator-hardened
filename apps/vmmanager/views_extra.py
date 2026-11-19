@@ -14,6 +14,7 @@ from apps.proxmox.api import ProxmoxAPIError
 from apps.proxmox.perms import token_can
 from apps.vmmanager import vm_options as vo
 from apps.wizard.models import ProxmoxConfig
+from django.utils.translation import gettext
 
 logger = logging.getLogger(__name__)
 
@@ -50,24 +51,24 @@ def vm_options_save(request, vmid):
         _, api, node = _api()
         kwargs, delete = vo.only_changes(api.get_vm_config(node, vmid), kwargs, delete)
         if ("startup" in kwargs or "startup" in delete) and not token_can("/", "Sys.Modify"):
-            messages.error(request, "Changing the start/shutdown order needs the Sys.Modify privilege, "
-                                    "which the API token does not have. Nothing was saved.")
+            messages.error(request, gettext("Changing the start/shutdown order needs the Sys.Modify privilege, "
+                                    "which the API token does not have. Nothing was saved."))
             return redirect("vm_detail", vmid=vmid)
         if not kwargs and not delete:
-            messages.info(request, "No changes.")
+            messages.info(request, gettext("No changes."))
             return redirect("vm_detail", vmid=vmid)
         if delete:
             kwargs["delete"] = ",".join(delete)
         api.update_vm_config(node, vmid, **kwargs)
         status = api.get_vm_status(node, vmid)
         if status.get("status") == "running":
-            messages.warning(request, "Options saved. Some changes (display, SCSI controller, "
-                                      "ACPI, KVM, agent) apply after the next full stop/start.")
+            messages.warning(request, gettext("Options saved. Some changes (display, SCSI controller, "
+                                      "ACPI, KVM, agent) apply after the next full stop/start."))
         else:
-            messages.success(request, "Options saved.")
+            messages.success(request, gettext("Options saved."))
         logger.info("vm_options vmid=%d updated by %s", vmid, request.user)
     except ProxmoxAPIError as exc:
-        messages.error(request, f"Failed to save options: {exc.message}")
+        messages.error(request, gettext('Failed to save options: %(message)s') % {"message": exc.message})
     return redirect("vm_detail", vmid=vmid)
 
 
@@ -114,16 +115,16 @@ def vm_cloudinit_save(request, vmid):
         api.update_vm_config(node, vmid, **kwargs)
         if request.POST.get("regenerate") == "1":
             api.regenerate_cloudinit(node, vmid)
-            messages.success(request, "Cloud-init saved and image regenerated. "
-                                      "The guest applies it on the next boot.")
+            messages.success(request, gettext("Cloud-init saved and image regenerated. "
+                                      "The guest applies it on the next boot."))
         else:
-            messages.success(request, "Cloud-init saved. Click “Regenerate image” (or restart the "
-                                      "VM) so the guest sees the new values.")
+            messages.success(request, gettext("Cloud-init saved. Click “Regenerate image” (or restart the "
+                                      "VM) so the guest sees the new values."))
         logger.info("vm_cloudinit vmid=%d updated by %s", vmid, request.user)
     except vo.OptionError as exc:
         messages.error(request, str(exc))
     except ProxmoxAPIError as exc:
-        messages.error(request, f"Failed to save cloud-init: {exc.message}")
+        messages.error(request, gettext('Failed to save cloud-init: %(message)s') % {"message": exc.message})
     return redirect(f"/vm/{vmid}/#cloudinit")
 
 
@@ -133,9 +134,9 @@ def vm_cloudinit_regenerate(request, vmid):
     try:
         _, api, node = _api()
         api.regenerate_cloudinit(node, vmid)
-        messages.success(request, "Cloud-init image regenerated.")
+        messages.success(request, gettext("Cloud-init image regenerated."))
     except ProxmoxAPIError as exc:
-        messages.error(request, f"Failed to regenerate the image: {exc.message}")
+        messages.error(request, gettext('Failed to regenerate the image: %(message)s') % {"message": exc.message})
     return redirect(f"/vm/{vmid}/#cloudinit")
 
 
@@ -144,23 +145,23 @@ def vm_cloudinit_regenerate(request, vmid):
 def vm_cloudinit_add(request, vmid):
     storage = request.POST.get("storage", "")
     if not vo.valid_storage(storage):
-        messages.error(request, "Choose a storage for the cloud-init drive.")
+        messages.error(request, gettext("Choose a storage for the cloud-init drive."))
         return redirect(f"/vm/{vmid}/#cloudinit")
     try:
         _, api, node = _api()
         raw = api.get_vm_config(node, vmid)
         if vo.find_cloudinit_drive(raw):
-            messages.info(request, "The VM already has a cloud-init drive.")
+            messages.info(request, gettext("The VM already has a cloud-init drive."))
             return redirect(f"/vm/{vmid}/#cloudinit")
         slot = next((f"ide{i}" for i in (2, 0, 1, 3) if f"ide{i}" not in raw), None) or \
             next((f"sata{i}" for i in range(6) if f"sata{i}" not in raw), None)
         if not slot:
-            messages.error(request, "No free IDE/SATA slot for the cloud-init drive.")
+            messages.error(request, gettext("No free IDE/SATA slot for the cloud-init drive."))
             return redirect(f"/vm/{vmid}/#cloudinit")
         api.update_vm_config(node, vmid, **{slot: f"{storage}:cloudinit"})
-        messages.success(request, f"Cloud-init drive added on {slot}.")
+        messages.success(request, gettext('Cloud-init drive added on %(slot)s.') % {"slot": slot})
     except ProxmoxAPIError as exc:
-        messages.error(request, f"Failed to add the cloud-init drive: {exc.message}")
+        messages.error(request, gettext('Failed to add the cloud-init drive: %(message)s') % {"message": exc.message})
     return redirect(f"/vm/{vmid}/#cloudinit")
 
 
@@ -238,10 +239,10 @@ def vm_disk_move(request, vmid):
     storage = request.POST.get("storage", "")
     fmt = request.POST.get("format", "")
     if not vo.DISK_KEY_RE.match(disk) or disk.startswith("unused") or not vo.valid_storage(storage):
-        messages.error(request, "Invalid disk or storage.")
+        messages.error(request, gettext("Invalid disk or storage."))
         return redirect("vm_detail", vmid=vmid)
     if fmt not in ("", "raw", "qcow2", "vmdk"):
-        messages.error(request, "Invalid disk format.")
+        messages.error(request, gettext("Invalid disk format."))
         return redirect("vm_detail", vmid=vmid)
     try:
         _, api, node = _api()
@@ -250,7 +251,7 @@ def vm_disk_move(request, vmid):
         logger.info("vm_disk_move vmid=%d %s -> %s by %s", vmid, disk, storage, request.user)
         return _to_task_or_detail(request, upid, vmid, f"Moving {disk} to {storage}…")
     except ProxmoxAPIError as exc:
-        messages.error(request, f"Move failed: {exc.message}")
+        messages.error(request, gettext('Move failed: %(message)s') % {"message": exc.message})
         return redirect("vm_detail", vmid=vmid)
 
 
@@ -261,14 +262,14 @@ def vm_convert_template(request, vmid):
         _, api, node = _api()
         status = api.get_vm_status(node, vmid)
         if status.get("status") != "stopped":
-            messages.error(request, "Stop the VM before converting it to a template.")
+            messages.error(request, gettext("Stop the VM before converting it to a template."))
             return redirect("vm_detail", vmid=vmid)
         if request.POST.get("confirm_vmid", "").strip() != str(vmid):
-            messages.error(request, "Type the VMID to confirm the conversion.")
+            messages.error(request, gettext("Type the VMID to confirm the conversion."))
             return redirect("vm_detail", vmid=vmid)
         upid = _upid(api.convert_vm_to_template(node, vmid))
         logger.info("vm_convert_template vmid=%d by %s", vmid, request.user)
         return _to_task_or_detail(request, upid, vmid, f"Converting VM {vmid} to a template…")
     except ProxmoxAPIError as exc:
-        messages.error(request, f"Conversion failed: {exc.message}")
+        messages.error(request, gettext('Conversion failed: %(message)s') % {"message": exc.message})
         return redirect("vm_detail", vmid=vmid)

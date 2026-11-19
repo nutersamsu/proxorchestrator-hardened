@@ -1,6 +1,6 @@
 # Community Scripts
 
-Community Scripts lets you deploy popular self-hosted applications as LXC containers on your Proxmox node with a single click. It uses the [community-scripts/ProxmoxVE](https://github.com/community-scripts/ProxmoxVE) project (formerly Tteck scripts) — a curated library of 460+ deployment scripts trusted by the Proxmox community.
+Community Scripts lets you deploy popular self-hosted applications as LXC containers on your Proxmox node with a single click. It uses the [community-scripts/ProxmoxVE](https://github.com/community-scripts/ProxmoxVE) project (formerly Tteck scripts) — a curated library of 680+ deployment scripts trusted by the Proxmox community.
 
 ## How it works
 

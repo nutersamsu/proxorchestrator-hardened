@@ -1,7 +1,8 @@
 {% extends "base.html" %}
-{% block title %}Email Settings — ProxOrchestrator{% endblock %}
-{% block page_title %}Email Settings{% endblock %}
-{% block help_slug %}email-settings{% endblock %}
+{% load i18n %}
+{% block title %}{% translate "Email Settings — ProxOrchestrator" %}{% endblock %}
+{% block page_title %}{% translate "Email Settings" %}{% endblock %}
+{% block help_slug %}{% translate "email-settings" %}{% endblock %}
 
 {% block page_actions %}{% endblock %}
 
@@ -21,14 +22,13 @@
     {% if config and config.is_enabled %}
       <div class="notification is-success is-light" style="margin-bottom: 1.5rem;padding: 0.75rem 1rem;">
         <i class="fas fa-check-circle" style="margin-right: 0.4rem;"></i>
-        Email delivery is <strong>enabled</strong> using
-        {% if config.backend_type == 'smtp' %}<strong>SMTP</strong> ({{ config.smtp_host }}){% else %}<strong>Microsoft Graph API</strong>{% endif %}.
-        Outgoing mail will be sent from <strong>{{ config.from_email }}</strong>.
+        {% translate "Email delivery is" %} <strong>{% translate "enabled" %}</strong> {% translate "using" %}
+        {% if config.backend_type == 'smtp' %}<strong>{% translate "SMTP" %}</strong> ({{ config.smtp_host }}){% else %}<strong>{% translate "Microsoft Graph API" %}</strong>{% endif %}{% translate ". Outgoing mail will be sent from" %} <strong>{{ config.from_email }}</strong>.
       </div>
     {% else %}
       <div class="notification is-warning is-light" style="margin-bottom: 1.5rem;padding: 0.75rem 1rem;">
         <i class="fas fa-exclamation-triangle" style="margin-right: 0.4rem;"></i>
-        Email delivery is <strong>disabled</strong>. Password reset and alert emails will not be sent until email is configured and enabled.
+        {% translate "Email delivery is" %} <strong>{% translate "disabled" %}</strong>{% translate ". Password reset and alert emails will not be sent until email is configured and enabled." %}
       </div>
     {% endif %}
 
@@ -36,10 +36,10 @@
     <div class="proxorchestrator-card" style="margin-bottom: 1.5rem;">
       <div class="card-header">
         <i class="fas fa-paper-plane" style="color: var(--link-color);margin-right: 0.5rem;"></i>
-        Delivery Method
+        {% translate "Delivery Method" %}
       </div>
       <div class="card-body" style="padding: 1.25rem;">
-        <p style="font-size: 0.875rem;color: var(--text-muted);margin-bottom: 1rem;">Choose one delivery method. Only the selected method will be used for outgoing email.</p>
+        <p style="font-size: 0.875rem;color: var(--text-muted);margin-bottom: 1rem;">{% translate "Choose one delivery method. Only the selected method will be used for outgoing email." %}</p>
         <div class="columns">
 
           {# SMTP card #}
@@ -52,15 +52,15 @@
                   <i class="fas fa-envelope" style="color: var(--link-color);font-size: 1rem;"></i>
                 </div>
                 <div>
-                  <div style="font-weight: 700;color: var(--text-header);">SMTP</div>
-                  <div style="font-size: 0.8125rem;color: var(--text-muted);">Standard mail server</div>
+                  <div style="font-weight: 700;color: var(--text-header);">{% translate "SMTP" %}</div>
+                  <div style="font-size: 0.8125rem;color: var(--text-muted);">{% translate "Standard mail server" %}</div>
                 </div>
                 <span class="method-check" style="margin-left: auto;font-size: 1.1rem;color: var(--success-color);display: none;">
                   <i class="fas fa-check-circle"></i>
                 </span>
               </div>
               <p style="font-size: 0.8125rem;color: var(--text-semi);line-height: 1.5;">
-                Works with any SMTP server — Office 365, Gmail, Postfix, SendGrid, or your own mail relay.
+                {% translate "Works with any SMTP server — Office 365, Gmail, Postfix, SendGrid, or your own mail relay." %}
               </p>
             </div>
           </div>
@@ -75,15 +75,15 @@
                   <i class="fab fa-microsoft" style="color: var(--link-color);font-size: 1rem;"></i>
                 </div>
                 <div>
-                  <div style="font-weight: 700;color: var(--text-header);">Microsoft Graph API</div>
-                  <div style="font-size: 0.8125rem;color: var(--text-muted);">Microsoft 365 / Azure AD</div>
+                  <div style="font-weight: 700;color: var(--text-header);">{% translate "Microsoft Graph API" %}</div>
+                  <div style="font-size: 0.8125rem;color: var(--text-muted);">{% translate "Microsoft 365 / Azure AD" %}</div>
                 </div>
                 <span class="method-check" style="margin-left: auto;font-size: 1.1rem;color: var(--success-color);display: none;">
                   <i class="fas fa-check-circle"></i>
                 </span>
               </div>
               <p style="font-size: 0.8125rem;color: var(--text-semi);line-height: 1.5;">
-                Sends via Microsoft Graph API using an Azure App Registration. No SMTP credentials required — ideal for Microsoft 365 tenants.
+                {% translate "Sends via Microsoft Graph API using an Azure App Registration. No SMTP credentials required — ideal for Microsoft 365 tenants." %}
               </p>
             </div>
           </div>
@@ -99,7 +99,7 @@
       <div class="proxorchestrator-card">
         <div class="card-header">
           <i class="fas fa-envelope" style="color: var(--link-color);margin-right: 0.5rem;"></i>
-          SMTP Configuration
+          {% translate "SMTP Configuration" %}
         </div>
         <div class="card-body" style="padding: 1.5rem;">
           <form method="post" action="{% url 'email_settings_save' 'smtp' %}" id="smtp-form">
@@ -108,14 +108,14 @@
             <div class="columns">
               <div class="column is-6">
                 <div class="field">
-                  <label class="label">From Address</label>
+                  <label class="label">{% translate "From Address" %}</label>
                   <div class="control has-icons-left">
                     <input class="input" type="email" name="from_email"
                            value="{{ config.from_email|default:'' }}"
-                           placeholder="proxorchestrator@example.com">
+                           placeholder="{% translate "proxorchestrator@example.com" %}">
                     <span class="icon is-left"><i class="fas fa-at"></i></span>
                   </div>
-                  <p class="field-hint">Sender address shown on all outgoing emails.</p>
+                  <p class="field-hint">{% translate "Sender address shown on all outgoing emails." %}</p>
                 </div>
               </div>
             </div>
@@ -125,24 +125,24 @@
             <div class="columns">
               <div class="column is-6">
                 <div class="field">
-                  <label class="label">SMTP Host</label>
+                  <label class="label">{% translate "SMTP Host" %}</label>
                   <div class="control has-icons-left">
                     <input class="input" type="text" name="smtp_host"
                            value="{{ config.smtp_host|default:'' }}"
-                           placeholder="smtp.office365.com">
+                           placeholder="{% translate "smtp.office365.com" %}">
                     <span class="icon is-left"><i class="fas fa-server"></i></span>
                   </div>
                 </div>
               </div>
               <div class="column is-3">
                 <div class="field">
-                  <label class="label">Port</label>
+                  <label class="label">{% translate "Port" %}</label>
                   <div class="control">
                     <input class="input" type="number" name="smtp_port"
                            value="{{ config.smtp_port|default:'587' }}"
                            min="1" max="65535">
                   </div>
-                  <p class="field-hint">587 (STARTTLS) · 465 (SSL) · 25 (plain)</p>
+                  <p class="field-hint">{% translate "587 (STARTTLS) · 465 (SSL) · 25 (plain)" %}</p>
                 </div>
               </div>
             </div>
@@ -150,18 +150,18 @@
             <div class="columns">
               <div class="column is-6">
                 <div class="field">
-                  <label class="label">Username</label>
+                  <label class="label">{% translate "Username" %}</label>
                   <div class="control has-icons-left">
                     <input class="input" type="text" name="smtp_username"
                            value="{{ config.smtp_username|default:'' }}"
-                           placeholder="user@example.com">
+                           placeholder="{% translate "user@example.com" %}">
                     <span class="icon is-left"><i class="fas fa-user"></i></span>
                   </div>
                 </div>
               </div>
               <div class="column is-6">
                 <div class="field">
-                  <label class="label">Password</label>
+                  <label class="label">{% translate "Password" %}</label>
                   <div class="control has-icons-left">
                     <input class="input" type="password" name="smtp_password"
                            placeholder="{% if config and config.smtp_password_set %}(saved — leave blank to keep){% else %}Enter password{% endif %}">
@@ -177,16 +177,16 @@
                   <label class="checkbox">
                     <input type="checkbox" name="smtp_use_tls"
                            {% if not config or config.smtp_use_tls %}checked{% endif %}>
-                    Use STARTTLS (recommended for port 587)
+                    {% translate "Use STARTTLS (recommended for port 587)" %}
                   </label>
                 </div>
                 <div class="field">
                   <label class="checkbox">
                     <input type="checkbox" name="smtp_use_ssl"
                            {% if config and config.smtp_use_ssl %}checked{% endif %}>
-                    Use SSL/TLS (for port 465)
+                    {% translate "Use SSL/TLS (for port 465)" %}
                   </label>
-                  <p class="field-hint">Do not enable both STARTTLS and SSL at the same time.</p>
+                  <p class="field-hint">{% translate "Do not enable both STARTTLS and SSL at the same time." %}</p>
                 </div>
               </div>
             </div>
@@ -196,10 +196,10 @@
             <div class="columns" style="align-items: flex-end;">
               <div class="column is-4">
                 <div class="field">
-                  <label class="label">Send Test Email To</label>
+                  <label class="label">{% translate "Send Test Email To" %}</label>
                   <div class="control has-icons-left">
                     <input class="input" type="email" name="test_to"
-                           placeholder="you@example.com">
+                           placeholder="{% translate "you@example.com" %}">
                     <span class="icon is-left"><i class="fas fa-paper-plane"></i></span>
                   </div>
                 </div>
@@ -211,7 +211,7 @@
                         hx-target="#smtp-test-result"
                         hx-swap="innerHTML">
                   <span class="icon"><i class="fas fa-paper-plane"></i></span>
-                  <span>Send Test</span>
+                  <span>{% translate "Send Test" %}</span>
                 </button>
               </div>
               <div class="column" style="padding-bottom: 0.75rem;">
@@ -222,12 +222,12 @@
             <div class="field" style="margin-top: 0.5rem;display: flex;align-items: center;gap: 1.5rem;">
               <button type="submit" class="button is-primary">
                 <span class="icon"><i class="fas fa-save"></i></span>
-                <span>Save Settings</span>
+                <span>{% translate "Save Settings" %}</span>
               </button>
               <label class="checkbox" style="font-size: 0.875rem;">
                 <input type="checkbox" name="is_enabled"
                        {% if config and config.is_enabled and config.backend_type == 'smtp' %}checked{% endif %}>
-                Enable email delivery
+                {% translate "Enable email delivery" %}
               </label>
             </div>
           </form>
@@ -242,7 +242,7 @@
       <div class="proxorchestrator-card">
         <div class="card-header">
           <i class="fab fa-microsoft" style="color: var(--link-color);margin-right: 0.5rem;"></i>
-          Microsoft Graph API
+          {% translate "Microsoft Graph API" %}
         </div>
         <div class="card-body" style="padding: 1.5rem;">
 
@@ -251,7 +251,7 @@
             <div class="form-section-header">
               <div style="display: flex;align-items: center;gap: 0.5rem;">
                 <i class="fas fa-book" style="color: var(--link-color);"></i>
-                Azure App Registration Guide — Mail.Send via Client Credentials
+                {% translate "Azure App Registration Guide — Mail.Send via Client Credentials" %}
               </div>
               <i class="fas fa-chevron-down section-toggle-icon" style="color: var(--text-muted);font-size: 0.8125rem;"></i>
             </div>
@@ -261,45 +261,41 @@
                 <li>
                   <div class="step-guide-num">1</div>
                   <div class="step-guide-text">
-                    Go to <strong>portal.azure.com</strong> &rarr; <strong>Microsoft Entra ID</strong> &rarr; <strong>App registrations</strong> &rarr; <strong>New registration</strong>.
-                    Name it something descriptive like <code>ProxOrchestrator Mail</code>.
-                    Supported account types: <strong>Accounts in this organizational directory only</strong>.
-                    No redirect URI is needed — this app uses application permissions, not user sign-in.
+                    {% translate "Go to" %} <strong>{% translate "portal.azure.com" %}</strong> &rarr; <strong>{% translate "Microsoft Entra ID" %}</strong> &rarr; <strong>{% translate "App registrations" %}</strong> &rarr; <strong>{% translate "New registration" %}</strong>{% translate ". Name it something descriptive like" %} <code>ProxOrchestrator Mail</code>{% translate ". Supported account types:" %} <strong>{% translate "Accounts in this organizational directory only" %}</strong>{% translate ". No redirect URI is needed — this app uses application permissions, not user sign-in." %}
                   </div>
                 </li>
 
                 <li>
                   <div class="step-guide-num">2</div>
                   <div class="step-guide-text">
-                    After creation, copy the <strong>Application (client) ID</strong> and <strong>Directory (tenant) ID</strong> from the Overview page — you will need both below.
+                    {% translate "After creation, copy the" %} <strong>{% translate "Application (client) ID" %}</strong> {% translate "and" %} <strong>{% translate "Directory (tenant) ID" %}</strong> {% translate "from the Overview page — you will need both below." %}
                   </div>
                 </li>
 
                 <li>
                   <div class="step-guide-num">3</div>
                   <div class="step-guide-text">
-                    Go to <strong>API permissions</strong> &rarr; <strong>Add a permission</strong> &rarr; <strong>Microsoft Graph</strong> &rarr; <strong>Application permissions</strong> (not Delegated — this is server-to-server) and add the following:
+                    {% translate "Go to" %} <strong>{% translate "API permissions" %}</strong> &rarr; <strong>{% translate "Add a permission" %}</strong> &rarr; <strong>{% translate "Microsoft Graph" %}</strong> &rarr; <strong>{% translate "Application permissions" %}</strong> {% translate "(not Delegated — this is server-to-server) and add the following:" %}
                     <table style="margin-top: 0.6rem;font-size: 0.8125rem;border-collapse: collapse;width: 100%;">
                       <thead>
                         <tr style="background: var(--bg-main);">
-                          <th style="padding: 0.35rem 0.6rem;text-align: left;border: 1px solid var(--border-main);">Permission</th>
-                          <th style="padding: 0.35rem 0.6rem;text-align: left;border: 1px solid var(--border-main);">Type</th>
-                          <th style="padding: 0.35rem 0.6rem;text-align: left;border: 1px solid var(--border-main);">Admin consent</th>
-                          <th style="padding: 0.35rem 0.6rem;text-align: left;border: 1px solid var(--border-main);">Purpose</th>
+                          <th style="padding: 0.35rem 0.6rem;text-align: left;border: 1px solid var(--border-main);">{% translate "Permission" %}</th>
+                          <th style="padding: 0.35rem 0.6rem;text-align: left;border: 1px solid var(--border-main);">{% translate "Type" %}</th>
+                          <th style="padding: 0.35rem 0.6rem;text-align: left;border: 1px solid var(--border-main);">{% translate "Admin consent" %}</th>
+                          <th style="padding: 0.35rem 0.6rem;text-align: left;border: 1px solid var(--border-main);">{% translate "Purpose" %}</th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr>
-                          <td style="padding: 0.35rem 0.6rem;border: 1px solid var(--border-main);font-family: var(--font-mono);">Mail.Send</td>
-                          <td style="padding: 0.35rem 0.6rem;border: 1px solid var(--border-main);">Application</td>
-                          <td style="padding: 0.35rem 0.6rem;border: 1px solid var(--border-main);"><span class="tag is-warning is-light" style="font-size: 0.75rem;">Required</span></td>
-                          <td style="padding: 0.35rem 0.6rem;border: 1px solid var(--border-main);">Allows ProxOrchestrator to send email as the configured From mailbox</td>
+                          <td style="padding: 0.35rem 0.6rem;border: 1px solid var(--border-main);font-family: var(--font-mono);">{% translate "Mail.Send" %}</td>
+                          <td style="padding: 0.35rem 0.6rem;border: 1px solid var(--border-main);">{% translate "Application" %}</td>
+                          <td style="padding: 0.35rem 0.6rem;border: 1px solid var(--border-main);"><span class="tag is-warning is-light" style="font-size: 0.75rem;">{% translate "Required" %}</span></td>
+                          <td style="padding: 0.35rem 0.6rem;border: 1px solid var(--border-main);">{% translate "Allows ProxOrchestrator to send email as the configured From mailbox" %}</td>
                         </tr>
                       </tbody>
                     </table>
                     <p style="margin-top: 0.5rem;color: var(--text-muted);">
-                      After adding <code>Mail.Send</code>, click <strong>Grant admin consent for &lt;your tenant&gt;</strong>.
-                      The status column must show a green <strong>Granted</strong> tick — the permission will not work without it.
+                      {% translate "After adding" %} <code>Mail.Send</code>{% translate ", click" %} <strong>{% translate "Grant admin consent for &lt;your tenant&gt;" %}</strong>{% translate ". The status column must show a green" %} <strong>{% translate "Granted" %}</strong> {% translate "tick — the permission will not work without it." %}
                     </p>
                   </div>
                 </li>
@@ -307,32 +303,29 @@
                 <li>
                   <div class="step-guide-num">4</div>
                   <div class="step-guide-text">
-                    <strong>Restrict the permission to a specific mailbox (recommended).</strong>
-                    By default, <code>Mail.Send</code> as an Application permission allows the app to send as <em>any</em> mailbox in your tenant.
-                    To restrict it to a single mailbox, create an <strong>Application Access Policy</strong> in Exchange Online PowerShell:
+                    <strong>{% translate "Restrict the permission to a specific mailbox (recommended)." %}</strong>
+                    {% translate "By default," %} <code>Mail.Send</code> {% translate "as an Application permission allows the app to send as" %} <em>{% translate "any" %}</em> {% translate "mailbox in your tenant. To restrict it to a single mailbox, create an" %} <strong>{% translate "Application Access Policy" %}</strong> {% translate "in Exchange Online PowerShell:" %}
                     <pre style="margin-top: 0.5rem;background: var(--bg-info-light);border: 1px solid var(--border-main);border-radius: 6px;padding: 0.6rem 0.8rem;font-size: 0.8125rem;overflow-x: auto;"><code># Run in Exchange Online PowerShell
 New-ApplicationAccessPolicy `
   -AppId "&lt;your-client-id&gt;" `
   -PolicyScopeGroupId "&lt;mailbox@yourcompany.com&gt;" `
   -AccessRight RestrictAccess `
   -Description "Restrict ProxOrchestrator to send from one mailbox"</code></pre>
-                    <p style="margin-top: 0.4rem;color: var(--text-muted);">This is optional but strongly recommended for production. A shared mailbox (e.g. <code>alerts@yourcompany.com</code>) works well as the From address.</p>
+                    <p style="margin-top: 0.4rem;color: var(--text-muted);">{% translate "This is optional but strongly recommended for production. A shared mailbox (e.g." %} <code>alerts@yourcompany.com</code>{% translate ") works well as the From address." %}</p>
                   </div>
                 </li>
 
                 <li>
                   <div class="step-guide-num">5</div>
                   <div class="step-guide-text">
-                    Go to <strong>Certificates &amp; secrets</strong> &rarr; <strong>Client secrets</strong> &rarr; <strong>New client secret</strong>.
-                    Set an expiry, then copy the secret <strong>Value</strong> immediately — Azure only shows it once.
-                    Paste it into the <strong>Client Secret</strong> field below.
+                    {% translate "Go to" %} <strong>{% translate "Certificates &amp; secrets" %}</strong> &rarr; <strong>{% translate "Client secrets" %}</strong> &rarr; <strong>{% translate "New client secret" %}</strong>{% translate ". Set an expiry, then copy the secret" %} <strong>{% translate "Value" %}</strong> {% translate "immediately — Azure only shows it once. Paste it into the" %} <strong>{% translate "Client Secret" %}</strong> {% translate "field below." %}
                   </div>
                 </li>
 
                 <li>
                   <div class="step-guide-num">6</div>
                   <div class="step-guide-text">
-                    Fill in the three fields below (<strong>Tenant ID</strong>, <strong>Client ID</strong>, <strong>Client Secret</strong>), set the <strong>From Address</strong> to the mailbox you want to send from, save, and use <strong>Send Test</strong> to verify everything works end-to-end.
+                    {% translate "Fill in the three fields below (" %}<strong>{% translate "Tenant ID" %}</strong>, <strong>{% translate "Client ID" %}</strong>, <strong>{% translate "Client Secret" %}</strong>{% translate "), set the" %} <strong>{% translate "From Address" %}</strong> {% translate "to the mailbox you want to send from, save, and use" %} <strong>{% translate "Send Test" %}</strong> {% translate "to verify everything works end-to-end." %}
                   </div>
                 </li>
 
@@ -347,14 +340,14 @@ New-ApplicationAccessPolicy `
             <div class="columns">
               <div class="column is-6">
                 <div class="field">
-                  <label class="label">From Address</label>
+                  <label class="label">{% translate "From Address" %}</label>
                   <div class="control has-icons-left">
                     <input class="input" type="email" name="from_email"
                            value="{{ config.from_email|default:'' }}"
-                           placeholder="alerts@yourcompany.com">
+                           placeholder="{% translate "alerts@yourcompany.com" %}">
                     <span class="icon is-left"><i class="fas fa-at"></i></span>
                   </div>
-                  <p class="field-hint">Must be a mailbox in your tenant. A dedicated shared mailbox is recommended.</p>
+                  <p class="field-hint">{% translate "Must be a mailbox in your tenant. A dedicated shared mailbox is recommended." %}</p>
                 </div>
               </div>
             </div>
@@ -364,26 +357,26 @@ New-ApplicationAccessPolicy `
             <div class="columns">
               <div class="column is-6">
                 <div class="field">
-                  <label class="label">Directory (Tenant) ID</label>
+                  <label class="label">{% translate "Directory (Tenant) ID" %}</label>
                   <div class="control has-icons-left">
                     <input class="input" type="text" name="graph_tenant_id"
                            value="{{ config.graph_tenant_id|default:'' }}"
-                           placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx">
+                           placeholder="{% translate "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" %}">
                     <span class="icon is-left"><i class="fas fa-building"></i></span>
                   </div>
-                  <p class="field-hint">Azure Portal &rarr; Microsoft Entra ID &rarr; Overview &rarr; Tenant ID.</p>
+                  <p class="field-hint">{% translate "Azure Portal &rarr; Microsoft Entra ID &rarr; Overview &rarr; Tenant ID." %}</p>
                 </div>
               </div>
               <div class="column is-6">
                 <div class="field">
-                  <label class="label">Application (Client) ID</label>
+                  <label class="label">{% translate "Application (Client) ID" %}</label>
                   <div class="control has-icons-left">
                     <input class="input" type="text" name="graph_client_id"
                            value="{{ config.graph_client_id|default:'' }}"
-                           placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx">
+                           placeholder="{% translate "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" %}">
                     <span class="icon is-left"><i class="fas fa-fingerprint"></i></span>
                   </div>
-                  <p class="field-hint">App Registration &rarr; Overview &rarr; Application (client) ID.</p>
+                  <p class="field-hint">{% translate "App Registration &rarr; Overview &rarr; Application (client) ID." %}</p>
                 </div>
               </div>
             </div>
@@ -391,13 +384,13 @@ New-ApplicationAccessPolicy `
             <div class="columns">
               <div class="column is-6">
                 <div class="field">
-                  <label class="label">Client Secret Value</label>
+                  <label class="label">{% translate "Client Secret Value" %}</label>
                   <div class="control has-icons-left">
                     <input class="input" type="password" name="graph_client_secret"
                            placeholder="{% if config and config.graph_client_secret_set %}(saved — leave blank to keep){% else %}Paste client secret value here{% endif %}">
                     <span class="icon is-left"><i class="fas fa-key"></i></span>
                   </div>
-                  <p class="field-hint">The secret <strong>Value</strong> (not the secret ID). Azure shows it only once at creation time.</p>
+                  <p class="field-hint">{% translate "The secret" %} <strong>{% translate "Value" %}</strong> {% translate "(not the secret ID). Azure shows it only once at creation time." %}</p>
                 </div>
               </div>
             </div>
@@ -407,10 +400,10 @@ New-ApplicationAccessPolicy `
             <div class="columns" style="align-items: flex-end;">
               <div class="column is-4">
                 <div class="field">
-                  <label class="label">Send Test Email To</label>
+                  <label class="label">{% translate "Send Test Email To" %}</label>
                   <div class="control has-icons-left">
                     <input class="input" type="email" name="test_to"
-                           placeholder="you@example.com">
+                           placeholder="{% translate "you@example.com" %}">
                     <span class="icon is-left"><i class="fas fa-paper-plane"></i></span>
                   </div>
                 </div>
@@ -422,7 +415,7 @@ New-ApplicationAccessPolicy `
                         hx-target="#graph-test-result"
                         hx-swap="innerHTML">
                   <span class="icon"><i class="fas fa-paper-plane"></i></span>
-                  <span>Send Test</span>
+                  <span>{% translate "Send Test" %}</span>
                 </button>
               </div>
               <div class="column" style="padding-bottom: 0.75rem;">
@@ -433,12 +426,12 @@ New-ApplicationAccessPolicy `
             <div class="field" style="margin-top: 0.5rem;display: flex;align-items: center;gap: 1.5rem;">
               <button type="submit" class="button is-primary">
                 <span class="icon"><i class="fas fa-save"></i></span>
-                <span>Save Settings</span>
+                <span>{% translate "Save Settings" %}</span>
               </button>
               <label class="checkbox" style="font-size: 0.875rem;">
                 <input type="checkbox" name="is_enabled"
                        {% if config and config.is_enabled and config.backend_type == 'graph' %}checked{% endif %}>
-                Enable email delivery
+                {% translate "Enable email delivery" %}
               </label>
             </div>
           </form>

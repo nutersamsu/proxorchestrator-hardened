@@ -7,6 +7,7 @@ logger = logging.getLogger(__name__)
 # Paths that bypass the wizard redirect check
 EXEMPT_PREFIXES = (
     "/wizard/",
+    "/i18n/",
     "/login/",
     "/logout/",
     "/accounts/",

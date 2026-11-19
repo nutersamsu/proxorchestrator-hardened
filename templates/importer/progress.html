@@ -1,7 +1,8 @@
 {% extends "base.html" %}
-{% block title %}Deploying {{ job.vm_name }} — ProxOrchestrator{% endblock %}
-{% block page_title %}Deploying VM{% endblock %}
-{% block help_slug %}importer-progress{% endblock %}
+{% load i18n %}
+{% block title %}{% blocktranslate with vm_name=job.vm_name trimmed %}Deploying {{ vm_name }} — ProxOrchestrator{% endblocktranslate %}{% endblock %}
+{% block page_title %}{% translate "Deploying VM" %}{% endblock %}
+{% block help_slug %}{% translate "importer-progress" %}{% endblock %}
 
 {% block content %}
 <div class="columns">
@@ -31,19 +32,18 @@
               {{ job.vm_name|default:"Unnamed VM" }}
             </div>
             <div style="font-size: 0.875rem;color: var(--text-muted);margin-top: 0.2rem;">
-              VMID <span class="is-monospace" style="font-weight: 600;color: var(--text-header);">{{ job.vmid }}</span>
-              &nbsp;&bull;&nbsp;
-              Started {{ job.created_at|timesince }} ago
+              {% translate "VMID" %} <span class="is-monospace" style="font-weight: 600;color: var(--text-header);">{{ job.vmid }}</span>
+              {% blocktranslate with created_at=job.created_at|timesince trimmed %}&nbsp;&bull;&nbsp; Started {{ created_at }} ago{% endblocktranslate %}
             </div>
           </div>
 
           <div style="margin-left: auto;">
             {% if job.stage == 'DONE' %}
-              <span class="status-badge vm-status-running">Complete</span>
+              <span class="status-badge vm-status-running">{% translate "Complete" %}</span>
             {% elif job.stage == 'FAILED' %}
-              <span class="status-badge vm-status-stopped">Failed</span>
+              <span class="status-badge vm-status-stopped">{% translate "Failed" %}</span>
             {% else %}
-              <span class="status-badge" style="background: var(--link-color);color: var(--bg-card);">In Progress</span>
+              <span class="status-badge" style="background: var(--link-color);color: var(--bg-card);">{% translate "In Progress" %}</span>
             {% endif %}
           </div>
         </div>
@@ -58,19 +58,19 @@
       <div class="proxorchestrator-card" style="margin-top: 1.5rem;">
         <div class="card-body" style="padding: 1.5rem;text-align: center;">
           <i class="fas fa-check-circle" style="font-size: 2rem;color: var(--success-color);margin-bottom: 1rem;display: block;"></i>
-          <h3 style="font-size: 1.1rem;font-weight: 700;color: var(--text-header);margin-bottom: 0.5rem;">VM Created Successfully!</h3>
+          <h3 style="font-size: 1.1rem;font-weight: 700;color: var(--text-header);margin-bottom: 0.5rem;">{% translate "VM Created Successfully!" %}</h3>
           <p style="color: var(--text-muted);font-size: 0.875rem;margin-bottom: 1.5rem;">
-            <strong>{{ job.vm_name }}</strong> (VMID {{ job.vmid }}) is ready on node <strong>{{ job.target_node }}</strong>.
+            <strong>{{ job.vm_name }}</strong> {% blocktranslate with vmid=job.vmid trimmed %}(VMID {{ vmid }}) is ready on node{% endblocktranslate %} <strong>{{ job.target_node }}</strong>.
           </p>
           <div style="display: flex;gap: 1rem;justify-content: center;flex-wrap: wrap;">
             <a href="{% url 'vm_detail' job.vmid %}" class="button is-primary is-medium" style="font-weight: 600;">
               <span class="icon"><i class="fas fa-server"></i></span>
-              <span>View VM in Inventory</span>
+              <span>{% translate "View VM in Inventory" %}</span>
               <span class="icon"><i class="fas fa-arrow-right"></i></span>
             </a>
             <a href="{% url 'importer_upload' %}" class="button is-light is-medium" style="font-weight: 600;">
               <span class="icon"><i class="fas fa-upload"></i></span>
-              <span>Import Another VM</span>
+              <span>{% translate "Import Another VM" %}</span>
             </a>
           </div>
         </div>
@@ -80,7 +80,7 @@
       <div class="proxorchestrator-card" style="margin-top: 1.5rem;border-left: 4px solid var(--danger-color);border-radius: 0 10px 10px 0;">
         <div class="card-body" style="padding: 1.5rem;">
           <h3 style="font-size: 1rem;font-weight: 700;color: var(--danger-color);margin-bottom: 0.75rem;">
-            <i class="fas fa-exclamation-triangle" style="margin-right: 0.5rem;"></i>Import Failed
+            <i class="fas fa-exclamation-triangle" style="margin-right: 0.5rem;"></i>{% translate "Import Failed" %}
           </h3>
           {% if job.error_message %}
             <div style="background: var(--bg-main);border: 1px solid var(--border-main);border-radius: 6px;padding: 1rem;font-family: var(--font-mono);font-size: 0.8125rem;color: var(--text-semi);white-space: pre-wrap;word-break: break-all;margin-bottom: 1rem;">{{ job.error_message }}</div>
@@ -88,15 +88,15 @@
           <div style="display: flex;gap: 1rem;flex-wrap: wrap;">
             <a href="{% url 'importer_configure' job.id %}?retry=1" class="button is-danger is-light" style="font-weight: 600;">
               <span class="icon"><i class="fas fa-redo"></i></span>
-              <span>Try Again</span>
+              <span>{% translate "Try Again" %}</span>
             </a>
             <a href="{% url 'importer_upload' %}" class="button is-light" style="font-weight: 600;">
               <span class="icon"><i class="fas fa-upload"></i></span>
-              <span>Start Over</span>
+              <span>{% translate "Start Over" %}</span>
             </a>
             <a href="{% url 'dashboard' %}" class="button is-light" style="font-weight: 600;">
               <span class="icon"><i class="fas fa-home"></i></span>
-              <span>Dashboard</span>
+              <span>{% translate "Dashboard" %}</span>
             </a>
           </div>
         </div>

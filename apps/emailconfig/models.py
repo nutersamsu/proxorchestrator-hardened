@@ -2,6 +2,7 @@ import logging
 
 from django.db import models
 from encrypted_model_fields.fields import EncryptedCharField
+from django.utils.translation import gettext_lazy
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +31,7 @@ class EmailConfig(models.Model):
     from_email = models.CharField(
         max_length=255,
         blank=True,
-        help_text="Sender address shown in outgoing email (e.g. proxorchestrator@example.com)",
+        help_text=gettext_lazy("Sender address shown in outgoing email (e.g. proxorchestrator@example.com)"),
     )
 
     # ── SMTP fields ──────────────────────────────────────────────────────────

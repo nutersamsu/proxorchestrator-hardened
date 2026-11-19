@@ -1,71 +1,72 @@
 {% extends "base.html" %}
+{% load i18n %}
 {% load vm_filters %}
-{% block title %}{{ ct.name }} — LXC Details — ProxOrchestrator{% endblock %}
+{% block title %}{% blocktranslate with name=ct.name trimmed %}{{ name }} — LXC Details — ProxOrchestrator{% endblocktranslate %}{% endblock %}
 {% block page_title %}{{ ct.name }}{% endblock %}
-{% block help_slug %}lxc-detail{% endblock %}
+{% block help_slug %}{% translate "lxc-detail" %}{% endblock %}
 
 {% block page_actions %}
   <a href="{% url 'lxc_list' %}" class="button is-light is-small">
     <span class="icon is-small"><i class="fas fa-arrow-left"></i></span>
-    <span>Back to Container Inventory</span>
+    <span>{% translate "Back to Container Inventory" %}</span>
   </a>
   &nbsp;
   {% if ct.status == 'running' %}
-  <a href="{% url 'lxc_console' ct.vmid %}" target="_blank" class="button is-dark is-small" title="Open container console in new tab">
+  <a href="{% url 'lxc_console' ct.vmid %}" target="_blank" class="button is-dark is-small" title="{% translate "Open container console in new tab" %}">
     <span class="icon is-small"><i class="fas fa-terminal"></i></span>
-    <span>Console</span>
+    <span>{% translate "Console" %}</span>
   </a>
   &nbsp;
   {% endif %}
   {% if ct.status == 'running' %}
     <button class="button is-warning is-small"
             hx-post="/lxc/{{ ct.vmid }}/action/shutdown/"
-            hx-confirm="Gracefully shut down {{ ct.name }}?"
+            hx-confirm="{% blocktranslate with name=ct.name trimmed %}Gracefully shut down {{ name }}?{% endblocktranslate %}"
             hx-swap="none"
             hx-on::after-request="htmx.ajax('GET','/lxc/{{ ct.vmid }}/detail-status/?action=shutdown',{target:'#ct-status-banner',swap:'outerHTML'})">
       <span class="icon is-small"><i class="fas fa-power-off"></i></span>
-      <span>Shutdown</span>
+      <span>{% translate "Shutdown" %}</span>
     </button>
     <button class="button is-danger is-small"
             hx-post="/lxc/{{ ct.vmid }}/action/stop/"
-            hx-confirm="Force stop {{ ct.name }}? Unsaved data may be lost."
+            hx-confirm="{% blocktranslate with name=ct.name trimmed %}Force stop {{ name }}? Unsaved data may be lost.{% endblocktranslate %}"
             hx-swap="none"
             hx-on::after-request="htmx.ajax('GET','/lxc/{{ ct.vmid }}/detail-status/?action=stop',{target:'#ct-status-banner',swap:'outerHTML'})">
       <span class="icon is-small"><i class="fas fa-stop"></i></span>
-      <span>Force Stop</span>
+      <span>{% translate "Force Stop" %}</span>
     </button>
     <button class="button is-info is-small"
             hx-post="/lxc/{{ ct.vmid }}/action/reboot/"
-            hx-confirm="Reboot {{ ct.name }}?"
+            hx-confirm="{% blocktranslate with name=ct.name trimmed %}Reboot {{ name }}?{% endblocktranslate %}"
             hx-swap="none"
             hx-on::after-request="htmx.ajax('GET','/lxc/{{ ct.vmid }}/detail-status/?action=reboot',{target:'#ct-status-banner',swap:'outerHTML'})">
       <span class="icon is-small"><i class="fas fa-redo"></i></span>
-      <span>Reboot</span>
+      <span>{% translate "Reboot" %}</span>
     </button>
   {% elif ct.is_template %}
-    <span class="status-badge vm-status-unknown" title="Templates cannot be started; clone them instead."><i class="fas fa-copy"></i> Template</span>
+    <span class="status-badge vm-status-unknown" title="{% translate "Templates cannot be started; clone them instead." %}"><i class="fas fa-copy"></i> {% translate "Template" %}</span>
   {% elif ct.status == 'stopped' %}
-    <button class="button is-light is-small" onclick="document.getElementById('lxc-template-modal').classList.add('is-active')" title="Convert to template">
+    <button class="button is-light is-small" onclick="document.getElementById('lxc-template-modal').classList.add('is-active')" title="{% translate "Convert to template" %}">
       <span class="icon is-small"><i class="fas fa-copy"></i></span>
-      <span>Convert to template</span>
+      <span>{% translate "Convert to template" %}</span>
     </button>
     <button class="button is-success is-small"
             hx-post="/lxc/{{ ct.vmid }}/action/start/"
             hx-swap="none"
             hx-on::after-request="htmx.ajax('GET','/lxc/{{ ct.vmid }}/detail-status/?action=start',{target:'#ct-status-banner',swap:'outerHTML'})">
       <span class="icon is-small"><i class="fas fa-play"></i></span>
-      <span>Start</span>
+      <span>{% translate "Start" %}</span>
     </button>
   {% endif %}
   &nbsp;
-  <a href="{% url 'lxc_clone' ct.vmid %}" class="button is-info is-small" title="Clone this container">
+  <a href="{% url 'lxc_clone' ct.vmid %}" class="button is-info is-small" title="{% translate "Clone this container" %}">
     <span class="icon is-small"><i class="fas fa-clone"></i></span>
-    <span>Clone</span>
+    <span>{% translate "Clone" %}</span>
   </a>
   &nbsp;
-  <a href="{% url 'lxc_export_options' ct.vmid %}" class="button is-link is-small" title="Export container as .px package">
+  <a href="{% url 'lxc_export_options' ct.vmid %}" class="button is-link is-small" title="{% translate "Export container as .px package" %}">
     <span class="icon is-small"><i class="fas fa-file-export"></i></span>
-    <span>Export Container</span>
+    <span>{% translate "Export Container" %}</span>
   </a>
 {% endblock %}
 
@@ -81,33 +82,33 @@
   <div class="column is-6">
     <div class="proxorchestrator-card">
       <div class="card-header" style="display: flex;justify-content: space-between;align-items: center;">
-        <span><i class="fas fa-info-circle" style="color: var(--link-color);"></i> General</span>
-        <button class="button is-small is-white" onclick="openLxcSettingsModal('general')" title="Edit description">
+        <span><i class="fas fa-info-circle" style="color: var(--link-color);"></i> {% translate "General" %}</span>
+        <button class="button is-small is-white" onclick="openLxcSettingsModal('general')" title="{% translate "Edit description" %}">
           <i class="fas fa-pencil-alt" style="font-size: 0.75rem;color: var(--text-muted);"></i>
         </button>
       </div>
       <div class="card-body" style="padding: 1rem 1.5rem;">
         <div class="cert-detail-row">
-          <div class="cert-detail-label">CTID</div>
+          <div class="cert-detail-label">{% translate "CTID" %}</div>
           <div class="cert-detail-value">{{ ct.vmid }}</div>
         </div>
         <div class="cert-detail-row">
-          <div class="cert-detail-label">Name</div>
+          <div class="cert-detail-label">{% translate "Name" %}</div>
           <div class="cert-detail-value">{{ ct.hostname|default:ct.name }}</div>
         </div>
         <div class="cert-detail-row">
-          <div class="cert-detail-label">OS Type</div>
+          <div class="cert-detail-label">{% translate "OS Type" %}</div>
           <div class="cert-detail-value">{{ ct.ostype|default:"—" }}</div>
         </div>
         <div class="cert-detail-row">
-          <div class="cert-detail-label">Architecture</div>
+          <div class="cert-detail-label">{% translate "Architecture" %}</div>
           <div class="cert-detail-value">{{ ct.arch|default:"—" }}</div>
         </div>
         <div class="cert-detail-row">
-          <div class="cert-detail-label">Description</div>
+          <div class="cert-detail-label">{% translate "Description" %}</div>
           <div class="cert-detail-value">
             {% if ct.description %}{{ ct.description|safe_html_description }}{% else %}—{% endif %}
-            <button class="button is-small is-white" style="margin-left:0.5rem;padding:0 0.4rem;height:1.5rem;" onclick="openLxcSettingsModal('general')" title="Edit description">
+            <button class="button is-small is-white" style="margin-left:0.5rem;padding:0 0.4rem;height:1.5rem;" onclick="openLxcSettingsModal('general')" title="{% translate "Edit description" %}">
               <i class="fas fa-pencil-alt" style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);"></i>
             </button>
           </div>
@@ -120,36 +121,36 @@
   <div class="column is-6">
     <div class="proxorchestrator-card">
       <div class="card-header" style="display: flex;justify-content: space-between;align-items: center;">
-        <span><i class="fas fa-cogs" style="color: var(--purple-color);"></i> Options</span>
-        <button class="button is-small is-white" onclick="openLxcSettingsModal('options')" title="Edit container options">
+        <span><i class="fas fa-cogs" style="color: var(--purple-color);"></i> {% translate "Options" %}</span>
+        <button class="button is-small is-white" onclick="openLxcSettingsModal('options')" title="{% translate "Edit container options" %}">
           <i class="fas fa-pencil-alt" style="font-size: 0.75rem;color: var(--text-muted);"></i>
         </button>
       </div>
       <div class="card-body" style="padding: 1rem 1.5rem;">
         <div class="cert-detail-row">
-          <div class="cert-detail-label">Unprivileged</div>
+          <div class="cert-detail-label">{% translate "Unprivileged" %}</div>
           <div class="cert-detail-value">
-            {% if ct.unprivileged %}<span style="color: var(--success-color);">Yes</span>{% else %}No{% endif %}
+            {% if ct.unprivileged %}<span style="color: var(--success-color);">{% translate "Yes" %}</span>{% else %}{% translate "No" %}{% endif %}
           </div>
         </div>
         <div class="cert-detail-row">
-          <div class="cert-detail-label">Start on Boot</div>
+          <div class="cert-detail-label">{% translate "Start on Boot" %}</div>
           <div class="cert-detail-value">
-            {% if ct.onboot %}<span style="color: var(--success-color);">Yes</span>{% else %}No{% endif %}
+            {% if ct.onboot %}<span style="color: var(--success-color);">{% translate "Yes" %}</span>{% else %}{% translate "No" %}{% endif %}
           </div>
         </div>
         <div class="cert-detail-row">
-          <div class="cert-detail-label">Startup Order</div>
+          <div class="cert-detail-label">{% translate "Startup Order" %}</div>
           <div class="cert-detail-value" style="font-family: var(--font-mono);font-size: 0.8125rem;">{{ ct.startup|default:"—" }}</div>
         </div>
         <div class="cert-detail-row">
-          <div class="cert-detail-label">Protection</div>
+          <div class="cert-detail-label">{% translate "Protection" %}</div>
           <div class="cert-detail-value">
-            {% if ct.protection %}<span style="color: var(--success-color);">Yes</span>{% else %}No{% endif %}
+            {% if ct.protection %}<span style="color: var(--success-color);">{% translate "Yes" %}</span>{% else %}{% translate "No" %}{% endif %}
           </div>
         </div>
         <div class="cert-detail-row">
-          <div class="cert-detail-label">Features</div>
+          <div class="cert-detail-label">{% translate "Features" %}</div>
           <div class="cert-detail-value">
             {% if ct.features %}
               {% for f in ct.features %}{{ f }}{% if not forloop.last %}, {% endif %}{% endfor %}
@@ -159,24 +160,24 @@
           </div>
         </div>
         <div class="cert-detail-row">
-          <div class="cert-detail-label">Console mode / TTYs</div>
+          <div class="cert-detail-label">{% translate "Console mode / TTYs" %}</div>
           <div class="cert-detail-value">{{ ct.cmode }} / {{ ct.tty }}</div>
         </div>
         {% if ct.hookscript %}
         <div class="cert-detail-row">
-          <div class="cert-detail-label">Hookscript</div>
+          <div class="cert-detail-label">{% translate "Hookscript" %}</div>
           <div class="cert-detail-value" style="font-family: var(--font-mono);font-size: 0.8125rem;">{{ ct.hookscript }}</div>
         </div>
         {% endif %}
         {% if ct.lock %}
         <div class="cert-detail-row">
-          <div class="cert-detail-label">Lock</div>
+          <div class="cert-detail-label">{% translate "Lock" %}</div>
           <div class="cert-detail-value"><span style="color: var(--danger-color);">{{ ct.lock }}</span></div>
         </div>
         {% endif %}
         {% if ct.tags %}
         <div class="cert-detail-row">
-          <div class="cert-detail-label">Tags</div>
+          <div class="cert-detail-label">{% translate "Tags" %}</div>
           <div class="cert-detail-value">{{ ct.tags }}</div>
         </div>
         {% endif %}
@@ -188,22 +189,22 @@
   <div class="column is-6">
     <div class="proxorchestrator-card">
       <div class="card-header" style="display: flex;justify-content: space-between;align-items: center;">
-        <span><i class="fas fa-microchip" style="color: var(--success-color);"></i> CPU</span>
-        <button class="button is-small is-white" onclick="openLxcSettingsModal('cpu')" title="Edit CPU settings">
+        <span><i class="fas fa-microchip" style="color: var(--success-color);"></i> {% translate "CPU" %}</span>
+        <button class="button is-small is-white" onclick="openLxcSettingsModal('cpu')" title="{% translate "Edit CPU settings" %}">
           <i class="fas fa-pencil-alt" style="font-size: 0.75rem;color: var(--text-muted);"></i>
         </button>
       </div>
       <div class="card-body" style="padding: 1rem 1.5rem;">
         <div class="cert-detail-row">
-          <div class="cert-detail-label">Cores</div>
+          <div class="cert-detail-label">{% translate "Cores" %}</div>
           <div class="cert-detail-value"><strong>{{ ct.cores|default:"—" }}</strong></div>
         </div>
         <div class="cert-detail-row">
-          <div class="cert-detail-label">CPU Limit</div>
+          <div class="cert-detail-label">{% translate "CPU Limit" %}</div>
           <div class="cert-detail-value">{{ ct.cpulimit|default:"Unlimited" }}</div>
         </div>
         <div class="cert-detail-row">
-          <div class="cert-detail-label">CPU Units</div>
+          <div class="cert-detail-label">{% translate "CPU Units" %}</div>
           <div class="cert-detail-value">{{ ct.cpuunits|default:"1024" }}</div>
         </div>
       </div>
@@ -214,19 +215,19 @@
   <div class="column is-6">
     <div class="proxorchestrator-card">
       <div class="card-header" style="display: flex;justify-content: space-between;align-items: center;">
-        <span><i class="fas fa-memory" style="color: var(--warning-color);"></i> Memory</span>
-        <button class="button is-small is-white" onclick="openLxcSettingsModal('memory')" title="Edit memory settings">
+        <span><i class="fas fa-memory" style="color: var(--warning-color);"></i> {% translate "Memory" %}</span>
+        <button class="button is-small is-white" onclick="openLxcSettingsModal('memory')" title="{% translate "Edit memory settings" %}">
           <i class="fas fa-pencil-alt" style="font-size: 0.75rem;color: var(--text-muted);"></i>
         </button>
       </div>
       <div class="card-body" style="padding: 1rem 1.5rem;">
         <div class="cert-detail-row">
-          <div class="cert-detail-label">Allocated RAM</div>
+          <div class="cert-detail-label">{% translate "Allocated RAM" %}</div>
           <div class="cert-detail-value"><strong>{{ ct.memory|default:"—" }} MB</strong></div>
         </div>
         <div class="cert-detail-row">
-          <div class="cert-detail-label">Swap</div>
-          <div class="cert-detail-value">{{ ct.swap|default:"0" }} MB</div>
+          <div class="cert-detail-label">{% translate "Swap" %}</div>
+          <div class="cert-detail-value">{% blocktranslate with swap=ct.swap|default:"0" trimmed %}{{ swap }} MB{% endblocktranslate %}</div>
         </div>
       </div>
     </div>
@@ -236,26 +237,26 @@
   <div class="column is-6">
     <div class="proxorchestrator-card">
       <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;">
-        <span><i class="fas fa-globe" style="color: var(--link-color);"></i> DNS</span>
-        <button class="button is-small is-white" onclick="document.getElementById('lxc-dns-modal').classList.add('is-active')" title="Edit DNS">
+        <span><i class="fas fa-globe" style="color: var(--link-color);"></i> {% translate "DNS" %}</span>
+        <button class="button is-small is-white" onclick="document.getElementById('lxc-dns-modal').classList.add('is-active')" title="{% translate "Edit DNS" %}">
           <i class="fas fa-pencil-alt" style="font-size:0.75rem;color:var(--text-muted);"></i>
         </button>
       </div>
       <div class="card-body" style="padding: 1rem 1.5rem;">
         <div class="cert-detail-row">
-          <div class="cert-detail-label">Hostname</div>
+          <div class="cert-detail-label">{% translate "Hostname" %}</div>
           <div class="cert-detail-value">{{ ct.hostname|default:"—" }}</div>
         </div>
         <div class="cert-detail-row">
-          <div class="cert-detail-label">DNS Servers</div>
+          <div class="cert-detail-label">{% translate "DNS Servers" %}</div>
           <div class="cert-detail-value" style="font-family: var(--font-mono);font-size: 0.8125rem;">{{ ct.nameserver|default:"Host settings" }}</div>
         </div>
         <div class="cert-detail-row">
-          <div class="cert-detail-label">Search Domain</div>
+          <div class="cert-detail-label">{% translate "Search Domain" %}</div>
           <div class="cert-detail-value">{{ ct.searchdomain|default:"Host settings" }}</div>
         </div>
         <div class="cert-detail-row">
-          <div class="cert-detail-label">Timezone</div>
+          <div class="cert-detail-label">{% translate "Timezone" %}</div>
           <div class="cert-detail-value">{{ ct.timezone|default:"Host settings" }}</div>
         </div>
       </div>
@@ -265,14 +266,14 @@
   {# Storage (HTMX-loaded partial with resize/detach/add) #}
   <div class="column is-12">
     <div class="proxorchestrator-card">
-      <div class="card-header"><i class="fas fa-hdd" style="color: var(--success-color);"></i> Storage</div>
+      <div class="card-header"><i class="fas fa-hdd" style="color: var(--success-color);"></i> {% translate "Storage" %}</div>
       <div style="overflow-x: auto;">
         <div hx-get="{% url 'lxc_mountpoints' ct.vmid %}"
              hx-trigger="load"
              hx-swap="innerHTML">
           <div style="padding: 1rem;text-align: center;color: var(--text-muted);">
             <span class="spinner" style="width: 16px;height: 16px;border-width: 2px;display: inline-block;vertical-align: middle;margin-right: 0.5rem;"></span>
-            Loading mountpoints...
+            {% translate "Loading mountpoints..." %}
           </div>
         </div>
       </div>
@@ -282,14 +283,14 @@
   {# Network Interfaces (HTMX-loaded partial with connect/disconnect) #}
   <div class="column is-12">
     <div class="proxorchestrator-card">
-      <div class="card-header"><i class="fas fa-ethernet" style="color: var(--link-color);"></i> Network Interfaces</div>
+      <div class="card-header"><i class="fas fa-ethernet" style="color: var(--link-color);"></i> {% translate "Network Interfaces" %}</div>
       <div style="overflow-x: auto;">
         <div hx-get="{% url 'lxc_networks' ct.vmid %}"
              hx-trigger="load"
              hx-swap="innerHTML">
           <div style="padding: 1rem;text-align: center;color: var(--text-muted);">
             <span class="spinner" style="width: 16px;height: 16px;border-width: 2px;display: inline-block;vertical-align: middle;margin-right: 0.5rem;"></span>
-            Loading network interfaces...
+            {% translate "Loading network interfaces..." %}
           </div>
         </div>
       </div>
@@ -300,7 +301,7 @@
   <div class="column is-12">
     <div class="proxorchestrator-card">
       <div class="card-header">
-        <i class="fas fa-camera" style="color: var(--link-color);"></i> Snapshots
+        <i class="fas fa-camera" style="color: var(--link-color);"></i> {% translate "Snapshots" %}
       </div>
       <div class="card-body">
         {% include "lxc/partials/ct_snapshots.html" %}
@@ -311,10 +312,10 @@
   {# ── Firewall ── #}
   <div class="column is-12" id="firewall">
     <div class="proxorchestrator-card">
-      <div class="card-header"><i class="fas fa-shield-alt" style="color: var(--link-color);"></i> Firewall</div>
+      <div class="card-header"><i class="fas fa-shield-alt" style="color: var(--link-color);"></i> {% translate "Firewall" %}</div>
       <div class="card-body" style="padding:1rem 1.5rem;">
         <div hx-get="/firewall/ct-{{ ct.vmid }}/panel/?next=/lxc/{{ ct.vmid }}/detail/%23firewall" hx-trigger="load" hx-swap="innerHTML">
-          <div class="ns-sub">Loading firewall…</div>
+          <div class="ns-sub">{% translate "Loading firewall…" %}</div>
         </div>
       </div>
     </div>
@@ -323,10 +324,10 @@
   {# ── Backups ── #}
   <div class="column is-12" id="backups">
     <div class="proxorchestrator-card">
-      <div class="card-header"><i class="fas fa-archive" style="color: var(--link-color);"></i> Backup</div>
+      <div class="card-header"><i class="fas fa-archive" style="color: var(--link-color);"></i> {% translate "Backup" %}</div>
       <div class="card-body" style="padding:1rem 1.5rem;">
         <div hx-get="{% url 'guest_backups' 'lxc' ct.vmid %}" hx-trigger="load" hx-swap="innerHTML">
-          <div class="ns-sub">Loading backups…</div>
+          <div class="ns-sub">{% translate "Loading backups…" %}</div>
         </div>
       </div>
     </div>
@@ -336,11 +337,11 @@
   <div class="column is-12" id="performance">
     <div class="proxorchestrator-card">
       <div class="card-header">
-        <i class="fas fa-chart-area" style="color: var(--link-color);"></i> Performance
+        <i class="fas fa-chart-area" style="color: var(--link-color);"></i> {% translate "Performance" %}
       </div>
       <div class="card-body" style="padding:1rem 1.5rem;">
         <div id="rrd-lxc-{{ ct.vmid }}" hx-get="{% url 'rrd_guest' 'lxc' ct.vmid %}" hx-trigger="load" hx-swap="innerHTML">
-          <div class="ns-sub">Loading statistics…</div>
+          <div class="ns-sub">{% translate "Loading statistics…" %}</div>
         </div>
       </div>
     </div>
@@ -355,7 +356,7 @@
   <div class="modal-background" onclick="this.parentElement.classList.remove('is-active')"></div>
   <div class="modal-card" style="max-width:500px;border-radius:12px;">
     <header class="modal-card-head" style="background:#2563eb;border-radius:12px 12px 0 0;">
-      <p class="modal-card-title" style="color:#fff;font-size:1rem;font-weight:600;"><i class="fas fa-globe"></i>&nbsp; DNS</p>
+      <p class="modal-card-title" style="color:#fff;font-size:1rem;font-weight:600;"><i class="fas fa-globe"></i>{% translate "&nbsp; DNS" %}</p>
       <button class="delete" type="button" onclick="document.getElementById('lxc-dns-modal').classList.remove('is-active')"></button>
     </header>
     <form method="post" action="{% url 'lxc_update_settings' ct.vmid %}">
@@ -363,22 +364,22 @@
       <input type="hidden" name="section" value="dns">
       <section class="modal-card-body">
         <div class="field">
-          <label class="label is-small">Host name</label>
+          <label class="label is-small">{% translate "Host name" %}</label>
           <input class="input is-small" name="hostname" value="{{ ct.hostname }}" required maxlength="253">
         </div>
         <div class="field">
-          <label class="label is-small">DNS servers <span class="ns-sub">(space separated, empty = host settings)</span></label>
+          <label class="label is-small">{% translate "DNS servers" %} <span class="ns-sub">{% translate "(space separated, empty = host settings)" %}</span></label>
           <input class="input is-small" name="nameserver" value="{{ ct.nameserver }}">
         </div>
         <div class="field">
-          <label class="label is-small">DNS domain <span class="ns-sub">(empty = host settings)</span></label>
+          <label class="label is-small">{% translate "DNS domain" %} <span class="ns-sub">{% translate "(empty = host settings)" %}</span></label>
           <input class="input is-small" name="searchdomain" value="{{ ct.searchdomain }}">
         </div>
-        <p class="help">Applied immediately in a running container (/etc/hosts, /etc/hostname, /etc/resolv.conf managed by Proxmox).</p>
+        <p class="help">{% translate "Applied immediately in a running container (/etc/hosts, /etc/hostname, /etc/resolv.conf managed by Proxmox)." %}</p>
       </section>
       <footer class="modal-card-foot" style="justify-content:flex-end;gap:0.5rem;">
-        <button type="button" class="button is-small is-light" onclick="document.getElementById('lxc-dns-modal').classList.remove('is-active')">Cancel</button>
-        <button type="submit" class="button is-small is-link">Save</button>
+        <button type="button" class="button is-small is-light" onclick="document.getElementById('lxc-dns-modal').classList.remove('is-active')">{% translate "Cancel" %}</button>
+        <button type="submit" class="button is-small is-link">{% translate "Save" %}</button>
       </footer>
     </form>
   </div>
@@ -388,21 +389,21 @@
   <div class="modal-background" onclick="this.parentElement.classList.remove('is-active')"></div>
   <div class="modal-card" style="max-width:480px;border-radius:12px;">
     <header class="modal-card-head" style="background:#475569;border-radius:12px 12px 0 0;">
-      <p class="modal-card-title" style="color:#fff;font-size:1rem;font-weight:600;"><i class="fas fa-copy"></i>&nbsp; Convert CT {{ ct.vmid }} to a template</p>
+      <p class="modal-card-title" style="color:#fff;font-size:1rem;font-weight:600;"><i class="fas fa-copy"></i>{% blocktranslate with vmid=ct.vmid trimmed %}&nbsp; Convert CT {{ vmid }} to a template{% endblocktranslate %}</p>
       <button class="delete" type="button" onclick="document.getElementById('lxc-template-modal').classList.remove('is-active')"></button>
     </header>
     <form method="post" action="{% url 'lxc_convert_template' ct.vmid %}">
       {% csrf_token %}
       <section class="modal-card-body content">
-        <p>A template can no longer be started; create new containers from it with <strong>Clone</strong>.</p>
-        <p style="color:var(--danger-color);font-weight:600;"><i class="fas fa-exclamation-circle"></i> This cannot be undone from the web interface.</p>
-        <label class="label is-small">Type <strong>{{ ct.vmid }}</strong> to confirm:</label>
+        <p>{% translate "A template can no longer be started; create new containers from it with" %} <strong>{% translate "Clone" %}</strong>.</p>
+        <p style="color:var(--danger-color);font-weight:600;"><i class="fas fa-exclamation-circle"></i> {% translate "This cannot be undone from the web interface." %}</p>
+        <label class="label is-small">{% translate "Type" %} <strong>{{ ct.vmid }}</strong> {% translate "to confirm:" %}</label>
         <input class="input" type="text" name="confirm_vmid" autocomplete="off"
                oninput="document.getElementById('lxc-template-confirm').disabled = (this.value !== '{{ ct.vmid }}')">
       </section>
       <footer class="modal-card-foot" style="justify-content:flex-end;gap:0.75rem;">
-        <button type="button" class="button is-light" onclick="document.getElementById('lxc-template-modal').classList.remove('is-active')">Cancel</button>
-        <button type="submit" class="button is-dark" id="lxc-template-confirm" disabled>Convert</button>
+        <button type="button" class="button is-light" onclick="document.getElementById('lxc-template-modal').classList.remove('is-active')">{% translate "Cancel" %}</button>
+        <button type="submit" class="button is-dark" id="lxc-template-confirm" disabled>{% translate "Convert" %}</button>
       </footer>
     </form>
   </div>
@@ -412,7 +413,7 @@
   <div class="modal-background" onclick="closeLxcSettingsModal('general')"></div>
   <div class="modal-card" style="max-width:500px;border-radius:12px;">
     <header class="modal-card-head" style="background:var(--link-color, #3273dc);border-radius:12px 12px 0 0;">
-      <p class="modal-card-title" style="color:#fff;font-size:1rem;font-weight:600;"><i class="fas fa-info-circle"></i>&nbsp; Edit Description</p>
+      <p class="modal-card-title" style="color:#fff;font-size:1rem;font-weight:600;"><i class="fas fa-info-circle"></i>{% translate "&nbsp; Edit Description" %}</p>
       <button class="delete" onclick="closeLxcSettingsModal('general')"></button>
     </header>
     <form method="post" action="{% url 'lxc_update_settings' ct.vmid %}">
@@ -420,15 +421,15 @@
       <input type="hidden" name="section" value="general">
       <section class="modal-card-body">
         <div class="field">
-          <label class="label" style="font-size:0.875rem;">Description</label>
+          <label class="label" style="font-size:0.875rem;">{% translate "Description" %}</label>
           <div class="control">
             <textarea class="textarea" name="description" rows="4" placeholder="Container description...">{{ ct.description }}</textarea>
           </div>
         </div>
       </section>
       <footer class="modal-card-foot" style="justify-content:flex-end;gap:0.75rem;">
-        <button type="button" class="button is-light" onclick="closeLxcSettingsModal('general')">Cancel</button>
-        <button type="submit" class="button is-primary" style="font-weight:600;">Save</button>
+        <button type="button" class="button is-light" onclick="closeLxcSettingsModal('general')">{% translate "Cancel" %}</button>
+        <button type="submit" class="button is-primary" style="font-weight:600;">{% translate "Save" %}</button>
       </footer>
     </form>
   </div>
@@ -439,7 +440,7 @@
   <div class="modal-background" onclick="closeLxcSettingsModal('cpu')"></div>
   <div class="modal-card" style="max-width:500px;border-radius:12px;">
     <header class="modal-card-head" style="background:var(--success-color, #48c78e);border-radius:12px 12px 0 0;">
-      <p class="modal-card-title" style="color:#fff;font-size:1rem;font-weight:600;"><i class="fas fa-microchip"></i>&nbsp; CPU Settings</p>
+      <p class="modal-card-title" style="color:#fff;font-size:1rem;font-weight:600;"><i class="fas fa-microchip"></i>{% translate "&nbsp; CPU Settings" %}</p>
       <button class="delete" onclick="closeLxcSettingsModal('cpu')"></button>
     </header>
     <form method="post" action="{% url 'lxc_update_settings' ct.vmid %}">
@@ -448,34 +449,34 @@
       <section class="modal-card-body">
         {% if ct.status == 'running' %}
         <div class="notification is-warning is-light" style="padding:0.5rem 0.75rem;font-size:0.8125rem;margin-bottom:1rem;">
-          <i class="fas fa-exclamation-triangle"></i> Container is running. Some changes may not take effect until restart.
+          <i class="fas fa-exclamation-triangle"></i> {% translate "Container is running. Some changes may not take effect until restart." %}
         </div>
         {% endif %}
         <div class="field">
-          <label class="label" style="font-size:0.875rem;">Cores</label>
+          <label class="label" style="font-size:0.875rem;">{% translate "Cores" %}</label>
           <div class="control">
             <input class="input" type="number" name="cores" value="{{ ct.cores }}" min="1" max="128" placeholder="e.g. 2">
           </div>
-          <p class="help">Number of CPU cores assigned to the container. Leave empty to remove the limit.</p>
+          <p class="help">{% translate "Number of CPU cores assigned to the container. Leave empty to remove the limit." %}</p>
         </div>
         <div class="field">
-          <label class="label" style="font-size:0.875rem;">CPU Limit</label>
+          <label class="label" style="font-size:0.875rem;">{% translate "CPU Limit" %}</label>
           <div class="control">
-            <input class="input" type="text" name="cpulimit" value="{{ ct.cpulimit }}" placeholder="Unlimited">
+            <input class="input" type="text" name="cpulimit" value="{{ ct.cpulimit }}" placeholder="{% translate "Unlimited" %}">
           </div>
-          <p class="help">Hard cap on host CPU time (e.g. <code>0.5</code> = half a core, <code>2</code> = two cores). Leave empty for unlimited.</p>
+          <p class="help">{% translate "Hard cap on host CPU time (e.g." %} <code>0.5</code> {% translate "= half a core," %} <code>2</code> {% translate "= two cores). Leave empty for unlimited." %}</p>
         </div>
         <div class="field">
-          <label class="label" style="font-size:0.875rem;">CPU Units (weight)</label>
+          <label class="label" style="font-size:0.875rem;">{% translate "CPU Units (weight)" %}</label>
           <div class="control">
             <input class="input" type="number" name="cpuunits" value="{{ ct.cpuunits }}" min="8" max="500000" placeholder="1024">
           </div>
-          <p class="help">Relative scheduling weight. Default <strong>1024</strong>. Higher = more CPU time when the host is busy.</p>
+          <p class="help">{% translate "Relative scheduling weight. Default" %} <strong>1024</strong>{% translate ". Higher = more CPU time when the host is busy." %}</p>
         </div>
       </section>
       <footer class="modal-card-foot" style="justify-content:flex-end;gap:0.75rem;">
-        <button type="button" class="button is-light" onclick="closeLxcSettingsModal('cpu')">Cancel</button>
-        <button type="submit" class="button is-primary" style="font-weight:600;">Save</button>
+        <button type="button" class="button is-light" onclick="closeLxcSettingsModal('cpu')">{% translate "Cancel" %}</button>
+        <button type="submit" class="button is-primary" style="font-weight:600;">{% translate "Save" %}</button>
       </footer>
     </form>
   </div>
@@ -486,7 +487,7 @@
   <div class="modal-background" onclick="closeLxcSettingsModal('options')"></div>
   <div class="modal-card" style="max-width:560px;border-radius:12px;">
     <header class="modal-card-head" style="background:var(--purple-color, #7c3aed);border-radius:12px 12px 0 0;">
-      <p class="modal-card-title" style="color:#fff;font-size:1rem;font-weight:600;"><i class="fas fa-cogs"></i>&nbsp; Container Options</p>
+      <p class="modal-card-title" style="color:#fff;font-size:1rem;font-weight:600;"><i class="fas fa-cogs"></i>{% translate "&nbsp; Container Options" %}</p>
       <button class="delete" onclick="closeLxcSettingsModal('options')"></button>
     </header>
     <form method="post" action="{% url 'lxc_update_settings' ct.vmid %}">
@@ -495,95 +496,95 @@
       <section class="modal-card-body">
         {% if ct.status == 'running' %}
         <div class="notification is-warning is-light" style="padding:0.5rem 0.75rem;font-size:0.8125rem;margin-bottom:1rem;">
-          <i class="fas fa-exclamation-triangle"></i> Container is running. Feature changes require a restart to take effect.
+          <i class="fas fa-exclamation-triangle"></i> {% translate "Container is running. Feature changes require a restart to take effect." %}
         </div>
         {% endif %}
 
         <div class="notification is-info is-light" style="padding:0.5rem 0.75rem;font-size:0.8125rem;margin-bottom:1rem;">
-          <i class="fas fa-info-circle"></i> <strong>Unprivileged</strong> ({% if ct.unprivileged %}Yes{% else %}No{% endif %}) is set at container creation and cannot be changed afterwards. To switch, back up and restore the container with the opposite flag.
+          <i class="fas fa-info-circle"></i> <strong>{% translate "Unprivileged" %}</strong> ({% if ct.unprivileged %}{% translate "Yes" %}{% else %}{% translate "No" %}{% endif %}{% translate ") is set at container creation and cannot be changed afterwards. To switch, back up and restore the container with the opposite flag." %}
         </div>
 
         <div class="field">
           <label class="checkbox" style="font-size:0.875rem;">
             <input type="checkbox" name="onboot" value="1"{% if ct.onboot %} checked{% endif %}>
-            Start at boot
+            {% translate "Start at boot" %}
           </label>
-          <p class="help">Automatically start this container when the Proxmox host boots.</p>
+          <p class="help">{% translate "Automatically start this container when the Proxmox host boots." %}</p>
         </div>
 
         <div class="field">
           <label class="checkbox" style="font-size:0.875rem;">
             <input type="checkbox" name="protection" value="1"{% if ct.protection %} checked{% endif %}>
-            Protection
+            {% translate "Protection" %}
           </label>
-          <p class="help">Prevents accidental deletion of the container and its disks.</p>
+          <p class="help">{% translate "Prevents accidental deletion of the container and its disks." %}</p>
         </div>
 
         <div class="field">
-          <label class="label" style="font-size:0.875rem;">Startup Order</label>
+          <label class="label" style="font-size:0.875rem;">{% translate "Startup Order" %}</label>
           <div class="control">
-            <input class="input" type="text" name="startup" value="{{ ct.startup }}" placeholder="order=1,up=30,down=30" {% if not can_sys_modify %}readonly title="Needs the Sys.Modify privilege, which the API token does not have"{% endif %}>
+            <input class="input" type="text" name="startup" value="{{ ct.startup }}" placeholder="{% translate "order=1,up=30,down=30" %}" {% if not can_sys_modify %}readonly title="{% translate "Needs the Sys.Modify privilege, which the API token does not have" %}"{% endif %}>
           </div>
-          <p class="help"><code>order</code> = boot priority, <code>up</code>/<code>down</code> = seconds to wait after start/before stop. Leave empty for default.</p>
+          <p class="help"><code>order</code> {% translate "= boot priority," %} <code>up</code>/<code>down</code> {% translate "= seconds to wait after start/before stop. Leave empty for default." %}</p>
         </div>
 
         <div class="field">
-          <label class="label" style="font-size:0.875rem;">Features</label>
+          <label class="label" style="font-size:0.875rem;">{% translate "Features" %}</label>
           <div style="display:flex;flex-wrap:wrap;gap:1rem;">
             <label class="checkbox" style="font-size:0.875rem;">
               <input type="checkbox" name="feature_nesting" value="1"{% if ct.features_flags.nesting %} checked{% endif %}>
-              Nesting
+              {% translate "Nesting" %}
             </label>
             <label class="checkbox" style="font-size:0.875rem;">
               <input type="checkbox" name="feature_fuse" value="1"{% if ct.features_flags.fuse %} checked{% endif %}>
-              FUSE
+              {% translate "FUSE" %}
             </label>
             <label class="checkbox" style="font-size:0.875rem;">
               <input type="checkbox" name="feature_keyctl" value="1"{% if ct.features_flags.keyctl %} checked{% endif %}>
-              keyctl
+              {% translate "keyctl" %}
             </label>
             <label class="checkbox" style="font-size:0.875rem;">
               <input type="checkbox" name="feature_mknod" value="1"{% if ct.features_flags.mknod %} checked{% endif %}>
-              mknod
+              {% translate "mknod" %}
             </label>
           </div>
-          <p class="help"><strong>Nesting</strong> is required for Docker, systemd in unprivileged containers, etc. <strong>FUSE</strong> for FUSE-based filesystems. <strong>keyctl</strong> for unprivileged containers needing the keyring syscall.</p>
+          <p class="help"><strong>{% translate "Nesting" %}</strong> {% translate "is required for Docker, systemd in unprivileged containers, etc." %} <strong>{% translate "FUSE" %}</strong> {% translate "for FUSE-based filesystems." %} <strong>{% translate "keyctl" %}</strong> {% translate "for unprivileged containers needing the keyring syscall." %}</p>
         </div>
 
         <div class="field">
-          <label class="label" style="font-size:0.875rem;">Tags</label>
+          <label class="label" style="font-size:0.875rem;">{% translate "Tags" %}</label>
           <div class="control">
-            <input class="input" type="text" name="tags" value="{{ ct.tags }}" placeholder="production;web;customer-a">
+            <input class="input" type="text" name="tags" value="{{ ct.tags }}" placeholder="{% translate "production;web;customer-a" %}">
           </div>
-          <p class="help">Semicolon-separated tags for organisation in Proxmox.</p>
+          <p class="help">{% translate "Semicolon-separated tags for organisation in Proxmox." %}</p>
         </div>
 
         <div class="columns is-variable is-2" style="margin-bottom:0;">
           <div class="column field">
-            <label class="label" style="font-size:0.875rem;">Console mode</label>
+            <label class="label" style="font-size:0.875rem;">{% translate "Console mode" %}</label>
             <div class="select is-fullwidth"><select name="cmode">
-              <option value="tty" {% if ct.cmode == 'tty' %}selected{% endif %}>tty (default)</option>
-              <option value="console" {% if ct.cmode == 'console' %}selected{% endif %}>/dev/console</option>
-              <option value="shell" {% if ct.cmode == 'shell' %}selected{% endif %}>shell (no login)</option>
+              <option value="tty" {% if ct.cmode == 'tty' %}selected{% endif %}>{% translate "tty (default)" %}</option>
+              <option value="console" {% if ct.cmode == 'console' %}selected{% endif %}>{% translate "/dev/console" %}</option>
+              <option value="shell" {% if ct.cmode == 'shell' %}selected{% endif %}>{% translate "shell (no login)" %}</option>
             </select></div>
           </div>
           <div class="column field">
-            <label class="label" style="font-size:0.875rem;">TTY count</label>
+            <label class="label" style="font-size:0.875rem;">{% translate "TTY count" %}</label>
             <input class="input" type="number" name="tty" min="0" max="6" value="{{ ct.tty }}">
           </div>
         </div>
 
         <div class="field">
-          <label class="label" style="font-size:0.875rem;">Hookscript</label>
+          <label class="label" style="font-size:0.875rem;">{% translate "Hookscript" %}</label>
           <div class="control">
-            <input class="input" type="text" name="hookscript" value="{{ ct.hookscript }}" placeholder="local:snippets/hook.pl" readonly title="Only root@pam can change a hookscript (Proxmox rule)">
+            <input class="input" type="text" name="hookscript" value="{{ ct.hookscript }}" placeholder="{% translate "local:snippets/hook.pl" %}" readonly title="{% translate "Only root@pam can change a hookscript (Proxmox rule)" %}">
           </div>
-          <p class="help">Optional volume reference to a hookscript executed at lifecycle events. Leave empty if unused.</p>
+          <p class="help">{% translate "Optional volume reference to a hookscript executed at lifecycle events. Leave empty if unused." %}</p>
         </div>
       </section>
       <footer class="modal-card-foot" style="justify-content:flex-end;gap:0.75rem;">
-        <button type="button" class="button is-light" onclick="closeLxcSettingsModal('options')">Cancel</button>
-        <button type="submit" class="button is-primary" style="font-weight:600;">Save</button>
+        <button type="button" class="button is-light" onclick="closeLxcSettingsModal('options')">{% translate "Cancel" %}</button>
+        <button type="submit" class="button is-primary" style="font-weight:600;">{% translate "Save" %}</button>
       </footer>
     </form>
   </div>
@@ -594,7 +595,7 @@
   <div class="modal-background" onclick="closeLxcSettingsModal('memory')"></div>
   <div class="modal-card" style="max-width:500px;border-radius:12px;">
     <header class="modal-card-head" style="background:#f59e0b;border-radius:12px 12px 0 0;">
-      <p class="modal-card-title" style="color:#fff;font-size:1rem;font-weight:600;"><i class="fas fa-memory"></i>&nbsp; Memory Settings</p>
+      <p class="modal-card-title" style="color:#fff;font-size:1rem;font-weight:600;"><i class="fas fa-memory"></i>{% translate "&nbsp; Memory Settings" %}</p>
       <button class="delete" onclick="closeLxcSettingsModal('memory')"></button>
     </header>
     <form method="post" action="{% url 'lxc_update_settings' ct.vmid %}">
@@ -603,27 +604,27 @@
       <section class="modal-card-body">
         {% if ct.status == 'running' %}
         <div class="notification is-warning is-light" style="padding:0.5rem 0.75rem;font-size:0.8125rem;margin-bottom:1rem;">
-          <i class="fas fa-exclamation-triangle"></i> Container is running. Memory changes may require a restart.
+          <i class="fas fa-exclamation-triangle"></i> {% translate "Container is running. Memory changes may require a restart." %}
         </div>
         {% endif %}
         <div class="field">
-          <label class="label" style="font-size:0.875rem;">Allocated RAM (MB)</label>
+          <label class="label" style="font-size:0.875rem;">{% translate "Allocated RAM (MB)" %}</label>
           <div class="control">
             <input class="input" type="number" name="memory_mb" value="{{ ct.memory }}" min="16" step="1" required>
           </div>
-          <p class="help">Memory in megabytes. e.g. <code>512</code>, <code>2048</code>, <code>4096</code>.</p>
+          <p class="help">{% translate "Memory in megabytes. e.g." %} <code>512</code>, <code>2048</code>, <code>4096</code>.</p>
         </div>
         <div class="field">
-          <label class="label" style="font-size:0.875rem;">Swap (MB)</label>
+          <label class="label" style="font-size:0.875rem;">{% translate "Swap (MB)" %}</label>
           <div class="control">
             <input class="input" type="number" name="swap_mb" value="{{ ct.swap }}" min="0" step="1">
           </div>
-          <p class="help">Set to 0 to disable swap.</p>
+          <p class="help">{% translate "Set to 0 to disable swap." %}</p>
         </div>
       </section>
       <footer class="modal-card-foot" style="justify-content:flex-end;gap:0.75rem;">
-        <button type="button" class="button is-light" onclick="closeLxcSettingsModal('memory')">Cancel</button>
-        <button type="submit" class="button is-primary" style="font-weight:600;">Save</button>
+        <button type="button" class="button is-light" onclick="closeLxcSettingsModal('memory')">{% translate "Cancel" %}</button>
+        <button type="submit" class="button is-primary" style="font-weight:600;">{% translate "Save" %}</button>
       </footer>
     </form>
   </div>

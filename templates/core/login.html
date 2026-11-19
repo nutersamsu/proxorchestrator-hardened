@@ -1,5 +1,6 @@
 {% extends "base.html" %}
-{% block title %}Sign In — ProxOrchestrator{% endblock %}
+{% load i18n %}
+{% block title %}{% translate "Sign In — ProxOrchestrator" %}{% endblock %}
 
 {% block public_content %}
 <div style="min-height: 100vh;background: linear-gradient(135deg,var(--bg-sidebar) 0%,var(--auth-gradient-mid) 50%,var(--auth-gradient-end) 100%);display: flex;flex-direction: column;align-items: center;justify-content: center;padding: 2rem;">
@@ -7,10 +8,10 @@
   {# Logo area above card #}
   <div style="text-align: center;margin-bottom: 2rem;">
     <div style="font-size: 2.5rem;color: #ffffff;font-weight: 800;letter-spacing: -0.5px;margin-bottom: 0.35rem;">
-      &#9889; ProxOrchestrator
+      {% translate "&#9889; ProxOrchestrator" %}
     </div>
     <div style="color: rgba(255,255,255,0.45);font-size: 0.8125rem;text-transform: uppercase;letter-spacing: 2px;">
-      Self-hosted Proxmox VM Manager
+      {% translate "Self-hosted Proxmox VM Manager" %}
     </div>
   </div>
 
@@ -19,7 +20,7 @@
 
     {# Card header #}
     <div style="background: var(--bg-main);border-bottom: 1px solid var(--border-main);padding: 1.25rem 2rem;text-align: center;">
-      <p style="color: var(--text-muted);font-size: 0.875rem;font-weight: 500;">Sign in to your account</p>
+      <p style="color: var(--text-muted);font-size: 0.875rem;font-weight: 500;">{% translate "Sign in to your account" %}</p>
     </div>
 
     <div style="padding: 2rem;">
@@ -56,14 +57,14 @@
 
         {# Username #}
         <div class="field" style="margin-bottom: 1.25rem;">
-          <label class="label" style="font-size: 0.875rem;color: var(--text-semi);font-weight: 600;">Username or Email</label>
+          <label class="label" style="font-size: 0.875rem;color: var(--text-semi);font-weight: 600;">{% translate "Username or Email" %}</label>
           <div class="control has-icons-left">
             <input
               class="input is-medium {% if form.username.errors %}is-danger{% endif %}"
               type="text"
               name="username"
               id="id_username"
-              placeholder="Username or email address"
+              placeholder="{% translate "Username or email address" %}"
               value="{{ form.username.value|default:'' }}"
               autofocus
               autocomplete="username"
@@ -79,14 +80,14 @@
 
         {# Password #}
         <div class="field" style="margin-bottom: 1.75rem;">
-          <label class="label" style="font-size: 0.875rem;color: var(--text-semi);font-weight: 600;">Password</label>
+          <label class="label" style="font-size: 0.875rem;color: var(--text-semi);font-weight: 600;">{% translate "Password" %}</label>
           <div class="control has-icons-left">
             <input
               class="input is-medium {% if form.password.errors %}is-danger{% endif %}"
               type="password"
               name="password"
               id="id_password"
-              placeholder="Enter your password"
+              placeholder="{% translate "Enter your password" %}"
               autocomplete="current-password"
             >
             <span class="icon is-left" style="color: var(--text-muted);">
@@ -103,14 +104,14 @@
           <div class="control">
             <button type="submit" class="button is-primary is-medium is-fullwidth" style="font-weight: 600;letter-spacing: 0.3px;">
               <span class="icon"><i class="fas fa-sign-in-alt"></i></span>
-              <span>Sign In</span>
+              <span>{% translate "Sign In" %}</span>
             </button>
           </div>
         </div>
 
         <div style="text-align: center;margin-top: 1rem;">
           <a href="{% url 'password_reset_request' %}" style="color: var(--link-color);font-size: 0.8125rem;">
-            Forgot your password?
+            {% translate "Forgot your password?" %}
           </a>
         </div>
       </form>
@@ -119,7 +120,7 @@
       {% if entra_enabled %}
         <div style="display: flex;align-items: center;gap: 1rem;margin: 1.5rem 0;">
           <div style="flex: 1;height: 1px;background: var(--border-main);"></div>
-          <span style="color: var(--text-muted);font-size: 0.8125rem;white-space: nowrap;">or</span>
+          <span style="color: var(--text-muted);font-size: 0.8125rem;white-space: nowrap;">{% translate "or" %}</span>
           <div style="flex: 1;height: 1px;background: var(--border-main);"></div>
         </div>
 
@@ -137,7 +138,7 @@
                 <rect x="11" y="11" width="9" height="9" fill="#ffb900"/>
               </svg>
             </span>
-            <span style="flex: 1;text-align: center;padding: 10px 12px;">Sign in with Microsoft</span>
+            <span style="flex: 1;text-align: center;padding: 10px 12px;">{% translate "Sign in with Microsoft" %}</span>
           </button>
         </form>
       {% endif %}
@@ -146,7 +147,7 @@
       {% if ldap_enabled %}
         <p style="text-align: center;color: var(--text-muted);font-size: 0.8125rem;margin-top: 1rem;">
           <i class="fas fa-building" style="margin-right: 0.3rem;"></i>
-          LDAP authentication is enabled — use your directory credentials.
+          {% translate "LDAP authentication is enabled — use your directory credentials." %}
         </p>
       {% endif %}
     </div>
@@ -154,7 +155,7 @@
 
   {# Footer tagline #}
   <div style="margin-top: 2rem;text-align: center;color: rgba(255,255,255,0.25);font-size: 0.75rem;">
-    ProxOrchestrator &mdash; by ForgedIO &mdash; Free &amp; Open Source
+    {% translate "ProxOrchestrator &mdash; by ForgedIO &mdash; Free &amp; Open Source" %}
   </div>
 
 </div>

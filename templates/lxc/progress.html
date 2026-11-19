@@ -1,7 +1,8 @@
 {% extends "base.html" %}
-{% block title %}Creating {{ job.ct_name }} — ProxOrchestrator{% endblock %}
-{% block page_title %}Creating Container{% endblock %}
-{% block help_slug %}lxc-progress{% endblock %}
+{% load i18n %}
+{% block title %}{% blocktranslate with ct_name=job.ct_name trimmed %}Creating {{ ct_name }} — ProxOrchestrator{% endblocktranslate %}{% endblock %}
+{% block page_title %}{% translate "Creating Container" %}{% endblock %}
+{% block help_slug %}{% translate "lxc-progress" %}{% endblock %}
 
 {% block content %}
 <div class="columns">
@@ -31,22 +32,20 @@
             </div>
             <div style="font-size: 0.875rem;color: var(--text-muted);margin-top: 0.2rem;">
               {% if job.vmid %}
-                CTID <span class="is-monospace" style="font-weight: 600;color: var(--text-header);">{{ job.vmid }}</span>
+                {% translate "CTID" %} <span class="is-monospace" style="font-weight: 600;color: var(--text-header);">{{ job.vmid }}</span>
                 &nbsp;&bull;&nbsp;
               {% endif %}
-              <i class="fas fa-cube" style="margin-right: 0.2rem;"></i>LXC Container
-              &nbsp;&bull;&nbsp;
-              Started {{ job.created_at|timesince }} ago
+              <i class="fas fa-cube" style="margin-right: 0.2rem;"></i>{% blocktranslate with created_at=job.created_at|timesince trimmed %}LXC Container &nbsp;&bull;&nbsp; Started {{ created_at }} ago{% endblocktranslate %}
             </div>
           </div>
 
           <div style="margin-left: auto;">
             {% if job.stage == 'DONE' %}
-              <span class="status-badge vm-status-running">Complete</span>
+              <span class="status-badge vm-status-running">{% translate "Complete" %}</span>
             {% elif job.stage == 'FAILED' %}
-              <span class="status-badge vm-status-stopped">Failed</span>
+              <span class="status-badge vm-status-stopped">{% translate "Failed" %}</span>
             {% else %}
-              <span class="status-badge" style="background: var(--link-color);color: var(--bg-card);">In Progress</span>
+              <span class="status-badge" style="background: var(--link-color);color: var(--bg-card);">{% translate "In Progress" %}</span>
             {% endif %}
           </div>
         </div>
@@ -61,19 +60,19 @@
       <div class="proxorchestrator-card" style="margin-top: 1.5rem;">
         <div class="card-body" style="padding: 1.5rem;text-align: center;">
           <i class="fas fa-check-circle" style="font-size: 2rem;color: var(--success-color);margin-bottom: 1rem;display: block;"></i>
-          <h3 style="font-size: 1.1rem;font-weight: 700;color: var(--text-header);margin-bottom: 0.5rem;">Container Created Successfully!</h3>
+          <h3 style="font-size: 1.1rem;font-weight: 700;color: var(--text-header);margin-bottom: 0.5rem;">{% translate "Container Created Successfully!" %}</h3>
           <p style="color: var(--text-muted);font-size: 0.875rem;margin-bottom: 1.5rem;">
-            <strong>{{ job.ct_name }}</strong>{% if job.vmid %} (CTID {{ job.vmid }}){% endif %} is ready on node <strong>{{ job.node }}</strong>.
+            <strong>{{ job.ct_name }}</strong>{% if job.vmid %} {% blocktranslate with vmid=job.vmid trimmed %}(CTID {{ vmid }}){% endblocktranslate %}{% endif %} {% translate "is ready on node" %} <strong>{{ job.node }}</strong>.
           </p>
           <div style="display: flex;gap: 1rem;justify-content: center;flex-wrap: wrap;">
             <a href="{% url 'lxc_list' %}" class="button is-primary is-medium" style="font-weight: 600;">
               <span class="icon"><i class="fas fa-cube"></i></span>
-              <span>View Containers</span>
+              <span>{% translate "View Containers" %}</span>
               <span class="icon"><i class="fas fa-arrow-right"></i></span>
             </a>
             <a href="{% url 'lxc_create' %}" class="button is-light is-medium" style="font-weight: 600;">
               <span class="icon"><i class="fas fa-plus-circle"></i></span>
-              <span>Create Another</span>
+              <span>{% translate "Create Another" %}</span>
             </a>
           </div>
         </div>
@@ -83,7 +82,7 @@
       <div class="proxorchestrator-card" style="margin-top: 1.5rem;border-left: 4px solid var(--danger-color);border-radius: 0 10px 10px 0;">
         <div class="card-body" style="padding: 1.5rem;">
           <h3 style="font-size: 1rem;font-weight: 700;color: var(--danger-color);margin-bottom: 0.75rem;">
-            <i class="fas fa-exclamation-triangle" style="margin-right: 0.5rem;"></i>Container Creation Failed
+            <i class="fas fa-exclamation-triangle" style="margin-right: 0.5rem;"></i>{% translate "Container Creation Failed" %}
           </h3>
           {% if job.error %}
             <div style="background: var(--bg-main);border: 1px solid var(--border-main);border-radius: 6px;padding: 1rem;font-family: var(--font-mono);font-size: 0.8125rem;color: var(--text-semi);white-space: pre-wrap;word-break: break-all;margin-bottom: 1rem;">{{ job.error }}</div>
@@ -91,11 +90,11 @@
           <div style="display: flex;gap: 1rem;flex-wrap: wrap;">
             <a href="{% url 'lxc_configure' job.id %}" class="button is-danger is-light" style="font-weight: 600;">
               <span class="icon"><i class="fas fa-redo"></i></span>
-              <span>Try Again</span>
+              <span>{% translate "Try Again" %}</span>
             </a>
             <a href="{% url 'lxc_create' %}" class="button is-light" style="font-weight: 600;">
               <span class="icon"><i class="fas fa-plus-circle"></i></span>
-              <span>Start Over</span>
+              <span>{% translate "Start Over" %}</span>
             </a>
           </div>
         </div>

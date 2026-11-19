@@ -97,6 +97,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -175,7 +176,15 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalisation
 # ---------------------------------------------------------------------------
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "en"
+# UI languages offered in the selector at the top right (cookie "django_language").
+LANGUAGES = [
+    ("en", "English"),
+    ("pt-br", "Português (Brasil)"),
+]
+LOCALE_PATHS = [BASE_DIR / "locale"]
+LANGUAGE_COOKIE_AGE = 60 * 60 * 24 * 365
+LANGUAGE_COOKIE_SAMESITE = "Lax"
 # Dates in the UI (task times, chart axes). Example: TIME_ZONE=Europe/Rome in .env
 TIME_ZONE = os.environ.get("TIME_ZONE", "UTC") or "UTC"
 USE_I18N = True
@@ -324,6 +333,7 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 # The app is only served over HTTPS (nginx on WEB_PORT).
 SESSION_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SECURE = not DEBUG
+LANGUAGE_COOKIE_SECURE = not DEBUG
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = "Lax"
 SESSION_COOKIE_AGE = int(os.environ.get("SESSION_COOKIE_AGE", 8 * 3600))

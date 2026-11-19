@@ -1,3 +1,4 @@
+{% load i18n %}
 <div class="column is-4">
   <div class="cs-app-card"
        style="cursor:pointer;"
@@ -30,16 +31,14 @@
     </div>
     <div style="display:flex;align-items:center;justify-content:space-between;margin-top:0.75rem;">
       <div class="cs-app-specs">
-        {{ script.defaults.cpu }}C &nbsp;/&nbsp;
-        {{ script.defaults.ram }}MB &nbsp;/&nbsp;
-        {{ script.defaults.disk }}GB
+        {% blocktranslate with cpu=script.defaults.cpu ram=script.defaults.ram disk=script.defaults.disk trimmed %}{{ cpu }}C &nbsp;/&nbsp; {{ ram }}MB &nbsp;/&nbsp; {{ disk }}GB{% endblocktranslate %}
       </div>
       <a href="{% url 'vm_community_scripts_deploy' script.slug %}"
          class="button is-primary is-small"
          style="font-weight:600;"
          onclick="event.stopPropagation();">
         <span class="icon is-small"><i class="fas fa-rocket"></i></span>
-        <span>Deploy</span>
+        <span>{% translate "Deploy" %}</span>
       </a>
     </div>
   </div>

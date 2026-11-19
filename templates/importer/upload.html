@@ -1,7 +1,8 @@
 {% extends "base.html" %}
-{% block title %}Import VM — ProxOrchestrator{% endblock %}
-{% block page_title %}Import VM{% endblock %}
-{% block help_slug %}importer-upload{% endblock %}
+{% load i18n %}
+{% block title %}{% translate "Import VM — ProxOrchestrator" %}{% endblock %}
+{% block page_title %}{% translate "Import VM" %}{% endblock %}
+{% block help_slug %}{% translate "importer-upload" %}{% endblock %}
 
 {% block content %}
 <div class="columns">
@@ -10,7 +11,7 @@
   <div class="column is-8">
     <div class="proxorchestrator-card">
       <div class="card-header">
-        <i class="fas fa-upload" style="color: var(--link-color);"></i> Upload Disk Image
+        <i class="fas fa-upload" style="color: var(--link-color);"></i> {% translate "Upload Disk Image" %}
       </div>
       <div class="card-body">
 
@@ -31,19 +32,19 @@
               <i class="fas fa-cloud-upload-alt"></i>
             </div>
             <p style="font-size: 1.05rem;font-weight: 600;color: var(--text-semi);margin-bottom: 0.5rem;">
-              Drag &amp; drop your disk image here
+              {% translate "Drag &amp; drop your disk image here" %}
             </p>
             <p style="color: var(--text-muted);font-size: 0.875rem;margin-bottom: 1.25rem;">
-              or <a style="color: var(--link-color);text-decoration: underline;">click to browse</a>
+              {% translate "or" %} <a style="color: var(--link-color);text-decoration: underline;">{% translate "click to browse" %}</a>
             </p>
             <div>
-              <span class="format-badge">QCOW2</span>
-              <span class="format-badge">VMDK</span>
-              <span class="format-badge">VHD</span>
-              <span class="format-badge">VHDX</span>
-              <span class="format-badge">RAW</span>
-              <span class="format-badge">IMG</span>
-              <span class="format-badge">OVA</span>
+              <span class="format-badge">{% translate "QCOW2" %}</span>
+              <span class="format-badge">{% translate "VMDK" %}</span>
+              <span class="format-badge">{% translate "VHD" %}</span>
+              <span class="format-badge">{% translate "VHDX" %}</span>
+              <span class="format-badge">{% translate "RAW" %}</span>
+              <span class="format-badge">{% translate "IMG" %}</span>
+              <span class="format-badge">{% translate "OVA" %}</span>
             </div>
           </div>
 
@@ -71,7 +72,7 @@
             {# Upload progress #}
             <div id="upload-progress" style="display: none;">
               <div style="display: flex;justify-content: space-between;align-items: center;margin-bottom: 0.35rem;">
-                <span style="font-size: 0.8125rem;color: var(--text-semi);font-weight: 500;">Uploading...</span>
+                <span style="font-size: 0.8125rem;color: var(--text-semi);font-weight: 500;">{% translate "Uploading..." %}</span>
                 <span id="progress-pct" style="font-size: 0.8125rem;color: var(--link-color);font-weight: 600;">0%</span>
               </div>
               <progress id="upload-bar" class="progress is-primary" value="0" max="100" style="height: 8px;"></progress>
@@ -87,7 +88,7 @@
               style="font-weight: 600;display: none;"
             >
               <span class="icon"><i class="fas fa-upload"></i></span>
-              <span>Upload &amp; Continue</span>
+              <span>{% translate "Upload &amp; Continue" %}</span>
             </button>
           </div>
 
@@ -102,7 +103,7 @@
     {# Supported formats #}
     <div class="proxorchestrator-card" style="margin-bottom: 1rem;">
       <div class="card-header">
-        <i class="fas fa-info-circle" style="color: var(--text-muted);"></i> Supported Formats
+        <i class="fas fa-info-circle" style="color: var(--text-muted);"></i> {% translate "Supported Formats" %}
       </div>
       <div class="card-body" style="padding: 1rem 1.5rem;">
         <div style="display: flex;flex-direction: column;gap: 0.6rem;">
@@ -113,28 +114,28 @@
           </div>
           {% empty %}
           <div style="display: flex;align-items: flex-start;gap: 0.75rem;">
-            <span class="format-badge" style="flex-shrink: 0;margin-top: 0.1rem;">QCOW2</span>
-            <span style="font-size: 0.8125rem;color: var(--text-semi);">Native Proxmox format, no conversion needed</span>
+            <span class="format-badge" style="flex-shrink: 0;margin-top: 0.1rem;">{% translate "QCOW2" %}</span>
+            <span style="font-size: 0.8125rem;color: var(--text-semi);">{% translate "Native Proxmox format, no conversion needed" %}</span>
           </div>
           <div style="display: flex;align-items: flex-start;gap: 0.75rem;">
-            <span class="format-badge" style="flex-shrink: 0;margin-top: 0.1rem;">VMDK</span>
-            <span style="font-size: 0.8125rem;color: var(--text-semi);">VMware Virtual Machine Disk, auto-converted</span>
+            <span class="format-badge" style="flex-shrink: 0;margin-top: 0.1rem;">{% translate "VMDK" %}</span>
+            <span style="font-size: 0.8125rem;color: var(--text-semi);">{% translate "VMware Virtual Machine Disk, auto-converted" %}</span>
           </div>
           <div style="display: flex;align-items: flex-start;gap: 0.75rem;">
-            <span class="format-badge" style="flex-shrink: 0;margin-top: 0.1rem;">VHD</span>
-            <span style="font-size: 0.8125rem;color: var(--text-semi);">Hyper-V Virtual Hard Disk (VPC format)</span>
+            <span class="format-badge" style="flex-shrink: 0;margin-top: 0.1rem;">{% translate "VHD" %}</span>
+            <span style="font-size: 0.8125rem;color: var(--text-semi);">{% translate "Hyper-V Virtual Hard Disk (VPC format)" %}</span>
           </div>
           <div style="display: flex;align-items: flex-start;gap: 0.75rem;">
-            <span class="format-badge" style="flex-shrink: 0;margin-top: 0.1rem;">VHDX</span>
-            <span style="font-size: 0.8125rem;color: var(--text-semi);">Hyper-V VHDX — modern format, larger VM support</span>
+            <span class="format-badge" style="flex-shrink: 0;margin-top: 0.1rem;">{% translate "VHDX" %}</span>
+            <span style="font-size: 0.8125rem;color: var(--text-semi);">{% translate "Hyper-V VHDX — modern format, larger VM support" %}</span>
           </div>
           <div style="display: flex;align-items: flex-start;gap: 0.75rem;">
-            <span class="format-badge" style="flex-shrink: 0;margin-top: 0.1rem;">RAW</span>
-            <span style="font-size: 0.8125rem;color: var(--text-semi);">Raw disk image, converted to qcow2</span>
+            <span class="format-badge" style="flex-shrink: 0;margin-top: 0.1rem;">{% translate "RAW" %}</span>
+            <span style="font-size: 0.8125rem;color: var(--text-semi);">{% translate "Raw disk image, converted to qcow2" %}</span>
           </div>
           <div style="display: flex;align-items: flex-start;gap: 0.75rem;">
-            <span class="format-badge" style="flex-shrink: 0;margin-top: 0.1rem;">OVA</span>
-            <span style="font-size: 0.8125rem;color: var(--text-semi);">OVA archive — disk extracted and converted automatically</span>
+            <span class="format-badge" style="flex-shrink: 0;margin-top: 0.1rem;">{% translate "OVA" %}</span>
+            <span style="font-size: 0.8125rem;color: var(--text-semi);">{% translate "OVA archive — disk extracted and converted automatically" %}</span>
           </div>
           {% endfor %}
         </div>
@@ -142,7 +143,7 @@
         <div class="info-box" style="margin-top: 1rem;">
           <div class="info-box-icon" style="font-size: 0.875rem;"><i class="fas fa-magic"></i></div>
           <div style="font-size: 0.8125rem;">
-            All formats are automatically converted to <strong>qcow2</strong> using <code>qemu-img</code> before transfer to Proxmox.
+            {% translate "All formats are automatically converted to" %} <strong>{% translate "qcow2" %}</strong> {% translate "using" %} <code>qemu-img</code> {% translate "before transfer to Proxmox." %}
           </div>
         </div>
       </div>
@@ -151,26 +152,26 @@
     {# What happens next #}
     <div class="proxorchestrator-card">
       <div class="card-header">
-        <i class="fas fa-list-ol" style="color: var(--text-muted);"></i> What Happens Next?
+        <i class="fas fa-list-ol" style="color: var(--text-muted);"></i> {% translate "What Happens Next?" %}
       </div>
       <div class="card-body" style="padding: 1rem 1.5rem;">
         <ol class="step-guide" style="padding: 0;">
           <li style="padding: 0.6rem 0;border-bottom: 1px solid var(--bg-main);">
             <div class="step-guide-num" style="background: var(--link-color);width: 24px;height: 24px;font-size: 0.75rem;">1</div>
             <div class="step-guide-text" style="font-size: 0.8125rem;">
-              <strong>Upload</strong> — Your disk image is uploaded to the ProxOrchestrator server.
+              <strong>{% translate "Upload" %}</strong> {% translate "— Your disk image is uploaded to the ProxOrchestrator server." %}
             </div>
           </li>
           <li style="padding: 0.6rem 0;border-bottom: 1px solid var(--bg-main);">
             <div class="step-guide-num" style="background: var(--link-color);width: 24px;height: 24px;font-size: 0.75rem;">2</div>
             <div class="step-guide-text" style="font-size: 0.8125rem;">
-              <strong>Configure</strong> — Set VM name, CPU, RAM, firmware, and network options.
+              <strong>{% translate "Configure" %}</strong> {% translate "— Set VM name, CPU, RAM, firmware, and network options." %}
             </div>
           </li>
           <li style="padding: 0.6rem 0;">
             <div class="step-guide-num" style="background: var(--link-color);width: 24px;height: 24px;font-size: 0.75rem;">3</div>
             <div class="step-guide-text" style="font-size: 0.8125rem;">
-              <strong>Deploy</strong> — ProxOrchestrator converts, transfers, and creates your VM on Proxmox automatically.
+              <strong>{% translate "Deploy" %}</strong> {% translate "— ProxOrchestrator converts, transfers, and creates your VM on Proxmox automatically." %}
             </div>
           </li>
         </ol>
@@ -219,8 +220,8 @@
     // Client-side extension check
     if (!ALLOWED_EXTENSIONS.includes(ext)) {
       showUploadError(
-        'Unsupported file type: <strong>' + ext + '</strong>. ' +
-        'Allowed formats: ' + ALLOWED_EXTENSIONS.join(', ')
+        '{{ _("Unsupported file type: <strong>")|escapejs }}' + ext + '</strong>. ' +
+        '{{ _("Allowed formats: ")|escapejs }}' + ALLOWED_EXTENSIONS.join(', ')
       );
       input.value = '';
       return;
@@ -264,16 +265,16 @@
   }
 
   function formatBytes(bytes) {
-    if (bytes === 0) return '0 Bytes';
+    if (bytes === 0) return '{{ _("0 Bytes")|escapejs }}';
     const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+    const sizes = ['{{ _("Bytes")|escapejs }}', 'KB', 'MB', 'GB', 'TB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
 
   function resetUploadBtn() {
     uploadBtn.disabled = false;
-    uploadBtn.innerHTML = '<span class="icon"><i class="fas fa-upload"></i></span><span>Upload &amp; Continue</span>';
+    uploadBtn.innerHTML = '<span class="icon"><i class="fas fa-upload"></i></span><span>{{ _("Upload &amp; Continue")|escapejs }}</span>';
     document.getElementById('upload-progress').style.display = 'none';
   }
 
@@ -288,7 +289,7 @@
     const form = this;
 
     uploadBtn.disabled = true;
-    uploadBtn.innerHTML = '<span class="spinner"></span>&nbsp; Checking space...';
+    uploadBtn.innerHTML = '<span class="spinner"></span>{{ _("&nbsp; Checking space...")|escapejs }}';
 
     // Pre-flight: verify the server has enough temp space for this file
     fetch('{% url "importer_check_upload_space" %}', {credentials: 'same-origin'})
@@ -301,11 +302,11 @@
           const have = formatBytes(data.free_bytes);
           const dir  = data.temp_dir || '/tmp';
           showUploadError(
-            'Not enough temporary disk space to receive this upload. ' +
-            'Your file is <strong>' + need + '</strong> but only <strong>' + have +
-            '</strong> is available in <code>' + dir + '</code>.<br><br>' +
-            'Go to <strong><a href="/settings/proxmox/">Settings → Storage</a></strong> and ' +
-            'set the <em>Upload temp directory</em> to a path on a disk with enough free space.'
+            '{{ _("Not enough temporary disk space to receive this upload. ")|escapejs }}' +
+            '{{ _("Your file is <strong>")|escapejs }}' + need + '</strong> {{ _("but only")|escapejs }} <strong>' + have +
+            '</strong> {{ _("is available in")|escapejs }} <code>' + dir + '</code>.<br><br>' +
+            '{{ _('Go to <strong><a href="/settings/proxmox/">Settings → Storage</a></strong> and ')|escapejs }}' +
+            '{{ _("set the <em>Upload temp directory</em> to a path on a disk with enough free space.")|escapejs }}'
           );
           return;
         }
@@ -325,7 +326,7 @@
     const progressPct = document.getElementById('progress-pct');
 
     progressDiv.style.display = 'block';
-    uploadBtn.innerHTML = '<span class="spinner"></span>&nbsp; Uploading...';
+    uploadBtn.innerHTML = '<span class="spinner"></span>{{ _("&nbsp; Uploading...")|escapejs }}';
 
     xhr.upload.addEventListener('progress', function(evt) {
       if (evt.lengthComputable) {
@@ -349,17 +350,17 @@
             return;
           }
         } catch (_) {}
-        showUploadError('Upload failed. Please check the file format and try again.');
+        showUploadError('{{ _("Upload failed. Please check the file format and try again.")|escapejs }}');
       }
     });
 
     xhr.addEventListener('error', function() {
       resetUploadBtn();
       showUploadError(
-        'Upload failed — the connection to the server was lost. ' +
-        'For large files this often means the server ran out of temporary disk space. ' +
-        'Check <strong><a href="/settings/proxmox/">Settings → Storage</a></strong> to ensure ' +
-        'the upload temp directory has enough free space.'
+        '{{ _("Upload failed — the connection to the server was lost. ")|escapejs }}' +
+        '{{ _("For large files this often means the server ran out of temporary disk space. ")|escapejs }}' +
+        '{{ _('Check <strong><a href="/settings/proxmox/">Settings → Storage</a></strong> to ensure ')|escapejs }}' +
+        '{{ _("the upload temp directory has enough free space.")|escapejs }}'
       );
     });
 

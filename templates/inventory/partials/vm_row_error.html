@@ -1,3 +1,4 @@
+{% load i18n %}
 {# Error row shown when a VM action fails #}
 <tr id="vm-row-{{ vmid }}">
   <td class="vmid-col">{{ vmid }}</td>
@@ -6,6 +7,6 @@
     {{ error }}
   </td>
   <td style="vertical-align: middle;">
-    <a href="{% url 'inventory' %}" class="button is-small is-light">Refresh</a>
+    <a href="{% url 'inventory' %}" class="button is-small is-light">{% translate "Refresh" %}</a>
   </td>
 </tr>

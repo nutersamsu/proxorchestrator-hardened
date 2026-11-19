@@ -1,12 +1,13 @@
 {% extends "base.html" %}
-{% block title %}VM Export & Import — ProxOrchestrator{% endblock %}
-{% block page_title %}VM Export & Import{% endblock %}
-{% block help_slug %}exporter{% endblock %}
+{% load i18n %}
+{% block title %}{% translate "VM Export & Import — ProxOrchestrator" %}{% endblock %}
+{% block page_title %}{% translate "VM Export & Import" %}{% endblock %}
+{% block help_slug %}{% translate "exporter" %}{% endblock %}
 
 {% block page_actions %}
   <a href="{% url 'px_upload' %}" class="button is-info is-small" style="font-weight: 600;">
     <span class="icon is-small"><i class="fas fa-file-import"></i></span>
-    <span>Import .px Package</span>
+    <span>{% translate "Import .px Package" %}</span>
   </a>
 {% endblock %}
 
@@ -26,9 +27,9 @@
     {# ===== Export Jobs ===== #}
     <div class="proxorchestrator-card" style="margin-bottom: 1.5rem;">
       <div class="card-header">
-        <i class="fas fa-file-export" style="color: var(--link-color);"></i> VM Exports
+        <i class="fas fa-file-export" style="color: var(--link-color);"></i> {% translate "VM Exports" %}
         <span style="margin-left: auto;font-size: 0.8125rem;color: var(--text-muted);font-weight: 400;">
-          Completed exports expire after {{ export_retention_hours }} hours
+          {% blocktranslate trimmed %}Completed exports expire after {{ export_retention_hours }} hours{% endblocktranslate %}
         </span>
       </div>
       <div class="card-body" style="padding: 0;">
@@ -36,9 +37,9 @@
           <table class="table is-fullwidth is-hoverable" style="margin: 0;font-size: 0.875rem;">
             <thead>
               <tr style="background: var(--bg-main);">
-                <th style="padding: 0.75rem 1rem;font-weight: 600;color: var(--text-semi);">VM</th>
-                <th style="padding: 0.75rem 1rem;font-weight: 600;color: var(--text-semi);">Status</th>
-                <th style="padding: 0.75rem 1rem;font-weight: 600;color: var(--text-semi);">Created</th>
+                <th style="padding: 0.75rem 1rem;font-weight: 600;color: var(--text-semi);">{% translate "VM" %}</th>
+                <th style="padding: 0.75rem 1rem;font-weight: 600;color: var(--text-semi);">{% translate "Status" %}</th>
+                <th style="padding: 0.75rem 1rem;font-weight: 600;color: var(--text-semi);">{% translate "Created" %}</th>
                 <th style="padding: 0.75rem 1rem;"></th>
               </tr>
             </thead>
@@ -47,39 +48,39 @@
                 <tr>
                   <td style="padding: 0.75rem 1rem;vertical-align: middle;">
                     <div style="font-weight: 600;color: var(--text-header);">{{ job.vm_name|default:job.vmid }}</div>
-                    <div style="font-size: 0.8125rem;color: var(--text-muted);">VMID {{ job.vmid }}</div>
+                    <div style="font-size: 0.8125rem;color: var(--text-muted);">{% blocktranslate with vmid=job.vmid trimmed %}VMID {{ vmid }}{% endblocktranslate %}</div>
                   </td>
                   <td style="padding: 0.75rem 1rem;vertical-align: middle;">
                     {% if job.stage == 'DONE' %}
-                      <span class="status-badge vm-status-running">Complete</span>
+                      <span class="status-badge vm-status-running">{% translate "Complete" %}</span>
                       {% if job.downloaded_at and not job.output_path %}
-                        <div style="font-size: 0.75rem;color: var(--text-muted);margin-top: 0.2rem;">downloaded, removed from server</div>
+                        <div style="font-size: 0.75rem;color: var(--text-muted);margin-top: 0.2rem;">{% translate "downloaded, removed from server" %}</div>
                       {% elif job.output_path %}
                         <div style="font-size: 0.75rem;color: var(--text-muted);margin-top: 0.2rem;">kept until {{ job.expires_at|date:"d/m H:i" }}</div>
                       {% endif %}
                     {% elif job.stage == 'FAILED' %}
-                      <span class="status-badge vm-status-stopped">Failed</span>
+                      <span class="status-badge vm-status-stopped">{% translate "Failed" %}</span>
                     {% else %}
-                      <span class="status-badge" style="background: var(--link-color);color: var(--bg-card);">In Progress</span>
+                      <span class="status-badge" style="background: var(--link-color);color: var(--bg-card);">{% translate "In Progress" %}</span>
                     {% endif %}
                   </td>
                   <td style="padding: 0.75rem 1rem;vertical-align: middle;color: var(--text-muted);font-size: 0.8125rem;">
-                    {{ job.created_at|timesince }} ago
+                    {% blocktranslate with created_at=job.created_at|timesince trimmed %}{{ created_at }} ago{% endblocktranslate %}
                   </td>
                   <td style="padding: 0.75rem 1rem;vertical-align: middle;text-align: right;">
                     {% if job.stage == 'DONE' and job.output_path %}
                       <a href="{% url 'export_download' job.pk %}" class="button is-primary is-small" style="margin-right: 0.5rem;">
                         <span class="icon is-small"><i class="fas fa-download"></i></span>
-                        <span>Download</span>
+                        <span>{% translate "Download" %}</span>
                       </a>
                     {% elif job.stage not in 'DONE FAILED' %}
                       <a href="{% url 'export_progress' job.pk %}" class="button is-light is-small" style="margin-right: 0.5rem;">
                         <span class="icon is-small"><i class="fas fa-tasks"></i></span>
-                        <span>View Progress</span>
+                        <span>{% translate "View Progress" %}</span>
                       </a>
                     {% endif %}
                     <form method="post" action="{% url 'export_delete_job' job.pk %}" style="display: inline;"
-                          onsubmit="return confirm('Delete this export?');">
+                          onsubmit="return confirm('{{ _("Delete this export?")|escapejs }}');">
                       {% csrf_token %}
                       <button type="submit" class="button is-light is-small">
                         <span class="icon is-small"><i class="fas fa-trash"></i></span>
@@ -93,9 +94,9 @@
         {% else %}
           <div style="padding: 2rem;text-align: center;color: var(--text-muted);">
             <i class="fas fa-file-export" style="font-size: 2rem;color: var(--border-light);display: block;margin-bottom: 0.75rem;"></i>
-            <div style="font-size: 0.875rem;">No exports yet.</div>
+            <div style="font-size: 0.875rem;">{% translate "No exports yet." %}</div>
             <div style="font-size: 0.8125rem;margin-top: 0.4rem;">
-              Go to <a href="{% url 'inventory' %}">VM Inventory</a>, open a VM, and click <strong>Export VM</strong>.
+              {% translate "Go to" %} <a href="{% url 'inventory' %}">{% translate "VM Inventory" %}</a>{% translate ", open a VM, and click" %} <strong>{% translate "Export VM" %}</strong>.
             </div>
           </div>
         {% endif %}
@@ -106,15 +107,15 @@
     {% if px_import_jobs %}
     <div class="proxorchestrator-card">
       <div class="card-header">
-        <i class="fas fa-file-import" style="color: var(--text-muted);"></i> Recent Package Imports
+        <i class="fas fa-file-import" style="color: var(--text-muted);"></i> {% translate "Recent Package Imports" %}
       </div>
       <div class="card-body" style="padding: 0;">
         <table class="table is-fullwidth is-hoverable" style="margin: 0;font-size: 0.875rem;">
           <thead>
             <tr style="background: var(--bg-main);">
-              <th style="padding: 0.75rem 1rem;font-weight: 600;color: var(--text-semi);">VM</th>
-              <th style="padding: 0.75rem 1rem;font-weight: 600;color: var(--text-semi);">Status</th>
-              <th style="padding: 0.75rem 1rem;font-weight: 600;color: var(--text-semi);">Created</th>
+              <th style="padding: 0.75rem 1rem;font-weight: 600;color: var(--text-semi);">{% translate "VM" %}</th>
+              <th style="padding: 0.75rem 1rem;font-weight: 600;color: var(--text-semi);">{% translate "Status" %}</th>
+              <th style="padding: 0.75rem 1rem;font-weight: 600;color: var(--text-semi);">{% translate "Created" %}</th>
               <th style="padding: 0.75rem 1rem;"></th>
             </tr>
           </thead>
@@ -123,36 +124,36 @@
               <tr>
                 <td style="padding: 0.75rem 1rem;vertical-align: middle;">
                   <div style="font-weight: 600;color: var(--text-header);">{{ job.vm_name|default:"Unnamed" }}</div>
-                  {% if job.vmid %}<div style="font-size: 0.8125rem;color: var(--text-muted);">VMID {{ job.vmid }}</div>{% endif %}
+                  {% if job.vmid %}<div style="font-size: 0.8125rem;color: var(--text-muted);">{% blocktranslate with vmid=job.vmid trimmed %}VMID {{ vmid }}{% endblocktranslate %}</div>{% endif %}
                 </td>
                 <td style="padding: 0.75rem 1rem;vertical-align: middle;">
                   {% if job.stage == 'DONE' %}
-                    <span class="status-badge vm-status-running">Complete</span>
+                    <span class="status-badge vm-status-running">{% translate "Complete" %}</span>
                   {% elif job.stage == 'FAILED' %}
-                    <span class="status-badge vm-status-stopped">Failed</span>
+                    <span class="status-badge vm-status-stopped">{% translate "Failed" %}</span>
                   {% elif job.stage == 'QUEUED' %}
-                    <span class="status-badge" style="background: var(--border-main);color: var(--text-semi);">Queued</span>
+                    <span class="status-badge" style="background: var(--border-main);color: var(--text-semi);">{% translate "Queued" %}</span>
                   {% else %}
-                    <span class="status-badge" style="background: var(--link-color);color: var(--bg-card);">In Progress</span>
+                    <span class="status-badge" style="background: var(--link-color);color: var(--bg-card);">{% translate "In Progress" %}</span>
                   {% endif %}
                 </td>
                 <td style="padding: 0.75rem 1rem;vertical-align: middle;color: var(--text-muted);font-size: 0.8125rem;">
-                  {{ job.created_at|timesince }} ago
+                  {% blocktranslate with created_at=job.created_at|timesince trimmed %}{{ created_at }} ago{% endblocktranslate %}
                 </td>
                 <td style="padding: 0.75rem 1rem;vertical-align: middle;text-align: right;">
                   {% if job.stage == 'DONE' and job.vmid %}
                     <a href="{% url 'vm_detail' job.vmid %}" class="button is-primary is-small" style="margin-right: 0.5rem;">
                       <span class="icon is-small"><i class="fas fa-server"></i></span>
-                      <span>View VM</span>
+                      <span>{% translate "View VM" %}</span>
                     </a>
                   {% elif job.stage not in 'DONE FAILED QUEUED' %}
                     <a href="{% url 'px_progress' job.pk %}" class="button is-light is-small" style="margin-right: 0.5rem;">
                       <span class="icon is-small"><i class="fas fa-tasks"></i></span>
-                      <span>View Progress</span>
+                      <span>{% translate "View Progress" %}</span>
                     </a>
                   {% endif %}
                   <form method="post" action="{% url 'px_delete_job' job.pk %}" style="display: inline;"
-                        onsubmit="return confirm('Delete this import job?');">
+                        onsubmit="return confirm('{{ _("Delete this import job?")|escapejs }}');">
                     {% csrf_token %}
                     <button type="submit" class="button is-light is-small">
                       <span class="icon is-small"><i class="fas fa-trash"></i></span>
@@ -173,39 +174,37 @@
   <div class="column is-4">
     <div class="proxorchestrator-card">
       <div class="card-header">
-        <i class="fas fa-info-circle" style="color: var(--link-color);"></i> About .px Packages
+        <i class="fas fa-info-circle" style="color: var(--link-color);"></i> {% translate "About .px Packages" %}
       </div>
       <div class="card-body" style="font-size: 0.875rem;color: var(--text-semi);line-height: 1.7;">
         <p style="margin-bottom: 0.75rem;">
-          <strong>Export</strong> — packages a VM's full configuration and all disks into a portable <code>.px</code> file.
-          Trigger an export from any VM's detail page.
+          <strong>{% translate "Export" %}</strong> {% translate "— packages a VM's full configuration and all disks into a portable" %} <code>.px</code> {% translate "file. Trigger an export from any VM's detail page." %}
         </p>
         <p style="margin-bottom: 0.75rem;">
-          <strong>Import</strong> — restores a <code>.px</code> package onto any ProxOrchestrator server.
-          You can review and adjust all settings (name, memory, CPU, network, storage) before deployment.
+          <strong>{% translate "Import" %}</strong> {% translate "— restores a" %} <code>.px</code> {% translate "package onto any ProxOrchestrator server. You can review and adjust all settings (name, memory, CPU, network, storage) before deployment." %}
         </p>
         <p style="margin-bottom: 0.75rem;">
-          <strong>Use cases:</strong> migrate VMs between Proxmox clusters, back up VM configurations, share development environments, or deploy templated VMs.
+          <strong>{% translate "Use cases:" %}</strong> {% translate "migrate VMs between Proxmox clusters, back up VM configurations, share development environments, or deploy templated VMs." %}
         </p>
         <hr style="border: none;border-top: 1px solid var(--border-main);margin: 0.75rem 0;">
         <p style="font-size: 0.8125rem;color: var(--text-muted);">
           <i class="fas fa-clock" style="margin-right: 0.3rem;"></i>
-          Completed exports are deleted after {{ export_retention_hours }} hours, or as soon as they are downloaded when that option is on.
+          {% blocktranslate trimmed %}Completed exports are deleted after {{ export_retention_hours }} hours, or as soon as they are downloaded when that option is on.{% endblocktranslate %}
         </p>
       </div>
     </div>
 
     <div class="proxorchestrator-card" style="margin-top: 1rem;">
       <div class="card-header">
-        <i class="fas fa-file-import" style="color: var(--link-color);"></i> Import a Package
+        <i class="fas fa-file-import" style="color: var(--link-color);"></i> {% translate "Import a Package" %}
       </div>
       <div class="card-body" style="text-align: center;padding: 1.5rem;">
         <p style="font-size: 0.875rem;color: var(--text-semi);margin-bottom: 1rem;">
-          Have a <code>.px</code> file from another ProxOrchestrator server?
+          {% translate "Have a" %} <code>.px</code> {% translate "file from another ProxOrchestrator server?" %}
         </p>
         <a href="{% url 'px_upload' %}" class="button is-info is-medium is-fullwidth" style="font-weight: 600;">
           <span class="icon"><i class="fas fa-upload"></i></span>
-          <span>Upload .px Package</span>
+          <span>{% translate "Upload .px Package" %}</span>
         </a>
       </div>
     </div>

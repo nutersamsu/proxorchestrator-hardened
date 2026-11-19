@@ -1,10 +1,11 @@
 {% extends "base.html" %}
-{% block title %}Restore backup — ProxOrchestrator{% endblock %}
-{% block page_title %}Restore {% if kind == 'lxc' %}container{% else %}VM{% endif %} backup{% endblock %}
-{% block help_slug %}backups{% endblock %}
+{% load i18n %}
+{% block title %}{% translate "Restore backup — ProxOrchestrator" %}{% endblock %}
+{% block page_title %}{% translate "Restore" %} {% if kind == 'lxc' %}{% translate "container" %}{% else %}{% translate "VM" %}{% endif %} {% translate "backup" %}{% endblock %}
+{% block help_slug %}{% translate "backups" %}{% endblock %}
 
 {% block page_actions %}
-  <a href="{% url 'backups_index' %}" class="button is-light is-small"><span class="icon is-small"><i class="fas fa-arrow-left"></i></span><span>Backups</span></a>
+  <a href="{% url 'backups_index' %}" class="button is-light is-small"><span class="icon is-small"><i class="fas fa-arrow-left"></i></span><span>{% translate "Backups" %}</span></a>
 {% endblock %}
 
 {% block content %}
@@ -12,14 +13,14 @@
 <div class="columns">
   <div class="column is-5">
     <div class="proxorchestrator-card">
-      <div class="card-header"><i class="fas fa-archive" style="color: var(--link-color);"></i> Backup</div>
+      <div class="card-header"><i class="fas fa-archive" style="color: var(--link-color);"></i> {% translate "Backup" %}</div>
       <div class="card-body" style="padding:1rem 1.5rem;">
-        <div class="cert-detail-row"><div class="cert-detail-label">File</div><div class="cert-detail-value mono-cell" style="word-break:break-all;">{{ volid }}</div></div>
-        <div class="cert-detail-row"><div class="cert-detail-label">Guest</div><div class="cert-detail-value">{% if kind == 'lxc' %}CT{% else %}VM{% endif %} {{ info.vmid }} {{ info.guest_name }}</div></div>
-        {% if info.date %}<div class="cert-detail-row"><div class="cert-detail-label">Date</div><div class="cert-detail-value">{{ info.date|date:"Y-m-d H:i" }}</div></div>{% endif %}
-        {% if info.size %}<div class="cert-detail-row"><div class="cert-detail-label">Size</div><div class="cert-detail-value">{{ info.size_h }}</div></div>{% endif %}
-        {% if info.notes %}<div class="cert-detail-row"><div class="cert-detail-label">Notes</div><div class="cert-detail-value">{{ info.notes }}</div></div>{% endif %}
-        <div class="label is-small" style="margin-top:0.75rem;">Configuration in the backup</div>
+        <div class="cert-detail-row"><div class="cert-detail-label">{% translate "File" %}</div><div class="cert-detail-value mono-cell" style="word-break:break-all;">{{ volid }}</div></div>
+        <div class="cert-detail-row"><div class="cert-detail-label">{% translate "Guest" %}</div><div class="cert-detail-value">{% if kind == 'lxc' %}{% translate "CT" %}{% else %}{% translate "VM" %}{% endif %} {{ info.vmid }} {{ info.guest_name }}</div></div>
+        {% if info.date %}<div class="cert-detail-row"><div class="cert-detail-label">{% translate "Date" %}</div><div class="cert-detail-value">{{ info.date|date:"Y-m-d H:i" }}</div></div>{% endif %}
+        {% if info.size %}<div class="cert-detail-row"><div class="cert-detail-label">{% translate "Size" %}</div><div class="cert-detail-value">{{ info.size_h }}</div></div>{% endif %}
+        {% if info.notes %}<div class="cert-detail-row"><div class="cert-detail-label">{% translate "Notes" %}</div><div class="cert-detail-value">{{ info.notes }}</div></div>{% endif %}
+        <div class="label is-small" style="margin-top:0.75rem;">{% translate "Configuration in the backup" %}</div>
         <pre class="task-log" style="border-radius:6px;max-height:20rem;">{% for l in config_lines %}{{ l }}
 {% empty %}(empty){% endfor %}</pre>
       </div>
@@ -29,39 +30,39 @@
     <form method="post" class="proxorchestrator-card">
       {% csrf_token %}
       <input type="hidden" name="volid" value="{{ volid }}">
-      <div class="card-header"><i class="fas fa-undo" style="color: var(--link-color);"></i> Restore to</div>
+      <div class="card-header"><i class="fas fa-undo" style="color: var(--link-color);"></i> {% translate "Restore to" %}</div>
       <div class="card-body" style="padding:1rem 1.5rem;">
         <div class="columns is-multiline is-variable is-2">
           <div class="column is-6 field">
-            <label class="label is-small">{% if kind == 'lxc' %}CT{% else %}VM{% endif %} ID</label>
+            <label class="label is-small">{% if kind == 'lxc' %}{% translate "CT" %}{% else %}{% translate "VM" %}{% endif %} {% translate "ID" %}</label>
             <input class="input is-small" name="target_vmid" value="{{ suggested_vmid }}" inputmode="numeric" required>
-            <p class="help">{% if source_exists %}ID {{ info.vmid }} still exists; a free ID is suggested. To replace it, enter {{ info.vmid }} and tick overwrite.{% else %}The original ID is free.{% endif %}</p>
+            <p class="help">{% if source_exists %}{% blocktranslate with vmid=info.vmid trimmed %}ID {{ vmid }} still exists; a free ID is suggested. To replace it, enter {{ vmid }} and tick overwrite.{% endblocktranslate %}{% else %}{% translate "The original ID is free." %}{% endif %}</p>
           </div>
           <div class="column is-6 field">
-            <label class="label is-small">Storage for the disks</label>
+            <label class="label is-small">{% translate "Storage for the disks" %}</label>
             <div class="select is-small is-fullwidth"><select name="storage">
-              <option value="">Same as in the backup</option>
+              <option value="">{% translate "Same as in the backup" %}</option>
               {% for s in target_storages %}<option value="{{ s.storage }}" {% if post.storage == s.storage %}selected{% endif %}>{{ s.storage }} ({{ s.type }})</option>{% endfor %}
             </select></div>
           </div>
           <div class="column is-12">
-            <label class="checkbox is-size-7"><input type="checkbox" name="unique" value="1" {% if post.unique or source_exists %}checked{% endif %}> Unique — new MAC addresses (use when the original guest still exists)</label><br>
-            <label class="checkbox is-size-7"><input type="checkbox" name="start" value="1" {% if post.start %}checked{% endif %}> Start after restore</label><br>
+            <label class="checkbox is-size-7"><input type="checkbox" name="unique" value="1" {% if post.unique or source_exists %}checked{% endif %}> {% translate "Unique — new MAC addresses (use when the original guest still exists)" %}</label><br>
+            <label class="checkbox is-size-7"><input type="checkbox" name="start" value="1" {% if post.start %}checked{% endif %}> {% translate "Start after restore" %}</label><br>
             {% if kind == 'lxc' %}
-            <label class="checkbox is-size-7"><input type="checkbox" name="unprivileged" value="1" {% if unprivileged %}checked{% endif %}> Unprivileged container</label>
+            <label class="checkbox is-size-7"><input type="checkbox" name="unprivileged" value="1" {% if unprivileged %}checked{% endif %}> {% translate "Unprivileged container" %}</label>
             {% endif %}
           </div>
           <div class="column is-12">
             <div class="restore-overwrite">
-              <label class="checkbox is-size-7"><input type="checkbox" name="overwrite" value="1" {% if post.overwrite %}checked{% endif %}> <strong>Overwrite</strong> an existing guest with this ID</label>
-              <p class="help">The existing guest and all its disks are destroyed and replaced. The guest must be stopped.</p>
-              <input class="input is-small" name="confirm_overwrite" placeholder="Type the ID again to confirm an overwrite" autocomplete="off" style="max-width:22rem;">
+              <label class="checkbox is-size-7"><input type="checkbox" name="overwrite" value="1" {% if post.overwrite %}checked{% endif %}> <strong>{% translate "Overwrite" %}</strong> {% translate "an existing guest with this ID" %}</label>
+              <p class="help">{% translate "The existing guest and all its disks are destroyed and replaced. The guest must be stopped." %}</p>
+              <input class="input is-small" name="confirm_overwrite" placeholder="{% translate "Type the ID again to confirm an overwrite" %}" autocomplete="off" style="max-width:22rem;">
             </div>
           </div>
         </div>
       </div>
       <footer class="modal-card-foot" style="justify-content:flex-end;border-radius:0 0 8px 8px;">
-        <button type="submit" class="button is-link is-small"><i class="fas fa-undo"></i>&nbsp; Restore</button>
+        <button type="submit" class="button is-link is-small"><i class="fas fa-undo"></i>{% translate "&nbsp; Restore" %}</button>
       </footer>
     </form>
   </div>

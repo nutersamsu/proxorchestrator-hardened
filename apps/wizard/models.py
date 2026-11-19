@@ -3,6 +3,7 @@ import logging
 
 from django.db import models
 from encrypted_model_fields.fields import EncryptedCharField
+from django.utils.translation import gettext_lazy
 
 logger = logging.getLogger(__name__)
 
@@ -26,11 +27,11 @@ class ProxmoxConfig(models.Model):
         max_length=500,
         blank=True,
         default="",
-        verbose_name="VirtIO Windows Drivers ISO",
+        verbose_name=gettext_lazy("VirtIO Windows Drivers ISO"),
         help_text=(
-            "Proxmox storage reference to the VirtIO Windows driver ISO "
+            gettext_lazy("Proxmox storage reference to the VirtIO Windows driver ISO "
             "(e.g. data:iso/virtio-win-0.1.285.iso). "
-            "When set, Windows VMs automatically get this ISO attached as a second CD-ROM."
+            "When set, Windows VMs automatically get this ISO attached as a second CD-ROM.")
         ),
     )
     upload_temp_dir = models.CharField(
@@ -38,9 +39,9 @@ class ProxmoxConfig(models.Model):
         blank=True,
         default="",
         help_text=(
-            "Directory on this server where large upload temp files are written. "
+            gettext_lazy("Directory on this server where large upload temp files are written. "
             "Leave blank to use the OS default (/tmp). "
-            "Set this to a path on a disk with enough free space when importing large images."
+            "Set this to a path on a disk with enough free space when importing large images.")
         ),
     )
     default_cores = models.IntegerField(default=2)

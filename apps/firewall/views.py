@@ -20,6 +20,7 @@ from apps.firewall import fw
 from apps.proxmox.api import ProxmoxAPIError
 from apps.proxmox.perms import token_can
 from apps.wizard.models import ProxmoxConfig
+from django.utils.translation import gettext
 
 logger = logging.getLogger(__name__)
 
@@ -76,8 +77,7 @@ def _groups(api):
 def _guard(request, scope, key):
     """Common checks for every write: permission and an optional digest."""
     if not _editable(scope):
-        messages.error(request, f"The API token may not change the {scope.label} firewall "
-                                f"(needs {scope.edit_privilege}).")
+        messages.error(request, gettext('The API token may not change the %(label)s firewall (needs %(edit_privilege)s).') % {"label": scope.label, "edit_privilege": scope.edit_privilege})
         return False
     digest = request.POST.get("digest", "")
     if digest and not DIGEST_RE.match(digest):
@@ -166,11 +166,11 @@ def options_save(request, key):
         data = fw.parse_options_form(request.POST, scope)
         api._put(f"{scope.base}/options", _with_digest(request, data))
         logger.info("firewall options %s by %s: %s", key, request.user, data)
-        messages.success(request, f"{scope.label} firewall options saved.")
+        messages.success(request, gettext('%(label)s firewall options saved.') % {"label": scope.label})
     except fw.FirewallError as exc:
         messages.error(request, str(exc))
     except ProxmoxAPIError as exc:
-        messages.error(request, f"Could not save options: {exc.message}")
+        messages.error(request, gettext('Could not save options: %(message)s') % {"message": exc.message})
     return _back(request, key)
 
 
@@ -189,11 +189,11 @@ def rule_add(request, key):
         data = fw.parse_rule_form(request.POST, scope, _macros(api), _groups(api))
         api._post(scope.rules_path, data)
         logger.info("firewall rule add %s by %s: %s", key, request.user, data)
-        messages.success(request, "Rule added (at the top of the list).")
+        messages.success(request, gettext("Rule added (at the top of the list)."))
     except fw.FirewallError as exc:
         messages.error(request, str(exc))
     except ProxmoxAPIError as exc:
-        messages.error(request, f"Could not add the rule: {exc.message}")
+        messages.error(request, gettext('Could not add the rule: %(message)s') % {"message": exc.message})
     return _back(request, key)
 
 
@@ -213,11 +213,11 @@ def rule_edit(request, key, pos):
             data["delete"] = ",".join(delete)
         api._put(f"{scope.rules_path}/{int(pos)}", _with_digest(request, data))
         logger.info("firewall rule edit %s/%d by %s", key, pos, request.user)
-        messages.success(request, f"Rule {pos} updated.")
+        messages.success(request, gettext('Rule %(pos)s updated.') % {"pos": pos})
     except fw.FirewallError as exc:
         messages.error(request, str(exc))
     except ProxmoxAPIError as exc:
-        messages.error(request, f"Could not update the rule: {exc.message}")
+        messages.error(request, gettext('Could not update the rule: %(message)s') % {"message": exc.message})
     return _back(request, key)
 
 
@@ -231,9 +231,9 @@ def rule_toggle(request, key, pos):
     enable = 1 if request.POST.get("enable") == "1" else 0
     try:
         api._put(f"{scope.rules_path}/{int(pos)}", _with_digest(request, {"enable": enable}))
-        messages.success(request, f"Rule {pos} {'enabled' if enable else 'disabled'}.")
+        messages.success(request, (gettext("Rule %(pos)s enabled.") if enable else gettext("Rule %(pos)s disabled.")) % {"pos": pos})
     except ProxmoxAPIError as exc:
-        messages.error(request, f"Could not change the rule: {exc.message}")
+        messages.error(request, gettext('Could not change the rule: %(message)s') % {"message": exc.message})
     return _back(request, key)
 
 
@@ -250,7 +250,7 @@ def rule_move(request, key, pos):
     try:
         api._put(f"{scope.rules_path}/{int(pos)}", _with_digest(request, {"moveto": int(target)}))
     except ProxmoxAPIError as exc:
-        messages.error(request, f"Could not move the rule: {exc.message}")
+        messages.error(request, gettext('Could not move the rule: %(message)s') % {"message": exc.message})
     return _back(request, key)
 
 
@@ -266,9 +266,9 @@ def rule_delete(request, key, pos):
         path = f"{scope.rules_path}/{int(pos)}" + (f"?digest={digest}" if digest else "")
         api._delete(path)
         logger.info("firewall rule delete %s/%d by %s", key, pos, request.user)
-        messages.success(request, f"Rule {pos} deleted.")
+        messages.success(request, gettext('Rule %(pos)s deleted.') % {"pos": pos})
     except ProxmoxAPIError as exc:
-        messages.error(request, f"Could not delete the rule: {exc.message}")
+        messages.error(request, gettext('Could not delete the rule: %(message)s') % {"message": exc.message})
     return _back(request, key)
 
 
@@ -293,11 +293,11 @@ def alias_add(request, key):
     try:
         data = fw.parse_alias_form(request.POST)
         api._post(f"{scope.base}/aliases", data)
-        messages.success(request, f"Alias {data['name']} added.")
+        messages.success(request, gettext('Alias %(data_name)s added.') % {"data_name": data['name']})
     except fw.FirewallError as exc:
         messages.error(request, str(exc))
     except ProxmoxAPIError as exc:
-        messages.error(request, f"Could not add the alias: {exc.message}")
+        messages.error(request, gettext('Could not add the alias: %(message)s') % {"message": exc.message})
     return _back(request, key)
 
 
@@ -311,9 +311,9 @@ def alias_delete(request, key, name):
         return _back(request, key)
     try:
         api._delete(f"{scope.base}/aliases/{quote(name, safe='')}")
-        messages.success(request, f"Alias {name} deleted.")
+        messages.success(request, gettext('Alias %(name)s deleted.') % {"name": name})
     except ProxmoxAPIError as exc:
-        messages.error(request, f"Could not delete the alias: {exc.message}")
+        messages.error(request, gettext('Could not delete the alias: %(message)s') % {"message": exc.message})
     return _back(request, key)
 
 
@@ -326,11 +326,11 @@ def ipset_add(request, key):
     try:
         data = fw.parse_ipset_form(request.POST)
         api._post(f"{scope.base}/ipset", data)
-        messages.success(request, f"IPSet {data['name']} created.")
+        messages.success(request, gettext('IPSet %(data_name)s created.') % {"data_name": data['name']})
     except fw.FirewallError as exc:
         messages.error(request, str(exc))
     except ProxmoxAPIError as exc:
-        messages.error(request, f"Could not create the IPSet: {exc.message}")
+        messages.error(request, gettext('Could not create the IPSet: %(message)s') % {"message": exc.message})
     return _back(request, key)
 
 
@@ -344,9 +344,9 @@ def ipset_delete(request, key, name):
         return _back(request, key)
     try:
         api._delete(f"{scope.base}/ipset/{quote(name, safe='')}")
-        messages.success(request, f"IPSet {name} deleted.")
+        messages.success(request, gettext('IPSet %(name)s deleted.') % {"name": name})
     except ProxmoxAPIError as exc:
-        messages.error(request, f"Could not delete the IPSet (it must be empty): {exc.message}")
+        messages.error(request, gettext('Could not delete the IPSet (it must be empty): %(message)s') % {"message": exc.message})
     return _back(request, key)
 
 
@@ -361,11 +361,11 @@ def ipset_entry_add(request, key, name):
     try:
         data = fw.parse_ipset_entry(request.POST)
         api._post(f"{scope.base}/ipset/{quote(name, safe='')}", data)
-        messages.success(request, f"{data['cidr']} added to {name}.")
+        messages.success(request, gettext('%(data_cidr)s added to %(name)s.') % {"data_cidr": data['cidr'], "name": name})
     except fw.FirewallError as exc:
         messages.error(request, str(exc))
     except ProxmoxAPIError as exc:
-        messages.error(request, f"Could not add the entry: {exc.message}")
+        messages.error(request, gettext('Could not add the entry: %(message)s') % {"message": exc.message})
     return _back(request, key)
 
 
@@ -383,9 +383,9 @@ def ipset_entry_remove(request, key, name):
         return _back(request, key)
     try:
         api._delete(f"{scope.base}/ipset/{quote(name, safe='')}/{quote(cidr, safe='')}")
-        messages.success(request, f"{cidr} removed from {name}.")
+        messages.success(request, gettext('%(cidr)s removed from %(name)s.') % {"cidr": cidr, "name": name})
     except ProxmoxAPIError as exc:
-        messages.error(request, f"Could not remove the entry: {exc.message}")
+        messages.error(request, gettext('Could not remove the entry: %(message)s') % {"message": exc.message})
     return _back(request, key)
 
 
@@ -402,13 +402,13 @@ def group_add(request):
         return redirect("firewall_index")
     name = (request.POST.get("group") or "").strip()
     if not fw.GROUP_RE.match(name):
-        messages.error(request, "Group name: 2-18 letters, digits, _ or - (starts with a letter).")
+        messages.error(request, gettext("Group name: 2-18 letters, digits, _ or - (starts with a letter)."))
         return redirect("firewall_index")
     try:
         api._post("/cluster/firewall/groups", {"group": name, "comment": fw._one_line(request.POST.get("comment"), "Comment")})
-        messages.success(request, f"Security group {name} created.")
+        messages.success(request, gettext('Security group %(name)s created.') % {"name": name})
     except (fw.FirewallError, ProxmoxAPIError) as exc:
-        messages.error(request, f"Could not create the group: {getattr(exc, 'message', exc)}")
+        messages.error(request, gettext('Could not create the group: %(exc_message_exc)s') % {"exc_message_exc": getattr(exc, 'message', exc)})
     return redirect("firewall_index")
 
 
@@ -422,7 +422,7 @@ def group_delete(request, name):
         return redirect("firewall_index")
     try:
         api._delete(f"/cluster/firewall/groups/{quote(name, safe='')}")
-        messages.success(request, f"Security group {name} deleted.")
+        messages.success(request, gettext('Security group %(name)s deleted.') % {"name": name})
     except ProxmoxAPIError as exc:
-        messages.error(request, f"Could not delete the group (it must be empty and unused): {exc.message}")
+        messages.error(request, gettext('Could not delete the group (it must be empty and unused): %(message)s') % {"message": exc.message})
     return redirect("firewall_index")

@@ -1,3 +1,4 @@
+{% load i18n %}
 {# Status banner for the VM detail page — self-polls every 5s (2s when transitioning) #}
 {# When a transition completes, reload the page so action buttons (Console, Start/Stop) update #}
 {% if was_transitioning and not transitioning %}
@@ -45,29 +46,29 @@
       <div style="display: flex;align-items: center;gap: 0.75rem;">
         <span style="font-size: 1.1rem;font-weight: 700;color: var(--text-header);">{{ vm.name }}</span>
         {% if stuck %}
-          <span class="status-badge" style="background: var(--bg-warning-light);color: var(--text-warning-dark);">Not Responding</span>
+          <span class="status-badge" style="background: var(--bg-warning-light);color: var(--text-warning-dark);">{% translate "Not Responding" %}</span>
         {% elif transitioning %}
           <span class="status-badge" style="background: var(--bg-info-light);color: var(--text-info-dark);">{{ action_label }}…</span>
         {% elif vm.status == 'running' %}
-          <span class="status-badge vm-status-running">Running</span>
+          <span class="status-badge vm-status-running">{% translate "Running" %}</span>
         {% elif vm.status == 'stopped' %}
-          <span class="status-badge vm-status-stopped">Stopped</span>
+          <span class="status-badge vm-status-stopped">{% translate "Stopped" %}</span>
         {% elif vm.status == 'paused' %}
-          <span class="status-badge vm-status-paused">Paused</span>
+          <span class="status-badge vm-status-paused">{% translate "Paused" %}</span>
         {% else %}
           <span class="status-badge vm-status-unknown">{{ vm.status }}</span>
         {% endif %}
       </div>
       {% if stuck %}
       <div style="font-size: 0.875rem;color: var(--text-warning-dark);margin-top: 0.3rem;">
-        VM is not responding to {{ action_label|lower }} command. This may require investigation in the Proxmox console.
+        {% blocktranslate with action_label=action_label|lower trimmed %}VM is not responding to {{ action_label }} command. This may require investigation in the Proxmox console.{% endblocktranslate %}
       </div>
       {% else %}
       <div style="font-size: 0.8125rem;color: var(--text-muted);margin-top: 0.3rem;">
-        VMID <strong>{{ vm.vmid }}</strong>
-        &bull; Node <strong>{{ vm.node }}</strong>
+        {% translate "VMID" %} <strong>{{ vm.vmid }}</strong>
+        {% translate "&bull; Node" %} <strong>{{ vm.node }}</strong>
         {% if vm.status == 'running' and vm.uptime_human %}
-          &bull; Uptime <strong>{{ vm.uptime_human }}</strong>
+          {% translate "&bull; Uptime" %} <strong>{{ vm.uptime_human }}</strong>
         {% endif %}
       </div>
       {% endif %}
@@ -77,11 +78,11 @@
     <div style="margin-left: auto;display: flex;gap: 2rem;">
       <div style="text-align: center;">
         <div style="font-size: 1.25rem;font-weight: 700;color: var(--text-header);">{{ vm.cpu_pct|floatformat:1 }}%</div>
-        <div style="font-size: 0.75rem;color: var(--text-muted);text-transform: uppercase;letter-spacing: 0.5px;">CPU</div>
+        <div style="font-size: 0.75rem;color: var(--text-muted);text-transform: uppercase;letter-spacing: 0.5px;">{% translate "CPU" %}</div>
       </div>
       <div style="text-align: center;">
         <div style="font-size: 1.25rem;font-weight: 700;color: var(--text-header);">{{ vm.mem_human|default:"—" }}</div>
-        <div style="font-size: 0.75rem;color: var(--text-muted);text-transform: uppercase;letter-spacing: 0.5px;">RAM Used</div>
+        <div style="font-size: 0.75rem;color: var(--text-muted);text-transform: uppercase;letter-spacing: 0.5px;">{% translate "RAM Used" %}</div>
       </div>
     </div>
     {% endif %}

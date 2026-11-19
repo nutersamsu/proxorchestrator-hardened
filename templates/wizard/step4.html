@@ -1,5 +1,6 @@
 {% extends "wizard/base_wizard.html" %}
-{% block title %}Step 4: Discover Environment — Setup Wizard{% endblock %}
+{% load i18n %}
+{% block title %}{% translate "Step 4: Discover Environment — Setup Wizard" %}{% endblock %}
 {% block current_step_display %}4{% endblock %}
 
 {% block wizard_content %}
@@ -9,9 +10,9 @@
       <div style="width: 40px;height: 40px;border-radius: 10px;background: var(--bg-purple-light);display: flex;align-items: center;justify-content: center;flex-shrink: 0;">
         <i class="fas fa-search" style="color: var(--purple-color);font-size: 1.1rem;"></i>
       </div>
-      <h2>Discovering Your Environment</h2>
+      <h2>{% translate "Discovering Your Environment" %}</h2>
     </div>
-    <p class="subtitle">Querying your Proxmox cluster — this takes a few seconds.</p>
+    <p class="subtitle">{% translate "Querying your Proxmox cluster — this takes a few seconds." %}</p>
   </div>
 
   {# Results area — HTMX auto-loads discovery on page render #}
@@ -23,8 +24,8 @@
     {# Spinner shown while HTMX request is in-flight #}
     <div class="wizard-card-body" style="text-align: center;padding: 3rem 2rem;">
       <div class="spinner" style="width: 2.5rem;height: 2.5rem;border-width: 4px;margin: 0 auto 1.25rem;"></div>
-      <p style="color: var(--text-muted);font-size: 1rem;">Connecting to Proxmox API and SSH&hellip;</p>
-      <p style="color: var(--text-muted);font-size: 0.8125rem;margin-top: 0.4rem;">Scanning nodes, storage, and networks.</p>
+      <p style="color: var(--text-muted);font-size: 1rem;">{% translate "Connecting to Proxmox API and SSH&hellip;" %}</p>
+      <p style="color: var(--text-muted);font-size: 0.8125rem;margin-top: 0.4rem;">{% translate "Scanning nodes, storage, and networks." %}</p>
     </div>
   </div>
 

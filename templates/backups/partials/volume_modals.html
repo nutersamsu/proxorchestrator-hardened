@@ -1,9 +1,10 @@
+{% load i18n %}
 {# Shared modals: delete a volume (typed confirmation) and edit backup notes. Needs next_url in context. #}
 <div class="modal" id="vol-delete-modal">
   <div class="modal-background" onclick="this.parentElement.classList.remove('is-active')"></div>
   <div class="modal-card" style="max-width:480px;border-radius:12px;">
     <header class="modal-card-head" style="background:var(--danger-color);border-radius:12px 12px 0 0;">
-      <p class="modal-card-title" style="color:#fff;font-size:1rem;font-weight:600;"><i class="fas fa-trash-alt"></i>&nbsp; Delete file</p>
+      <p class="modal-card-title" style="color:#fff;font-size:1rem;font-weight:600;"><i class="fas fa-trash-alt"></i>{% translate "&nbsp; Delete file" %}</p>
       <button class="delete" type="button" onclick="document.getElementById('vol-delete-modal').classList.remove('is-active')"></button>
     </header>
     <form method="post" action="{% url 'volume_delete' %}">
@@ -12,14 +13,14 @@
       <input type="hidden" name="next" value="{{ next_url }}">
       <section class="modal-card-body content">
         <p class="mono-cell" id="vol-delete-name" style="word-break:break-all;"></p>
-        <p style="color:var(--danger-color);font-weight:600;"><i class="fas fa-exclamation-circle"></i> The file is removed from the storage. This cannot be undone.</p>
-        <label class="label is-small">Type the file name to confirm:</label>
+        <p style="color:var(--danger-color);font-weight:600;"><i class="fas fa-exclamation-circle"></i> {% translate "The file is removed from the storage. This cannot be undone." %}</p>
+        <label class="label is-small">{% translate "Type the file name to confirm:" %}</label>
         <input class="input is-small mono-cell" name="confirm" id="vol-delete-confirm" autocomplete="off"
                oninput="document.getElementById('vol-delete-btn').disabled = (this.value !== document.getElementById('vol-delete-name').textContent)">
       </section>
       <footer class="modal-card-foot" style="justify-content:flex-end;gap:0.5rem;">
-        <button type="button" class="button is-small is-light" onclick="document.getElementById('vol-delete-modal').classList.remove('is-active')">Cancel</button>
-        <button type="submit" class="button is-small is-danger" id="vol-delete-btn" disabled>Delete</button>
+        <button type="button" class="button is-small is-light" onclick="document.getElementById('vol-delete-modal').classList.remove('is-active')">{% translate "Cancel" %}</button>
+        <button type="submit" class="button is-small is-danger" id="vol-delete-btn" disabled>{% translate "Delete" %}</button>
       </footer>
     </form>
   </div>
@@ -29,7 +30,7 @@
   <div class="modal-background" onclick="this.parentElement.classList.remove('is-active')"></div>
   <div class="modal-card" style="max-width:480px;border-radius:12px;">
     <header class="modal-card-head" style="border-radius:12px 12px 0 0;">
-      <p class="modal-card-title" style="font-size:1rem;font-weight:600;"><i class="fas fa-sticky-note"></i>&nbsp; Backup notes</p>
+      <p class="modal-card-title" style="font-size:1rem;font-weight:600;"><i class="fas fa-sticky-note"></i>{% translate "&nbsp; Backup notes" %}</p>
       <button class="delete" type="button" onclick="document.getElementById('vol-notes-modal').classList.remove('is-active')"></button>
     </header>
     <form method="post" action="{% url 'backup_notes' %}">
@@ -40,8 +41,8 @@
         <textarea class="textarea is-small" name="notes" id="vol-notes-text" rows="3" maxlength="1024"></textarea>
       </section>
       <footer class="modal-card-foot" style="justify-content:flex-end;gap:0.5rem;">
-        <button type="button" class="button is-small is-light" onclick="document.getElementById('vol-notes-modal').classList.remove('is-active')">Cancel</button>
-        <button type="submit" class="button is-small is-link">Save</button>
+        <button type="button" class="button is-small is-light" onclick="document.getElementById('vol-notes-modal').classList.remove('is-active')">{% translate "Cancel" %}</button>
+        <button type="submit" class="button is-small is-link">{% translate "Save" %}</button>
       </footer>
     </form>
   </div>

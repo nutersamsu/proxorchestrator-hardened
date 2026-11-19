@@ -9,6 +9,7 @@ from django.views.decorators.http import require_POST
 
 from apps.proxmox.api import ProxmoxAPIError
 from apps.wizard.models import ProxmoxConfig
+from django.utils.translation import gettext
 
 logger = logging.getLogger(__name__)
 
@@ -148,7 +149,7 @@ def vm_action(request, vmid, action):
         return render(
             request,
             "inventory/partials/vm_row_error.html",
-            {"vmid": vmid, "error": f"Unknown action: {action!r}"},
+            {"vmid": vmid, "error": gettext('Unknown action: %(action)s') % {"action": repr(action)}},
         )
 
     config = ProxmoxConfig.get_config()
@@ -229,7 +230,7 @@ def vm_row_status(request, vmid):
         return render(
             request,
             "inventory/partials/vm_row_error.html",
-            {"vmid": vmid, "error": f"Could not check VM status: {exc}"},
+            {"vmid": vmid, "error": gettext('Could not check VM status: %(exc)s') % {"exc": exc}},
         )
 
     # If we know what state we're waiting for, keep the pending row until we get there

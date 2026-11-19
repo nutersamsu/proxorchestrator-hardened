@@ -11,6 +11,7 @@ import logging
 import re
 
 from django.core.cache import cache
+from django.utils.translation import gettext_noop
 
 logger = logging.getLogger(__name__)
 
@@ -139,10 +140,10 @@ def read_temperatures(config):
             stdout, stderr, code = ssh.run(["sh", "-c", HWMON_SCRIPT])
     except Exception as exc:  # network / auth problems must not break the page
         logger.info("Temperature read failed: %s", exc)
-        return [], "SSH unavailable"
+        return [], gettext_noop("SSH unavailable")
     temps = summarize_temps(parse_hwmon(stdout))
     if not temps:
-        return [], "No sensors exposed by the host"
+        return [], gettext_noop("No sensors exposed by the host")
     return temps, None
 
 
@@ -266,18 +267,18 @@ def repository_status(repos, subscription_active=None):
     if not isinstance(repos, dict):
         return None
     if repos.get("errors"):
-        return [{"level": "error", "text": "Error parsing repositories"}]
+        return [{"level": "error", "text": gettext_noop("Error parsing repositories")}]
     enabled = {
         r.get("handle") for r in repos.get("standard-repos") or []
         if r.get("status") == 1 and not str(r.get("handle", "")).startswith("ceph")
     }
     if not enabled:
-        return [{"level": "error", "text": "No Proxmox VE repository enabled!"}]
-    result = [{"level": "ok", "text": "Proxmox VE updates"}]
+        return [{"level": "error", "text": gettext_noop("No Proxmox VE repository enabled!")}]
+    result = [{"level": "ok", "text": gettext_noop("Proxmox VE updates")}]
     if enabled & {"no-subscription", "test"}:
-        result.append({"level": "warning", "text": "Non production-ready repository enabled!"})
+        result.append({"level": "warning", "text": gettext_noop("Non production-ready repository enabled!")})
     elif "enterprise" in enabled and subscription_active is False:
-        result.append({"level": "warning", "text": "Enterprise repository needs valid subscription"})
+        result.append({"level": "warning", "text": gettext_noop("Enterprise repository needs valid subscription")})
     return result
 
 
@@ -315,8 +316,8 @@ def get_node_summary(config, use_cache=True):
         logger.info("Node status failed: %s", exc)
         msg = str(exc)
         data["error"] = (
-            "The API token cannot read the node status (needs Sys.Audit)."
-            if "403" in msg else "Could not read the node status from the Proxmox API."
+            gettext_noop("The API token cannot read the node status (needs Sys.Audit).")
+            if "403" in msg else gettext_noop("Could not read the node status from the Proxmox API.")
         )
     data["temps"], data["temps_error"] = read_temperatures(config)
     cache.set(key, data, CACHE_SECONDS)

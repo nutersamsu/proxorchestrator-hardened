@@ -1,3 +1,4 @@
+{% load i18n %}
 {# Disk management partial — swapped via HTMX on add / resize #}
 <div id="disk-table">
 
@@ -18,12 +19,12 @@
   <table class="table is-fullwidth is-narrow" style="margin:0;font-size:0.875rem;">
     <thead>
       <tr style="background:var(--bg-header, #f5f7fa);">
-        <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;padding:0.75rem 1.5rem;">Interface</th>
-        <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;">Storage</th>
-        <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;">Size</th>
-        <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;">Format</th>
-        <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;">Options</th>
-        <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;text-align:right;padding-right:1.5rem;">Actions</th>
+        <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;padding:0.75rem 1.5rem;">{% translate "Interface" %}</th>
+        <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;">{% translate "Storage" %}</th>
+        <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;">{% translate "Size" %}</th>
+        <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;">{% translate "Format" %}</th>
+        <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;">{% translate "Options" %}</th>
+        <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;text-align:right;padding-right:1.5rem;">{% translate "Actions" %}</th>
       </tr>
     </thead>
     <tbody>
@@ -37,7 +38,7 @@
                 <i class="fas fa-compact-disc" style="color:var(--info-color, #3273dc);margin-right:0.3rem;font-size:0.75rem;"></i>{{ disk.iso_name }}
               </span>
             {% elif disk.is_empty_cdrom %}
-              <span style="color:var(--text-muted, #7a7a7a);font-style:italic;">Empty</span>
+              <span style="color:var(--text-muted, #7a7a7a);font-style:italic;">{% translate "Empty" %}</span>
             {% else %}
               {{ disk.storage }}
             {% endif %}
@@ -54,25 +55,25 @@
             {% if disk.is_empty_cdrom %}
               <button class="button is-small is-info is-light" style="font-weight:600;"
                       onclick="openCdromModal('{{ disk.interface }}')"
-                      title="Mount ISO">
+                      title="{% translate "Mount ISO" %}">
                 <span class="icon is-small"><i class="fas fa-compact-disc"></i></span>
-                <span>Mount ISO</span>
+                <span>{% translate "Mount ISO" %}</span>
               </button>
             {% else %}
               <button class="button is-small is-info is-light" style="font-weight:600;"
                       onclick="openCdromModal('{{ disk.interface }}')"
-                      title="Change ISO">
+                      title="{% translate "Change ISO" %}">
                 <span class="icon is-small"><i class="fas fa-exchange-alt"></i></span>
-                <span>Change</span>
+                <span>{% translate "Change" %}</span>
               </button>
               <button class="button is-small is-warning is-light" style="font-weight:600;"
                       hx-post="{% url 'vm_cdrom_set' vmid %}"
                       hx-target="#disk-table"
                       hx-swap="outerHTML"
                       hx-vals='{"action": "eject", "interface": "{{ disk.interface }}"}'
-                      hx-confirm="Eject CD-ROM from {{ disk.interface }}?">
+                      hx-confirm="{% blocktranslate with interface=disk.interface trimmed %}Eject CD-ROM from {{ interface }}?{% endblocktranslate %}">
                 <span class="icon is-small"><i class="fas fa-eject"></i></span>
-                <span>Eject</span>
+                <span>{% translate "Eject" %}</span>
               </button>
             {% endif %}
             <button class="button is-small is-danger is-light" style="font-weight:600;"
@@ -80,53 +81,53 @@
                     hx-target="#disk-table"
                     hx-swap="outerHTML"
                     hx-vals='{"disk": "{{ disk.interface }}"}'
-                    hx-confirm="Remove CD-ROM drive {{ disk.interface }}? The drive will be removed from the VM."
-                    title="Remove CD-ROM drive">
+                    hx-confirm="{% blocktranslate with interface=disk.interface trimmed %}Remove CD-ROM drive {{ interface }}? The drive will be removed from the VM.{% endblocktranslate %}"
+                    title="{% translate "Remove CD-ROM drive" %}">
               <span class="icon is-small"><i class="fas fa-times"></i></span>
-              <span>Remove</span>
+              <span>{% translate "Remove" %}</span>
             </button>
           {% elif disk.is_unused %}
             {# Unused/detached disk: offer attach (with options) and delete #}
             <button class="button is-small is-success is-light" style="font-weight:600;"
                     onclick="openAttachModal('{{ disk.interface }}', '{{ disk.volume }}')"
-                    title="Attach disk with options">
+                    title="{% translate "Attach disk with options" %}">
               <span class="icon is-small"><i class="fas fa-plug"></i></span>
-              <span>Attach</span>
+              <span>{% translate "Attach" %}</span>
             </button>
             <button class="button is-small is-danger is-light" style="font-weight:600;"
                     hx-post="{% url 'vm_disk_delete' vmid %}"
                     hx-target="#disk-table"
                     hx-swap="outerHTML"
                     hx-vals='{"disk": "{{ disk.interface }}"}'
-                    hx-confirm="Permanently delete {{ disk.interface }} ({{ disk.volume }})? The disk data will be destroyed."
-                    title="Delete disk permanently">
+                    hx-confirm="{% blocktranslate with interface=disk.interface volume=disk.volume trimmed %}Permanently delete {{ interface }} ({{ volume }})? The disk data will be destroyed.{% endblocktranslate %}"
+                    title="{% translate "Delete disk permanently" %}">
               <span class="icon is-small"><i class="fas fa-trash"></i></span>
-              <span>Delete</span>
+              <span>{% translate "Delete" %}</span>
             </button>
           {% else %}
             {# Active disk: offer resize and detach #}
             <button class="button is-small is-info is-light" style="font-weight:600;"
                     onclick="openResizeModal('{{ disk.interface }}', '{{ disk.size }}')"
-                    title="Increase disk size">
+                    title="{% translate "Increase disk size" %}">
               <span class="icon is-small"><i class="fas fa-expand-arrows-alt"></i></span>
-              <span>Resize</span>
+              <span>{% translate "Resize" %}</span>
             </button>
             <button class="button is-small is-warning is-light" style="font-weight:600;"
                     hx-post="{% url 'vm_disk_detach' vmid %}"
                     hx-target="#disk-table"
                     hx-swap="outerHTML"
                     hx-vals='{"disk": "{{ disk.interface }}"}'
-                    hx-confirm="Detach {{ disk.interface }}? The disk will be removed from the VM but kept on storage as an unused volume."
-                    title="Detach disk (keeps volume)">
+                    hx-confirm="{% blocktranslate with interface=disk.interface trimmed %}Detach {{ interface }}? The disk will be removed from the VM but kept on storage as an unused volume.{% endblocktranslate %}"
+                    title="{% translate "Detach disk (keeps volume)" %}">
               <span class="icon is-small"><i class="fas fa-eject"></i></span>
-              <span>Detach</span>
+              <span>{% translate "Detach" %}</span>
             </button>
             {% if storage_pools %}
             <button class="button is-small is-light" style="font-weight:600;"
                     onclick="openMoveDiskModal('{{ disk.interface }}', '{{ disk.storage }}')"
-                    title="Move disk to another storage">
+                    title="{% translate "Move disk to another storage" %}">
               <span class="icon is-small"><i class="fas fa-truck-moving"></i></span>
-              <span>Move</span>
+              <span>{% translate "Move" %}</span>
             </button>
             {% endif %}
           {% endif %}
@@ -136,7 +137,7 @@
     </tbody>
   </table>
   {% else %}
-    <div style="padding:1.5rem;color:var(--text-muted, #7a7a7a);font-size:0.875rem;">No disk information available.</div>
+    <div style="padding:1.5rem;color:var(--text-muted, #7a7a7a);font-size:0.875rem;">{% translate "No disk information available." %}</div>
   {% endif %}
 
   {# -- Move disk modal -- #}
@@ -145,7 +146,7 @@
     <div class="modal-background" onclick="this.parentElement.classList.remove('is-active')"></div>
     <div class="modal-card" style="max-width:460px;border-radius:12px;">
       <header class="modal-card-head" style="border-radius:12px 12px 0 0;">
-        <p class="modal-card-title" style="font-size:1rem;font-weight:600;"><i class="fas fa-truck-moving"></i>&nbsp; Move disk <span id="move-disk-label" class="mono-cell"></span></p>
+        <p class="modal-card-title" style="font-size:1rem;font-weight:600;"><i class="fas fa-truck-moving"></i>{% translate "&nbsp; Move disk" %} <span id="move-disk-label" class="mono-cell"></span></p>
         <button class="delete" type="button" onclick="document.getElementById('move-disk-modal').classList.remove('is-active')"></button>
       </header>
       <form method="post" action="{% url 'vm_disk_move' vmid %}">
@@ -153,26 +154,26 @@
         <input type="hidden" name="disk" id="move-disk-input">
         <section class="modal-card-body">
           <div class="field">
-            <label class="label is-small">Target storage</label>
+            <label class="label is-small">{% translate "Target storage" %}</label>
             <div class="select is-small is-fullwidth"><select name="storage" id="move-disk-storage">
               {% for s in storage_pools %}<option value="{{ s.storage }}">{{ s.storage }} ({{ s.type }})</option>{% endfor %}
             </select></div>
           </div>
           <div class="field">
-            <label class="label is-small">Format</label>
+            <label class="label is-small">{% translate "Format" %}</label>
             <div class="select is-small is-fullwidth"><select name="format">
-              <option value="">Keep / storage default</option>
-              <option value="raw">raw</option>
-              <option value="qcow2">qcow2 (file storages only)</option>
-              <option value="vmdk">vmdk (file storages only)</option>
+              <option value="">{% translate "Keep / storage default" %}</option>
+              <option value="raw">{% translate "raw" %}</option>
+              <option value="qcow2">{% translate "qcow2 (file storages only)" %}</option>
+              <option value="vmdk">{% translate "vmdk (file storages only)" %}</option>
             </select></div>
           </div>
-          <label class="checkbox is-size-7"><input type="checkbox" name="delete_source" value="1" checked> Delete the source disk after the move</label>
-          <p class="help">Works while the VM is running. Progress opens in the task log.</p>
+          <label class="checkbox is-size-7"><input type="checkbox" name="delete_source" value="1" checked> {% translate "Delete the source disk after the move" %}</label>
+          <p class="help">{% translate "Works while the VM is running. Progress opens in the task log." %}</p>
         </section>
         <footer class="modal-card-foot" style="justify-content:flex-end;gap:0.5rem;">
-          <button type="button" class="button is-small is-light" onclick="document.getElementById('move-disk-modal').classList.remove('is-active')">Cancel</button>
-          <button type="submit" class="button is-small is-link">Move disk</button>
+          <button type="button" class="button is-small is-light" onclick="document.getElementById('move-disk-modal').classList.remove('is-active')">{% translate "Cancel" %}</button>
+          <button type="submit" class="button is-small is-link">{% translate "Move disk" %}</button>
         </footer>
       </form>
     </div>
@@ -194,7 +195,7 @@
   {% if storage_pools %}
   <div style="border-top:1px solid var(--border-color, #e8ecf0);padding:1rem 1.5rem;margin-top:0;">
     <div style="font-size:0.8125rem;font-weight:600;color:var(--text-muted, #7a7a7a);margin-bottom:0.75rem;text-transform:uppercase;letter-spacing:0.5px;">
-      <i class="fas fa-plus-circle" style="margin-right:0.3rem;"></i> Add Disk
+      <i class="fas fa-plus-circle" style="margin-right:0.3rem;"></i> {% translate "Add Disk" %}
     </div>
     <form method="post" action="{% url 'vm_disk_add' vmid %}"
           hx-post="{% url 'vm_disk_add' vmid %}"
@@ -203,21 +204,21 @@
       {% csrf_token %}
       <div style="display:flex;align-items:flex-end;gap:0.75rem;flex-wrap:wrap;margin-bottom:0.75rem;">
         <div style="flex:1;min-width:140px;">
-          <label style="font-size:0.75rem;font-weight:600;color:var(--text-muted, #7a7a7a);display:block;margin-bottom:0.25rem;">Storage</label>
+          <label style="font-size:0.75rem;font-weight:600;color:var(--text-muted, #7a7a7a);display:block;margin-bottom:0.25rem;">{% translate "Storage" %}</label>
           <div class="select is-small is-fullwidth">
             <select name="storage" required>
               {% for s in storage_pools %}
-                <option value="{{ s.storage }}">{{ s.storage }} ({{ s.type }}{% if s.avail %}, {{ s.avail|filesizeformat }} free{% endif %})</option>
+                <option value="{{ s.storage }}">{{ s.storage }} ({{ s.type }}{% if s.avail %}{% blocktranslate with avail=s.avail|filesizeformat trimmed %}, {{ avail }} free{% endblocktranslate %}{% endif %})</option>
               {% endfor %}
             </select>
           </div>
         </div>
         <div style="min-width:90px;max-width:110px;">
-          <label style="font-size:0.75rem;font-weight:600;color:var(--text-muted, #7a7a7a);display:block;margin-bottom:0.25rem;">Size (GB)</label>
+          <label style="font-size:0.75rem;font-weight:600;color:var(--text-muted, #7a7a7a);display:block;margin-bottom:0.25rem;">{% translate "Size (GB)" %}</label>
           <input class="input is-small" type="number" name="size" min="1" value="32" required style="width:100%;">
         </div>
         <div style="min-width:130px;">
-          <label style="font-size:0.75rem;font-weight:600;color:var(--text-muted, #7a7a7a);display:block;margin-bottom:0.25rem;">Bus Type</label>
+          <label style="font-size:0.75rem;font-weight:600;color:var(--text-muted, #7a7a7a);display:block;margin-bottom:0.25rem;">{% translate "Bus Type" %}</label>
           <div class="select is-small is-fullwidth">
             <select name="bus" id="add-disk-bus">
               {% for val, label in disk_bus_choices %}
@@ -227,7 +228,7 @@
           </div>
         </div>
         <div style="min-width:150px;">
-          <label style="font-size:0.75rem;font-weight:600;color:var(--text-muted, #7a7a7a);display:block;margin-bottom:0.25rem;">Cache</label>
+          <label style="font-size:0.75rem;font-weight:600;color:var(--text-muted, #7a7a7a);display:block;margin-bottom:0.25rem;">{% translate "Cache" %}</label>
           <div class="select is-small is-fullwidth">
             <select name="cache">
               {% for val, label in disk_cache_choices %}
@@ -239,26 +240,26 @@
       </div>
       <div style="display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap;">
         <label style="font-size:0.8125rem;color:var(--text-semi, #555);display:flex;align-items:center;gap:0.3rem;cursor:pointer;">
-          <input type="checkbox" name="ssd" value="1"> SSD Emulation
+          <input type="checkbox" name="ssd" value="1"> {% translate "SSD Emulation" %}
         </label>
         <label style="font-size:0.8125rem;color:var(--text-semi, #555);display:flex;align-items:center;gap:0.3rem;cursor:pointer;">
-          <input type="checkbox" name="discard" value="1"> Discard (TRIM)
+          <input type="checkbox" name="discard" value="1"> {% translate "Discard (TRIM)" %}
         </label>
         <label style="font-size:0.8125rem;color:var(--text-semi, #555);display:flex;align-items:center;gap:0.3rem;cursor:pointer;" id="iothread-label">
-          <input type="checkbox" name="iothread" value="1"> IO Thread
+          <input type="checkbox" name="iothread" value="1"> {% translate "IO Thread" %}
         </label>
         <label style="font-size:0.8125rem;color:var(--text-semi, #555);display:flex;align-items:center;gap:0.3rem;cursor:pointer;">
-          <input type="checkbox" name="backup" value="1" checked> Include in Backup
+          <input type="checkbox" name="backup" value="1" checked> {% translate "Include in Backup" %}
         </label>
         <div style="margin-left:auto;display:flex;gap:0.5rem;">
           <button type="submit" class="button is-small is-primary" style="font-weight:600;">
             <span class="icon is-small"><i class="fas fa-plus"></i></span>
-            <span>Add Disk</span>
+            <span>{% translate "Add Disk" %}</span>
           </button>
           <button type="button" class="button is-small is-info is-light" style="font-weight:600;"
                   onclick="openCdromModal('')">
             <span class="icon is-small"><i class="fas fa-compact-disc"></i></span>
-            <span>Add CD-ROM</span>
+            <span>{% translate "Add CD-ROM" %}</span>
           </button>
         </div>
       </div>
@@ -272,7 +273,7 @@
     <div class="modal-card" style="max-width:420px;border-radius:12px;">
       <header class="modal-card-head" style="background:var(--link-color, #3273dc);border-radius:12px 12px 0 0;">
         <p class="modal-card-title" style="color:#fff;font-size:1rem;font-weight:600;">
-          <i class="fas fa-expand-arrows-alt"></i>&nbsp; Resize Disk
+          <i class="fas fa-expand-arrows-alt"></i>{% translate "&nbsp; Resize Disk" %}
         </p>
         <button class="delete" onclick="closeResizeModal()"></button>
       </header>
@@ -286,21 +287,21 @@
         <input type="hidden" name="disk" id="resize-disk-name" value="">
         <section class="modal-card-body" id="resize-modal-body">
           <p style="margin-bottom:1rem;font-size:0.875rem;">
-            Increase <strong id="resize-disk-label"></strong> (currently <span id="resize-disk-current"></span>)
+            {% translate "Increase" %} <strong id="resize-disk-label"></strong> {% translate "(currently" %} <span id="resize-disk-current"></span>)
           </p>
           <div class="field">
-            <label class="label" style="font-size:0.875rem;">Add (GB)</label>
+            <label class="label" style="font-size:0.875rem;">{% translate "Add (GB)" %}</label>
             <div class="control">
               <input class="input" type="number" name="add_gb" min="1" value="10" required id="resize-add-input">
             </div>
-            <p class="help">Disk size can only be increased, never decreased.</p>
+            <p class="help">{% translate "Disk size can only be increased, never decreased." %}</p>
           </div>
         </section>
         <footer class="modal-card-foot" style="justify-content:flex-end;gap:0.75rem;">
-          <button type="button" class="button is-light" onclick="closeResizeModal()" id="resize-cancel-btn">Cancel</button>
+          <button type="button" class="button is-light" onclick="closeResizeModal()" id="resize-cancel-btn">{% translate "Cancel" %}</button>
           <button type="submit" class="button is-primary" style="font-weight:600;" id="resize-submit-btn">
             <span class="icon is-small"><i class="fas fa-expand-arrows-alt"></i></span>
-            <span>Resize</span>
+            <span>{% translate "Resize" %}</span>
           </button>
         </footer>
       </form>
@@ -313,7 +314,7 @@
     <div class="modal-card" style="max-width:500px;border-radius:12px;">
       <header class="modal-card-head" style="background:var(--success-color, #48c78e);border-radius:12px 12px 0 0;">
         <p class="modal-card-title" style="color:#fff;font-size:1rem;font-weight:600;">
-          <i class="fas fa-plug"></i>&nbsp; Attach Disk
+          <i class="fas fa-plug"></i>{% translate "&nbsp; Attach Disk" %}
         </p>
         <button class="delete" onclick="closeAttachModal()"></button>
       </header>
@@ -326,13 +327,13 @@
         <input type="hidden" name="disk" id="attach-disk-name" value="">
         <section class="modal-card-body">
           <p style="margin-bottom:1rem;font-size:0.875rem;">
-            Attach <strong id="attach-disk-volume"></strong> to this VM.
+            {% translate "Attach" %} <strong id="attach-disk-volume"></strong> {% translate "to this VM." %}
           </p>
 
           <div class="columns" style="margin-bottom:0;">
             <div class="column">
               <div class="field">
-                <label class="label" style="font-size:0.875rem;">Bus Type</label>
+                <label class="label" style="font-size:0.875rem;">{% translate "Bus Type" %}</label>
                 <div class="control">
                   <div class="select is-fullwidth">
                     <select name="bus" id="attach-disk-bus">
@@ -346,7 +347,7 @@
             </div>
             <div class="column">
               <div class="field">
-                <label class="label" style="font-size:0.875rem;">Cache</label>
+                <label class="label" style="font-size:0.875rem;">{% translate "Cache" %}</label>
                 <div class="control">
                   <div class="select is-fullwidth">
                     <select name="cache">
@@ -362,24 +363,24 @@
 
           <div style="display:flex;gap:1.25rem;flex-wrap:wrap;margin-top:0.5rem;">
             <label style="font-size:0.875rem;color:var(--text-semi, #555);display:flex;align-items:center;gap:0.3rem;cursor:pointer;">
-              <input type="checkbox" name="ssd" value="1"> SSD Emulation
+              <input type="checkbox" name="ssd" value="1"> {% translate "SSD Emulation" %}
             </label>
             <label style="font-size:0.875rem;color:var(--text-semi, #555);display:flex;align-items:center;gap:0.3rem;cursor:pointer;">
-              <input type="checkbox" name="discard" value="1"> Discard (TRIM)
+              <input type="checkbox" name="discard" value="1"> {% translate "Discard (TRIM)" %}
             </label>
             <label style="font-size:0.875rem;color:var(--text-semi, #555);display:flex;align-items:center;gap:0.3rem;cursor:pointer;" id="attach-iothread-label">
-              <input type="checkbox" name="iothread" value="1"> IO Thread
+              <input type="checkbox" name="iothread" value="1"> {% translate "IO Thread" %}
             </label>
             <label style="font-size:0.875rem;color:var(--text-semi, #555);display:flex;align-items:center;gap:0.3rem;cursor:pointer;">
-              <input type="checkbox" name="backup" value="1" checked> Include in Backup
+              <input type="checkbox" name="backup" value="1" checked> {% translate "Include in Backup" %}
             </label>
           </div>
         </section>
         <footer class="modal-card-foot" style="justify-content:flex-end;gap:0.75rem;">
-          <button type="button" class="button is-light" onclick="closeAttachModal()">Cancel</button>
+          <button type="button" class="button is-light" onclick="closeAttachModal()">{% translate "Cancel" %}</button>
           <button type="submit" class="button is-success" style="font-weight:600;" id="attach-submit-btn">
             <span class="icon is-small"><i class="fas fa-plug"></i></span>
-            <span>Attach Disk</span>
+            <span>{% translate "Attach Disk" %}</span>
           </button>
         </footer>
       </form>
@@ -392,7 +393,7 @@
     <div class="modal-card" style="max-width:600px;border-radius:12px;">
       <header class="modal-card-head" style="background:var(--info-color, #3273dc);border-radius:12px 12px 0 0;">
         <p class="modal-card-title" style="color:#fff;font-size:1rem;font-weight:600;">
-          <i class="fas fa-compact-disc"></i>&nbsp; CD-ROM / ISO
+          <i class="fas fa-compact-disc"></i>{% translate "&nbsp; CD-ROM / ISO" %}
         </p>
         <button class="delete" onclick="closeCdromModal()"></button>
       </header>
@@ -412,13 +413,13 @@
       <section class="modal-card-body">
         {# Step 1: Select storage pool #}
         <div class="field">
-          <label class="label" style="font-size:0.875rem;">ISO Storage Pool</label>
+          <label class="label" style="font-size:0.875rem;">{% translate "ISO Storage Pool" %}</label>
           <div class="control">
             <div class="select is-fullwidth">
               <select id="cdrom-storage-select" onchange="loadPoolIsos()">
-                <option value="">Select a storage pool...</option>
+                <option value="">{% translate "Select a storage pool..." %}</option>
                 {% for s in iso_storages %}
-                  <option value="{{ s.storage }}">{{ s.storage }} ({{ s.type }}{% if s.avail %}, {{ s.avail|filesizeformat }} free{% endif %})</option>
+                  <option value="{{ s.storage }}">{{ s.storage }} ({{ s.type }}{% if s.avail %}{% blocktranslate with avail=s.avail|filesizeformat trimmed %}, {{ avail }} free{% endblocktranslate %}{% endif %})</option>
                 {% endfor %}
               </select>
             </div>
@@ -433,19 +434,19 @@
           <div style="display:flex;align-items:center;gap:0.5rem;">
             <i class="fas fa-check-circle" style="color:var(--success-color, #48c78e);"></i>
             <span id="cdrom-selected-name" style="font-family: var(--font-mono);font-size:0.8125rem;font-weight:600;flex:1;"></span>
-            <button type="button" class="button is-small is-light" onclick="clearIsoSelection()">Change</button>
+            <button type="button" class="button is-small is-light" onclick="clearIsoSelection()">{% translate "Change" %}</button>
           </div>
         </div>
 
         {# Upload ISO divider #}
         <hr style="margin:1rem 0;border:none;border-top:1px solid var(--border-color, #e8ecf0);">
         <div style="font-size:0.8125rem;font-weight:600;color:var(--text-muted, #7a7a7a);margin-bottom:0.5rem;">
-          <i class="fas fa-upload" style="margin-right:0.3rem;"></i> Upload New ISO
+          <i class="fas fa-upload" style="margin-right:0.3rem;"></i> {% translate "Upload New ISO" %}
         </div>
         <form id="iso-upload-form" onsubmit="uploadIso(event)">
           <div style="display:flex;align-items:flex-end;gap:0.5rem;flex-wrap:wrap;">
             <div style="flex:1;min-width:140px;">
-              <label style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);display:block;margin-bottom:0.25rem;">Storage Pool</label>
+              <label style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);display:block;margin-bottom:0.25rem;">{% translate "Storage Pool" %}</label>
               <div class="select is-small is-fullwidth">
                 <select id="iso-upload-storage" required>
                   {% for s in iso_storages %}
@@ -455,33 +456,33 @@
               </div>
             </div>
             <div style="flex:2;min-width:180px;">
-              <label style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);display:block;margin-bottom:0.25rem;">ISO File</label>
+              <label style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);display:block;margin-bottom:0.25rem;">{% translate "ISO File" %}</label>
               <div class="file is-small has-name is-fullwidth">
                 <label class="file-label" style="width:100%;">
                   <input class="file-input" type="file" id="iso-upload-file" accept=".iso" required
-                         onchange="document.getElementById('iso-file-name').textContent=this.files[0]?this.files[0].name:'Choose file...'">
+                         onchange="document.getElementById('iso-file-name').textContent=this.files[0]?this.files[0].name:'{{ _("Choose file...")|escapejs }}'">
                   <span class="file-cta" style="padding-right:0.75rem;">
                     <span class="file-icon"><i class="fas fa-upload"></i></span>
-                    <span class="file-label">Browse</span>
+                    <span class="file-label">{% translate "Browse" %}</span>
                   </span>
-                  <span class="file-name" id="iso-file-name" style="max-width:200px;">Choose file...</span>
+                  <span class="file-name" id="iso-file-name" style="max-width:200px;">{% translate "Choose file..." %}</span>
                 </label>
               </div>
             </div>
             <button type="submit" class="button is-small is-info" style="font-weight:600;" id="iso-upload-btn">
               <span class="icon is-small"><i class="fas fa-upload"></i></span>
-              <span>Upload</span>
+              <span>{% translate "Upload" %}</span>
             </button>
           </div>
           <div style="margin-top:0.5rem;">
             <label style="font-size:0.8125rem;color:var(--text-semi, #555);display:flex;align-items:center;gap:0.3rem;cursor:pointer;">
-              <input type="checkbox" id="iso-mount-after" checked> Mount after upload
+              <input type="checkbox" id="iso-mount-after" checked> {% translate "Mount after upload" %}
             </label>
           </div>
         </form>
         <div id="iso-upload-progress" style="display:none;margin-top:0.75rem;">
           <div style="margin-bottom:0.4rem;display:flex;justify-content:space-between;font-size:0.8125rem;">
-            <span id="iso-upload-stage" style="color:var(--link-color, #3273dc);font-weight:600;">Uploading...</span>
+            <span id="iso-upload-stage" style="color:var(--link-color, #3273dc);font-weight:600;">{% translate "Uploading..." %}</span>
             <span id="iso-upload-pct" style="color:var(--text-muted, #7a7a7a);">0%</span>
           </div>
           <progress class="progress is-small is-info" id="iso-upload-bar" value="0" max="100" style="margin-bottom:0.25rem;">0%</progress>
@@ -490,11 +491,11 @@
       </section>
 
       <footer class="modal-card-foot" style="justify-content:flex-end;gap:0.75rem;">
-        <button type="button" class="button is-light" onclick="closeCdromModal()">Cancel</button>
+        <button type="button" class="button is-light" onclick="closeCdromModal()">{% translate "Cancel" %}</button>
         <button type="button" class="button is-primary" style="font-weight:600;" id="cdrom-mount-btn" disabled
                 onclick="mountIso()">
           <span class="icon is-small"><i class="fas fa-compact-disc"></i></span>
-          <span>Mount ISO</span>
+          <span>{% translate "Mount ISO" %}</span>
         </button>
       </footer>
     </div>
@@ -576,7 +577,7 @@
       return;
     }
     browser.style.display = '';
-    browser.innerHTML = '<div style="padding:1rem;text-align:center;color:var(--text-muted,#7a7a7a);"><span class="spinner" style="width:16px;height:16px;border-width:2px;display:inline-block;vertical-align:middle;margin-right:0.5rem;"></span> Loading ISOs...</div>';
+    browser.innerHTML = '<div style="padding:1rem;text-align:center;color:var(--text-muted,#7a7a7a);"><span class="spinner" style="width:16px;height:16px;border-width:2px;display:inline-block;vertical-align:middle;margin-right:0.5rem;"></span> {{ _("Loading ISOs...")|escapejs }}</div>';
     // Clear any previous selection
     clearIsoSelection();
     htmx.ajax('GET', '/vm/{{ vmid }}/disks/isos/?storage=' + encodeURIComponent(storage), {target: '#cdrom-browser', swap: 'innerHTML'});
@@ -633,14 +634,14 @@
 
     var file = fileInput.files[0];
     if (!file.name.toLowerCase().endsWith('.iso')) {
-      alert('Only .iso files are accepted.');
+      alert('{{ _("Only .iso files are accepted.")|escapejs }}');
       return;
     }
 
     // Show progress, disable controls
     document.getElementById('iso-upload-btn').disabled = true;
     document.getElementById('iso-upload-progress').style.display = '';
-    document.getElementById('iso-upload-stage').textContent = 'Uploading to server...';
+    document.getElementById('iso-upload-stage').textContent = '{{ _("Uploading to server...")|escapejs }}';
     document.getElementById('iso-upload-pct').textContent = '0%';
     document.getElementById('iso-upload-bar').value = 0;
     document.getElementById('iso-upload-detail').textContent = file.name + ' (' + formatBytes(file.size) + ')';
@@ -662,7 +663,7 @@
         document.getElementById('iso-upload-bar').value = pct;
         document.getElementById('iso-upload-pct').textContent = pct + '%';
         if (pct >= 90) {
-          document.getElementById('iso-upload-stage').textContent = 'Transferring to Proxmox...';
+          document.getElementById('iso-upload-stage').textContent = '{{ _("Transferring to Proxmox...")|escapejs }}';
         }
       }
     });
@@ -670,7 +671,7 @@
     xhr.addEventListener('load', function() {
       document.getElementById('iso-upload-bar').value = 100;
       document.getElementById('iso-upload-pct').textContent = '100%';
-      document.getElementById('iso-upload-stage').textContent = 'Complete!';
+      document.getElementById('iso-upload-stage').textContent = '{{ _("Complete!")|escapejs }}';
       // Refresh disk panel
       setTimeout(function() {
         htmx.ajax('GET', '/vm/{{ vmid }}/disks/', {target: '#disk-table', swap: 'outerHTML'});
@@ -678,7 +679,7 @@
     });
 
     xhr.addEventListener('error', function() {
-      document.getElementById('iso-upload-stage').textContent = 'Upload failed.';
+      document.getElementById('iso-upload-stage').textContent = '{{ _("Upload failed.")|escapejs }}';
       document.getElementById('iso-upload-stage').style.color = 'var(--danger-color, #f14668)';
       document.getElementById('iso-upload-btn').disabled = false;
     });

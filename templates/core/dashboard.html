@@ -1,12 +1,13 @@
 {% extends "base.html" %}
-{% block title %}Dashboard — ProxOrchestrator{% endblock %}
-{% block page_title %}Dashboard{% endblock %}
-{% block help_slug %}dashboard{% endblock %}
+{% load i18n %}
+{% block title %}{% translate "Dashboard — ProxOrchestrator" %}{% endblock %}
+{% block page_title %}{% translate "Dashboard" %}{% endblock %}
+{% block help_slug %}{% translate "dashboard" %}{% endblock %}
 
 {% block page_actions %}
   <a href="{% url 'importer_upload' %}" class="button is-primary is-small">
     <span class="icon is-small"><i class="fas fa-plus"></i></span>
-    <span>Import VM</span>
+    <span>{% translate "Import VM" %}</span>
   </a>
 {% endblock %}
 
@@ -21,13 +22,13 @@
         <i class="fas fa-cogs" style="font-size: 1.5rem;color: var(--link-color);"></i>
       </div>
       <div style="flex: 1;">
-        <h2 style="font-size: 1.15rem;font-weight: 700;color: var(--text-header);margin-bottom: 0.4rem;">Setup Required</h2>
+        <h2 style="font-size: 1.15rem;font-weight: 700;color: var(--text-header);margin-bottom: 0.4rem;">{% translate "Setup Required" %}</h2>
         <p style="color: var(--text-muted);font-size: 0.875rem;margin-bottom: 1.25rem;line-height: 1.6;">
-          ProxOrchestrator hasn't been connected to your Proxmox server yet. Run the setup wizard to configure your Proxmox host, SSH key authentication, API token, and default settings.
+          {% translate "ProxOrchestrator hasn't been connected to your Proxmox server yet. Run the setup wizard to configure your Proxmox host, SSH key authentication, API token, and default settings." %}
         </p>
         <a href="{% url 'wizard_step1' %}" class="button is-primary" style="font-weight: 600;">
           <span class="icon"><i class="fas fa-magic"></i></span>
-          <span>Run Setup Wizard</span>
+          <span>{% translate "Run Setup Wizard" %}</span>
           <span class="icon"><i class="fas fa-arrow-right"></i></span>
         </a>
       </div>
@@ -39,8 +40,8 @@
 {% if cert_expiry_warning %}
 <div class="notification is-warning" style="margin-bottom:1.5rem;padding:0.75rem 1rem;border-radius:8px;font-size:0.875rem;">
   <i class="fas fa-exclamation-triangle" style="margin-right:0.4rem;"></i>
-  TLS certificate expires in <strong>{{ cert_days_remaining }} days</strong>.
-  <a href="{% url 'cert_settings' %}" style="margin-left:0.5rem;">Manage certificates &rarr;</a>
+  {% translate "TLS certificate expires in" %} <strong>{% blocktranslate trimmed %}{{ cert_days_remaining }} days{% endblocktranslate %}</strong>.
+  <a href="{% url 'cert_settings' %}" style="margin-left:0.5rem;">{% translate "Manage certificates &rarr;" %}</a>
 </div>
 {% endif %}
 
@@ -52,24 +53,24 @@
      hx-trigger="load, every 30s"
      hx-swap="innerHTML">
   <div class="proxorchestrator-card node-summary">
-    <div class="card-header"><i class="fas fa-server" style="color: var(--link-color);"></i> Node</div>
-    <div class="card-body ns-sub">Loading node status…</div>
+    <div class="card-header"><i class="fas fa-server" style="color: var(--link-color);"></i> {% translate "Node" %}</div>
+    <div class="card-body ns-sub">{% translate "Loading node status…" %}</div>
   </div>
 </div>
 
 {# ===== NODE PERFORMANCE (RRD) ===== #}
 <div class="proxorchestrator-card" style="margin-bottom:1.5rem;">
-  <div class="card-header"><i class="fas fa-chart-area" style="color: var(--link-color);"></i> Node performance</div>
+  <div class="card-header"><i class="fas fa-chart-area" style="color: var(--link-color);"></i> {% translate "Node performance" %}</div>
   <div class="card-body" style="padding:1rem 1.5rem;">
     <div id="rrd-node-node" hx-get="{% url 'rrd_node' 'node' %}" hx-trigger="load" hx-swap="innerHTML">
-      <div class="ns-sub">Loading statistics…</div>
+      <div class="ns-sub">{% translate "Loading statistics…" %}</div>
     </div>
   </div>
 </div>
 
 {# ===== VM STAT CARDS ===== #}
 <div style="font-size: 0.8125rem;text-transform: uppercase;letter-spacing: 1px;color: var(--text-muted);font-weight: 600;margin-bottom: 0.5rem;">
-  <i class="fas fa-server" style="margin-right: 0.3rem;"></i> Virtual Machines
+  <i class="fas fa-server" style="margin-right: 0.3rem;"></i> {% translate "Virtual Machines" %}
 </div>
 <div class="columns is-multiline" style="margin-bottom: 1rem;">
   <div class="column is-3">
@@ -79,7 +80,7 @@
       </div>
       <div>
         <div class="stat-card-value">{{ vm_total }}</div>
-        <div class="stat-card-label">Total VMs</div>
+        <div class="stat-card-label">{% translate "Total VMs" %}</div>
       </div>
     </a>
   </div>
@@ -90,7 +91,7 @@
       </div>
       <div>
         <div class="stat-card-value">{{ vm_running }}</div>
-        <div class="stat-card-label">Running</div>
+        <div class="stat-card-label">{% translate "Running" %}</div>
       </div>
     </a>
   </div>
@@ -101,7 +102,7 @@
       </div>
       <div>
         <div class="stat-card-value">{{ vm_stopped }}</div>
-        <div class="stat-card-label">Stopped</div>
+        <div class="stat-card-label">{% translate "Stopped" %}</div>
       </div>
     </a>
   </div>
@@ -111,8 +112,8 @@
         <i class="fas fa-database"></i>
       </div>
       <div>
-        <div class="stat-card-value" style="font-size: 1rem;padding-top: 0.3rem;">See inventory</div>
-        <div class="stat-card-label">VM Details</div>
+        <div class="stat-card-value" style="font-size: 1rem;padding-top: 0.3rem;">{% translate "See inventory" %}</div>
+        <div class="stat-card-label">{% translate "VM Details" %}</div>
       </div>
     </a>
   </div>
@@ -120,7 +121,7 @@
 
 {# ===== CONTAINER STAT CARDS ===== #}
 <div style="font-size: 0.8125rem;text-transform: uppercase;letter-spacing: 1px;color: var(--text-muted);font-weight: 600;margin-bottom: 0.5rem;">
-  <i class="fas fa-cube" style="margin-right: 0.3rem;"></i> LXC Containers
+  <i class="fas fa-cube" style="margin-right: 0.3rem;"></i> {% translate "LXC Containers" %}
 </div>
 <div class="columns is-multiline" style="margin-bottom: 0.5rem;">
   <div class="column is-3">
@@ -130,7 +131,7 @@
       </div>
       <div>
         <div class="stat-card-value">{{ ct_total }}</div>
-        <div class="stat-card-label">Total Containers</div>
+        <div class="stat-card-label">{% translate "Total Containers" %}</div>
       </div>
     </a>
   </div>
@@ -141,7 +142,7 @@
       </div>
       <div>
         <div class="stat-card-value">{{ ct_running }}</div>
-        <div class="stat-card-label">Running</div>
+        <div class="stat-card-label">{% translate "Running" %}</div>
       </div>
     </a>
   </div>
@@ -152,7 +153,7 @@
       </div>
       <div>
         <div class="stat-card-value">{{ ct_stopped }}</div>
-        <div class="stat-card-label">Stopped</div>
+        <div class="stat-card-label">{% translate "Stopped" %}</div>
       </div>
     </a>
   </div>
@@ -162,8 +163,8 @@
         <i class="fas fa-database"></i>
       </div>
       <div>
-        <div class="stat-card-value" style="font-size: 1rem;padding-top: 0.3rem;">See inventory</div>
-        <div class="stat-card-label">LXC Details</div>
+        <div class="stat-card-value" style="font-size: 1rem;padding-top: 0.3rem;">{% translate "See inventory" %}</div>
+        <div class="stat-card-label">{% translate "LXC Details" %}</div>
       </div>
     </a>
   </div>
@@ -174,24 +175,24 @@
   <div class="column is-4">
     <div class="proxorchestrator-card" style="height: 100%;">
       <div class="card-header">
-        <i class="fas fa-bolt" style="color: var(--warning-color);"></i> Quick Actions
+        <i class="fas fa-bolt" style="color: var(--warning-color);"></i> {% translate "Quick Actions" %}
       </div>
       <div class="card-body" style="display: flex;flex-direction: column;gap: 0.75rem;">
         <a href="{% url 'importer_upload' %}" class="button is-primary is-medium is-fullwidth" style="font-weight: 600;justify-content: flex-start;padding-left: 1.25rem;">
           <span class="icon"><i class="fas fa-upload"></i></span>
-          <span>Import VM from Disk Image</span>
+          <span>{% translate "Import VM from Disk Image" %}</span>
         </a>
         <a href="{% url 'lxc_create' %}" class="button is-primary is-medium is-fullwidth" style="font-weight: 600;justify-content: flex-start;padding-left: 1.25rem;">
           <span class="icon"><i class="fas fa-cube"></i></span>
-          <span>New LXC Container</span>
+          <span>{% translate "New LXC Container" %}</span>
         </a>
         <a href="{% url 'inventory' %}" class="button is-light is-medium is-fullwidth" style="font-weight: 600;justify-content: flex-start;padding-left: 1.25rem;border: 1px solid var(--border-main);">
           <span class="icon"><i class="fas fa-server"></i></span>
-          <span>View VM Inventory</span>
+          <span>{% translate "View VM Inventory" %}</span>
         </a>
         <a href="{% url 'lxc_list' %}" class="button is-light is-medium is-fullwidth" style="font-weight: 600;justify-content: flex-start;padding-left: 1.25rem;border: 1px solid var(--border-main);">
           <span class="icon"><i class="fas fa-cube"></i></span>
-          <span>View Container Inventory</span>
+          <span>{% translate "View Container Inventory" %}</span>
         </a>
       </div>
     </div>
@@ -201,19 +202,19 @@
   <div class="column is-8">
     <div class="proxorchestrator-card" style="height: 100%;">
       <div class="card-header">
-        <i class="fas fa-history" style="color: var(--link-color);"></i> Recent Jobs
+        <i class="fas fa-history" style="color: var(--link-color);"></i> {% translate "Recent Jobs" %}
       </div>
       <div style="overflow-x: auto;">
         {% if recent_jobs %}
           <table class="table is-fullwidth" style="margin: 0;">
             <thead>
               <tr style="background: var(--bg-main);">
-                <th style="font-size: 0.8125rem;color: var(--text-muted);font-weight: 600;border-bottom: 1px solid var(--border-main);">Source</th>
-                <th style="font-size: 0.8125rem;color: var(--text-muted);font-weight: 600;border-bottom: 1px solid var(--border-main);">Name</th>
-                <th style="font-size: 0.8125rem;color: var(--text-muted);font-weight: 600;border-bottom: 1px solid var(--border-main);">Type</th>
-                <th style="font-size: 0.8125rem;color: var(--text-muted);font-weight: 600;border-bottom: 1px solid var(--border-main);">Status</th>
-                <th style="font-size: 0.8125rem;color: var(--text-muted);font-weight: 600;border-bottom: 1px solid var(--border-main);">Date</th>
-                <th style="font-size: 0.8125rem;color: var(--text-muted);font-weight: 600;border-bottom: 1px solid var(--border-main);text-align: right;">Actions</th>
+                <th style="font-size: 0.8125rem;color: var(--text-muted);font-weight: 600;border-bottom: 1px solid var(--border-main);">{% translate "Source" %}</th>
+                <th style="font-size: 0.8125rem;color: var(--text-muted);font-weight: 600;border-bottom: 1px solid var(--border-main);">{% translate "Name" %}</th>
+                <th style="font-size: 0.8125rem;color: var(--text-muted);font-weight: 600;border-bottom: 1px solid var(--border-main);">{% translate "Type" %}</th>
+                <th style="font-size: 0.8125rem;color: var(--text-muted);font-weight: 600;border-bottom: 1px solid var(--border-main);">{% translate "Status" %}</th>
+                <th style="font-size: 0.8125rem;color: var(--text-muted);font-weight: 600;border-bottom: 1px solid var(--border-main);">{% translate "Date" %}</th>
+                <th style="font-size: 0.8125rem;color: var(--text-muted);font-weight: 600;border-bottom: 1px solid var(--border-main);text-align: right;">{% translate "Actions" %}</th>
               </tr>
             </thead>
             <tbody>
@@ -225,20 +226,20 @@
         {% else %}
           <div class="empty-state" style="padding: 2.5rem 1.5rem;">
             <div class="empty-state-icon"><i class="fas fa-inbox"></i></div>
-            <h3>No jobs yet</h3>
-            <p>Import a disk image, create a VM, or spin up a container to get started.</p>
+            <h3>{% translate "No jobs yet" %}</h3>
+            <p>{% translate "Import a disk image, create a VM, or spin up a container to get started." %}</p>
             <div style="display: flex;gap: 0.75rem;justify-content: center;flex-wrap: wrap;">
               <a href="{% url 'vmcreator_create' %}" class="button is-primary is-small">
                 <span class="icon is-small"><i class="fas fa-plus-circle"></i></span>
-                <span>New VM</span>
+                <span>{% translate "New VM" %}</span>
               </a>
               <a href="{% url 'lxc_create' %}" class="button is-primary is-small">
                 <span class="icon is-small"><i class="fas fa-cube"></i></span>
-                <span>New LXC Container</span>
+                <span>{% translate "New LXC Container" %}</span>
               </a>
               <a href="{% url 'importer_upload' %}" class="button is-light is-small">
                 <span class="icon is-small"><i class="fas fa-upload"></i></span>
-                <span>Import Disk</span>
+                <span>{% translate "Import Disk" %}</span>
               </a>
             </div>
           </div>
@@ -251,35 +252,35 @@
 {# ===== SYSTEM INFO ===== #}
 <div class="proxorchestrator-card" style="margin-top: 0.5rem;">
   <div class="card-header">
-    <i class="fas fa-info-circle" style="color: var(--text-muted);"></i> System Information
+    <i class="fas fa-info-circle" style="color: var(--text-muted);"></i> {% translate "System Information" %}
   </div>
   <div class="card-body">
     <div class="columns">
       <div class="column is-4">
-        <div style="font-size: 0.8125rem;text-transform: uppercase;letter-spacing: 1px;color: var(--text-muted);margin-bottom: 0.35rem;font-weight: 600;">Proxmox Host</div>
+        <div style="font-size: 0.8125rem;text-transform: uppercase;letter-spacing: 1px;color: var(--text-muted);margin-bottom: 0.35rem;font-weight: 600;">{% translate "Proxmox Host" %}</div>
         <div style="font-weight: 600;color: var(--text-header);font-family: var(--font-mono);">{{ proxmox_host|default:"Not configured" }}</div>
       </div>
       <div class="column is-4">
-        <div style="font-size: 0.8125rem;text-transform: uppercase;letter-spacing: 1px;color: var(--text-muted);margin-bottom: 0.35rem;font-weight: 600;">API Status</div>
+        <div style="font-size: 0.8125rem;text-transform: uppercase;letter-spacing: 1px;color: var(--text-muted);margin-bottom: 0.35rem;font-weight: 600;">{% translate "API Status" %}</div>
         <div>
           {% if api_ok %}
             <span class="status-dot is-online"></span>
-            <span style="color: var(--text-success-dark);font-weight: 600;">Connected</span>
+            <span style="color: var(--text-success-dark);font-weight: 600;">{% translate "Connected" %}</span>
           {% else %}
             <span class="status-dot is-offline"></span>
-            <span style="color: var(--danger-color);font-weight: 600;">Disconnected</span>
+            <span style="color: var(--danger-color);font-weight: 600;">{% translate "Disconnected" %}</span>
           {% endif %}
         </div>
       </div>
       <div class="column is-4">
-        <div style="font-size: 0.8125rem;text-transform: uppercase;letter-spacing: 1px;color: var(--text-muted);margin-bottom: 0.35rem;font-weight: 600;">SSH Key</div>
+        <div style="font-size: 0.8125rem;text-transform: uppercase;letter-spacing: 1px;color: var(--text-muted);margin-bottom: 0.35rem;font-weight: 600;">{% translate "SSH Key" %}</div>
         <div>
           {% if ssh_key_ok %}
             <span class="status-dot is-online"></span>
-            <span style="color: var(--text-success-dark);font-weight: 600;">Configured</span>
+            <span style="color: var(--text-success-dark);font-weight: 600;">{% translate "Configured" %}</span>
           {% else %}
             <span class="status-dot is-offline"></span>
-            <span style="color: var(--danger-color);font-weight: 600;">Not configured</span>
+            <span style="color: var(--danger-color);font-weight: 600;">{% translate "Not configured" %}</span>
           {% endif %}
         </div>
       </div>

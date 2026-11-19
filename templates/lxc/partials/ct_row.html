@@ -1,3 +1,4 @@
+{% load i18n %}
 {# Single LXC container table row — returned after action completes #}
 <tr id="ct-row-{{ ct.vmid }}">
   <td class="vmid-col">{{ ct.vmid }}</td>
@@ -6,9 +7,9 @@
   </td>
   <td style="vertical-align: middle;">
     {% if ct.status == 'running' %}
-      <span class="status-badge vm-status-running">Running</span>
+      <span class="status-badge vm-status-running">{% translate "Running" %}</span>
     {% elif ct.status == 'stopped' %}
-      <span class="status-badge vm-status-stopped">Stopped</span>
+      <span class="status-badge vm-status-stopped">{% translate "Stopped" %}</span>
     {% else %}
       <span class="status-badge vm-status-unknown">{{ ct.status }}</span>
     {% endif %}
@@ -25,7 +26,7 @@
       {% if ct.status == 'running' %}
         {{ ct.cpu_pct }}%
       {% else %}
-        {{ ct.cpus|default:"—" }}{% if ct.cpus %} cores{% endif %}
+        {{ ct.cpus|default:"—" }}{% if ct.cpus %} {% translate "cores" %}{% endif %}
       {% endif %}
     </span>
   </td>
@@ -57,49 +58,49 @@
                  hx-post="/lxc/{{ ct.vmid }}/action/shutdown/"
                  hx-target="#ct-row-{{ ct.vmid }}"
                  hx-swap="outerHTML"
-                 hx-confirm="Gracefully shut down {{ ct.name }}?">
-                <i class="fas fa-power-off" style="width: 1.2rem;color: var(--warning-color);"></i> Shutdown
+                 hx-confirm="{% blocktranslate with name=ct.name trimmed %}Gracefully shut down {{ name }}?{% endblocktranslate %}">
+                <i class="fas fa-power-off" style="width: 1.2rem;color: var(--warning-color);"></i> {% translate "Shutdown" %}
               </a>
               <a class="dropdown-item" style="font-size: 0.8125rem;"
                  hx-post="/lxc/{{ ct.vmid }}/action/stop/"
                  hx-target="#ct-row-{{ ct.vmid }}"
                  hx-swap="outerHTML"
-                 hx-confirm="Force stop {{ ct.name }}? Unsaved data may be lost.">
-                <i class="fas fa-stop" style="width: 1.2rem;color: var(--danger-color);"></i> Force Stop
+                 hx-confirm="{% blocktranslate with name=ct.name trimmed %}Force stop {{ name }}? Unsaved data may be lost.{% endblocktranslate %}">
+                <i class="fas fa-stop" style="width: 1.2rem;color: var(--danger-color);"></i> {% translate "Force Stop" %}
               </a>
               <a class="dropdown-item" style="font-size: 0.8125rem;"
                  hx-post="/lxc/{{ ct.vmid }}/action/reboot/"
                  hx-target="#ct-row-{{ ct.vmid }}"
                  hx-swap="outerHTML"
-                 hx-confirm="Reboot {{ ct.name }}?">
-                <i class="fas fa-redo" style="width: 1.2rem;color: var(--link-color);"></i> Reboot
+                 hx-confirm="{% blocktranslate with name=ct.name trimmed %}Reboot {{ name }}?{% endblocktranslate %}">
+                <i class="fas fa-redo" style="width: 1.2rem;color: var(--link-color);"></i> {% translate "Reboot" %}
               </a>
               <a class="dropdown-item" href="{% url 'lxc_console' ct.vmid %}" target="_blank" style="font-size: 0.8125rem;">
-                <i class="fas fa-terminal" style="width: 1.2rem;color: var(--text-header);"></i> Console
+                <i class="fas fa-terminal" style="width: 1.2rem;color: var(--text-header);"></i> {% translate "Console" %}
               </a>
             {% elif ct.status == 'stopped' %}
               <a class="dropdown-item" style="font-size: 0.8125rem;"
                  hx-post="/lxc/{{ ct.vmid }}/action/start/"
                  hx-target="#ct-row-{{ ct.vmid }}"
                  hx-swap="outerHTML">
-                <i class="fas fa-play" style="width: 1.2rem;color: var(--success-color);"></i> Start
+                <i class="fas fa-play" style="width: 1.2rem;color: var(--success-color);"></i> {% translate "Start" %}
               </a>
             {% endif %}
             <hr class="dropdown-divider" style="margin: 0.25rem 0;">
             <a class="dropdown-item" href="{% url 'lxc_clone' ct.vmid %}" style="font-size: 0.8125rem;">
-              <i class="fas fa-clone" style="width: 1.2rem;color: var(--link-color);"></i> Clone
+              <i class="fas fa-clone" style="width: 1.2rem;color: var(--link-color);"></i> {% translate "Clone" %}
             </a>
             <a class="dropdown-item" href="{% url 'lxc_export_options' ct.vmid %}" style="font-size: 0.8125rem;">
-              <i class="fas fa-file-export" style="width: 1.2rem;color: var(--link-color);"></i> Export Container
+              <i class="fas fa-file-export" style="width: 1.2rem;color: var(--link-color);"></i> {% translate "Export Container" %}
             </a>
             <a class="dropdown-item" href="{% url 'lxc_detail' ct.vmid %}" style="font-size: 0.8125rem;">
-              <i class="fas fa-info-circle" style="width: 1.2rem;color: var(--text-muted);"></i> Details
+              <i class="fas fa-info-circle" style="width: 1.2rem;color: var(--text-muted);"></i> {% translate "Details" %}
             </a>
             {% if ct.status == 'stopped' %}
               <hr class="dropdown-divider" style="margin: 0.25rem 0;">
               <a class="dropdown-item" style="font-size: 0.8125rem;color: var(--danger-color);"
                  onclick="event.preventDefault();toggleKebab(event, this.closest('.ct-kebab'));openDeleteModal('{{ ct.vmid }}', '{{ ct.name|escapejs }}')">
-                <i class="fas fa-trash-alt" style="width: 1.2rem;"></i> Delete
+                <i class="fas fa-trash-alt" style="width: 1.2rem;"></i> {% translate "Delete" %}
               </a>
             {% endif %}
           </div>

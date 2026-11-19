@@ -1,3 +1,4 @@
+{% load i18n %}
 {% if error %}
   <div style="padding: 1rem;color: var(--danger-color);font-size: 0.875rem;">
     <i class="fas fa-exclamation-triangle" style="margin-right: 0.4rem;"></i> {{ error }}
@@ -8,8 +9,8 @@
     <table class="table is-fullwidth is-hoverable" style="margin: 0;">
       <thead>
         <tr>
-          <th>Template</th>
-          <th style="width: 200px;text-align: right;">Action</th>
+          <th>{% translate "Template" %}</th>
+          <th style="width: 200px;text-align: right;">{% translate "Action" %}</th>
         </tr>
       </thead>
       <tbody>
@@ -17,9 +18,9 @@
         <tr>
           <td style="vertical-align: middle;font-size: 0.875rem;">
             {% if t.downloaded %}
-              <i class="fas fa-check-circle" style="color: var(--success-color);margin-right: 0.4rem;" title="Downloaded"></i>
+              <i class="fas fa-check-circle" style="color: var(--success-color);margin-right: 0.4rem;" title="{% translate "Downloaded" %}"></i>
             {% else %}
-              <i class="fas fa-cloud" style="color: var(--link-color);margin-right: 0.4rem;" title="Available to download"></i>
+              <i class="fas fa-cloud" style="color: var(--link-color);margin-right: 0.4rem;" title="{% translate "Available to download" %}"></i>
             {% endif %}
             {{ t.name }}
           </td>
@@ -30,7 +31,7 @@
               <input type="hidden" name="storage" value="{{ storage }}">
               <button type="submit" class="button is-primary is-small">
                 <span class="icon is-small"><i class="fas fa-plus"></i></span>
-                <span>Select</span>
+                <span>{% translate "Select" %}</span>
               </button>
             </form>
             {% if t.downloaded %}
@@ -40,10 +41,10 @@
                     hx-vals='{"template": "{{ t.name }}", "storage": "{{ storage }}"}'
                     hx-target="#template-list"
                     hx-swap="innerHTML"
-                    hx-confirm="Delete template {{ t.name }}? This removes it from the Proxmox storage."
+                    hx-confirm="{% blocktranslate with name=t.name trimmed %}Delete template {{ name }}? This removes it from the Proxmox storage.{% endblocktranslate %}"
                     hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
               <span class="icon is-small"><i class="fas fa-trash"></i></span>
-              <span>Delete</span>
+              <span>{% translate "Delete" %}</span>
             </button>
             {% endif %}
           </td>
@@ -57,9 +58,9 @@
   <div style="padding: 2rem;text-align: center;color: var(--text-muted);font-size: 0.875rem;">
     <i class="fas fa-inbox" style="font-size: 1.5rem;display: block;margin-bottom: 0.5rem;color: var(--border-light);"></i>
     {% if section == 'available' %}
-      No templates available. Check your Proxmox internet connection.
+      {% translate "No templates available. Check your Proxmox internet connection." %}
     {% else %}
-      No templates downloaded on this storage. Try the "Available to Download" tab.
+      {% blocktranslate %}No templates downloaded on this storage. Try the "Available to Download" tab.{% endblocktranslate %}
     {% endif %}
   </div>
 {% endif %}

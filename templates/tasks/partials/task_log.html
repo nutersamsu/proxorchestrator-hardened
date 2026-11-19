@@ -1,16 +1,16 @@
+{% load i18n %}
 {# Swapped into #task-log; polls every 2 s while the task is running. #}
 <div class="proxorchestrator-card"
      {% if running %}hx-get="{% url 'task_log' upid %}" hx-trigger="every 2s" hx-target="#task-log" hx-swap="innerHTML"{% endif %}>
   <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;">
     <span>
-      <i class="fas fa-file-alt" style="color: var(--link-color);"></i> Output
-      &nbsp;
+      <i class="fas fa-file-alt" style="color: var(--link-color);"></i> {% translate "Output &nbsp;" %}
       {% if error %}
-        <span class="status-badge task-badge-error">error</span>
+        <span class="status-badge task-badge-error">{% translate "error" %}</span>
       {% elif running %}
-        <span class="status-badge task-badge-running"><i class="fas fa-spinner fa-spin"></i> running</span>
+        <span class="status-badge task-badge-running"><i class="fas fa-spinner fa-spin"></i> {% translate "running" %}</span>
       {% elif ok %}
-        <span class="status-badge vm-status-running">OK</span>
+        <span class="status-badge vm-status-running">{% translate "OK" %}</span>
       {% elif warning %}
         <span class="status-badge task-badge-warning">{{ exitstatus }}</span>
       {% else %}
@@ -18,9 +18,9 @@
       {% endif %}
     </span>
     {% if running %}
-      <form method="post" action="{% url 'task_stop' upid %}" onsubmit="return confirm('Stop this task?');" style="margin:0;">
+      <form method="post" action="{% url 'task_stop' upid %}" onsubmit="return confirm('{{ _("Stop this task?")|escapejs }}');" style="margin:0;">
         {% csrf_token %}
-        <button class="button is-small is-danger" type="submit"><i class="fas fa-stop"></i>&nbsp; Stop</button>
+        <button class="button is-small is-danger" type="submit"><i class="fas fa-stop"></i>{% translate "&nbsp; Stop" %}</button>
       </form>
     {% endif %}
   </div>
@@ -30,7 +30,7 @@
     {% else %}
       <pre class="task-log" id="task-log-pre">{% for line in lines %}{{ line }}
 {% empty %}(no output yet){% endfor %}</pre>
-      {% if truncated %}<div class="ns-sub" style="padding:0.5rem 1.5rem;">Showing the first {{ lines|length }} of {{ total }} lines.</div>{% endif %}
+      {% if truncated %}<div class="ns-sub" style="padding:0.5rem 1.5rem;">{% blocktranslate with lines=lines|length trimmed %}Showing the first {{ lines }} of {{ total }} lines.{% endblocktranslate %}</div>{% endif %}
     {% endif %}
   </div>
 </div>

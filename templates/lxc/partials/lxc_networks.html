@@ -1,3 +1,4 @@
+{% load i18n %}
 {# LXC network interfaces partial — swapped via HTMX on connect/disconnect #}
 <div id="lxc-network-table">
 
@@ -17,15 +18,15 @@
   <table class="table is-fullwidth is-narrow" style="margin:0;font-size:0.875rem;">
     <thead>
       <tr style="background:var(--bg-header, #f5f7fa);">
-        <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;padding:0.75rem 1.5rem;">Interface</th>
-        <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;">Name</th>
-        <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;">Bridge</th>
-        <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;">MAC Address</th>
-        <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;">IP Config</th>
-        <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;">VLAN</th>
-        <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;">Firewall</th>
-        <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;">Status</th>
-        <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;text-align:right;padding-right:1.5rem;">Actions</th>
+        <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;padding:0.75rem 1.5rem;">{% translate "Interface" %}</th>
+        <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;">{% translate "Name" %}</th>
+        <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;">{% translate "Bridge" %}</th>
+        <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;">{% translate "MAC Address" %}</th>
+        <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;">{% translate "IP Config" %}</th>
+        <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;">{% translate "VLAN" %}</th>
+        <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;">{% translate "Firewall" %}</th>
+        <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;">{% translate "Status" %}</th>
+        <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;text-align:right;padding-right:1.5rem;">{% translate "Actions" %}</th>
       </tr>
     </thead>
     <tbody>
@@ -35,17 +36,17 @@
         <td>{{ nic.name }}</td>
         <td>{{ nic.bridge }}</td>
         <td style="font-family: var(--font-mono);font-size:0.8125rem;">{{ nic.mac }}</td>
-        <td style="font-size:0.8125rem;">{{ nic.ip }}{% if nic.gateway %} <span style="color:var(--text-muted);">(gw {{ nic.gateway }})</span>{% endif %}</td>
+        <td style="font-size:0.8125rem;">{{ nic.ip }}{% if nic.gateway %} <span style="color:var(--text-muted);">{% blocktranslate with gateway=nic.gateway trimmed %}(gw {{ gateway }}){% endblocktranslate %}</span>{% endif %}</td>
         <td>{{ nic.tag|default:"—" }}</td>
-        <td>{% if nic.firewall %}<span style="color:var(--success-color);">Yes</span>{% else %}No{% endif %}</td>
+        <td>{% if nic.firewall %}<span style="color:var(--success-color);">{% translate "Yes" %}</span>{% else %}{% translate "No" %}{% endif %}</td>
         <td>
           {% if nic.link_down %}
             <span style="color:var(--danger-color, #f14668);font-size:0.8125rem;font-weight:600;">
-              <i class="fas fa-unlink" style="margin-right:0.2rem;"></i>Disconnected
+              <i class="fas fa-unlink" style="margin-right:0.2rem;"></i>{% translate "Disconnected" %}
             </span>
           {% else %}
             <span style="color:var(--success-color, #48c78e);font-size:0.8125rem;font-weight:600;">
-              <i class="fas fa-link" style="margin-right:0.2rem;"></i>Connected
+              <i class="fas fa-link" style="margin-right:0.2rem;"></i>{% translate "Connected" %}
             </span>
           {% endif %}
         </td>
@@ -56,9 +57,9 @@
                     hx-target="#lxc-network-table"
                     hx-swap="outerHTML"
                     hx-vals='{"action": "connect"}'
-                    title="Connect this NIC">
+                    title="{% translate "Connect this NIC" %}">
               <span class="icon is-small"><i class="fas fa-plug"></i></span>
-              <span>Connect</span>
+              <span>{% translate "Connect" %}</span>
             </button>
           {% else %}
             <button class="button is-small is-warning is-light" style="font-weight:600;"
@@ -66,10 +67,10 @@
                     hx-target="#lxc-network-table"
                     hx-swap="outerHTML"
                     hx-vals='{"action": "disconnect"}'
-                    hx-confirm="Disconnect {{ nic.interface }}? The container will lose network connectivity on this interface."
-                    title="Disconnect this NIC">
+                    hx-confirm="{% blocktranslate with interface=nic.interface trimmed %}Disconnect {{ interface }}? The container will lose network connectivity on this interface.{% endblocktranslate %}"
+                    title="{% translate "Disconnect this NIC" %}">
               <span class="icon is-small"><i class="fas fa-unlink"></i></span>
-              <span>Disconnect</span>
+              <span>{% translate "Disconnect" %}</span>
             </button>
           {% endif %}
         </td>
@@ -78,6 +79,6 @@
     </tbody>
   </table>
   {% else %}
-    <div style="padding:1.5rem;color:var(--text-muted, #7a7a7a);font-size:0.875rem;">No network interface information available.</div>
+    <div style="padding:1.5rem;color:var(--text-muted, #7a7a7a);font-size:0.875rem;">{% translate "No network interface information available." %}</div>
   {% endif %}
 </div>

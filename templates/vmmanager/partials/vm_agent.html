@@ -1,10 +1,11 @@
+{% load i18n %}
 {# Guest agent information (loaded with HTMX) #}
 {% if error %}
   <div class="ns-sub"><i class="fas fa-info-circle"></i> {{ error }}</div>
 {% else %}
-  <div class="cert-detail-row"><div class="cert-detail-label">Operating system</div><div class="cert-detail-value">{% firstof info.os.pretty_name info.os.name "—" %}</div></div>
-  {% if info.os.kernel_release %}<div class="cert-detail-row"><div class="cert-detail-label">Kernel</div><div class="cert-detail-value">{{ info.os.kernel_release }}</div></div>{% endif %}
-  {% if info.hostname %}<div class="cert-detail-row"><div class="cert-detail-label">Host name</div><div class="cert-detail-value">{{ info.hostname }}</div></div>{% endif %}
+  <div class="cert-detail-row"><div class="cert-detail-label">{% translate "Operating system" %}</div><div class="cert-detail-value">{% firstof info.os.pretty_name info.os.name "—" %}</div></div>
+  {% if info.os.kernel_release %}<div class="cert-detail-row"><div class="cert-detail-label">{% translate "Kernel" %}</div><div class="cert-detail-value">{{ info.os.kernel_release }}</div></div>{% endif %}
+  {% if info.hostname %}<div class="cert-detail-row"><div class="cert-detail-label">{% translate "Host name" %}</div><div class="cert-detail-value">{{ info.hostname }}</div></div>{% endif %}
   {% for iface in info.interfaces %}
     <div class="cert-detail-row">
       <div class="cert-detail-label mono-cell">{{ iface.name }}</div>
@@ -16,7 +17,7 @@
       <div class="cert-detail-label mono-cell">{{ fs.mount }}</div>
       <div class="cert-detail-value">
         <div class="pve-bar{% if fs.pct >= 90 %} is-critical{% elif fs.pct >= 75 %} is-warning{% endif %}"><div style="width: {{ fs.pct|stringformat:'.1f' }}%"></div></div>
-        <span class="ns-sub">{{ fs.pct }}% ({{ fs.used }} of {{ fs.total }}, {{ fs.type }})</span>
+        <span class="ns-sub">{% blocktranslate with pct=fs.pct used=fs.used total=fs.total type=fs.type trimmed %}{{ pct }}% ({{ used }} of {{ total }}, {{ type }}){% endblocktranslate %}</span>
       </div>
     </div>
   {% endfor %}

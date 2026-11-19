@@ -12,6 +12,7 @@ from django.urls import reverse
 from django.views.decorators.http import require_POST
 
 from apps.emailconfig.models import EmailConfig
+from django.utils.translation import gettext
 
 logger = logging.getLogger(__name__)
 
@@ -70,7 +71,7 @@ def email_settings_save(request, backend_type):
         config.save()
         _reload_email_config()
         logger.info("SMTP email config saved by %s (enabled=%s)", request.user, config.is_enabled)
-        messages.success(request, "SMTP settings saved.")
+        messages.success(request, gettext("SMTP settings saved."))
         return redirect("email_settings")
 
     elif backend_type == "graph":
@@ -83,10 +84,10 @@ def email_settings_save(request, backend_type):
         config.save()
         _reload_email_config()
         logger.info("Graph API email config saved by %s (enabled=%s)", request.user, config.is_enabled)
-        messages.success(request, "Microsoft Graph API settings saved.")
+        messages.success(request, gettext("Microsoft Graph API settings saved."))
         return redirect("email_settings")
 
-    messages.error(request, f"Unknown backend type: {backend_type}")
+    messages.error(request, gettext('Unknown backend type: %(backend_type)s') % {"backend_type": backend_type})
     return redirect("email_settings")
 
 

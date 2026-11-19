@@ -1,28 +1,29 @@
 {% extends "base.html" %}
-{% block title %}Storage — ProxOrchestrator{% endblock %}
-{% block page_title %}Storage{% endblock %}
-{% block help_slug %}storage{% endblock %}
+{% load i18n %}
+{% block title %}{% translate "Storage — ProxOrchestrator" %}{% endblock %}
+{% block page_title %}{% translate "Storage" %}{% endblock %}
+{% block help_slug %}{% translate "storage" %}{% endblock %}
 
 {% block content %}
-{% if error %}<div class="notification is-danger is-light">Could not load storages: {{ error }}</div>{% endif %}
+{% if error %}<div class="notification is-danger is-light">{% blocktranslate trimmed %}Could not load storages: {{ error }}{% endblocktranslate %}</div>{% endif %}
 <div class="proxorchestrator-card">
   <div class="table-container">
     <table class="table is-fullwidth is-hoverable task-table" style="margin:0;">
-      <thead><tr><th>Storage</th><th>Type</th><th>Content</th><th style="min-width:14rem;">Usage</th><th>Status</th></tr></thead>
+      <thead><tr><th>{% translate "Storage" %}</th><th>{% translate "Type" %}</th><th>{% translate "Content" %}</th><th style="min-width:14rem;">{% translate "Usage" %}</th><th>{% translate "Status" %}</th></tr></thead>
       <tbody>
         {% for s in storages %}
         <tr>
-          <td><a href="{% url 'datastore_content' s.storage %}"><strong>{{ s.storage }}</strong></a>{% if s.shared %} <span class="tag is-light">shared</span>{% endif %}</td>
+          <td><a href="{% url 'datastore_content' s.storage %}"><strong>{{ s.storage }}</strong></a>{% if s.shared %} <span class="tag is-light">{% translate "shared" %}</span>{% endif %}</td>
           <td>{{ s.type }}</td>
           <td>{% for c in s.content_list %}<a class="tag is-light is-info" style="margin:0 0.2rem 0.2rem 0;" href="{% url 'datastore_content' s.storage %}?content={{ c }}">{% for k, v in labels.items %}{% if k == c %}{{ v }}{% endif %}{% endfor %}</a>{% endfor %}</td>
           <td>
             <div class="pve-bar{% if s.pct >= 90 %} is-critical{% elif s.pct >= 75 %} is-warning{% endif %}"><div style="width: {{ s.pct|stringformat:'.1f' }}%"></div></div>
-            <span class="ns-sub">{{ s.pct }}% ({{ s.used_h }} of {{ s.total_h }}, {{ s.avail_h }} free)</span>
+            <span class="ns-sub">{% blocktranslate with pct=s.pct used_h=s.used_h total_h=s.total_h avail_h=s.avail_h trimmed %}{{ pct }}% ({{ used_h }} of {{ total_h }}, {{ avail_h }} free){% endblocktranslate %}</span>
           </td>
-          <td>{% if s.active %}<span class="status-badge vm-status-running">active</span>{% else %}<span class="status-badge vm-status-stopped">inactive</span>{% endif %}</td>
+          <td>{% if s.active %}<span class="status-badge vm-status-running">{% translate "active" %}</span>{% else %}<span class="status-badge vm-status-stopped">{% translate "inactive" %}</span>{% endif %}</td>
         </tr>
         {% empty %}
-        <tr><td colspan="5" class="ns-sub">No storages.</td></tr>
+        <tr><td colspan="5" class="ns-sub">{% translate "No storages." %}</td></tr>
         {% endfor %}
       </tbody>
     </table>

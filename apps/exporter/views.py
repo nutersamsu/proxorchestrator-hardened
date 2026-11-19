@@ -32,6 +32,7 @@ from apps.vmcreator.stages import PX_IMPORT_STAGES
 from apps.vmcreator.stages import build_stages
 from apps.wizard.models import DiscoveredEnvironment
 from apps.wizard.models import ProxmoxConfig
+from django.utils.translation import gettext
 
 logger = logging.getLogger(__name__)
 
@@ -128,11 +129,11 @@ def _delete_package(request, job, label):
             pass
         except OSError as exc:
             logger.warning("%s %d: could not remove package: %s", type(job).__name__, job.pk, exc)
-            messages.error(request, f"Could not remove the package of {label}: {exc}")
+            messages.error(request, gettext('Could not remove the package of %(label)s: %(exc)s') % {"label": label, "exc": exc})
             return
         job.output_path = ""
         job.save(update_fields=["output_path", "updated_at"])
-    messages.success(request, f"Package of {label} removed from this server.")
+    messages.success(request, gettext('Package of %(label)s removed from this server.') % {"label": label})
 
 
 @login_required
@@ -371,7 +372,7 @@ def export_delete_job(request, job_id):
             logger.warning("export_delete_job %d: could not remove file: %s", job_id, exc)
     label = job.vm_name or f"VM {job.vmid}"
     job.delete()
-    messages.success(request, f'Export of "{label}" deleted.')
+    messages.success(request, gettext('Export of "%(label)s" deleted.') % {"label": label})
     return redirect("export_index")
 
 
@@ -622,7 +623,7 @@ def px_delete_job(request, job_id):
             logger.warning("px_delete_job %d: cleanup error: %s", job_id, exc)
     label = job.vm_name or f"job #{job_id}"
     job.delete()
-    messages.success(request, f'Package import "{label}" deleted.')
+    messages.success(request, gettext('Package import "%(label)s" deleted.') % {"label": label})
     return redirect("export_index")
 
 
@@ -738,7 +739,7 @@ def lxc_export_delete_job(request, job_id):
             logger.warning("lxc_export_delete_job %d: could not remove file: %s", job_id, exc)
     label = job.ct_name or f"CT {job.vmid}"
     job.delete()
-    messages.success(request, f'Export of "{label}" deleted.')
+    messages.success(request, gettext('Export of "%(label)s" deleted.') % {"label": label})
     return redirect("lxc_export_index")
 
 
@@ -937,5 +938,5 @@ def lxc_px_delete_job(request, job_id):
             logger.warning("lxc_px_delete_job %d: cleanup error: %s", job_id, exc)
     label = job.ct_name or f"job #{job_id}"
     job.delete()
-    messages.success(request, f'Container import "{label}" deleted.')
+    messages.success(request, gettext('Container import "%(label)s" deleted.') % {"label": label})
     return redirect("lxc_export_index")

@@ -28,6 +28,7 @@ from apps.importer.models import ImportJob
 from apps.vmcreator.stages import IMPORT_STAGES, IMPORT_STAGES_PROXMOX_SOURCE, build_stages
 from apps.wizard.models import DiscoveredEnvironment
 from apps.wizard.models import ProxmoxConfig
+from django.utils.translation import gettext
 
 logger = logging.getLogger(__name__)
 
@@ -82,9 +83,9 @@ def upload(request):
             return JsonResponse({
                 "error": "disk_full",
                 "message": (
-                    "Upload failed — the server ran out of temporary disk space. "
+                    gettext("Upload failed — the server ran out of temporary disk space. "
                     "Go to Settings → Storage and configure a temp directory on a "
-                    "disk with enough free space for your upload."
+                    "disk with enough free space for your upload.")
                 ),
             }, status=507)
 
@@ -121,9 +122,9 @@ def upload(request):
                 return JsonResponse({
                     "error": "disk_full",
                     "message": (
-                        "Upload failed — the server ran out of disk space while "
+                        gettext("Upload failed — the server ran out of disk space while "
                         "saving the file. Check available space on the uploads "
-                        "directory and the temp directory in Settings → Storage."
+                        "directory and the temp directory in Settings → Storage.")
                     ),
                 }, status=507)
 
@@ -329,7 +330,7 @@ def delete_job(request, job_id):
         logger.warning("delete_job %d: could not remove local file: %s", job_id, exc)
 
     job.delete()
-    messages.success(request, f'Import job "{name}" deleted.')
+    messages.success(request, gettext('Import job "%(name)s" deleted.') % {"name": name})
     return redirect("dashboard")
 
 
@@ -339,7 +340,7 @@ def cancel_job(request, job_id):
     """Cancel a queued or in-progress import job."""
     job = get_object_or_404(ImportJob, pk=job_id)
     if job.stage in (ImportJob.STAGE_DONE, ImportJob.STAGE_FAILED, ImportJob.STAGE_CANCELLED):
-        messages.warning(request, f'Job "{job.vm_name}" is already {job.get_stage_display().lower()}.')
+        messages.warning(request, gettext('Job "%(vm_name)s" is already %(value)s.') % {"vm_name": job.vm_name, "value": job.get_stage_display().lower()})
         return redirect("dashboard")
 
     # Revoke the Celery task if we have a task_id
@@ -352,7 +353,7 @@ def cancel_job(request, job_id):
     job.message = "Cancelled by user"
     job.save(update_fields=["stage", "message", "updated_at"])
     logger.info("ImportJob %d: cancelled by user %s", job.pk, request.user.username)
-    messages.success(request, f'Job "{job.vm_name}" has been cancelled.')
+    messages.success(request, gettext('Job "%(vm_name)s" has been cancelled.') % {"vm_name": job.vm_name})
     return redirect("dashboard")
 
 

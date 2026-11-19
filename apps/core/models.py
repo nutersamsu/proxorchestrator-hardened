@@ -3,6 +3,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from encrypted_model_fields.fields import EncryptedCharField
+from django.utils.translation import gettext_lazy
 
 
 class UserProfile(models.Model):
@@ -24,7 +25,7 @@ class UserProfile(models.Model):
     )
     must_change_password = models.BooleanField(
         default=False,
-        help_text="Force the user to set a new password on next login.",
+        help_text=gettext_lazy("Force the user to set a new password on next login."),
     )
     auth_source = models.CharField(
         max_length=20,
@@ -50,11 +51,11 @@ class MFAConfig(models.Model):
 
     enforce_mfa = models.BooleanField(
         default=False,
-        help_text="Require all local and LDAP users to set up MFA.",
+        help_text=gettext_lazy("Require all local and LDAP users to set up MFA."),
     )
     allow_email_recovery = models.BooleanField(
         default=True,
-        help_text="Allow users to receive a one-time MFA bypass code via email.",
+        help_text=gettext_lazy("Allow users to receive a one-time MFA bypass code via email."),
     )
 
     class Meta:

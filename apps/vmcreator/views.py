@@ -29,6 +29,7 @@ from apps.vmcreator.vm_catalog import (
     search_catalog,
 )
 from apps.wizard.models import DiscoveredEnvironment, ProxmoxConfig
+from django.utils.translation import gettext
 
 logger = logging.getLogger(__name__)
 
@@ -273,7 +274,7 @@ def delete_job(request, job_id):
         logger.warning("vmcreator delete_job %d: could not remove local ISO: %s", job_id, exc)
 
     job.delete()
-    messages.success(request, f'VM creation job "{name}" deleted.')
+    messages.success(request, gettext('VM creation job "%(name)s" deleted.') % {"name": name})
     return redirect("dashboard")
 
 
@@ -283,7 +284,7 @@ def cancel_job(request, job_id):
     """Cancel a queued or in-progress VM create job."""
     job = get_object_or_404(VmCreateJob, pk=job_id)
     if job.stage in (VmCreateJob.STAGE_DONE, VmCreateJob.STAGE_FAILED, VmCreateJob.STAGE_CANCELLED):
-        messages.warning(request, f'Job "{job.vm_name}" is already {job.get_stage_display().lower()}.')
+        messages.warning(request, gettext('Job "%(vm_name)s" is already %(value)s.') % {"vm_name": job.vm_name, "value": job.get_stage_display().lower()})
         return redirect("dashboard")
 
     if job.task_id:
@@ -295,7 +296,7 @@ def cancel_job(request, job_id):
     job.message = "Cancelled by user"
     job.save(update_fields=["stage", "message", "updated_at"])
     logger.info("VmCreateJob %d: cancelled by user %s", job.pk, request.user.username)
-    messages.success(request, f'Job "{job.vm_name}" has been cancelled.')
+    messages.success(request, gettext('Job "%(vm_name)s" has been cancelled.') % {"vm_name": job.vm_name})
     return redirect("dashboard")
 
 
@@ -386,7 +387,7 @@ def vm_community_scripts_deploy(request, slug):
     """Configure and deploy a VM community script."""
     script = get_script(slug)
     if not script:
-        messages.error(request, f"Unknown VM community script: {slug}")
+        messages.error(request, gettext('Unknown VM community script: %(slug)s') % {"slug": slug})
         return redirect("vm_community_scripts")
 
     cat_icon_map = {cat["name"]: cat["icon"] for cat in get_categories()}

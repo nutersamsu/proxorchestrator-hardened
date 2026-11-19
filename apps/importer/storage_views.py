@@ -13,6 +13,7 @@ from django.views.decorators.http import require_POST
 from apps.importer.forms import sanitize_vm_name
 from apps.importer.models import ImportJob
 from apps.wizard.models import ProxmoxConfig
+from django.utils.translation import gettext
 
 logger = logging.getLogger(__name__)
 
@@ -194,10 +195,10 @@ def delete_local_file(request):
     real_uploads = os.path.realpath(uploads_dir)
 
     if not real_path.startswith(real_uploads + os.sep):
-        return JsonResponse({"ok": False, "error": "Path is outside the uploads directory."}, status=400)
+        return JsonResponse({"ok": False, "error": gettext("Path is outside the uploads directory.")}, status=400)
 
     if not os.path.isfile(real_path):
-        return JsonResponse({"ok": False, "error": "File not found."}, status=404)
+        return JsonResponse({"ok": False, "error": gettext("File not found.")}, status=404)
 
     try:
         os.remove(real_path)
@@ -248,10 +249,10 @@ def create_job_from_existing(request):
     real_uploads = os.path.realpath(uploads_dir)
 
     if not real_path.startswith(real_uploads + os.sep):
-        return JsonResponse({"ok": False, "error": "Path is outside the uploads directory."}, status=400)
+        return JsonResponse({"ok": False, "error": gettext("Path is outside the uploads directory.")}, status=400)
 
     if not os.path.isfile(real_path):
-        return JsonResponse({"ok": False, "error": "File not found."}, status=404)
+        return JsonResponse({"ok": False, "error": gettext("File not found.")}, status=404)
 
     filename = os.path.basename(real_path)
     vm_name = sanitize_vm_name(os.path.splitext(filename)[0])
@@ -277,16 +278,16 @@ def create_job_from_proxmox(request):
     path = request.POST.get("path", "").strip()
 
     if not path:
-        return JsonResponse({"ok": False, "error": "No path provided."}, status=400)
+        return JsonResponse({"ok": False, "error": gettext("No path provided.")}, status=400)
 
     path = proxmox_temp_path(config, path)
     if not path:
-        return JsonResponse({"ok": False, "error": "Path is outside the Proxmox temp directory."}, status=400)
+        return JsonResponse({"ok": False, "error": gettext("Path is outside the Proxmox temp directory.")}, status=400)
 
     filename = os.path.basename(path)
     ext = filename.rsplit(".", 1)[-1].lower() if "." in filename else ""
     if ext not in _DISK_EXTENSIONS:
-        return JsonResponse({"ok": False, "error": f"Unsupported file type: .{ext}"}, status=400)
+        return JsonResponse({"ok": False, "error": gettext('Unsupported file type: .%(ext)s') % {"ext": ext}}, status=400)
 
     vm_name = sanitize_vm_name(os.path.splitext(filename)[0])
 
@@ -311,11 +312,11 @@ def delete_proxmox_file(request):
     path = request.POST.get("path", "").strip()
 
     if not path:
-        return JsonResponse({"ok": False, "error": "No path provided."}, status=400)
+        return JsonResponse({"ok": False, "error": gettext("No path provided.")}, status=400)
 
     path = proxmox_temp_path(config, path)
     if not path:
-        return JsonResponse({"ok": False, "error": "Path is outside the Proxmox temp directory."}, status=400)
+        return JsonResponse({"ok": False, "error": gettext("Path is outside the Proxmox temp directory.")}, status=400)
 
     try:
         with config.get_ssh_client() as ssh:

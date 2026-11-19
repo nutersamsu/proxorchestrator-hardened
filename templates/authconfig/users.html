@@ -1,12 +1,13 @@
 {% extends "base.html" %}
-{% block title %}User Management — ProxOrchestrator{% endblock %}
-{% block page_title %}User Management{% endblock %}
-{% block help_slug %}settings-auth-ldap{% endblock %}
+{% load i18n %}
+{% block title %}{% translate "User Management — ProxOrchestrator" %}{% endblock %}
+{% block page_title %}{% translate "User Management" %}{% endblock %}
+{% block help_slug %}{% translate "settings-auth-ldap" %}{% endblock %}
 
 {% block page_actions %}
   <button class="button is-primary is-small" onclick="document.getElementById('add-user-modal').classList.add('is-active')">
     <span class="icon is-small"><i class="fas fa-plus"></i></span>
-    <span>Add Local User</span>
+    <span>{% translate "Add Local User" %}</span>
   </button>
 {% endblock %}
 
@@ -24,22 +25,22 @@
 
 <div class="proxorchestrator-card">
   <div class="card-header">
-    <i class="fas fa-users" style="color: var(--link-color);"></i> All Users
-    <span style="margin-left: 0.5rem;font-size: 0.8125rem;color: var(--text-muted);font-weight: 400;">({{ users|length }} total)</span>
+    <i class="fas fa-users" style="color: var(--link-color);"></i> {% translate "All Users" %}
+    <span style="margin-left: 0.5rem;font-size: 0.8125rem;color: var(--text-muted);font-weight: 400;">{% blocktranslate with users=users|length trimmed %}({{ users }} total){% endblocktranslate %}</span>
   </div>
   <div style="overflow-x: auto;">
     {% if users %}
     <table class="table vm-table is-fullwidth" style="margin: 0;">
       <thead>
         <tr>
-          <th>Username</th>
-          <th>Email</th>
-          <th>Auth Source</th>
-          <th>Admin</th>
-          <th>Active</th>
-          <th>MFA</th>
-          <th>Last Login</th>
-          <th style="text-align: right;">Actions</th>
+          <th>{% translate "Username" %}</th>
+          <th>{% translate "Email" %}</th>
+          <th>{% translate "Auth Source" %}</th>
+          <th>{% translate "Admin" %}</th>
+          <th>{% translate "Active" %}</th>
+          <th>{% translate "MFA" %}</th>
+          <th>{% translate "Last Login" %}</th>
+          <th style="text-align: right;">{% translate "Actions" %}</th>
         </tr>
       </thead>
       <tbody>
@@ -51,8 +52,8 @@
     {% else %}
       <div class="empty-state">
         <div class="empty-state-icon"><i class="fas fa-users"></i></div>
-        <h3>No users found</h3>
-        <p>Add a local user to get started.</p>
+        <h3>{% translate "No users found" %}</h3>
+        <p>{% translate "Add a local user to get started." %}</p>
       </div>
     {% endif %}
   </div>
@@ -64,7 +65,7 @@
   <div class="modal-card" style="max-width: 480px;border-radius: 12px;">
     <header class="modal-card-head" style="background: var(--bg-sidebar);border-radius: 12px 12px 0 0;">
       <p class="modal-card-title" style="color: var(--bg-card);font-size: 1rem;font-weight: 600;">
-        <i class="fas fa-user-plus" style="margin-right: 0.5rem;"></i>Add Local User
+        <i class="fas fa-user-plus" style="margin-right: 0.5rem;"></i>{% translate "Add Local User" %}
       </p>
       <button class="delete" onclick="document.getElementById('add-user-modal').classList.remove('is-active')"></button>
     </header>
@@ -72,46 +73,46 @@
       <form method="post" action="{% url 'user_create' %}" id="add-user-form">
         {% csrf_token %}
         <div class="field">
-          <label class="label" style="font-size: 0.875rem;font-weight: 600;">Username</label>
+          <label class="label" style="font-size: 0.875rem;font-weight: 600;">{% translate "Username" %}</label>
           <div class="control has-icons-left">
-            <input class="input" type="text" name="username" placeholder="Username" required autocomplete="off">
+            <input class="input" type="text" name="username" placeholder="{% translate "Username" %}" required autocomplete="off">
             <span class="icon is-left"><i class="fas fa-user" style="color: var(--text-muted);"></i></span>
           </div>
         </div>
         <div class="field">
-          <label class="label" style="font-size: 0.875rem;font-weight: 600;">Email</label>
+          <label class="label" style="font-size: 0.875rem;font-weight: 600;">{% translate "Email" %}</label>
           <div class="control has-icons-left">
-            <input class="input" type="email" name="email" placeholder="user@example.com">
+            <input class="input" type="email" name="email" placeholder="{% translate "user@example.com" %}">
             <span class="icon is-left"><i class="fas fa-envelope" style="color: var(--text-muted);"></i></span>
           </div>
         </div>
         <div class="field">
-          <label class="label" style="font-size: 0.875rem;font-weight: 600;">Password</label>
+          <label class="label" style="font-size: 0.875rem;font-weight: 600;">{% translate "Password" %}</label>
           <div class="control has-icons-left">
-            <input class="input" type="password" name="password1" placeholder="Password" required autocomplete="new-password">
+            <input class="input" type="password" name="password1" placeholder="{% translate "Password" %}" required autocomplete="new-password">
             <span class="icon is-left"><i class="fas fa-lock" style="color: var(--text-muted);"></i></span>
           </div>
         </div>
         <div class="field">
-          <label class="label" style="font-size: 0.875rem;font-weight: 600;">Confirm Password</label>
+          <label class="label" style="font-size: 0.875rem;font-weight: 600;">{% translate "Confirm Password" %}</label>
           <div class="control has-icons-left">
-            <input class="input" type="password" name="password2" placeholder="Confirm password" required autocomplete="new-password">
+            <input class="input" type="password" name="password2" placeholder="{% translate "Confirm password" %}" required autocomplete="new-password">
             <span class="icon is-left"><i class="fas fa-lock" style="color: var(--text-muted);"></i></span>
           </div>
         </div>
         <div class="field">
           <label class="checkbox" style="font-size: 0.875rem;">
             <input type="checkbox" name="is_superuser">
-            &nbsp;Grant administrator access
+            {% translate "&nbsp;Grant administrator access" %}
           </label>
         </div>
       </form>
     </section>
     <footer class="modal-card-foot" style="justify-content: flex-end;gap: 0.75rem;">
-      <button class="button is-light" onclick="document.getElementById('add-user-modal').classList.remove('is-active')">Cancel</button>
+      <button class="button is-light" onclick="document.getElementById('add-user-modal').classList.remove('is-active')">{% translate "Cancel" %}</button>
       <button type="submit" form="add-user-form" class="button is-primary" style="font-weight: 600;">
         <span class="icon"><i class="fas fa-user-plus"></i></span>
-        <span>Create User</span>
+        <span>{% translate "Create User" %}</span>
       </button>
     </footer>
   </div>
@@ -124,32 +125,32 @@
     <header class="modal-card-head" style="background: var(--bg-sidebar);border-radius: 12px 12px 0 0;">
       <p class="modal-card-title" style="color: var(--bg-card);font-size: 1rem;font-weight: 600;">
         <i class="fas fa-key" style="margin-right: 0.5rem;color: var(--warning-color);"></i>
-        Reset Password — <span id="reset-username"></span>
+        {% translate "Reset Password —" %} <span id="reset-username"></span>
       </p>
       <button class="delete" onclick="closeResetModal()"></button>
     </header>
     <section class="modal-card-body">
       <div id="reset-password-result" style="margin-bottom: 0.75rem;"></div>
       <div class="field">
-        <label class="label" style="font-size: 0.875rem;font-weight: 600;">New Password</label>
+        <label class="label" style="font-size: 0.875rem;font-weight: 600;">{% translate "New Password" %}</label>
         <div class="control has-icons-left">
-          <input class="input" type="password" id="reset-new-password" placeholder="New password" autocomplete="new-password">
+          <input class="input" type="password" id="reset-new-password" placeholder="{% translate "New password" %}" autocomplete="new-password">
           <span class="icon is-left"><i class="fas fa-lock" style="color: var(--text-muted);"></i></span>
         </div>
       </div>
       <div class="field">
-        <label class="label" style="font-size: 0.875rem;font-weight: 600;">Confirm Password</label>
+        <label class="label" style="font-size: 0.875rem;font-weight: 600;">{% translate "Confirm Password" %}</label>
         <div class="control has-icons-left">
-          <input class="input" type="password" id="reset-confirm-password" placeholder="Confirm new password" autocomplete="new-password">
+          <input class="input" type="password" id="reset-confirm-password" placeholder="{% translate "Confirm new password" %}" autocomplete="new-password">
           <span class="icon is-left"><i class="fas fa-lock" style="color: var(--text-muted);"></i></span>
         </div>
       </div>
     </section>
     <footer class="modal-card-foot" style="justify-content: flex-end;gap: 0.75rem;">
-      <button class="button is-light" onclick="closeResetModal()">Cancel</button>
+      <button class="button is-light" onclick="closeResetModal()">{% translate "Cancel" %}</button>
       <button class="button is-warning" style="font-weight: 600;" onclick="submitResetPassword()">
         <span class="icon"><i class="fas fa-key"></i></span>
-        <span>Set Password</span>
+        <span>{% translate "Set Password" %}</span>
       </button>
     </footer>
   </div>
@@ -161,7 +162,7 @@
   <div class="modal-card" style="max-width: 420px;border-radius: 12px;">
     <header class="modal-card-head" style="background: var(--bg-sidebar);border-radius: 12px 12px 0 0;">
       <p class="modal-card-title" style="color: var(--bg-card);font-size: 1rem;font-weight: 600;">
-        <i class="fas fa-key" style="margin-right: 0.5rem;color: var(--link-color);"></i>Change My Password
+        <i class="fas fa-key" style="margin-right: 0.5rem;color: var(--link-color);"></i>{% translate "Change My Password" %}
       </p>
       <button class="delete" onclick="document.getElementById('change-password-modal').classList.remove('is-active')"></button>
     </header>
@@ -169,33 +170,33 @@
       <form method="post" action="{% url 'change_own_password' %}" id="change-password-form">
         {% csrf_token %}
         <div class="field">
-          <label class="label" style="font-size: 0.875rem;font-weight: 600;">Current Password</label>
+          <label class="label" style="font-size: 0.875rem;font-weight: 600;">{% translate "Current Password" %}</label>
           <div class="control has-icons-left">
-            <input class="input" type="password" name="current_password" placeholder="Current password" required autocomplete="current-password">
+            <input class="input" type="password" name="current_password" placeholder="{% translate "Current password" %}" required autocomplete="current-password">
             <span class="icon is-left"><i class="fas fa-lock" style="color: var(--text-muted);"></i></span>
           </div>
         </div>
         <div class="field">
-          <label class="label" style="font-size: 0.875rem;font-weight: 600;">New Password</label>
+          <label class="label" style="font-size: 0.875rem;font-weight: 600;">{% translate "New Password" %}</label>
           <div class="control has-icons-left">
-            <input class="input" type="password" name="new_password" placeholder="New password" required autocomplete="new-password">
+            <input class="input" type="password" name="new_password" placeholder="{% translate "New password" %}" required autocomplete="new-password">
             <span class="icon is-left"><i class="fas fa-lock" style="color: var(--text-muted);"></i></span>
           </div>
         </div>
         <div class="field">
-          <label class="label" style="font-size: 0.875rem;font-weight: 600;">Confirm New Password</label>
+          <label class="label" style="font-size: 0.875rem;font-weight: 600;">{% translate "Confirm New Password" %}</label>
           <div class="control has-icons-left">
-            <input class="input" type="password" name="confirm_password" placeholder="Confirm new password" required autocomplete="new-password">
+            <input class="input" type="password" name="confirm_password" placeholder="{% translate "Confirm new password" %}" required autocomplete="new-password">
             <span class="icon is-left"><i class="fas fa-lock" style="color: var(--text-muted);"></i></span>
           </div>
         </div>
       </form>
     </section>
     <footer class="modal-card-foot" style="justify-content: flex-end;gap: 0.75rem;">
-      <button class="button is-light" onclick="document.getElementById('change-password-modal').classList.remove('is-active')">Cancel</button>
+      <button class="button is-light" onclick="document.getElementById('change-password-modal').classList.remove('is-active')">{% translate "Cancel" %}</button>
       <button type="submit" form="change-password-form" class="button is-primary" style="font-weight: 600;">
         <span class="icon"><i class="fas fa-key"></i></span>
-        <span>Update Password</span>
+        <span>{% translate "Update Password" %}</span>
       </button>
     </footer>
   </div>
@@ -206,7 +207,7 @@
 {% block extra_scripts %}
 <script>
   function confirmDeleteUser(userId, username) {
-    if (!confirm('Delete user "' + username + '"? This cannot be undone.')) return;
+    if (!confirm('{{ _("Delete user %s? This cannot be undone.")|escapejs }}'.replace('%s', '"' + username + '"'))) return;
     var form = document.createElement('form');
     form.method = 'POST';
     form.action = '/users/' + userId + '/delete/';

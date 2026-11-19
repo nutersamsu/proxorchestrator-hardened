@@ -1,15 +1,16 @@
 {% extends "base.html" %}
-{% block title %}MFA Verification — ProxOrchestrator{% endblock %}
+{% load i18n %}
+{% block title %}{% translate "MFA Verification — ProxOrchestrator" %}{% endblock %}
 
 {% block public_content %}
 <div style="min-height: 100vh;background: linear-gradient(135deg,var(--bg-sidebar) 0%,var(--auth-gradient-mid) 50%,var(--auth-gradient-end) 100%);display: flex;flex-direction: column;align-items: center;justify-content: center;padding: 2rem;">
 
   <div style="text-align: center;margin-bottom: 2rem;">
     <div style="font-size: 2.5rem;color: #ffffff;font-weight: 800;letter-spacing: -0.5px;margin-bottom: 0.35rem;">
-      &#9889; ProxOrchestrator
+      {% translate "&#9889; ProxOrchestrator" %}
     </div>
     <div style="color: rgba(255,255,255,0.45);font-size: 0.8125rem;text-transform: uppercase;letter-spacing: 2px;">
-      Two-Factor Authentication
+      {% translate "Two-Factor Authentication" %}
     </div>
   </div>
 
@@ -18,7 +19,7 @@
     <div style="background: var(--bg-main);border-bottom: 1px solid var(--border-main);padding: 1.25rem 2rem;text-align: center;">
       <p style="color: var(--text-muted);font-size: 0.875rem;font-weight: 500;">
         <i class="fas fa-shield-alt" style="color: var(--link-color);margin-right: 0.3rem;"></i>
-        Enter your authenticator code
+        {% translate "Enter your authenticator code" %}
       </p>
     </div>
 
@@ -39,8 +40,7 @@
       {% endif %}
 
       <p style="color: var(--text-muted);font-size: 0.875rem;margin-bottom: 1.5rem;line-height: 1.6;">
-        Open your authenticator app and enter the 6-digit code.
-        You can also use a recovery code.
+        {% translate "Open your authenticator app and enter the 6-digit code. You can also use a recovery code." %}
       </p>
 
       <form method="post" action="{% url 'mfa_verify' %}">
@@ -52,7 +52,7 @@
               class="input is-medium"
               type="text"
               name="code"
-              placeholder="6-digit code or recovery code"
+              placeholder="{% translate "6-digit code or recovery code" %}"
               required
               autofocus
               autocomplete="one-time-code"
@@ -70,7 +70,7 @@
           <div class="control">
             <button type="submit" class="button is-primary is-medium is-fullwidth" style="font-weight: 600;">
               <span class="icon"><i class="fas fa-check-circle"></i></span>
-              <span>Verify</span>
+              <span>{% translate "Verify" %}</span>
             </button>
           </div>
         </div>
@@ -79,18 +79,18 @@
       <div style="text-align: center;margin-top: 1.5rem;display: flex;flex-direction: column;gap: 0.5rem;">
         {% if allow_email_recovery %}
           <a href="{% url 'mfa_email_recovery' %}" style="color: var(--link-color);font-size: 0.8125rem;">
-            <i class="fas fa-envelope" style="margin-right: 0.3rem;"></i> Email me a recovery code
+            <i class="fas fa-envelope" style="margin-right: 0.3rem;"></i> {% translate "Email me a recovery code" %}
           </a>
         {% endif %}
         <a href="{% url 'login' %}" style="color: var(--text-muted);font-size: 0.8125rem;">
-          <i class="fas fa-arrow-left" style="margin-right: 0.3rem;"></i> Back to Sign In
+          <i class="fas fa-arrow-left" style="margin-right: 0.3rem;"></i> {% translate "Back to Sign In" %}
         </a>
       </div>
     </div>
   </div>
 
   <div style="margin-top: 2rem;text-align: center;color: rgba(255,255,255,0.25);font-size: 0.75rem;">
-    ProxOrchestrator &mdash; by ForgedIO &mdash; Free &amp; Open Source
+    {% translate "ProxOrchestrator &mdash; by ForgedIO &mdash; Free &amp; Open Source" %}
   </div>
 
 </div>

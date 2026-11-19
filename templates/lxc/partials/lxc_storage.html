@@ -1,3 +1,4 @@
+{% load i18n %}
 {# LXC mountpoint management partial — swapped via HTMX on add / resize / detach #}
 <div id="lxc-storage-table">
 
@@ -18,12 +19,12 @@
   <table class="table is-fullwidth is-narrow" style="margin:0;font-size:0.875rem;">
     <thead>
       <tr style="background:var(--bg-header, #f5f7fa);">
-        <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;padding:0.75rem 1.5rem;">Mount</th>
-        <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;">Path</th>
-        <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;">Storage</th>
-        <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;">Size</th>
-        <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;">Options</th>
-        <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;text-align:right;padding-right:1.5rem;">Actions</th>
+        <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;padding:0.75rem 1.5rem;">{% translate "Mount" %}</th>
+        <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;">{% translate "Path" %}</th>
+        <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;">{% translate "Storage" %}</th>
+        <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;">{% translate "Size" %}</th>
+        <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;">{% translate "Options" %}</th>
+        <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;text-align:right;padding-right:1.5rem;">{% translate "Actions" %}</th>
       </tr>
     </thead>
     <tbody>
@@ -37,9 +38,9 @@
         <td style="text-align:right;padding-right:1.5rem;white-space:nowrap;">
           <button class="button is-small is-info is-light" style="font-weight:600;"
                   onclick="openLxcResizeModal('{{ mp.interface }}', '{{ mp.size }}')"
-                  title="Increase size">
+                  title="{% translate "Increase size" %}">
             <span class="icon is-small"><i class="fas fa-expand-arrows-alt"></i></span>
-            <span>Resize</span>
+            <span>{% translate "Resize" %}</span>
           </button>
           {% if not mp.is_rootfs %}
           <button class="button is-small is-danger is-light" style="font-weight:600;"
@@ -47,18 +48,18 @@
                   hx-target="#lxc-storage-table"
                   hx-swap="outerHTML"
                   hx-vals='{"disk": "{{ mp.interface }}"}'
-                  hx-confirm="Detach {{ mp.interface }}? This will remove the mountpoint and destroy the underlying volume."
-                  title="Detach mountpoint">
+                  hx-confirm="{% blocktranslate with interface=mp.interface trimmed %}Detach {{ interface }}? This will remove the mountpoint and destroy the underlying volume.{% endblocktranslate %}"
+                  title="{% translate "Detach mountpoint" %}">
             <span class="icon is-small"><i class="fas fa-eject"></i></span>
-            <span>Detach</span>
+            <span>{% translate "Detach" %}</span>
           </button>
           {% endif %}
           {% if move_pools|length > 1 and mp.storage|slice:":1" != "/" %}
           <button class="button is-small is-light" style="font-weight:600;"
                   onclick="openLxcMoveModal('{{ mp.interface }}', '{{ mp.storage }}')"
-                  title="Move volume to another storage">
+                  title="{% translate "Move volume to another storage" %}">
             <span class="icon is-small"><i class="fas fa-truck-moving"></i></span>
-            <span>Move</span>
+            <span>{% translate "Move" %}</span>
           </button>
           {% endif %}
         </td>
@@ -67,14 +68,14 @@
     </tbody>
   </table>
   {% else %}
-    <div style="padding:1.5rem;color:var(--text-muted, #7a7a7a);font-size:0.875rem;">No storage information available.</div>
+    <div style="padding:1.5rem;color:var(--text-muted, #7a7a7a);font-size:0.875rem;">{% translate "No storage information available." %}</div>
   {% endif %}
 
   {# -- Add mountpoint form -- #}
   {% if storage_pools %}
   <div style="border-top:1px solid var(--border-color, #e8ecf0);padding:1rem 1.5rem;margin-top:0;">
     <div style="font-size:0.8125rem;font-weight:600;color:var(--text-muted, #7a7a7a);margin-bottom:0.75rem;text-transform:uppercase;letter-spacing:0.5px;">
-      <i class="fas fa-plus-circle" style="margin-right:0.3rem;"></i> Add Mountpoint
+      <i class="fas fa-plus-circle" style="margin-right:0.3rem;"></i> {% translate "Add Mountpoint" %}
     </div>
     <form method="post" action="{% url 'lxc_mountpoint_add' vmid %}"
           hx-post="{% url 'lxc_mountpoint_add' vmid %}"
@@ -83,29 +84,29 @@
       {% csrf_token %}
       <div style="display:flex;align-items:flex-end;gap:0.75rem;flex-wrap:wrap;margin-bottom:0.5rem;">
         <div style="flex:1;min-width:140px;">
-          <label style="font-size:0.75rem;font-weight:600;color:var(--text-muted, #7a7a7a);display:block;margin-bottom:0.25rem;">Storage</label>
+          <label style="font-size:0.75rem;font-weight:600;color:var(--text-muted, #7a7a7a);display:block;margin-bottom:0.25rem;">{% translate "Storage" %}</label>
           <div class="select is-small is-fullwidth">
             <select name="storage" required>
               {% for s in storage_pools %}
-                <option value="{{ s.storage }}">{{ s.storage }} ({{ s.type }}{% if s.avail %}, {{ s.avail|filesizeformat }} free{% endif %})</option>
+                <option value="{{ s.storage }}">{{ s.storage }} ({{ s.type }}{% if s.avail %}{% blocktranslate with avail=s.avail|filesizeformat trimmed %}, {{ avail }} free{% endblocktranslate %}{% endif %})</option>
               {% endfor %}
             </select>
           </div>
         </div>
         <div style="min-width:90px;max-width:110px;">
-          <label style="font-size:0.75rem;font-weight:600;color:var(--text-muted, #7a7a7a);display:block;margin-bottom:0.25rem;">Size (GB)</label>
+          <label style="font-size:0.75rem;font-weight:600;color:var(--text-muted, #7a7a7a);display:block;margin-bottom:0.25rem;">{% translate "Size (GB)" %}</label>
           <input class="input is-small" type="number" name="size" min="1" value="8" required style="width:100%;">
         </div>
         <div style="flex:1;min-width:160px;">
-          <label style="font-size:0.75rem;font-weight:600;color:var(--text-muted, #7a7a7a);display:block;margin-bottom:0.25rem;">Mount Path (in container)</label>
-          <input class="input is-small" type="text" name="mp" placeholder="/data" required style="width:100%;">
+          <label style="font-size:0.75rem;font-weight:600;color:var(--text-muted, #7a7a7a);display:block;margin-bottom:0.25rem;">{% translate "Mount Path (in container)" %}</label>
+          <input class="input is-small" type="text" name="mp" placeholder="{% translate "/data" %}" required style="width:100%;">
         </div>
         <label style="font-size:0.8125rem;color:var(--text-semi, #555);display:flex;align-items:center;gap:0.3rem;cursor:pointer;">
-          <input type="checkbox" name="backup" value="1" checked> Include in Backup
+          <input type="checkbox" name="backup" value="1" checked> {% translate "Include in Backup" %}
         </label>
         <button type="submit" class="button is-small is-primary" style="font-weight:600;">
           <span class="icon is-small"><i class="fas fa-plus"></i></span>
-          <span>Add Mountpoint</span>
+          <span>{% translate "Add Mountpoint" %}</span>
         </button>
       </div>
     </form>
@@ -118,7 +119,7 @@
     <div class="modal-background" onclick="this.parentElement.classList.remove('is-active')"></div>
     <div class="modal-card" style="max-width:460px;border-radius:12px;">
       <header class="modal-card-head" style="border-radius:12px 12px 0 0;">
-        <p class="modal-card-title" style="font-size:1rem;font-weight:600;"><i class="fas fa-truck-moving"></i>&nbsp; Move volume <span id="lxc-move-label" class="mono-cell"></span></p>
+        <p class="modal-card-title" style="font-size:1rem;font-weight:600;"><i class="fas fa-truck-moving"></i>{% translate "&nbsp; Move volume" %} <span id="lxc-move-label" class="mono-cell"></span></p>
         <button class="delete" type="button" onclick="document.getElementById('lxc-move-modal').classList.remove('is-active')"></button>
       </header>
       <form method="post" action="{% url 'lxc_volume_move' vmid %}">
@@ -126,17 +127,17 @@
         <input type="hidden" name="volume" id="lxc-move-volume">
         <section class="modal-card-body">
           <div class="field">
-            <label class="label is-small">Target storage</label>
+            <label class="label is-small">{% translate "Target storage" %}</label>
             <div class="select is-small is-fullwidth"><select name="storage" id="lxc-move-storage">
               {% for s in move_pools %}<option value="{{ s.storage }}">{{ s.storage }} ({{ s.type }})</option>{% endfor %}
             </select></div>
           </div>
-          <label class="checkbox is-size-7"><input type="checkbox" name="delete_source" value="1" checked> Delete the source volume after the move</label>
-          <p class="help">The root disk can only be moved while the container is stopped. Progress opens in the task log.</p>
+          <label class="checkbox is-size-7"><input type="checkbox" name="delete_source" value="1" checked> {% translate "Delete the source volume after the move" %}</label>
+          <p class="help">{% translate "The root disk can only be moved while the container is stopped. Progress opens in the task log." %}</p>
         </section>
         <footer class="modal-card-foot" style="justify-content:flex-end;gap:0.5rem;">
-          <button type="button" class="button is-small is-light" onclick="document.getElementById('lxc-move-modal').classList.remove('is-active')">Cancel</button>
-          <button type="submit" class="button is-small is-link">Move volume</button>
+          <button type="button" class="button is-small is-light" onclick="document.getElementById('lxc-move-modal').classList.remove('is-active')">{% translate "Cancel" %}</button>
+          <button type="submit" class="button is-small is-link">{% translate "Move volume" %}</button>
         </footer>
       </form>
     </div>
@@ -160,7 +161,7 @@
     <div class="modal-card" style="max-width:420px;border-radius:12px;">
       <header class="modal-card-head" style="background:var(--link-color, #3273dc);border-radius:12px 12px 0 0;">
         <p class="modal-card-title" style="color:#fff;font-size:1rem;font-weight:600;">
-          <i class="fas fa-expand-arrows-alt"></i>&nbsp; Resize Mountpoint
+          <i class="fas fa-expand-arrows-alt"></i>{% translate "&nbsp; Resize Mountpoint" %}
         </p>
         <button class="delete" onclick="closeLxcResizeModal()"></button>
       </header>
@@ -173,21 +174,21 @@
         <input type="hidden" name="disk" id="lxc-resize-mp-name" value="">
         <section class="modal-card-body">
           <p style="margin-bottom:1rem;font-size:0.875rem;">
-            Increase <strong id="lxc-resize-mp-label"></strong> (currently <span id="lxc-resize-mp-current"></span>)
+            {% translate "Increase" %} <strong id="lxc-resize-mp-label"></strong> {% translate "(currently" %} <span id="lxc-resize-mp-current"></span>)
           </p>
           <div class="field">
-            <label class="label" style="font-size:0.875rem;">Add (GB)</label>
+            <label class="label" style="font-size:0.875rem;">{% translate "Add (GB)" %}</label>
             <div class="control">
               <input class="input" type="number" name="add_gb" min="1" value="10" required>
             </div>
-            <p class="help">Mountpoints can only be grown, never shrunk.</p>
+            <p class="help">{% translate "Mountpoints can only be grown, never shrunk." %}</p>
           </div>
         </section>
         <footer class="modal-card-foot" style="justify-content:flex-end;gap:0.75rem;">
-          <button type="button" class="button is-light" onclick="closeLxcResizeModal()" id="lxc-resize-cancel-btn">Cancel</button>
+          <button type="button" class="button is-light" onclick="closeLxcResizeModal()" id="lxc-resize-cancel-btn">{% translate "Cancel" %}</button>
           <button type="submit" class="button is-primary" style="font-weight:600;" id="lxc-resize-submit-btn">
             <span class="icon is-small"><i class="fas fa-expand-arrows-alt"></i></span>
-            <span>Resize</span>
+            <span>{% translate "Resize" %}</span>
           </button>
         </footer>
       </form>

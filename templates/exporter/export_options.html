@@ -1,12 +1,13 @@
 {% extends "base.html" %}
-{% block title %}Export {{ vm_name }} — ProxOrchestrator{% endblock %}
-{% block page_title %}Export VM{% endblock %}
-{% block help_slug %}exporter-options{% endblock %}
+{% load i18n %}
+{% block title %}{% blocktranslate trimmed %}Export {{ vm_name }} — ProxOrchestrator{% endblocktranslate %}{% endblock %}
+{% block page_title %}{% translate "Export VM" %}{% endblock %}
+{% block help_slug %}{% translate "exporter-options" %}{% endblock %}
 
 {% block page_actions %}
   <a href="javascript:history.back()" class="button is-light is-small">
     <span class="icon is-small"><i class="fas fa-arrow-left"></i></span>
-    <span>Back</span>
+    <span>{% translate "Back" %}</span>
   </a>
 {% endblock %}
 
@@ -17,7 +18,7 @@
     {% if api_error %}
       <div class="notification is-warning is-light" style="margin-bottom: 1.25rem;">
         <i class="fas fa-exclamation-triangle" style="margin-right: 0.5rem;"></i>
-        Could not fetch live VM info — using defaults. ({{ api_error }})
+        {% blocktranslate trimmed %}Could not fetch live VM info — using defaults. ({{ api_error }}){% endblocktranslate %}
       </div>
     {% endif %}
 
@@ -31,21 +32,20 @@
           <div>
             <div style="font-weight: 700;color: var(--text-header);font-size: 1rem;">{{ vm_name }}</div>
             <div style="font-size: 0.8125rem;color: var(--text-muted);margin-top: 0.2rem;">
-              VMID {{ vmid }}
-              &nbsp;&bull;&nbsp;
+              {% blocktranslate trimmed %}VMID {{ vmid }} &nbsp;&bull;&nbsp;{% endblocktranslate %}
               {% if is_windows %}
-                <i class="fab fa-windows" style="margin-right: 0.2rem;color: var(--link-color);"></i>Windows
+                <i class="fab fa-windows" style="margin-right: 0.2rem;color: var(--link-color);"></i>{% translate "Windows" %}
               {% else %}
-                <i class="fab fa-linux" style="margin-right: 0.2rem;color: var(--text-semi);"></i>Linux / Other
+                <i class="fab fa-linux" style="margin-right: 0.2rem;color: var(--text-semi);"></i>{% translate "Linux / Other" %}
               {% endif %}
               &nbsp;&bull;&nbsp;
               {% if is_running %}
-                <span style="color: var(--success-color);font-weight: 600;"><i class="fas fa-circle" style="font-size: 0.5rem;vertical-align: middle;margin-right: 0.25rem;"></i>Running</span>
+                <span style="color: var(--success-color);font-weight: 600;"><i class="fas fa-circle" style="font-size: 0.5rem;vertical-align: middle;margin-right: 0.25rem;"></i>{% translate "Running" %}</span>
               {% else %}
-                <span style="color: var(--text-muted);"><i class="fas fa-circle" style="font-size: 0.5rem;vertical-align: middle;margin-right: 0.25rem;"></i>Stopped</span>
+                <span style="color: var(--text-muted);"><i class="fas fa-circle" style="font-size: 0.5rem;vertical-align: middle;margin-right: 0.25rem;"></i>{% translate "Stopped" %}</span>
               {% endif %}
               {% if agent_enabled %}
-                &nbsp;&bull;&nbsp;<i class="fas fa-plug" style="color: var(--success-color);margin-right: 0.2rem;"></i>Guest agent active
+                &nbsp;&bull;&nbsp;<i class="fas fa-plug" style="color: var(--success-color);margin-right: 0.2rem;"></i>{% translate "Guest agent active" %}
               {% endif %}
             </div>
           </div>
@@ -59,7 +59,7 @@
 
       <div class="proxorchestrator-card">
         <div class="card-header">
-          <i class="fas fa-sliders-h" style="color: var(--link-color);"></i> Export Options
+          <i class="fas fa-sliders-h" style="color: var(--link-color);"></i> {% translate "Export Options" %}
         </div>
         <div class="card-body">
 
@@ -68,9 +68,7 @@
 
             <div class="notification is-warning is-light" style="margin-bottom: 1.25rem;border-radius: 8px;">
               <i class="fas fa-exclamation-triangle" style="margin-right: 0.5rem;"></i>
-              <strong>Windows VM detected.</strong> A live export of a running Windows VM may produce
-              an inconsistent disk image due to in-memory state, unflushed registry writes, and open
-              database transactions. Shutdown before export is strongly recommended.
+              <strong>{% translate "Windows VM detected." %}</strong> {% translate "A live export of a running Windows VM may produce an inconsistent disk image due to in-memory state, unflushed registry writes, and open database transactions. Shutdown before export is strongly recommended." %}
             </div>
 
             {# Mode selection #}
@@ -82,12 +80,11 @@
                 <div>
                   <div style="font-weight: 700;color: var(--text-header);font-size: 1rem;">
                     <i class="fas fa-power-off" style="color: var(--link-color);margin-right: 0.4rem;"></i>
-                    Shutdown before export
-                    <span style="font-size: 0.75rem;background: var(--link-color);color: var(--bg-card);padding: 0.1rem 0.45rem;border-radius: 4px;margin-left: 0.4rem;">Recommended</span>
+                    {% translate "Shutdown before export" %}
+                    <span style="font-size: 0.75rem;background: var(--link-color);color: var(--bg-card);padding: 0.1rem 0.45rem;border-radius: 4px;margin-left: 0.4rem;">{% translate "Recommended" %}</span>
                   </div>
                   <div style="font-size: 0.8125rem;color: var(--text-semi);margin-top: 0.3rem;line-height: 1.5;">
-                    Gracefully shuts down the VM, exports a clean consistent image, then optionally restarts.
-                    Safest for Windows — avoids NTFS dirty flags and registry inconsistencies.
+                    {% translate "Gracefully shuts down the VM, exports a clean consistent image, then optionally restarts. Safest for Windows — avoids NTFS dirty flags and registry inconsistencies." %}
                   </div>
                 </div>
               </label>
@@ -98,11 +95,11 @@
                 <div>
                   <div style="font-weight: 700;color: var(--text-header);font-size: 1rem;">
                     <i class="fas fa-exclamation-triangle" style="color: var(--warning-color);margin-right: 0.4rem;"></i>
-                    Live export (crash-consistent)
+                    {% translate "Live export (crash-consistent)" %}
                   </div>
                   <div style="font-size: 0.8125rem;color: var(--text-semi);margin-top: 0.3rem;line-height: 1.5;">
-                    Exports the disk while the VM is running. No downtime, but Windows may require
-                    <code>chkdsk</code> on next boot. Not recommended for production Windows VMs.
+                    {% translate "Exports the disk while the VM is running. No downtime, but Windows may require" %}
+                    <code>chkdsk</code> {% translate "on next boot. Not recommended for production Windows VMs." %}
                   </div>
                 </div>
               </label>
@@ -120,13 +117,11 @@
                 <div>
                   <div style="font-weight: 700;color: var(--text-header);font-size: 1rem;">
                     <i class="fas fa-snowflake" style="color: var(--link-color);margin-right: 0.4rem;"></i>
-                    Filesystem freeze
-                    <span style="font-size: 0.75rem;background: var(--link-color);color: var(--bg-card);padding: 0.1rem 0.45rem;border-radius: 4px;margin-left: 0.4rem;">Recommended</span>
+                    {% translate "Filesystem freeze" %}
+                    <span style="font-size: 0.75rem;background: var(--link-color);color: var(--bg-card);padding: 0.1rem 0.45rem;border-radius: 4px;margin-left: 0.4rem;">{% translate "Recommended" %}</span>
                   </div>
                   <div style="font-size: 0.8125rem;color: var(--text-semi);margin-top: 0.3rem;line-height: 1.5;">
-                    Uses the QEMU guest agent to freeze filesystem I/O during the disk copy, then
-                    thaws immediately after. Produces a consistent image with no reboot required.
-                    I/O is paused for the duration of the export — suitable for most workloads.
+                    {% translate "Uses the QEMU guest agent to freeze filesystem I/O during the disk copy, then thaws immediately after. Produces a consistent image with no reboot required. I/O is paused for the duration of the export — suitable for most workloads." %}
                   </div>
                 </div>
               </label>
@@ -137,11 +132,10 @@
                 <div>
                   <div style="font-weight: 700;color: var(--text-header);font-size: 1rem;">
                     <i class="fas fa-power-off" style="color: var(--text-muted);margin-right: 0.4rem;"></i>
-                    Shutdown before export
+                    {% translate "Shutdown before export" %}
                   </div>
                   <div style="font-size: 0.8125rem;color: var(--text-semi);margin-top: 0.3rem;line-height: 1.5;">
-                    Cleanest possible export — no in-memory state. Causes VM downtime for the
-                    duration of the export. Recommended for large VMs with heavy database workloads.
+                    {% translate "Cleanest possible export — no in-memory state. Causes VM downtime for the duration of the export. Recommended for large VMs with heavy database workloads." %}
                   </div>
                 </div>
               </label>
@@ -152,11 +146,10 @@
                 <div>
                   <div style="font-weight: 700;color: var(--text-header);font-size: 1rem;">
                     <i class="fas fa-bolt" style="color: var(--warning-color);margin-right: 0.4rem;"></i>
-                    Live export (crash-consistent)
+                    {% translate "Live export (crash-consistent)" %}
                   </div>
                   <div style="font-size: 0.8125rem;color: var(--text-semi);margin-top: 0.3rem;line-height: 1.5;">
-                    No freeze, no downtime. Linux journals recover cleanly on boot.
-                    Fastest option — good for development VMs or stateless workloads.
+                    {% translate "No freeze, no downtime. Linux journals recover cleanly on boot. Fastest option — good for development VMs or stateless workloads." %}
                   </div>
                 </div>
               </label>
@@ -168,9 +161,9 @@
 
             <div class="notification is-info is-light" style="margin-bottom: 1.25rem;border-radius: 8px;">
               <i class="fas fa-info-circle" style="margin-right: 0.5rem;"></i>
-              QEMU guest agent not detected. Filesystem freeze is unavailable — shutdown or live export only.
+              {% translate "QEMU guest agent not detected. Filesystem freeze is unavailable — shutdown or live export only." %}
               <a href="https://pve.proxmox.com/wiki/Qemu-guest-agent" target="_blank" style="margin-left: 0.5rem;">
-                Install guest agent <i class="fas fa-external-link-alt" style="font-size: 0.75rem;"></i>
+                {% translate "Install guest agent" %} <i class="fas fa-external-link-alt" style="font-size: 0.75rem;"></i>
               </a>
             </div>
 
@@ -182,10 +175,10 @@
                 <div>
                   <div style="font-weight: 700;color: var(--text-header);font-size: 1rem;">
                     <i class="fas fa-power-off" style="color: var(--text-muted);margin-right: 0.4rem;"></i>
-                    Shutdown before export
+                    {% translate "Shutdown before export" %}
                   </div>
                   <div style="font-size: 0.8125rem;color: var(--text-semi);margin-top: 0.3rem;line-height: 1.5;">
-                    Cleanest export — shuts the VM down, exports, optionally restarts.
+                    {% translate "Cleanest export — shuts the VM down, exports, optionally restarts." %}
                   </div>
                 </div>
               </label>
@@ -196,12 +189,11 @@
                 <div>
                   <div style="font-weight: 700;color: var(--text-header);font-size: 1rem;">
                     <i class="fas fa-bolt" style="color: var(--link-color);margin-right: 0.4rem;"></i>
-                    Live export (crash-consistent)
-                    <span style="font-size: 0.75rem;background: var(--link-color);color: var(--bg-card);padding: 0.1rem 0.45rem;border-radius: 4px;margin-left: 0.4rem;">Default</span>
+                    {% translate "Live export (crash-consistent)" %}
+                    <span style="font-size: 0.75rem;background: var(--link-color);color: var(--bg-card);padding: 0.1rem 0.45rem;border-radius: 4px;margin-left: 0.4rem;">{% translate "Default" %}</span>
                   </div>
                   <div style="font-size: 0.8125rem;color: var(--text-semi);margin-top: 0.3rem;line-height: 1.5;">
-                    No downtime. Linux journaled filesystems (ext4, xfs, btrfs) replay cleanly on boot.
-                    Good for most Linux VMs without heavy database workloads.
+                    {% translate "No downtime. Linux journaled filesystems (ext4, xfs, btrfs) replay cleanly on boot. Good for most Linux VMs without heavy database workloads." %}
                   </div>
                 </div>
               </label>
@@ -214,20 +206,20 @@
           <div id="restart-option" style="{% if not is_windows %}display: none;{% endif %}padding: 0.75rem 1rem;background: var(--bg-main);border: 1px solid var(--border-main);border-radius: 8px;margin-bottom: 1rem;">
             <label style="display: flex;align-items: center;gap: 0.6rem;cursor: pointer;">
               <input type="checkbox" name="restart_after" id="restart-after-check" checked style="accent-color: var(--link-color);">
-              <span style="font-size: 0.875rem;font-weight: 600;color: var(--text-header);">Restart VM after export completes</span>
+              <span style="font-size: 0.875rem;font-weight: 600;color: var(--text-header);">{% translate "Restart VM after export completes" %}</span>
             </label>
             <p style="font-size: 0.8125rem;color: var(--text-muted);margin: 0.25rem 0 0 1.6rem;">
-              The VM will be started again automatically once the export archive is ready.
+              {% translate "The VM will be started again automatically once the export archive is ready." %}
             </p>
           </div>
 
           {% include "exporter/partials/delete_after_download_option.html" %}
 
           <div style="display: flex;justify-content: flex-end;gap: 1rem;margin-top: 0.5rem;">
-            <a href="javascript:history.back()" class="button is-light is-medium" style="font-weight: 600;">Cancel</a>
+            <a href="javascript:history.back()" class="button is-light is-medium" style="font-weight: 600;">{% translate "Cancel" %}</a>
             <button type="submit" class="button is-info is-medium" style="font-weight: 600;">
               <span class="icon"><i class="fas fa-file-export"></i></span>
-              <span>Start Export</span>
+              <span>{% translate "Start Export" %}</span>
             </button>
           </div>
 
@@ -241,36 +233,30 @@
   <div class="column is-5">
     <div class="proxorchestrator-card">
       <div class="card-header">
-        <i class="fas fa-info-circle" style="color: var(--link-color);"></i> Export Modes Explained
+        <i class="fas fa-info-circle" style="color: var(--link-color);"></i> {% translate "Export Modes Explained" %}
       </div>
       <div class="card-body" style="font-size: 0.8125rem;color: var(--text-semi);line-height: 1.7;">
 
         <div style="margin-bottom: 1rem;">
           <div style="font-weight: 700;color: var(--text-header);margin-bottom: 0.25rem;">
-            <i class="fas fa-power-off" style="width: 1.1rem;color: var(--link-color);"></i> Shutdown
+            <i class="fas fa-power-off" style="width: 1.1rem;color: var(--link-color);"></i> {% translate "Shutdown" %}
           </div>
-          <p>Cleanest option. The VM is gracefully stopped, the disk is copied to a qcow2, then the
-          VM is optionally restarted. No dirty data, no journal replay — identical to a clean shutdown
-          and backup. Best for production databases (MySQL, PostgreSQL, SQL Server) and Windows.</p>
+          <p>{% translate "Cleanest option. The VM is gracefully stopped, the disk is copied to a qcow2, then the VM is optionally restarted. No dirty data, no journal replay — identical to a clean shutdown and backup. Best for production databases (MySQL, PostgreSQL, SQL Server) and Windows." %}</p>
         </div>
 
         <div style="margin-bottom: 1rem;">
           <div style="font-weight: 700;color: var(--text-header);margin-bottom: 0.25rem;">
-            <i class="fas fa-snowflake" style="width: 1.1rem;color: var(--link-color);"></i> Filesystem Freeze
+            <i class="fas fa-snowflake" style="width: 1.1rem;color: var(--link-color);"></i> {% translate "Filesystem Freeze" %}
           </div>
-          <p>Uses the QEMU guest agent to pause all disk I/O before copying starts, then resumes
-          immediately after. The VM stays running — users won't notice a reboot — but applications
-          will stall briefly during the copy. Duration depends on disk size.</p>
-          <p style="font-size: 0.8125rem;color: var(--text-muted);margin-top: 0.3rem;">Requires QEMU guest agent installed and running in the VM.</p>
+          <p>{% translate "Uses the QEMU guest agent to pause all disk I/O before copying starts, then resumes immediately after. The VM stays running — users won't notice a reboot — but applications will stall briefly during the copy. Duration depends on disk size." %}</p>
+          <p style="font-size: 0.8125rem;color: var(--text-muted);margin-top: 0.3rem;">{% translate "Requires QEMU guest agent installed and running in the VM." %}</p>
         </div>
 
         <div>
           <div style="font-weight: 700;color: var(--text-header);margin-bottom: 0.25rem;">
-            <i class="fas fa-bolt" style="width: 1.1rem;color: var(--warning-color);"></i> Live (crash-consistent)
+            <i class="fas fa-bolt" style="width: 1.1rem;color: var(--warning-color);"></i> {% translate "Live (crash-consistent)" %}
           </div>
-          <p>Fastest — no downtime at all. Reads the disk while the VM runs, equivalent to an
-          unexpected power cut at that moment. Linux journaled filesystems recover automatically
-          on next boot. Not recommended for Windows or active databases.</p>
+          <p>{% translate "Fastest — no downtime at all. Reads the disk while the VM runs, equivalent to an unexpected power cut at that moment. Linux journaled filesystems recover automatically on next boot. Not recommended for Windows or active databases." %}</p>
         </div>
 
       </div>

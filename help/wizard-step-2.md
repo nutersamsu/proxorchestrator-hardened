@@ -20,20 +20,19 @@ ProxOrchestrator:
 3. Verifies the key was written correctly by attempting key-based authentication
 4. Immediately discards the root password from memory — it is never written to disk or database
 
-## Manual key installation (alternative)
+## Adding the key yourself (alternative)
 
-If you prefer not to enter the root password here, you can manually copy the key:
+If root password login is disabled on Proxmox, or you prefer not to type the password here, open **Root password login disabled? Add the key yourself instead**:
 
-1. Copy the public key shown on screen
-2. On your Proxmox host, run: `echo "PASTE_KEY_HERE" >> /root/.ssh/authorized_keys`
-3. Ensure permissions: `chmod 600 /root/.ssh/authorized_keys`
-4. Then return here and click "Skip manual" (if available) or proceed
+1. In the Proxmox web UI open **your node → Shell**
+2. Click **Copy command** and paste the line into the Shell (it appends the key to `/root/.ssh/authorized_keys`)
+3. Come back here and click **I added it — test the key**
 
 ## Common issues
 
-**"Authentication failed"** — The root password entered was incorrect. Re-enter carefully. Note that Proxmox's root account may have password authentication disabled — check `/etc/ssh/sshd_config` on Proxmox.
+**"Authentication failed"** — The root password entered was incorrect. Re-enter carefully. Note that Proxmox's root account may have password authentication disabled — check `/etc/ssh/sshd_config` on Proxmox, or add the key yourself as described above.
 
-**"Permission denied (publickey)"** — SSH may be configured to deny password authentication. Temporarily enable it in `/etc/ssh/sshd_config` by setting `PasswordAuthentication yes`, then restart sshd: `systemctl restart ssh`.
+**"Permission denied (publickey)"** — SSH may be configured to deny password authentication. Add the key yourself as described above (recommended), or temporarily enable it in `/etc/ssh/sshd_config` by setting `PasswordAuthentication yes`, then restart sshd: `systemctl restart ssh`.
 
 **"Host key verification failed"** — The Proxmox host's fingerprint changed (possible if you reinstalled Proxmox). If you're sure the host is legitimate, clear the known_hosts entry on the ProxOrchestrator server.
 

@@ -10,6 +10,7 @@ from apps.importer.forms import (
     OS_TYPE_CHOICES,
     VGA_TYPE_CHOICES,
 )
+from django.utils.translation import gettext_lazy
 
 
 class VmCreateConfigForm(forms.Form):
@@ -18,7 +19,7 @@ class VmCreateConfigForm(forms.Form):
     # --- General ---
     vm_name = forms.CharField(max_length=100, widget=forms.TextInput(attrs={"placeholder": "my-server"}))
     vmid = forms.IntegerField(required=False, min_value=100, max_value=999999999,
-                              help_text="Leave blank to auto-assign.")
+                              help_text=gettext_lazy("Leave blank to auto-assign."))
     node = forms.ChoiceField(choices=[])
     description = forms.CharField(widget=forms.Textarea(attrs={"rows": 3}), required=False)
     os_type = forms.ChoiceField(choices=OS_TYPE_CHOICES, initial="l26")
@@ -44,7 +45,7 @@ class VmCreateConfigForm(forms.Form):
     # --- Primary Disk ---
     storage_pool = forms.ChoiceField(choices=[])
     primary_disk_size = forms.IntegerField(initial=50, min_value=1, max_value=65536,
-                                           help_text="Size of the primary disk in GB.")
+                                           help_text=gettext_lazy("Size of the primary disk in GB."))
     disk_bus = forms.ChoiceField(choices=DISK_BUS_CHOICES, initial="scsi")
     disk_cache = forms.ChoiceField(choices=DISK_CACHE_CHOICES, initial="none")
     disk_iothread = forms.BooleanField(required=False, initial=True)
@@ -81,7 +82,7 @@ class VmCreateConfigForm(forms.Form):
     ci_ssh_keys = forms.CharField(required=False, widget=forms.Textarea(attrs={"rows": 3}))
     ci_ip_config = forms.ChoiceField(
         required=False,
-        choices=[("dhcp", "DHCP"), ("static", "Static"), ("none", "None")],
+        choices=[("dhcp", gettext_lazy("DHCP")), ("static", gettext_lazy("Static")), ("none", gettext_lazy("None"))],
         initial="dhcp",
     )
     ci_ip_address = forms.CharField(required=False, max_length=50, help_text="e.g. 192.168.1.100/24")

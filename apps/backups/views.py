@@ -14,6 +14,7 @@ from apps.backups import logic as bl
 from apps.proxmox.api import ProxmoxAPIError
 from apps.proxmox.perms import token_can
 from apps.wizard.models import ProxmoxConfig
+from django.utils.translation import gettext
 
 logger = logging.getLogger(__name__)
 
@@ -124,7 +125,7 @@ def backup_new(request):
             params = bl.parse_backup_form(request.POST, guests, {s["storage"] for s in storages})
             upid = _upid(api.vzdump(node, **params))
             logger.info("backup_new %s by %s", params.get("vmid"), request.user)
-            messages.success(request, f"Backup of {params['vmid']} started.")
+            messages.success(request, gettext('Backup of %(params_vmid)s started.') % {"params_vmid": params['vmid']})
             if upid:
                 return redirect("task_detail", upid=upid)
             return redirect("backups_index")
@@ -158,7 +159,7 @@ def backup_job_run(request, job_id):
         if upid:
             return redirect("task_detail", upid=upid)
     except ProxmoxAPIError as exc:
-        messages.error(request, f"Could not run the job: {exc.message}")
+        messages.error(request, gettext('Could not run the job: %(message)s') % {"message": exc.message})
     return redirect("backups_index")
 
 
@@ -213,7 +214,7 @@ def backup_restore(request):
                 upid = api.restore_lxc(node, opts["vmid"], volid, opts["storage"], opts["force"],
                                        opts["unique"], opts["start"], opts.get("unprivileged"))
             logger.info("backup_restore %s -> %s (force=%s) by %s", volid, opts["vmid"], opts["force"], request.user)
-            messages.success(request, f"Restoring to {opts['vmid']}…")
+            messages.success(request, gettext('Restoring to %(opts_vmid)s…') % {"opts_vmid": opts['vmid']})
             upid = _upid(upid)
             if upid:
                 return redirect("task_detail", upid=upid)
@@ -252,7 +253,7 @@ def backup_protect(request):
         api.update_volume(node, storage, volid, protected=protect)
         messages.success(request, "Backup protected." if protect else "Protection removed.")
     except ProxmoxAPIError as exc:
-        messages.error(request, f"Could not change protection: {exc.message}")
+        messages.error(request, gettext('Could not change protection: %(message)s') % {"message": exc.message})
     return _after(request, "backups_index")
 
 
@@ -265,14 +266,14 @@ def backup_notes(request):
         raise Http404
     notes = (request.POST.get("notes") or "").strip()
     if len(notes) > 1024:
-        messages.error(request, "Notes are limited to 1024 characters.")
+        messages.error(request, gettext("Notes are limited to 1024 characters."))
         return _after(request, "backups_index")
     config, api, node = _ctx()
     try:
         api.update_volume(node, storage, volid, notes=notes)
-        messages.success(request, "Notes saved.")
+        messages.success(request, gettext("Notes saved."))
     except ProxmoxAPIError as exc:
-        messages.error(request, f"Could not save notes: {exc.message}")
+        messages.error(request, gettext('Could not save notes: %(message)s') % {"message": exc.message})
     return _after(request, "backups_index")
 
 
@@ -285,22 +286,22 @@ def volume_delete(request):
         raise Http404
     name = volid.split("/")[-1].split(":")[-1]
     if (request.POST.get("confirm") or "").strip() != name:
-        messages.error(request, "Type the file name to confirm the deletion.")
+        messages.error(request, gettext("Type the file name to confirm the deletion."))
         return _after(request, "backups_index")
     config, api, node = _ctx()
     try:
         attrs = api.get_volume_attributes(node, storage, volid) or {}
         if attrs.get("protected"):
-            messages.error(request, "This backup is protected. Remove the protection first.")
+            messages.error(request, gettext("This backup is protected. Remove the protection first."))
             return _after(request, "backups_index")
         api.delete_volume(node, storage, volid)
         logger.info("volume_delete %s by %s", volid, request.user)
-        messages.success(request, f"Deleted {name}.")
+        messages.success(request, gettext('Deleted %(name)s.') % {"name": name})
     except ProxmoxAPIError as exc:
         if exc.status_code == 403:
-            messages.error(request, "Proxmox refused: the API token is not allowed to delete this volume.")
+            messages.error(request, gettext("Proxmox refused: the API token is not allowed to delete this volume."))
         else:
-            messages.error(request, f"Delete failed: {exc.message}")
+            messages.error(request, gettext('Delete failed: %(message)s') % {"message": exc.message})
     return _after(request, "backups_index")
 
 
@@ -345,13 +346,13 @@ def guest_backup_now(request, kind, vmid):
         params = bl.parse_backup_form(data, {vmid: {}}, storages)
         upid = _upid(api.vzdump(node, **params))
         logger.info("guest_backup_now %s by %s", vmid, request.user)
-        messages.success(request, f"Backup of {vmid} started.")
+        messages.success(request, gettext('Backup of %(vmid)s started.') % {"vmid": vmid})
         if upid:
             return redirect("task_detail", upid=upid)
     except bl.BackupError as exc:
         messages.error(request, str(exc))
     except ProxmoxAPIError as exc:
-        messages.error(request, f"Backup could not start: {exc.message}")
+        messages.error(request, gettext('Backup could not start: %(message)s') % {"message": exc.message})
     return redirect(detail + "#backups")
 
 

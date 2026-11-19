@@ -24,6 +24,7 @@ from apps.vmmanager.vm_options import find_cloudinit_drive
 from apps.vmmanager.vm_options import other_hardware
 from apps.proxmox.api import ProxmoxAPIError
 from apps.wizard.models import ProxmoxConfig
+from django.utils.translation import gettext, gettext_lazy
 
 logger = logging.getLogger(__name__)
 
@@ -372,7 +373,7 @@ def vm_delete(request, vmid):
         vm_name = status.get("name", str(vmid))
 
         if status.get("status") != "stopped":
-            messages.error(request, f"VM {vm_name} ({vmid}) must be stopped before it can be deleted.")
+            messages.error(request, gettext('VM %(vm_name)s (%(vmid)s) must be stopped before it can be deleted.') % {"vm_name": vm_name, "vmid": vmid})
             return redirect("vm_detail", vmid=vmid)
 
         # First attempt with full disk cleanup
@@ -387,14 +388,14 @@ def vm_delete(request, vmid):
             result = _wait_for_task(api, node, upid)
 
             if result and result.get("exitstatus") != "OK":
-                messages.error(request, f"Failed to delete VM {vm_name} ({vmid}): {result.get('exitstatus', 'unknown error')}")
+                messages.error(request, gettext('Failed to delete VM %(vm_name)s (%(vmid)s): %(exitstatus_unknown_error)s') % {"vm_name": vm_name, "vmid": vmid, "exitstatus_unknown_error": result.get('exitstatus', 'unknown error')})
                 return redirect("vm_detail", vmid=vmid)
 
-        messages.success(request, f"VM {vm_name} ({vmid}) has been deleted.")
+        messages.success(request, gettext('VM %(vm_name)s (%(vmid)s) has been deleted.') % {"vm_name": vm_name, "vmid": vmid})
         return redirect("inventory")
     except ProxmoxAPIError as exc:
         logger.error("vm_delete vmid=%d: %s", vmid, exc)
-        messages.error(request, f"Failed to delete VM {vmid}: {exc.message}")
+        messages.error(request, gettext('Failed to delete VM %(vmid)s: %(message)s') % {"vmid": vmid, "message": exc.message})
         return redirect("vm_detail", vmid=vmid)
 
 
@@ -490,7 +491,7 @@ def vm_clone_progress(request, vmid):
     clone_task = request.session.get("clone_task", {})
 
     if not clone_task or clone_task.get("source_vmid") != vmid:
-        messages.error(request, "No active clone task found.")
+        messages.error(request, gettext("No active clone task found."))
         return redirect("vm_detail", vmid=vmid)
 
     return render(request, "vmmanager/clone_progress.html", {
@@ -510,7 +511,7 @@ def vm_clone_status(request, vmid):
     new_name = clone_task.get("new_name", "")
 
     if not upid or not node:
-        return JsonResponse({"status": "error", "message": "No active clone task."})
+        return JsonResponse({"status": "error", "message": gettext("No active clone task.")})
 
     try:
         config = ProxmoxConfig.get_config()
@@ -547,35 +548,35 @@ def vm_clone_status(request, vmid):
 # =========================================================================
 
 CPU_TYPE_CHOICES = [
-    ("host", "host"),
-    ("max", "max"),
-    ("kvm64", "kvm64"),
+    ("host", gettext_lazy("host")),
+    ("max", gettext_lazy("max")),
+    ("kvm64", gettext_lazy("kvm64")),
     ("x86-64-v2", "x86-64-v2"),
-    ("x86-64-v2-AES", "x86-64-v2-AES"),
+    ("x86-64-v2-AES", gettext_lazy("x86-64-v2-AES")),
     ("x86-64-v3", "x86-64-v3"),
     ("x86-64-v4", "x86-64-v4"),
-    ("qemu64", "qemu64"),
-    ("Nehalem", "Nehalem"),
-    ("Westmere", "Westmere"),
-    ("SandyBridge", "SandyBridge"),
-    ("IvyBridge", "IvyBridge"),
-    ("Haswell", "Haswell"),
-    ("Broadwell", "Broadwell"),
-    ("Skylake-Client", "Skylake-Client"),
-    ("Skylake-Server", "Skylake-Server"),
-    ("Cascadelake-Server", "Cascadelake-Server"),
-    ("Icelake-Server", "Icelake-Server"),
-    ("EPYC", "EPYC"),
-    ("EPYC-v2", "EPYC-v2"),
-    ("EPYC-v3", "EPYC-v3"),
-    ("EPYC-v4", "EPYC-v4"),
-    ("EPYC-Rome", "EPYC-Rome"),
-    ("EPYC-Milan", "EPYC-Milan"),
+    ("qemu64", gettext_lazy("qemu64")),
+    ("Nehalem", gettext_lazy("Nehalem")),
+    ("Westmere", gettext_lazy("Westmere")),
+    ("SandyBridge", gettext_lazy("SandyBridge")),
+    ("IvyBridge", gettext_lazy("IvyBridge")),
+    ("Haswell", gettext_lazy("Haswell")),
+    ("Broadwell", gettext_lazy("Broadwell")),
+    ("Skylake-Client", gettext_lazy("Skylake-Client")),
+    ("Skylake-Server", gettext_lazy("Skylake-Server")),
+    ("Cascadelake-Server", gettext_lazy("Cascadelake-Server")),
+    ("Icelake-Server", gettext_lazy("Icelake-Server")),
+    ("EPYC", gettext_lazy("EPYC")),
+    ("EPYC-v2", gettext_lazy("EPYC-v2")),
+    ("EPYC-v3", gettext_lazy("EPYC-v3")),
+    ("EPYC-v4", gettext_lazy("EPYC-v4")),
+    ("EPYC-Rome", gettext_lazy("EPYC-Rome")),
+    ("EPYC-Milan", gettext_lazy("EPYC-Milan")),
 ]
 
 BIOS_CHOICES = [
-    ("seabios", "SeaBIOS (legacy)"),
-    ("ovmf", "UEFI (OVMF)"),
+    ("seabios", gettext_lazy("SeaBIOS (legacy)")),
+    ("ovmf", gettext_lazy("UEFI (OVMF)")),
 ]
 
 
@@ -635,11 +636,11 @@ def vm_update_settings(request, vmid):
         kwargs["description"] = description
 
     else:
-        messages.error(request, "Unknown settings section.")
+        messages.error(request, gettext("Unknown settings section."))
         return redirect("vm_detail", vmid=vmid)
 
     if not kwargs:
-        messages.error(request, "No changes provided.")
+        messages.error(request, gettext("No changes provided."))
         return redirect("vm_detail", vmid=vmid)
 
     try:
@@ -649,12 +650,12 @@ def vm_update_settings(request, vmid):
         # Check if VM is running — changes may need restart
         status = api.get_vm_status(node, vmid)
         if status.get("status") == "running" and section in ("cpu", "memory"):
-            messages.warning(request, f"{section.title()} settings updated. A restart is required for changes to take effect.")
+            messages.warning(request, gettext('%(value)s settings updated. A restart is required for changes to take effect.') % {"value": section.title()})
         else:
-            messages.success(request, f"{section.title()} settings updated.")
+            messages.success(request, gettext('%(value)s settings updated.') % {"value": section.title()})
     except ProxmoxAPIError as exc:
         logger.error("vm_update_settings vmid=%d section=%s: %s", vmid, section, exc)
-        messages.error(request, f"Failed to update settings: {exc.message}")
+        messages.error(request, gettext('Failed to update settings: %(message)s') % {"message": exc.message})
 
     return redirect("vm_detail", vmid=vmid)
 
@@ -673,16 +674,16 @@ def vm_rename(request, vmid):
     new_name = request.POST.get("name", "").strip()
 
     if not new_name:
-        messages.error(request, "VM name cannot be empty.")
+        messages.error(request, gettext("VM name cannot be empty."))
         return redirect("vm_detail", vmid=vmid)
 
     try:
         api = config.get_api_client()
         api.update_vm_config(node, vmid, name=new_name)
-        messages.success(request, f"VM renamed to {new_name}.")
+        messages.success(request, gettext('VM renamed to %(new_name)s.') % {"new_name": new_name})
     except ProxmoxAPIError as exc:
         logger.error("vm_rename vmid=%d: %s", vmid, exc)
-        messages.error(request, f"Failed to rename VM: {exc.message}")
+        messages.error(request, gettext('Failed to rename VM: %(message)s') % {"message": exc.message})
 
     return redirect("vm_detail", vmid=vmid)
 
@@ -692,18 +693,18 @@ def vm_rename(request, vmid):
 # =========================================================================
 
 DISK_BUS_CHOICES = [
-    ("scsi", "VirtIO-SCSI"),
-    ("virtio", "VirtIO Block"),
-    ("sata", "SATA"),
-    ("ide", "IDE"),
+    ("scsi", gettext_lazy("VirtIO-SCSI")),
+    ("virtio", gettext_lazy("VirtIO Block")),
+    ("sata", gettext_lazy("SATA")),
+    ("ide", gettext_lazy("IDE")),
 ]
 
 DISK_CACHE_CHOICES = [
-    ("none", "No cache (recommended)"),
-    ("writeback", "Write back"),
-    ("writethrough", "Write through"),
-    ("directsync", "Direct sync"),
-    ("unsafe", "Unsafe"),
+    ("none", gettext_lazy("No cache (recommended)")),
+    ("writeback", gettext_lazy("Write back")),
+    ("writethrough", gettext_lazy("Write through")),
+    ("directsync", gettext_lazy("Direct sync")),
+    ("unsafe", gettext_lazy("Unsafe")),
 ]
 
 # Max device index per bus type in Proxmox
@@ -996,11 +997,11 @@ def vm_iso_upload(request, vmid):
             if slot:
                 api.update_vm_config(node, vmid, **{slot: f"{remote_iso_ref},media=cdrom"})
                 logger.info("vm_iso_upload vmid=%d: auto-mounted %s on %s", vmid, remote_iso_ref, slot)
-                messages.success(request, f"ISO {iso_file.name} uploaded and mounted on {slot}.")
+                messages.success(request, gettext('ISO %(name)s uploaded and mounted on %(slot)s.') % {"name": iso_file.name, "slot": slot})
             else:
-                messages.success(request, f"ISO {iso_file.name} uploaded to {storage}. No available CD-ROM slot to auto-mount.")
+                messages.success(request, gettext('ISO %(name)s uploaded to %(storage)s. No available CD-ROM slot to auto-mount.') % {"name": iso_file.name, "storage": storage})
         else:
-            messages.success(request, f"ISO {iso_file.name} uploaded to {storage}.")
+            messages.success(request, gettext('ISO %(name)s uploaded to %(storage)s.') % {"name": iso_file.name, "storage": storage})
     except Exception as exc:
         logger.error("vm_iso_upload vmid=%d: %s", vmid, exc)
         # Clean up temp file on error

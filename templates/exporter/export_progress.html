@@ -1,12 +1,13 @@
 {% extends "base.html" %}
-{% block title %}Exporting {{ job.vm_name }} — ProxOrchestrator{% endblock %}
-{% block page_title %}Exporting VM{% endblock %}
-{% block help_slug %}exporter-progress{% endblock %}
+{% load i18n %}
+{% block title %}{% blocktranslate with vm_name=job.vm_name trimmed %}Exporting {{ vm_name }} — ProxOrchestrator{% endblocktranslate %}{% endblock %}
+{% block page_title %}{% translate "Exporting VM" %}{% endblock %}
+{% block help_slug %}{% translate "exporter-progress" %}{% endblock %}
 
 {% block page_actions %}
   <a href="{% url 'export_index' %}" class="button is-light is-small">
     <span class="icon is-small"><i class="fas fa-arrow-left"></i></span>
-    <span>Back to Exports</span>
+    <span>{% translate "Back to Exports" %}</span>
   </a>
 {% endblock %}
 
@@ -46,19 +47,18 @@
               {{ job.vm_name|default:"VM " }}{{ job.vmid }}
             </div>
             <div style="font-size: 0.875rem;color: var(--text-muted);margin-top: 0.2rem;">
-              VMID <span class="is-monospace" style="font-weight: 600;color: var(--text-header);">{{ job.vmid }}</span>
-              &nbsp;&bull;&nbsp;
-              Started {{ job.created_at|timesince }} ago
+              {% translate "VMID" %} <span class="is-monospace" style="font-weight: 600;color: var(--text-header);">{{ job.vmid }}</span>
+              {% blocktranslate with created_at=job.created_at|timesince trimmed %}&nbsp;&bull;&nbsp; Started {{ created_at }} ago{% endblocktranslate %}
             </div>
           </div>
 
           <div style="margin-left: auto;">
             {% if job.stage == 'DONE' %}
-              <span class="status-badge vm-status-running">Complete</span>
+              <span class="status-badge vm-status-running">{% translate "Complete" %}</span>
             {% elif job.stage == 'FAILED' %}
-              <span class="status-badge vm-status-stopped">Failed</span>
+              <span class="status-badge vm-status-stopped">{% translate "Failed" %}</span>
             {% else %}
-              <span class="status-badge" style="background: var(--link-color);color: var(--bg-card);">Exporting</span>
+              <span class="status-badge" style="background: var(--link-color);color: var(--bg-card);">{% translate "Exporting" %}</span>
             {% endif %}
           </div>
         </div>
@@ -73,18 +73,18 @@
       <div class="proxorchestrator-card" style="margin-top: 1.5rem;">
         <div class="card-body" style="padding: 1.5rem;text-align: center;">
           <i class="fas fa-check-circle" style="font-size: 2rem;color: var(--success-color);margin-bottom: 1rem;display: block;"></i>
-          <h3 style="font-size: 1.1rem;font-weight: 700;color: var(--text-header);margin-bottom: 0.5rem;">Export Complete!</h3>
+          <h3 style="font-size: 1.1rem;font-weight: 700;color: var(--text-header);margin-bottom: 0.5rem;">{% translate "Export Complete!" %}</h3>
           {% url 'export_download' job.pk as download_url %}
           {% url 'export_download_state' job.pk as state_url %}
           {% url 'export_delete_package' job.pk as delete_url %}
           {% include "exporter/partials/package_ready.html" with download_url=download_url state_url=state_url delete_url=delete_url label=job.vm_name %}
             <a href="{% url 'vm_detail' job.vmid %}" class="button is-light is-medium" style="font-weight: 600;">
               <span class="icon"><i class="fas fa-server"></i></span>
-              <span>Back to VM</span>
+              <span>{% translate "Back to VM" %}</span>
             </a>
             <a href="{% url 'export_index' %}" class="button is-light is-medium" style="font-weight: 600;">
               <span class="icon"><i class="fas fa-list"></i></span>
-              <span>All Exports</span>
+              <span>{% translate "All Exports" %}</span>
             </a>
           </div>
         </div>
@@ -94,7 +94,7 @@
       <div class="proxorchestrator-card" style="margin-top: 1.5rem;border-left: 4px solid var(--danger-color);border-radius: 0 10px 10px 0;">
         <div class="card-body" style="padding: 1.5rem;">
           <h3 style="font-size: 1rem;font-weight: 700;color: var(--danger-color);margin-bottom: 0.75rem;">
-            <i class="fas fa-exclamation-triangle" style="margin-right: 0.5rem;"></i>Export Failed
+            <i class="fas fa-exclamation-triangle" style="margin-right: 0.5rem;"></i>{% translate "Export Failed" %}
           </h3>
           {% if job.error %}
             <div style="background: var(--bg-main);border: 1px solid var(--border-main);border-radius: 6px;padding: 1rem;font-family: var(--font-mono);font-size: 0.8125rem;color: var(--text-semi);white-space: pre-wrap;word-break: break-all;margin-bottom: 1rem;">{{ job.error }}</div>
@@ -102,11 +102,11 @@
           <div style="display: flex;gap: 1rem;flex-wrap: wrap;">
             <a href="{% url 'vm_detail' job.vmid %}" class="button is-light" style="font-weight: 600;">
               <span class="icon"><i class="fas fa-server"></i></span>
-              <span>Back to VM</span>
+              <span>{% translate "Back to VM" %}</span>
             </a>
             <a href="{% url 'export_index' %}" class="button is-light" style="font-weight: 600;">
               <span class="icon"><i class="fas fa-list"></i></span>
-              <span>All Exports</span>
+              <span>{% translate "All Exports" %}</span>
             </a>
           </div>
         </div>

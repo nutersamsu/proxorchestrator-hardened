@@ -31,7 +31,7 @@ The card at the top shows the same data as the node **Summary** panel in the Pro
 
 ## Monitoring VM counts
 
-VM counts load live from the Proxmox API each time the dashboard is visited. If the counts show spinners that never resolve, check your API token status in **Settings → Authentication**.
+VM counts load live from the Proxmox API each time the dashboard is visited. If the counts show spinners that never resolve, check your API token status in **Settings → Proxmox**.
 
 ## Recent imports
 

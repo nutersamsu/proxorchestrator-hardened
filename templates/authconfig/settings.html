@@ -1,7 +1,8 @@
 {% extends "base.html" %}
-{% block title %}Authentication Settings — ProxOrchestrator{% endblock %}
-{% block page_title %}Authentication Settings{% endblock %}
-{% block help_slug %}settings-auth-ldap{% endblock %}
+{% load i18n %}
+{% block title %}{% translate "Authentication Settings — ProxOrchestrator" %}{% endblock %}
+{% block page_title %}{% translate "Authentication Settings" %}{% endblock %}
+{% block help_slug %}{% translate "settings-auth-ldap" %}{% endblock %}
 
 {% block content %}
 
@@ -11,28 +12,28 @@
     <li class="{% if active_tab == 'local' or not active_tab %}is-active{% endif %}" data-tab="local">
       <a onclick="switchTab('local')">
         <span class="icon is-small"><i class="fas fa-user"></i></span>
-        <span>Local Accounts</span>
+        <span>{% translate "Local Accounts" %}</span>
       </a>
     </li>
     <li class="{% if active_tab == 'ldap' %}is-active{% endif %}" data-tab="ldap">
       <a onclick="switchTab('ldap')">
         <span class="icon is-small"><i class="fas fa-building"></i></span>
-        <span>LDAP / Active Directory</span>
-        {% if ldap_enabled %}<span class="tag is-success is-light" style="margin-left: 0.5rem;font-size: 0.75rem;">Enabled</span>{% endif %}
+        <span>{% translate "LDAP / Active Directory" %}</span>
+        {% if ldap_enabled %}<span class="tag is-success is-light" style="margin-left: 0.5rem;font-size: 0.75rem;">{% translate "Enabled" %}</span>{% endif %}
       </a>
     </li>
     <li class="{% if active_tab == 'entra' %}is-active{% endif %}" data-tab="entra">
       <a onclick="switchTab('entra')">
         <span class="icon is-small"><i class="fab fa-microsoft"></i></span>
-        <span>Entra ID (Microsoft)</span>
-        {% if entra_enabled %}<span class="tag is-success is-light" style="margin-left: 0.5rem;font-size: 0.75rem;">Enabled</span>{% endif %}
+        <span>{% translate "Entra ID (Microsoft)" %}</span>
+        {% if entra_enabled %}<span class="tag is-success is-light" style="margin-left: 0.5rem;font-size: 0.75rem;">{% translate "Enabled" %}</span>{% endif %}
       </a>
     </li>
     <li class="{% if active_tab == 'mfa' %}is-active{% endif %}" data-tab="mfa">
       <a onclick="switchTab('mfa')">
         <span class="icon is-small"><i class="fas fa-shield-alt"></i></span>
-        <span>MFA</span>
-        {% if mfa_enforced %}<span class="tag is-warning is-light" style="margin-left: 0.5rem;font-size: 0.75rem;">Enforced</span>{% endif %}
+        <span>{% translate "MFA" %}</span>
+        {% if mfa_enforced %}<span class="tag is-warning is-light" style="margin-left: 0.5rem;font-size: 0.75rem;">{% translate "Enforced" %}</span>{% endif %}
       </a>
     </li>
   </ul>
@@ -44,24 +45,23 @@
   <div class="tab-pane {% if active_tab == 'local' or not active_tab %}is-active{% endif %}" id="tab-local">
     <div class="proxorchestrator-card" style="border-radius: 0 10px 10px 10px;">
       <div class="card-header">
-        <i class="fas fa-user" style="color: var(--link-color);"></i> Local Authentication
+        <i class="fas fa-user" style="color: var(--link-color);"></i> {% translate "Local Authentication" %}
       </div>
       <div class="card-body">
         <div class="info-box is-success" style="margin-bottom: 1.5rem;">
           <div class="info-box-icon"><i class="fas fa-check-circle"></i></div>
           <div>
-            <strong>Local authentication is always enabled</strong> and cannot be disabled.
-            It serves as the fallback for administrator access.
+            <strong>{% translate "Local authentication is always enabled" %}</strong> {% translate "and cannot be disabled. It serves as the fallback for administrator access." %}
           </div>
         </div>
 
         <p style="font-size: 0.875rem;color: var(--text-semi);margin-bottom: 1.25rem;">
-          Local accounts are stored in ProxOrchestrator's database. Use the User Management page to create, edit, and deactivate local users.
+          {% translate "Local accounts are stored in ProxOrchestrator's database. Use the User Management page to create, edit, and deactivate local users." %}
         </p>
 
         <a href="{% url 'user_list' %}" class="button is-primary" style="font-weight: 600;">
           <span class="icon"><i class="fas fa-users"></i></span>
-          <span>Manage Local Users</span>
+          <span>{% translate "Manage Local Users" %}</span>
           <span class="icon"><i class="fas fa-arrow-right"></i></span>
         </a>
       </div>
@@ -72,26 +72,23 @@
   <div class="tab-pane {% if active_tab == 'mfa' %}is-active{% endif %}" id="tab-mfa">
     <div class="proxorchestrator-card" style="border-radius: 0 10px 10px 10px;">
       <div class="card-header">
-        <i class="fas fa-shield-alt" style="color: var(--warning-color);"></i> Multi-Factor Authentication
+        <i class="fas fa-shield-alt" style="color: var(--warning-color);"></i> {% translate "Multi-Factor Authentication" %}
       </div>
       <div class="card-body">
         <p style="font-size: 0.875rem;color: var(--text-semi);margin-bottom: 1.5rem;line-height: 1.6;">
-          MFA adds a second layer of security by requiring an authenticator app code (Google Authenticator, Authy, Microsoft Authenticator)
-          after username and password. Applies to <strong>Local</strong> and <strong>LDAP</strong> accounts.
-          Entra ID users are excluded — MFA is managed by their identity provider.
+          {% translate "MFA adds a second layer of security by requiring an authenticator app code (Google Authenticator, Authy, Microsoft Authenticator) after username and password. Applies to" %} <strong>{% translate "Local" %}</strong> {% translate "and" %} <strong>{% translate "LDAP" %}</strong> {% translate "accounts. Entra ID users are excluded — MFA is managed by their identity provider." %}
         </p>
 
         <div style="display: flex;align-items: center;justify-content: space-between;background: var(--bg-main);border-radius: 8px;padding: 1.25rem 1.5rem;">
           <div>
             <div style="font-weight: 600;font-size: 1rem;color: var(--text-header);">
-              Global Enforcement
+              {% translate "Global Enforcement" %}
             </div>
             <p style="font-size: 0.8125rem;color: var(--text-muted);margin-top: 0.3rem;">
               {% if mfa_enforced %}
-                All local and LDAP users are <strong>required</strong> to set up MFA on their next login.
-                Users cannot disable MFA while enforcement is active.
+                {% translate "All local and LDAP users are" %} <strong>{% translate "required" %}</strong> {% translate "to set up MFA on their next login. Users cannot disable MFA while enforcement is active." %}
               {% else %}
-                MFA is <strong>optional</strong>. Users can enable it from the MFA page in their account settings.
+                {% translate "MFA is" %} <strong>{% translate "optional" %}</strong>{% translate ". Users can enable it from the MFA page in their account settings." %}
               {% endif %}
             </p>
           </div>
@@ -102,10 +99,10 @@
                     onclick="return confirm('{% if mfa_enforced %}Disable MFA enforcement? Users will be able to disable their MFA.{% else %}Enforce MFA for all local and LDAP users? They will be required to set up an authenticator app on their next login.{% endif %}')">
               {% if mfa_enforced %}
                 <span class="icon"><i class="fas fa-lock"></i></span>
-                <span>Enforced</span>
+                <span>{% translate "Enforced" %}</span>
               {% else %}
                 <span class="icon"><i class="fas fa-lock-open"></i></span>
-                <span>Optional</span>
+                <span>{% translate "Optional" %}</span>
               {% endif %}
             </button>
           </form>
@@ -114,14 +111,13 @@
         <div style="display: flex;align-items: center;justify-content: space-between;background: var(--bg-main);border-radius: 8px;padding: 1.25rem 1.5rem;margin-top: 1.25rem;">
           <div>
             <div style="font-weight: 600;font-size: 1rem;color: var(--text-header);">
-              Email Recovery
+              {% translate "Email Recovery" %}
             </div>
             <p style="font-size: 0.8125rem;color: var(--text-muted);margin-top: 0.3rem;">
               {% if mfa_email_recovery %}
-                Users can receive a one-time bypass code via email if they lose access to their authenticator.
-                Requires email to be configured (SMTP or Graph API).
+                {% translate "Users can receive a one-time bypass code via email if they lose access to their authenticator. Requires email to be configured (SMTP or Graph API)." %}
               {% else %}
-                Email recovery is <strong>disabled</strong>. Users can only recover access using their recovery codes or by contacting an administrator.
+                {% translate "Email recovery is" %} <strong>{% translate "disabled" %}</strong>{% translate ". Users can only recover access using their recovery codes or by contacting an administrator." %}
               {% endif %}
             </p>
           </div>
@@ -131,10 +127,10 @@
                     style="font-weight: 600;">
               {% if mfa_email_recovery %}
                 <span class="icon"><i class="fas fa-envelope"></i></span>
-                <span>Enabled</span>
+                <span>{% translate "Enabled" %}</span>
               {% else %}
                 <span class="icon"><i class="fas fa-envelope"></i></span>
-                <span>Disabled</span>
+                <span>{% translate "Disabled" %}</span>
               {% endif %}
             </button>
           </form>
@@ -144,8 +140,7 @@
           <div class="info-box" style="margin-bottom: 1rem;">
             <div class="info-box-icon"><i class="fas fa-info-circle"></i></div>
             <div style="font-size: 0.8125rem;">
-              <strong>Recovery options:</strong> Users always get 8 one-time recovery codes at setup.
-              Admins can reset a user's MFA from the User Management page.
+              <strong>{% translate "Recovery options:" %}</strong> {% translate "Users always get 8 one-time recovery codes at setup. Admins can reset a user's MFA from the User Management page." %}
             </div>
           </div>
         </div>
@@ -157,15 +152,15 @@
   <div class="tab-pane {% if active_tab == 'ldap' %}is-active{% endif %}" id="tab-ldap">
     <div class="proxorchestrator-card" style="border-radius: 0 10px 10px 10px;">
       <div class="card-header">
-        <i class="fas fa-building" style="color: var(--warning-color);"></i> LDAP / Active Directory
+        <i class="fas fa-building" style="color: var(--warning-color);"></i> {% translate "LDAP / Active Directory" %}
       </div>
       <div class="card-body">
 
         {# Enable toggle #}
         <div style="display: flex;align-items: center;justify-content: space-between;padding: 1rem;background: var(--bg-main);border-radius: 8px;margin-bottom: 1.5rem;">
           <div>
-            <div style="font-weight: 600;color: var(--text-header);">Enable LDAP Authentication</div>
-            <div style="font-size: 0.8125rem;color: var(--text-muted);margin-top: 0.2rem;">Allow users to sign in with LDAP/Active Directory credentials.</div>
+            <div style="font-weight: 600;color: var(--text-header);">{% translate "Enable LDAP Authentication" %}</div>
+            <div style="font-size: 0.8125rem;color: var(--text-muted);margin-top: 0.2rem;">{% translate "Allow users to sign in with LDAP/Active Directory credentials." %}</div>
           </div>
           <input type="checkbox" {% if ldap_enabled %}checked{% endif %}
             hx-post="{% url 'auth_settings_toggle' 'ldap' %}"
@@ -181,27 +176,27 @@
           <div class="columns">
             <div class="column">
               <div class="field">
-                <label class="label" style="font-size: 0.875rem;font-weight: 600;">LDAP Server URI</label>
+                <label class="label" style="font-size: 0.875rem;font-weight: 600;">{% translate "LDAP Server URI" %}</label>
                 <div class="control has-icons-left">
                   <input class="input is-monospace" type="text" name="server_uri"
                     value="{{ ldap_config.server_uri|default:'' }}"
-                    placeholder="ldap://dc.example.com:389">
+                    placeholder="{% translate "ldap://dc.example.com:389" %}">
                   <span class="icon is-left"><i class="fas fa-server" style="color: var(--text-muted);"></i></span>
                 </div>
-                <p class="field-hint">Use <code>ldaps://</code> for SSL. Example: <code>ldap://192.168.1.10:389</code></p>
+                <p class="field-hint">{% translate "Use" %} <code>ldaps://</code> {% translate "for SSL. Example:" %} <code>ldap://192.168.1.10:389</code></p>
               </div>
             </div>
             <div class="column is-4">
               <div class="field">
-                <label class="label" style="font-size: 0.875rem;font-weight: 600;">Options</label>
+                <label class="label" style="font-size: 0.875rem;font-weight: 600;">{% translate "Options" %}</label>
                 <div style="display: flex;flex-direction: column;gap: 0.5rem;margin-top: 0.5rem;">
                   <label class="checkbox" style="font-size: 0.875rem;">
                     <input type="checkbox" name="use_tls" {% if ldap_config.use_tls %}checked{% endif %}>
-                    &nbsp;Use STARTTLS
+                    {% translate "&nbsp;Use STARTTLS" %}
                   </label>
                   <label class="checkbox" style="font-size: 0.875rem;">
                     <input type="checkbox" name="skip_cert_verify" {% if ldap_config.skip_cert_verify %}checked{% endif %}>
-                    &nbsp;Skip certificate verification
+                    {% translate "&nbsp;Skip certificate verification" %}
                   </label>
                 </div>
               </div>
@@ -211,17 +206,17 @@
           <div class="columns">
             <div class="column">
               <div class="field">
-                <label class="label" style="font-size: 0.875rem;font-weight: 600;">Bind DN</label>
+                <label class="label" style="font-size: 0.875rem;font-weight: 600;">{% translate "Bind DN" %}</label>
                 <div class="control">
                   <input class="input is-monospace" type="text" name="bind_dn"
                     value="{{ ldap_config.bind_dn|default:'' }}"
-                    placeholder="CN=proxorchestrator,OU=ServiceAccounts,DC=example,DC=com">
+                    placeholder="{% translate "CN=proxorchestrator,OU=ServiceAccounts,DC=example,DC=com" %}">
                 </div>
               </div>
             </div>
             <div class="column is-4">
               <div class="field">
-                <label class="label" style="font-size: 0.875rem;font-weight: 600;">Bind Password</label>
+                <label class="label" style="font-size: 0.875rem;font-weight: 600;">{% translate "Bind Password" %}</label>
                 <div class="control has-icons-left">
                   <input class="input" type="password" name="bind_password"
                     placeholder="{% if ldap_config.bind_password_set %}(saved — leave blank to keep){% else %}Enter password{% endif %}">
@@ -234,23 +229,23 @@
           <div class="columns">
             <div class="column">
               <div class="field">
-                <label class="label" style="font-size: 0.875rem;font-weight: 600;">User Search Base</label>
+                <label class="label" style="font-size: 0.875rem;font-weight: 600;">{% translate "User Search Base" %}</label>
                 <div class="control">
                   <input class="input is-monospace" type="text" name="user_search_base"
                     value="{{ ldap_config.user_search_base|default:'' }}"
-                    placeholder="OU=Users,DC=example,DC=com">
+                    placeholder="{% translate "OU=Users,DC=example,DC=com" %}">
                 </div>
               </div>
             </div>
             <div class="column">
               <div class="field">
-                <label class="label" style="font-size: 0.875rem;font-weight: 600;">User Search Filter</label>
+                <label class="label" style="font-size: 0.875rem;font-weight: 600;">{% translate "User Search Filter" %}</label>
                 <div class="control">
                   <input class="input is-monospace" type="text" name="user_search_filter"
                     value="{{ ldap_config.user_search_filter|default:'(sAMAccountName=%(user)s)' }}"
-                    placeholder="(sAMAccountName=%(user)s)">
+                    placeholder="{% translate "(sAMAccountName=%(user)s)" %}">
                 </div>
-                <p class="field-hint">Use <code>%(user)s</code> as the username placeholder.</p>
+                <p class="field-hint">{% translate "Use" %} <code>%(user)s</code> {% translate "as the username placeholder." %}</p>
               </div>
             </div>
           </div>
@@ -258,24 +253,24 @@
           <div class="columns">
             <div class="column">
               <div class="field">
-                <label class="label" style="font-size: 0.875rem;font-weight: 600;">Require Group (optional)</label>
+                <label class="label" style="font-size: 0.875rem;font-weight: 600;">{% translate "Require Group (optional)" %}</label>
                 <div class="control">
                   <input class="input is-monospace" type="text" name="require_group"
                     value="{{ ldap_config.require_group|default:'' }}"
-                    placeholder="CN=ProxOrchestratorUsers,OU=Groups,DC=example,DC=com">
+                    placeholder="{% translate "CN=ProxOrchestratorUsers,OU=Groups,DC=example,DC=com" %}">
                 </div>
-                <p class="field-hint">Only allow users who are members of this group. Leave blank to allow all LDAP users (or only the Admin Group if one is set).</p>
+                <p class="field-hint">{% translate "Only allow users who are members of this group. Leave blank to allow all LDAP users (or only the Admin Group if one is set)." %}</p>
               </div>
             </div>
             <div class="column">
               <div class="field">
-                <label class="label" style="font-size: 0.875rem;font-weight: 600;">Admin Group (optional)</label>
+                <label class="label" style="font-size: 0.875rem;font-weight: 600;">{% translate "Admin Group (optional)" %}</label>
                 <div class="control">
                   <input class="input is-monospace" type="text" name="admin_group"
                     value="{{ ldap_config.admin_group|default:'' }}"
-                    placeholder="CN=ProxOrchestratorAdmins,OU=Groups,DC=example,DC=com">
+                    placeholder="{% translate "CN=ProxOrchestratorAdmins,OU=Groups,DC=example,DC=com" %}">
                 </div>
-                <p class="field-hint">Members of this group will be granted admin access automatically.</p>
+                <p class="field-hint">{% translate "Members of this group will be granted admin access automatically." %}</p>
               </div>
             </div>
           </div>
@@ -283,7 +278,7 @@
           {# CA Certificate trust #}
           <div class="field" style="margin-bottom: 1.25rem;">
             <label class="label" style="font-size: 0.875rem;font-weight: 600;">
-              Trusted CA Certificate (PEM) <span style="font-weight: 400;color: var(--text-muted);">— optional</span>
+              {% translate "Trusted CA Certificate (PEM)" %} <span style="font-weight: 400;color: var(--text-muted);">{% translate "— optional" %}</span>
             </label>
             <div class="control">
               <textarea class="textarea is-small" name="ca_cert" rows="4"
@@ -291,16 +286,14 @@
                 style="font-family: var(--font-mono);font-size: 0.75rem;resize: vertical;">{{ ldap_config.ca_cert|default:'' }}</textarea>
             </div>
             <p class="field-hint">
-              Paste either the <strong>CA certificate</strong> that signed the LDAP server's cert, or the <strong>LDAP server certificate</strong> itself.
-              Either works — the CA cert is preferred as it also covers certificate renewals.
-              Ignored when <em>Skip certificate verification</em> is checked.
+              {% translate "Paste either the" %} <strong>{% translate "CA certificate" %}</strong> {% translate "that signed the LDAP server's cert, or the" %} <strong>{% translate "LDAP server certificate" %}</strong> {% translate "itself. Either works — the CA cert is preferred as it also covers certificate renewals. Ignored when" %} <em>{% translate "Skip certificate verification" %}</em> {% translate "is checked." %}
             </p>
           </div>
 
           <div style="display: flex;gap: 1rem;align-items: center;margin-top: 0.5rem;flex-wrap: wrap;">
             <button type="submit" class="button is-primary" style="font-weight: 600;">
               <span class="icon"><i class="fas fa-save"></i></span>
-              <span>Save LDAP Settings</span>
+              <span>{% translate "Save LDAP Settings" %}</span>
             </button>
             <button type="button" class="button is-light"
                     hx-post="{% url 'auth_settings_test' 'ldap' %}"
@@ -308,7 +301,7 @@
                     hx-target="#ldap-test-result"
                     hx-swap="innerHTML">
               <span class="icon"><i class="fas fa-plug"></i></span>
-              <span>Test Connection</span>
+              <span>{% translate "Test Connection" %}</span>
             </button>
             <div id="ldap-test-result" style="flex: 1;"></div>
           </div>
@@ -328,7 +321,7 @@
             <rect x="1" y="11" width="9" height="9" fill="#00a4ef"/>
             <rect x="11" y="11" width="9" height="9" fill="#ffb900"/>
           </svg>
-          Microsoft Entra ID (Azure AD)
+          {% translate "Microsoft Entra ID (Azure AD)" %}
         </span>
       </div>
       <div class="card-body">
@@ -336,8 +329,8 @@
         {# Enable toggle #}
         <div style="display: flex;align-items: center;justify-content: space-between;padding: 1rem;background: var(--bg-main);border-radius: 8px;margin-bottom: 1.5rem;">
           <div>
-            <div style="font-weight: 600;color: var(--text-header);">Enable Entra ID Authentication</div>
-            <div style="font-size: 0.8125rem;color: var(--text-muted);margin-top: 0.2rem;">Allow users to sign in with their Microsoft work accounts.</div>
+            <div style="font-weight: 600;color: var(--text-header);">{% translate "Enable Entra ID Authentication" %}</div>
+            <div style="font-size: 0.8125rem;color: var(--text-muted);margin-top: 0.2rem;">{% translate "Allow users to sign in with their Microsoft work accounts." %}</div>
           </div>
           <input type="checkbox" {% if entra_enabled %}checked{% endif %}
             hx-post="{% url 'auth_settings_toggle' 'entra' %}"
@@ -347,16 +340,16 @@
 
         {# Redirect URL — must be registered in Azure #}
         <div class="field" style="margin-bottom: 1.5rem;">
-          <label class="label" style="font-size: 0.875rem;font-weight: 600;">Redirect URI (register this in Azure)</label>
+          <label class="label" style="font-size: 0.875rem;font-weight: 600;">{% translate "Redirect URI (register this in Azure)" %}</label>
           <div style="display: flex;gap: 0.5rem;align-items: center;">
             <div class="redirect-url-box" style="flex: 1;" id="redirect-url-box">
-              https://{{ request.get_host }}/accounts/microsoft/login/callback/
+              {% blocktranslate with get_host=request.get_host trimmed %}https://{{ get_host }}/accounts/microsoft/login/callback/{% endblocktranslate %}
             </div>
             <button type="button" class="button is-small is-light" onclick="copyRedirectUrl()">
               <span class="icon is-small"><i class="fas fa-copy"></i></span>
             </button>
           </div>
-          <p class="field-hint">Copy this URL into your Azure App Registration's Redirect URIs.</p>
+          <p class="field-hint">{% translate "Copy this URL into your Azure App Registration's Redirect URIs." %}</p>
         </div>
 
         {# Azure App Registration guide #}
@@ -364,7 +357,7 @@
           <div class="form-section-header">
             <div style="display: flex;align-items: center;gap: 0.5rem;">
               <i class="fas fa-book" style="color: var(--link-color);"></i>
-              Azure App Registration Guide
+              {% translate "Azure App Registration Guide" %}
             </div>
             <i class="fas fa-chevron-down section-toggle-icon" style="color: var(--text-muted);font-size: 0.8125rem;"></i>
           </div>
@@ -373,56 +366,56 @@
               <li>
                 <div class="step-guide-num">1</div>
                 <div class="step-guide-text">
-                  Go to <strong>portal.azure.com</strong> &rarr; <strong>Microsoft Entra ID</strong> &rarr; <strong>App registrations</strong> &rarr; <strong>New registration</strong>.
+                  {% translate "Go to" %} <strong>{% translate "portal.azure.com" %}</strong> &rarr; <strong>{% translate "Microsoft Entra ID" %}</strong> &rarr; <strong>{% translate "App registrations" %}</strong> &rarr; <strong>{% translate "New registration" %}</strong>.
                 </div>
               </li>
               <li>
                 <div class="step-guide-num">2</div>
                 <div class="step-guide-text">
-                  Name: <code>ProxOrchestrator</code>. Supported account types: <strong>Accounts in this organizational directory only</strong> (or multi-tenant if needed). Add the <strong>Redirect URI</strong> shown above.
+                  {% translate "Name:" %} <code>ProxOrchestrator</code>{% translate ". Supported account types:" %} <strong>{% translate "Accounts in this organizational directory only" %}</strong> {% translate "(or multi-tenant if needed). Add the" %} <strong>{% translate "Redirect URI" %}</strong> {% translate "shown above." %}
                 </div>
               </li>
               <li>
                 <div class="step-guide-num">3</div>
                 <div class="step-guide-text">
-                  After creation, copy the <strong>Application (client) ID</strong> and <strong>Directory (tenant) ID</strong> from the overview page.
+                  {% translate "After creation, copy the" %} <strong>{% translate "Application (client) ID" %}</strong> {% translate "and" %} <strong>{% translate "Directory (tenant) ID" %}</strong> {% translate "from the overview page." %}
                 </div>
               </li>
               <li>
                 <div class="step-guide-num">4</div>
                 <div class="step-guide-text">
-                  Go to <strong>API permissions</strong> &rarr; <strong>Add a permission</strong> &rarr; <strong>Microsoft Graph</strong> &rarr; <strong>Delegated permissions</strong> and confirm the following are present:
+                  {% translate "Go to" %} <strong>{% translate "API permissions" %}</strong> &rarr; <strong>{% translate "Add a permission" %}</strong> &rarr; <strong>{% translate "Microsoft Graph" %}</strong> &rarr; <strong>{% translate "Delegated permissions" %}</strong> {% translate "and confirm the following are present:" %}
                   <table style="margin-top: 0.6rem;font-size: 0.8125rem;border-collapse: collapse;width: 100%;">
                     <thead>
                       <tr style="background: var(--bg-main);">
-                        <th style="padding: 0.35rem 0.6rem;text-align: left;border: 1px solid var(--border-main);">Permission</th>
-                        <th style="padding: 0.35rem 0.6rem;text-align: left;border: 1px solid var(--border-main);">Type</th>
-                        <th style="padding: 0.35rem 0.6rem;text-align: left;border: 1px solid var(--border-main);">Admin consent</th>
-                        <th style="padding: 0.35rem 0.6rem;text-align: left;border: 1px solid var(--border-main);">Purpose</th>
+                        <th style="padding: 0.35rem 0.6rem;text-align: left;border: 1px solid var(--border-main);">{% translate "Permission" %}</th>
+                        <th style="padding: 0.35rem 0.6rem;text-align: left;border: 1px solid var(--border-main);">{% translate "Type" %}</th>
+                        <th style="padding: 0.35rem 0.6rem;text-align: left;border: 1px solid var(--border-main);">{% translate "Admin consent" %}</th>
+                        <th style="padding: 0.35rem 0.6rem;text-align: left;border: 1px solid var(--border-main);">{% translate "Purpose" %}</th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr>
-                        <td style="padding: 0.35rem 0.6rem;border: 1px solid var(--border-main);font-family: var(--font-mono);">User.Read</td>
-                        <td style="padding: 0.35rem 0.6rem;border: 1px solid var(--border-main);">Delegated</td>
-                        <td style="padding: 0.35rem 0.6rem;border: 1px solid var(--border-main);"><span class="tag is-success is-light" style="font-size: 0.75rem;">Not required</span></td>
-                        <td style="padding: 0.35rem 0.6rem;border: 1px solid var(--border-main);">Sign in, read user profile &amp; email — added by default</td>
+                        <td style="padding: 0.35rem 0.6rem;border: 1px solid var(--border-main);font-family: var(--font-mono);">{% translate "User.Read" %}</td>
+                        <td style="padding: 0.35rem 0.6rem;border: 1px solid var(--border-main);">{% translate "Delegated" %}</td>
+                        <td style="padding: 0.35rem 0.6rem;border: 1px solid var(--border-main);"><span class="tag is-success is-light" style="font-size: 0.75rem;">{% translate "Not required" %}</span></td>
+                        <td style="padding: 0.35rem 0.6rem;border: 1px solid var(--border-main);">{% translate "Sign in, read user profile &amp; email — added by default" %}</td>
                       </tr>
                       <tr style="background: var(--bg-main);">
-                        <td style="padding: 0.35rem 0.6rem;border: 1px solid var(--border-main);font-family: var(--font-mono);">GroupMember.Read.All</td>
-                        <td style="padding: 0.35rem 0.6rem;border: 1px solid var(--border-main);">Delegated</td>
-                        <td style="padding: 0.35rem 0.6rem;border: 1px solid var(--border-main);"><span class="tag is-warning is-light" style="font-size: 0.75rem;">Required</span></td>
-                        <td style="padding: 0.35rem 0.6rem;border: 1px solid var(--border-main);">Check group membership — required if Require Group ID or Admin Group ID is set</td>
+                        <td style="padding: 0.35rem 0.6rem;border: 1px solid var(--border-main);font-family: var(--font-mono);">{% translate "GroupMember.Read.All" %}</td>
+                        <td style="padding: 0.35rem 0.6rem;border: 1px solid var(--border-main);">{% translate "Delegated" %}</td>
+                        <td style="padding: 0.35rem 0.6rem;border: 1px solid var(--border-main);"><span class="tag is-warning is-light" style="font-size: 0.75rem;">{% translate "Required" %}</span></td>
+                        <td style="padding: 0.35rem 0.6rem;border: 1px solid var(--border-main);">{% translate "Check group membership — required if Require Group ID or Admin Group ID is set" %}</td>
                       </tr>
                     </tbody>
                   </table>
-                  <p style="margin-top: 0.5rem;color: var(--text-muted);">After adding permissions, click <strong>Grant admin consent for &lt;your tenant&gt;</strong> to activate the <code>GroupMember.Read.All</code> permission.</p>
+                  <p style="margin-top: 0.5rem;color: var(--text-muted);">{% translate "After adding permissions, click" %} <strong>{% translate "Grant admin consent for &lt;your tenant&gt;" %}</strong> {% translate "to activate the" %} <code>GroupMember.Read.All</code> {% translate "permission." %}</p>
                 </div>
               </li>
               <li>
                 <div class="step-guide-num">5</div>
                 <div class="step-guide-text">
-                  Go to <strong>Certificates &amp; secrets</strong> &rarr; <strong>New client secret</strong>. Copy the secret <strong>Value</strong> (shown once only).
+                  {% translate "Go to" %} <strong>{% translate "Certificates &amp; secrets" %}</strong> &rarr; <strong>{% translate "New client secret" %}</strong>{% translate ". Copy the secret" %} <strong>{% translate "Value" %}</strong> {% translate "(shown once only)." %}
                 </div>
               </li>
             </ol>
@@ -437,21 +430,21 @@
           <div class="columns">
             <div class="column">
               <div class="field">
-                <label class="label" style="font-size: 0.875rem;font-weight: 600;">Directory (Tenant) ID</label>
+                <label class="label" style="font-size: 0.875rem;font-weight: 600;">{% translate "Directory (Tenant) ID" %}</label>
                 <div class="control">
                   <input class="input is-monospace" type="text" name="tenant_id"
                     value="{{ entra_config.tenant_id|default:'' }}"
-                    placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx">
+                    placeholder="{% translate "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" %}">
                 </div>
               </div>
             </div>
             <div class="column">
               <div class="field">
-                <label class="label" style="font-size: 0.875rem;font-weight: 600;">Application (Client) ID</label>
+                <label class="label" style="font-size: 0.875rem;font-weight: 600;">{% translate "Application (Client) ID" %}</label>
                 <div class="control">
                   <input class="input is-monospace" type="text" name="client_id"
                     value="{{ entra_config.client_id|default:'' }}"
-                    placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx">
+                    placeholder="{% translate "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" %}">
                 </div>
               </div>
             </div>
@@ -460,7 +453,7 @@
           <div class="columns">
             <div class="column">
               <div class="field">
-                <label class="label" style="font-size: 0.875rem;font-weight: 600;">Client Secret</label>
+                <label class="label" style="font-size: 0.875rem;font-weight: 600;">{% translate "Client Secret" %}</label>
                 <div class="control has-icons-left">
                   <input class="input" type="password" name="client_secret"
                     placeholder="{% if entra_config.client_secret_set %}(saved — leave blank to keep){% else %}Paste client secret here{% endif %}">
@@ -470,13 +463,13 @@
             </div>
             <div class="column">
               <div class="field">
-                <label class="label" style="font-size: 0.875rem;font-weight: 600;">Allowed Domains (optional)</label>
+                <label class="label" style="font-size: 0.875rem;font-weight: 600;">{% translate "Allowed Domains (optional)" %}</label>
                 <div class="control">
                   <input class="input" type="text" name="allowed_domains"
                     value="{{ entra_config.allowed_domains|default:'' }}"
-                    placeholder="example.com, contoso.com">
+                    placeholder="{% translate "example.com, contoso.com" %}">
                 </div>
-                <p class="field-hint">Comma-separated. Leave blank to allow all tenant users.</p>
+                <p class="field-hint">{% translate "Comma-separated. Leave blank to allow all tenant users." %}</p>
               </div>
             </div>
           </div>
@@ -484,24 +477,24 @@
           <div class="columns">
             <div class="column">
               <div class="field">
-                <label class="label" style="font-size: 0.875rem;font-weight: 600;">Require Group Object ID (optional)</label>
+                <label class="label" style="font-size: 0.875rem;font-weight: 600;">{% translate "Require Group Object ID (optional)" %}</label>
                 <div class="control">
                   <input class="input is-monospace" type="text" name="require_group_id"
                     value="{{ entra_config.require_group_id|default:'' }}"
-                    placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx">
+                    placeholder="{% translate "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" %}">
                 </div>
-                <p class="field-hint">Only members of this Azure group can log in. Leave blank to allow all tenant users (or only Admin Group members if one is set).</p>
+                <p class="field-hint">{% translate "Only members of this Azure group can log in. Leave blank to allow all tenant users (or only Admin Group members if one is set)." %}</p>
               </div>
             </div>
             <div class="column">
               <div class="field">
-                <label class="label" style="font-size: 0.875rem;font-weight: 600;">Admin Group Object ID (optional)</label>
+                <label class="label" style="font-size: 0.875rem;font-weight: 600;">{% translate "Admin Group Object ID (optional)" %}</label>
                 <div class="control">
                   <input class="input is-monospace" type="text" name="admin_group_id"
                     value="{{ entra_config.admin_group_id|default:'' }}"
-                    placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx">
+                    placeholder="{% translate "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" %}">
                 </div>
-                <p class="field-hint">Members of this Azure group receive admin access automatically. If set without a Require Group, only admin group members can log in.</p>
+                <p class="field-hint">{% translate "Members of this Azure group receive admin access automatically. If set without a Require Group, only admin group members can log in." %}</p>
               </div>
             </div>
           </div>
@@ -509,7 +502,7 @@
           <div style="margin-top: 1rem;">
             <button type="submit" class="button is-primary" style="font-weight: 600;">
               <span class="icon"><i class="fas fa-save"></i></span>
-              <span>Save Entra ID Settings</span>
+              <span>{% translate "Save Entra ID Settings" %}</span>
             </button>
           </div>
         </form>
@@ -536,7 +529,7 @@
 
   function copyRedirectUrl() {
     const text = document.getElementById('redirect-url-box').innerText.trim();
-    navigator.clipboard.writeText(text).then(() => showToast('Redirect URI copied to clipboard', 'success'));
+    navigator.clipboard.writeText(text).then(() => showToast('{{ _("Redirect URI copied to clipboard")|escapejs }}', 'success'));
   }
 
 </script>

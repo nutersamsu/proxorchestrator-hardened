@@ -1,7 +1,8 @@
 {% extends "base.html" %}
-{% block title %}Proxmox permissions — ProxOrchestrator{% endblock %}
-{% block page_title %}Proxmox permissions{% endblock %}
-{% block help_slug %}pve-access{% endblock %}
+{% load i18n %}
+{% block title %}{% translate "Proxmox permissions — ProxOrchestrator" %}{% endblock %}
+{% block page_title %}{% translate "Proxmox permissions" %}{% endblock %}
+{% block help_slug %}{% translate "pve-access" %}{% endblock %}
 
 {% block content %}
 <div class="tabs is-small is-boxed" style="margin-bottom:0;">
@@ -9,33 +10,33 @@
 </div>
 <div class="proxorchestrator-card" style="border-top-left-radius:0;">
   <div class="card-body" style="padding:1rem 1.25rem;">
-  {% if error %}<div class="node-summary-error">Could not load: {{ error }}</div>{% endif %}
-  <p class="help" style="margin:0 0 0.75rem;"><i class="fas fa-info-circle"></i> These are the users and permissions of <strong>Proxmox</strong>, not of ProxOrchestrator (Account → Users).
-  {% if not can_modify %}Read-only: changing them needs <code>User.Modify</code> / <code>Permissions.Modify</code>.{% endif %}</p>
+  {% if error %}<div class="node-summary-error">{% blocktranslate trimmed %}Could not load: {{ error }}{% endblocktranslate %}</div>{% endif %}
+  <p class="help" style="margin:0 0 0.75rem;"><i class="fas fa-info-circle"></i> {% translate "These are the users and permissions of" %} <strong>{% translate "Proxmox" %}</strong>{% translate ", not of ProxOrchestrator (Account → Users)." %}
+  {% if not can_modify %}{% translate "Read-only: changing them needs" %} <code>User.Modify</code> / <code>Permissions.Modify</code>.{% endif %}</p>
 
   {% if tab == 'users' %}
     <div class="table-container"><table class="table is-fullwidth task-table" style="margin:0;">
-      <thead><tr><th>User</th><th>Realm</th><th>Enabled</th><th>Expires</th><th>Name</th><th>E-mail</th><th>Groups</th><th>API tokens</th><th>Comment</th></tr></thead>
+      <thead><tr><th>{% translate "User" %}</th><th>{% translate "Realm" %}</th><th>{% translate "Enabled" %}</th><th>{% translate "Expires" %}</th><th>{% translate "Name" %}</th><th>{% translate "E-mail" %}</th><th>{% translate "Groups" %}</th><th>{% translate "API tokens" %}</th><th>{% translate "Comment" %}</th></tr></thead>
       <tbody>{% for u in data %}
         <tr class="{% if not u.enable %}fw-off{% endif %}"><td class="mono-cell"><strong>{{ u.userid }}</strong></td><td>{{ u.realm_type }}</td>
-          <td>{% if u.enable %}Yes{% else %}No{% endif %}</td><td>{% if u.expire_d %}{{ u.expire_d|date:"Y-m-d" }}{% else %}never{% endif %}</td>
+          <td>{% if u.enable %}{% translate "Yes" %}{% else %}{% translate "No" %}{% endif %}</td><td>{% if u.expire_d %}{{ u.expire_d|date:"Y-m-d" }}{% else %}{% translate "never" %}{% endif %}</td>
           <td>{{ u.firstname|default:"" }} {{ u.lastname|default:"" }}</td><td>{{ u.email|default:"" }}</td>
           <td>{{ u.groups|join:", " }}</td>
-          <td class="mono-cell">{% if u.token_names is None %}<span class="ns-sub">not visible</span>{% else %}{{ u.token_names|join:", "|default:"—" }}{% endif %}</td>
+          <td class="mono-cell">{% if u.token_names is None %}<span class="ns-sub">{% translate "not visible" %}</span>{% else %}{{ u.token_names|join:", "|default:"—" }}{% endif %}</td>
           <td>{{ u.comment|default:"" }}</td></tr>
-      {% empty %}<tr><td class="ns-sub">No users.</td></tr>{% endfor %}</tbody></table></div>
+      {% empty %}<tr><td class="ns-sub">{% translate "No users." %}</td></tr>{% endfor %}</tbody></table></div>
 
   {% elif tab == 'groups' %}
-    <table class="table is-fullwidth task-table"><thead><tr><th>Group</th><th>Members</th><th>Comment</th></tr></thead>
-      <tbody>{% for g in data %}<tr><td>{{ g.groupid }}</td><td class="mono-cell">{{ g.users|default:"" }}</td><td>{{ g.comment|default:"" }}</td></tr>{% empty %}<tr><td class="ns-sub">No groups.</td></tr>{% endfor %}</tbody></table>
+    <table class="table is-fullwidth task-table"><thead><tr><th>{% translate "Group" %}</th><th>{% translate "Members" %}</th><th>{% translate "Comment" %}</th></tr></thead>
+      <tbody>{% for g in data %}<tr><td>{{ g.groupid }}</td><td class="mono-cell">{{ g.users|default:"" }}</td><td>{{ g.comment|default:"" }}</td></tr>{% empty %}<tr><td class="ns-sub">{% translate "No groups." %}</td></tr>{% endfor %}</tbody></table>
 
   {% elif tab == 'acl' %}
-    <table class="table is-fullwidth task-table"><thead><tr><th>Path</th><th>User/Group/Token</th><th>Type</th><th>Role</th><th>Propagate</th></tr></thead>
-      <tbody>{% for a in data %}<tr><td class="mono-cell">{{ a.path }}</td><td class="mono-cell">{{ a.ugid }}</td><td>{{ a.type }}</td><td>{{ a.roleid }}</td><td>{% if a.propagate %}Yes{% else %}No{% endif %}</td></tr>{% empty %}<tr><td class="ns-sub">No ACL entries (only root@pam has access).</td></tr>{% endfor %}</tbody></table>
+    <table class="table is-fullwidth task-table"><thead><tr><th>{% translate "Path" %}</th><th>{% translate "User/Group/Token" %}</th><th>{% translate "Type" %}</th><th>{% translate "Role" %}</th><th>{% translate "Propagate" %}</th></tr></thead>
+      <tbody>{% for a in data %}<tr><td class="mono-cell">{{ a.path }}</td><td class="mono-cell">{{ a.ugid }}</td><td>{{ a.type }}</td><td>{{ a.roleid }}</td><td>{% if a.propagate %}{% translate "Yes" %}{% else %}{% translate "No" %}{% endif %}</td></tr>{% empty %}<tr><td class="ns-sub">{% translate "No ACL entries (only root@pam has access)." %}</td></tr>{% endfor %}</tbody></table>
 
   {% elif tab == 'roles' %}
     {% for r in data %}
-      <details class="fw-section"><summary><strong>{{ r.roleid }}</strong> {% if r.special %}<span class="tag is-light">built-in</span>{% endif %} <span class="ns-sub">{{ r.priv_list|length }} privileges</span></summary>
+      <details class="fw-section"><summary><strong>{{ r.roleid }}</strong> {% if r.special %}<span class="tag is-light">{% translate "built-in" %}</span>{% endif %} <span class="ns-sub">{% blocktranslate with priv_list=r.priv_list|length trimmed %}{{ priv_list }} privileges{% endblocktranslate %}</span></summary>
         <div style="margin-top:0.4rem;">{% for p in r.priv_list %}<span class="tag is-light is-info" style="margin:0 0.25rem 0.25rem 0;">{{ p }}</span>{% endfor %}</div>
       </details>
     {% endfor %}
@@ -43,13 +44,13 @@
   {% elif tab == 'pools' %}
     {% for p in data %}
       <div class="fw-section"><strong>{{ p.poolid }}</strong> <span class="ns-sub">{{ p.comment|default:"" }}</span>
-        <div>{% for m in p.members %}<span class="tag is-light" style="margin:0.2rem 0.25rem 0 0;">{{ m.type }} {% firstof m.vmid m.storage %} {{ m.name|default:"" }}</span>{% empty %}<span class="ns-sub">empty</span>{% endfor %}</div>
+        <div>{% for m in p.members %}<span class="tag is-light" style="margin:0.2rem 0.25rem 0 0;">{{ m.type }} {% firstof m.vmid m.storage %} {{ m.name|default:"" }}</span>{% empty %}<span class="ns-sub">{% translate "empty" %}</span>{% endfor %}</div>
       </div>
-    {% empty %}<p class="ns-sub">No resource pools.</p>{% endfor %}
+    {% empty %}<p class="ns-sub">{% translate "No resource pools." %}</p>{% endfor %}
 
   {% elif tab == 'realms' %}
-    <table class="table is-fullwidth task-table"><thead><tr><th>Realm</th><th>Type</th><th>Default</th><th>Comment</th></tr></thead>
-      <tbody>{% for d in data %}<tr><td>{{ d.realm }}</td><td>{{ d.type }}</td><td>{% if d.default %}Yes{% endif %}</td><td>{{ d.comment|default:"" }}</td></tr>{% endfor %}</tbody></table>
+    <table class="table is-fullwidth task-table"><thead><tr><th>{% translate "Realm" %}</th><th>{% translate "Type" %}</th><th>{% translate "Default" %}</th><th>{% translate "Comment" %}</th></tr></thead>
+      <tbody>{% for d in data %}<tr><td>{{ d.realm }}</td><td>{{ d.type }}</td><td>{% if d.default %}{% translate "Yes" %}{% endif %}</td><td>{{ d.comment|default:"" }}</td></tr>{% endfor %}</tbody></table>
   {% endif %}
   </div>
 </div>

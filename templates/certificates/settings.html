@@ -1,7 +1,8 @@
 {% extends "base.html" %}
-{% block title %}Certificate Management — ProxOrchestrator{% endblock %}
-{% block page_title %}Certificate Management{% endblock %}
-{% block help_slug %}settings-certificates{% endblock %}
+{% load i18n %}
+{% block title %}{% translate "Certificate Management — ProxOrchestrator" %}{% endblock %}
+{% block page_title %}{% translate "Certificate Management" %}{% endblock %}
+{% block help_slug %}{% translate "settings-certificates" %}{% endblock %}
 
 {% block content %}
 
@@ -23,7 +24,7 @@
     {# Current Certificate #}
     <div class="proxorchestrator-card" style="margin-bottom: 1.5rem;">
       <div class="card-header">
-        <i class="fas fa-certificate" style="color: var(--link-color);"></i> Current TLS Certificate
+        <i class="fas fa-certificate" style="color: var(--link-color);"></i> {% translate "Current TLS Certificate" %}
       </div>
       <div class="card-body">
 
@@ -38,53 +39,52 @@
             style="padding: 0.6rem 0.9rem;margin-bottom: 1.25rem;border-radius: 6px;font-size: 0.8125rem;">
             {% if cert_days_remaining > 30 %}
               <i class="fas fa-check-circle" style="margin-right: 0.4rem;"></i>
-              Valid for <strong>{{ cert_days_remaining }} more days</strong> — expires {{ cert_info.not_after|date:"N j, Y" }}.
+              {% translate "Valid for" %} <strong>{% blocktranslate trimmed %}{{ cert_days_remaining }} more days{% endblocktranslate %}</strong> {% blocktranslate with not_after=cert_info.not_after|date:"N j, Y" trimmed %}— expires {{ not_after }}.{% endblocktranslate %}
             {% elif cert_days_remaining > 0 %}
               <i class="fas fa-exclamation-triangle" style="margin-right: 0.4rem;"></i>
-              <strong>Expires soon</strong> — {{ cert_days_remaining }} days remaining.
+              <strong>{% translate "Expires soon" %}</strong> {% blocktranslate trimmed %}— {{ cert_days_remaining }} days remaining.{% endblocktranslate %}
             {% elif cert_hours_remaining > 0 %}
               <i class="fas fa-exclamation-triangle" style="margin-right:0.4rem;"></i>
-              <strong>Expires soon</strong> — {{ cert_hours_remaining }} hours remaining.
+              <strong>{% translate "Expires soon" %}</strong> {% blocktranslate trimmed %}— {{ cert_hours_remaining }} hours remaining.{% endblocktranslate %}
             {% else %}
               <i class="fas fa-times-circle" style="margin-right: 0.4rem;"></i>
-              <strong>Certificate has expired!</strong> Replace it immediately.
+              <strong>{% translate "Certificate has expired!" %}</strong> {% translate "Replace it immediately." %}
             {% endif %}
           </div>
 
           <div class="cert-detail-row">
-            <div class="cert-detail-label">Subject</div>
+            <div class="cert-detail-label">{% translate "Subject" %}</div>
             <div class="cert-detail-value" style="word-break: break-all;">{{ cert_info.subject|default:"—" }}</div>
           </div>
           <div class="cert-detail-row">
-            <div class="cert-detail-label">Issuer</div>
+            <div class="cert-detail-label">{% translate "Issuer" %}</div>
             <div class="cert-detail-value" style="word-break: break-all;">{{ cert_info.issuer|default:"—" }}</div>
           </div>
           <div class="cert-detail-row">
-            <div class="cert-detail-label">Valid From</div>
+            <div class="cert-detail-label">{% translate "Valid From" %}</div>
             <div class="cert-detail-value">{{ cert_info.not_before|date:"N j, Y g:i A" }}</div>
           </div>
           <div class="cert-detail-row">
-            <div class="cert-detail-label">Valid Until</div>
+            <div class="cert-detail-label">{% translate "Valid Until" %}</div>
             <div class="cert-detail-value" style="{% if cert_days_remaining <= 0 %}color: var(--danger-color);font-weight: 700;{% elif cert_days_remaining <= 30 %}color: var(--text-warning-dark);font-weight: 600;{% else %}color: var(--text-success-dark);{% endif %}">
-              {{ cert_info.not_after|date:"N j, Y g:i A" }}
-              ({{ cert_days_remaining }} days)
+              {% blocktranslate with not_after=cert_info.not_after|date:"N j, Y g:i A" trimmed %}{{ not_after }} ({{ cert_days_remaining }} days){% endblocktranslate %}
             </div>
           </div>
           <div class="cert-detail-row">
-            <div class="cert-detail-label">Serial</div>
+            <div class="cert-detail-label">{% translate "Serial" %}</div>
             <div class="cert-detail-value" style="font-family: var(--font-mono);font-size: 0.8125rem;word-break: break-all;">{{ cert_info.serial|default:"—" }}</div>
           </div>
           <div class="cert-detail-row">
-            <div class="cert-detail-label">Alt Names</div>
+            <div class="cert-detail-label">{% translate "Alt Names" %}</div>
             <div class="cert-detail-value" style="font-size: 0.8125rem;word-break: break-all;">{{ cert_info.san|default:"—" }}</div>
           </div>
           <div class="cert-detail-row">
-            <div class="cert-detail-label">Type</div>
+            <div class="cert-detail-label">{% translate "Type" %}</div>
             <div class="cert-detail-value">
               {% if cert_info.is_self_signed %}
-                <span class="tag is-warning is-light">Self-Signed</span>
+                <span class="tag is-warning is-light">{% translate "Self-Signed" %}</span>
               {% else %}
-                <span class="tag is-success is-light">CA-Signed</span>
+                <span class="tag is-success is-light">{% translate "CA-Signed" %}</span>
               {% endif %}
             </div>
           </div>
@@ -92,20 +92,20 @@
         {% elif cert_info.error %}
           <div class="info-box is-warning">
             <div class="info-box-icon"><i class="fas fa-exclamation-triangle"></i></div>
-            <div>Could not parse certificate: {{ cert_info.error }}</div>
+            <div>{% blocktranslate with error=cert_info.error trimmed %}Could not parse certificate: {{ error }}{% endblocktranslate %}</div>
           </div>
         {% else %}
           <div class="info-box is-warning">
             <div class="info-box-icon"><i class="fas fa-exclamation-triangle"></i></div>
-            <div>No certificate found. Install one using the options on the right.</div>
+            <div>{% translate "No certificate found. Install one using the options on the right." %}</div>
           </div>
         {% endif %}
 
         {# File paths #}
         <div style="margin-top: 1.25rem;padding-top: 1rem;border-top: 1px solid var(--border-light);">
-          <div style="font-size: 0.75rem;color: var(--text-muted);margin-bottom: 0.3rem;">Certificate location:</div>
+          <div style="font-size: 0.75rem;color: var(--text-muted);margin-bottom: 0.3rem;">{% translate "Certificate location:" %}</div>
           <code style="font-size: 0.75rem;color: var(--text-semi);">{{ cert_file }}</code>
-          <div style="font-size: 0.75rem;color: var(--text-muted);margin-top: 0.5rem;margin-bottom: 0.3rem;">Private key location:</div>
+          <div style="font-size: 0.75rem;color: var(--text-muted);margin-top: 0.5rem;margin-bottom: 0.3rem;">{% translate "Private key location:" %}</div>
           <code style="font-size: 0.75rem;color: var(--text-semi);">{{ key_file }}</code>
         </div>
 
@@ -116,17 +116,17 @@
     {% if pending_csr %}
     <div class="proxorchestrator-card" style="margin-bottom: 1.5rem;border-left: 4px solid var(--link-color);border-radius: 0 10px 10px 0;">
       <div class="card-header">
-        <i class="fas fa-file-alt" style="color: var(--link-color);"></i> Pending CSR
+        <i class="fas fa-file-alt" style="color: var(--link-color);"></i> {% translate "Pending CSR" %}
       </div>
       <div class="card-body">
         <div class="info-box" style="margin-bottom: 1rem;">
           <div class="info-box-icon"><i class="fas fa-info-circle"></i></div>
           <div style="font-size: 0.8125rem;">
-            A CSR was generated and the private key is stored on this server. Submit the CSR below to your Certificate Authority, then upload the signed certificate using the <strong>Upload Signed Cert</strong> tab.
+            {% translate "A CSR was generated and the private key is stored on this server. Submit the CSR below to your Certificate Authority, then upload the signed certificate using the" %} <strong>{% translate "Upload Signed Cert" %}</strong> {% translate "tab." %}
           </div>
         </div>
         <textarea class="textarea is-small" style="font-family: var(--font-mono);font-size: 0.75rem;resize: vertical;height: 12rem;" readonly>{{ pending_csr }}</textarea>
-        <p style="font-size: 0.75rem;color: var(--text-muted);margin-top: 0.4rem;">Copy this CSR and submit it to your Certificate Authority.</p>
+        <p style="font-size: 0.75rem;color: var(--text-muted);margin-top: 0.4rem;">{% translate "Copy this CSR and submit it to your Certificate Authority." %}</p>
       </div>
     </div>
     {% endif %}
@@ -134,12 +134,11 @@
     {# HTTPS Port #}
     <div class="proxorchestrator-card">
       <div class="card-header">
-        <i class="fas fa-network-wired" style="color: var(--text-muted);"></i> HTTPS Port
+        <i class="fas fa-network-wired" style="color: var(--text-muted);"></i> {% translate "HTTPS Port" %}
       </div>
       <div class="card-body">
         <p style="font-size: 0.8125rem;color: var(--text-semi);margin-bottom: 1rem;">
-          ProxOrchestrator is currently accessible on port <strong>{{ current_port }}</strong>.
-          Changing this will update the nginx configuration and redirect your browser to the new port.
+          {% translate "ProxOrchestrator is currently accessible on port" %} <strong>{{ current_port }}</strong>{% translate ". Changing this will update the nginx configuration and redirect your browser to the new port." %}
         </p>
         <form method="post" action="{% url 'cert_change_port' %}">
           {% csrf_token %}
@@ -152,13 +151,13 @@
             <div class="control">
               <button type="submit" class="button is-info" style="font-weight: 600;">
                 <span class="icon"><i class="fas fa-save"></i></span>
-                <span>Apply</span>
+                <span>{% translate "Apply" %}</span>
               </button>
             </div>
           </div>
           <p class="field-hint">
             <i class="fas fa-exclamation-triangle" style="color: var(--warning-color);margin-right: 0.3rem;"></i>
-            Your browser will redirect to the new URL after the change is applied.
+            {% translate "Your browser will redirect to the new URL after the change is applied." %}
           </p>
         </form>
       </div>
@@ -175,33 +174,33 @@
         <li class="is-active" data-tab="generate-csr">
           <a onclick="switchCertTab('generate-csr')">
             <span class="icon is-small"><i class="fas fa-file-signature"></i></span>
-            <span>Generate CSR</span>
+            <span>{% translate "Generate CSR" %}</span>
           </a>
         </li>
         <li data-tab="upload-signed">
           <a onclick="switchCertTab('upload-signed')">
             <span class="icon is-small"><i class="fas fa-upload"></i></span>
-            <span>Upload Signed Cert</span>
-            {% if pending_csr %}<span class="tag is-info is-light" style="margin-left: 0.4rem;font-size: 0.75rem;">Pending</span>{% endif %}
+            <span>{% translate "Upload Signed Cert" %}</span>
+            {% if pending_csr %}<span class="tag is-info is-light" style="margin-left: 0.4rem;font-size: 0.75rem;">{% translate "Pending" %}</span>{% endif %}
           </a>
         </li>
         <li data-tab="upload-own">
           <a onclick="switchCertTab('upload-own')">
             <span class="icon is-small"><i class="fas fa-key"></i></span>
-            <span>Upload Cert + Key</span>
+            <span>{% translate "Upload Cert + Key" %}</span>
           </a>
         </li>
         <li data-tab="self-signed">
           <a onclick="switchCertTab('self-signed')">
             <span class="icon is-small"><i class="fas fa-magic"></i></span>
-            <span>Self-Signed</span>
+            <span>{% translate "Self-Signed" %}</span>
           </a>
         </li>
         <li data-tab="acme">
           <a onclick="switchCertTab('acme')">
             <span class="icon is-small"><i class="fas fa-lock"></i></span>
-            <span>Certificate Automation (ACME)</span>
-            {% if acme.is_enabled %}<span class="tag is-success is-light" style="margin-left:0.4rem;font-size:0.75rem;">Active</span>{% endif %}
+            <span>{% translate "Certificate Automation (ACME)" %}</span>
+            {% if acme.is_enabled %}<span class="tag is-success is-light" style="margin-left:0.4rem;font-size:0.75rem;">{% translate "Active" %}</span>{% endif %}
           </a>
         </li>
       </ul>
@@ -211,15 +210,14 @@
     <div class="tab-pane is-active" id="tab-generate-csr">
       <div class="proxorchestrator-card" style="border-radius: 0 10px 10px 10px;">
         <div class="card-header">
-          <i class="fas fa-file-signature" style="color: var(--link-color);"></i> Generate a Certificate Signing Request
+          <i class="fas fa-file-signature" style="color: var(--link-color);"></i> {% translate "Generate a Certificate Signing Request" %}
         </div>
         <div class="card-body">
 
           <div class="info-box" style="margin-bottom: 1.25rem;">
             <div class="info-box-icon"><i class="fas fa-info-circle"></i></div>
             <div style="font-size: 0.8125rem;">
-              ProxOrchestrator will generate an RSA 2048-bit private key and CSR. The private key stays on this server.
-              Submit the CSR to your Certificate Authority, then upload the signed certificate using the <strong>Upload Signed Cert</strong> tab.
+              {% translate "ProxOrchestrator will generate an RSA 2048-bit private key and CSR. The private key stays on this server. Submit the CSR to your Certificate Authority, then upload the signed certificate using the" %} <strong>{% translate "Upload Signed Cert" %}</strong> {% translate "tab." %}
             </div>
           </div>
 
@@ -227,7 +225,7 @@
           <div class="info-box is-warning" style="margin-bottom: 1.25rem;">
             <div class="info-box-icon"><i class="fas fa-exclamation-triangle"></i></div>
             <div style="font-size: 0.8125rem;">
-              A pending CSR key already exists on this server. Generating a new CSR will replace it, and you will need to re-submit the new CSR to your CA.
+              {% translate "A pending CSR key already exists on this server. Generating a new CSR will replace it, and you will need to re-submit the new CSR to your CA." %}
             </div>
           </div>
           {% endif %}
@@ -238,66 +236,66 @@
             <div class="columns">
               <div class="column">
                 <div class="field">
-                  <label class="label form-label">Common Name (CN) <span style="color: var(--danger-color);">*</span></label>
+                  <label class="label form-label">{% translate "Common Name (CN)" %} <span style="color: var(--danger-color);">*</span></label>
                   <div class="control">
-                    <input class="input" type="text" name="cn" placeholder="proxorchestrator.example.com"
+                    <input class="input" type="text" name="cn" placeholder="{% translate "proxorchestrator.example.com" %}"
                            required maxlength="64" style="font-family: var(--font-mono);">
                   </div>
-                  <p class="field-hint">Hostname or IP used to reach ProxOrchestrator.</p>
+                  <p class="field-hint">{% translate "Hostname or IP used to reach ProxOrchestrator." %}</p>
                 </div>
               </div>
               <div class="column">
                 <div class="field">
-                  <label class="label form-label">Organization (O)</label>
+                  <label class="label form-label">{% translate "Organization (O)" %}</label>
                   <div class="control">
-                    <input class="input" type="text" name="org" placeholder="Acme Corp" maxlength="64">
+                    <input class="input" type="text" name="org" placeholder="{% translate "Acme Corp" %}" maxlength="64">
                   </div>
                 </div>
               </div>
             </div>
 
             <div class="field" style="max-width: 8rem;margin-bottom: 1.25rem;">
-              <label class="label form-label">Country (C)</label>
+              <label class="label form-label">{% translate "Country (C)" %}</label>
               <div class="control">
-                <input class="input" type="text" name="country" placeholder="US" maxlength="2"
+                <input class="input" type="text" name="country" placeholder="{% translate "US" %}" maxlength="2"
                        style="font-family: var(--font-mono);text-transform: uppercase;">
               </div>
-              <p class="field-hint">2-letter ISO code.</p>
+              <p class="field-hint">{% translate "2-letter ISO code." %}</p>
             </div>
 
             <hr style="margin: 1rem 0;border: none;border-top: 1px solid var(--border-light);">
             <div style="font-size: 0.875rem;font-weight: 600;color: var(--text-header);margin-bottom: 0.75rem;">
-              Subject Alternative Names (SANs)
+              {% translate "Subject Alternative Names (SANs)" %}
             </div>
 
             <div class="columns">
               <div class="column">
                 <div class="field">
-                  <label class="label form-label">DNS SANs</label>
+                  <label class="label form-label">{% translate "DNS SANs" %}</label>
                   <div class="control">
                     <textarea class="textarea is-small" name="dns_sans" rows="3"
                       placeholder="proxorchestrator.example.com&#10;pm.internal.local"
                       style="font-family: var(--font-mono);font-size: 0.8125rem;resize: vertical;"></textarea>
                   </div>
-                  <p class="field-hint">One hostname per line (or comma-separated). The CN is added automatically.</p>
+                  <p class="field-hint">{% translate "One hostname per line (or comma-separated). The CN is added automatically." %}</p>
                 </div>
               </div>
               <div class="column">
                 <div class="field">
-                  <label class="label form-label">IP SANs</label>
+                  <label class="label form-label">{% translate "IP SANs" %}</label>
                   <div class="control">
                     <textarea class="textarea is-small" name="ip_sans" rows="3"
                       placeholder="192.168.1.10&#10;10.0.0.5"
                       style="font-family: var(--font-mono);font-size: 0.8125rem;resize: vertical;"></textarea>
                   </div>
-                  <p class="field-hint">One IP address per line (or comma-separated).</p>
+                  <p class="field-hint">{% translate "One IP address per line (or comma-separated)." %}</p>
                 </div>
               </div>
             </div>
 
             <button type="submit" class="button is-primary is-fullwidth" style="font-weight: 600;">
               <span class="icon"><i class="fas fa-file-signature"></i></span>
-              <span>Generate CSR</span>
+              <span>{% translate "Generate CSR" %}</span>
             </button>
           </form>
 
@@ -309,7 +307,7 @@
     <div class="tab-pane" id="tab-upload-signed" style="display: none;">
       <div class="proxorchestrator-card" style="border-radius: 0 10px 10px 10px;">
         <div class="card-header">
-          <i class="fas fa-upload" style="color: var(--link-color);"></i> Upload CA-Signed Certificate
+          <i class="fas fa-upload" style="color: var(--link-color);"></i> {% translate "Upload CA-Signed Certificate" %}
         </div>
         <div class="card-body">
 
@@ -317,14 +315,14 @@
           <div class="info-box is-warning" style="margin-bottom: 1.25rem;">
             <div class="info-box-icon"><i class="fas fa-exclamation-triangle"></i></div>
             <div style="font-size: 0.8125rem;">
-              No pending CSR private key found on this server. Generate a CSR first using the <strong>Generate CSR</strong> tab, then upload the signed certificate here.
+              {% translate "No pending CSR private key found on this server. Generate a CSR first using the" %} <strong>{% translate "Generate CSR" %}</strong> {% translate "tab, then upload the signed certificate here." %}
             </div>
           </div>
           {% else %}
           <div class="info-box is-success" style="margin-bottom: 1.25rem;">
             <div class="info-box-icon"><i class="fas fa-check-circle"></i></div>
             <div style="font-size: 0.8125rem;">
-              A CSR private key is stored on this server. Upload the signed certificate from your CA and ProxOrchestrator will verify it matches the key before installing.
+              {% translate "A CSR private key is stored on this server. Upload the signed certificate from your CA and ProxOrchestrator will verify it matches the key before installing." %}
             </div>
           </div>
           {% endif %}
@@ -336,14 +334,14 @@
               onclick="setSignedMode('upload')"
               style="font-weight: 600;">
               <span class="icon is-small"><i class="fas fa-upload"></i></span>
-              <span>Upload File</span>
+              <span>{% translate "Upload File" %}</span>
             </button>
             <button type="button" id="signed-mode-paste"
               class="button is-small is-light"
               onclick="setSignedMode('paste')"
               style="font-weight: 600;">
               <span class="icon is-small"><i class="fas fa-paste"></i></span>
-              <span>Paste PEM</span>
+              <span>{% translate "Paste PEM" %}</span>
             </button>
           </div>
 
@@ -352,7 +350,7 @@
             {% csrf_token %}
 
             <div class="field" style="margin-bottom: 1.5rem;">
-              <label class="label form-label">Signed Certificate (.pem / .crt)</label>
+              <label class="label form-label">{% translate "Signed Certificate (.pem / .crt)" %}</label>
               <div class="control">
                 <div class="file has-name is-fullwidth">
                   <label class="file-label">
@@ -361,24 +359,24 @@
                       onchange="this.closest('.file').querySelector('.file-name').textContent = this.files[0].name">
                     <span class="file-cta">
                       <span class="file-icon"><i class="fas fa-upload"></i></span>
-                      <span class="file-label">Choose file</span>
+                      <span class="file-label">{% translate "Choose file" %}</span>
                     </span>
-                    <span class="file-name">No file selected</span>
+                    <span class="file-name">{% translate "No file selected" %}</span>
                   </label>
                 </div>
               </div>
-              <p class="field-hint">Include the full chain (server cert + intermediates) in PEM format.</p>
+              <p class="field-hint">{% translate "Include the full chain (server cert + intermediates) in PEM format." %}</p>
             </div>
 
             <div class="info-box is-warning" style="margin-bottom: 1.25rem;">
               <div class="info-box-icon"><i class="fas fa-exclamation-triangle"></i></div>
-              <div style="font-size: 0.8125rem;">Installing the certificate will reload nginx. You may need to refresh the page after a few seconds.</div>
+              <div style="font-size: 0.8125rem;">{% translate "Installing the certificate will reload nginx. You may need to refresh the page after a few seconds." %}</div>
             </div>
 
             <button type="submit" class="button is-primary is-fullwidth" style="font-weight: 600;"
               {% if not has_csr_key %}disabled{% endif %}>
               <span class="icon"><i class="fas fa-certificate"></i></span>
-              <span>Install Signed Certificate</span>
+              <span>{% translate "Install Signed Certificate" %}</span>
             </button>
           </form>
 
@@ -387,24 +385,24 @@
             {% csrf_token %}
 
             <div class="field" style="margin-bottom: 1.5rem;">
-              <label class="label form-label">Signed Certificate (PEM text)</label>
+              <label class="label form-label">{% translate "Signed Certificate (PEM text)" %}</label>
               <div class="control">
                 <textarea class="textarea" name="cert_pem" rows="10"
                   placeholder="-----BEGIN CERTIFICATE-----&#10;...&#10;-----END CERTIFICATE-----"
                   style="font-family: var(--font-mono);font-size: 0.8125rem;resize: vertical;"></textarea>
               </div>
-              <p class="field-hint">Paste the full PEM — include the full chain (server cert + intermediates) if provided by your CA.</p>
+              <p class="field-hint">{% translate "Paste the full PEM — include the full chain (server cert + intermediates) if provided by your CA." %}</p>
             </div>
 
             <div class="info-box is-warning" style="margin-bottom: 1.25rem;">
               <div class="info-box-icon"><i class="fas fa-exclamation-triangle"></i></div>
-              <div style="font-size: 0.8125rem;">Installing the certificate will reload nginx. You may need to refresh the page after a few seconds.</div>
+              <div style="font-size: 0.8125rem;">{% translate "Installing the certificate will reload nginx. You may need to refresh the page after a few seconds." %}</div>
             </div>
 
             <button type="submit" class="button is-primary is-fullwidth" style="font-weight: 600;"
               {% if not has_csr_key %}disabled{% endif %}>
               <span class="icon"><i class="fas fa-certificate"></i></span>
-              <span>Install Signed Certificate</span>
+              <span>{% translate "Install Signed Certificate" %}</span>
             </button>
           </form>
 
@@ -416,14 +414,14 @@
     <div class="tab-pane" id="tab-upload-own" style="display: none;">
       <div class="proxorchestrator-card" style="border-radius: 0 10px 10px 10px;">
         <div class="card-header">
-          <i class="fas fa-key" style="color: var(--link-color);"></i> Upload Certificate &amp; Private Key
+          <i class="fas fa-key" style="color: var(--link-color);"></i> {% translate "Upload Certificate &amp; Private Key" %}
         </div>
         <div class="card-body">
 
           <div class="info-box" style="margin-bottom: 1.25rem;">
             <div class="info-box-icon"><i class="fas fa-info-circle"></i></div>
             <div style="font-size: 0.8125rem;">
-              Upload a certificate and private key you manage yourself. Both files must be in <strong>PEM format</strong> and the key must not be password-protected. ProxOrchestrator will verify the cert and key match before installing.
+              {% translate "Upload a certificate and private key you manage yourself. Both files must be in" %} <strong>{% translate "PEM format" %}</strong> {% translate "and the key must not be password-protected. ProxOrchestrator will verify the cert and key match before installing." %}
             </div>
           </div>
 
@@ -432,21 +430,21 @@
 
             {# Certificate field with independent toggle #}
             <div class="field" style="margin-bottom: 1.25rem;">
-              <label class="label form-label">Certificate (.pem / .crt)</label>
+              <label class="label form-label">{% translate "Certificate (.pem / .crt)" %}</label>
               <div style="display: flex;gap: 0.4rem;margin-bottom: 0.5rem;">
                 <button type="button" id="cert-mode-upload"
                   class="button is-small is-primary"
                   onclick="toggleFieldMode('cert', 'upload')"
                   style="font-weight: 600;">
                   <span class="icon is-small"><i class="fas fa-upload"></i></span>
-                  <span>Upload File</span>
+                  <span>{% translate "Upload File" %}</span>
                 </button>
                 <button type="button" id="cert-mode-paste"
                   class="button is-small is-light"
                   onclick="toggleFieldMode('cert', 'paste')"
                   style="font-weight: 600;">
                   <span class="icon is-small"><i class="fas fa-paste"></i></span>
-                  <span>Paste PEM</span>
+                  <span>{% translate "Paste PEM" %}</span>
                 </button>
               </div>
               <div id="cert-input-upload">
@@ -458,9 +456,9 @@
                         onchange="this.closest('.file').querySelector('.file-name').textContent = this.files[0].name">
                       <span class="file-cta">
                         <span class="file-icon"><i class="fas fa-upload"></i></span>
-                        <span class="file-label">Choose file</span>
+                        <span class="file-label">{% translate "Choose file" %}</span>
                       </span>
-                      <span class="file-name">No file selected</span>
+                      <span class="file-name">{% translate "No file selected" %}</span>
                     </label>
                   </div>
                 </div>
@@ -472,26 +470,26 @@
                     style="font-family: var(--font-mono);font-size: 0.8125rem;resize: vertical;"></textarea>
                 </div>
               </div>
-              <p class="field-hint">Include the full chain (server cert + intermediates).</p>
+              <p class="field-hint">{% translate "Include the full chain (server cert + intermediates)." %}</p>
             </div>
 
             {# Private Key field with independent toggle #}
             <div class="field" style="margin-bottom: 1.5rem;">
-              <label class="label form-label">Private Key (.pem / .key)</label>
+              <label class="label form-label">{% translate "Private Key (.pem / .key)" %}</label>
               <div style="display: flex;gap: 0.4rem;margin-bottom: 0.5rem;">
                 <button type="button" id="key-mode-upload"
                   class="button is-small is-primary"
                   onclick="toggleFieldMode('key', 'upload')"
                   style="font-weight: 600;">
                   <span class="icon is-small"><i class="fas fa-upload"></i></span>
-                  <span>Upload File</span>
+                  <span>{% translate "Upload File" %}</span>
                 </button>
                 <button type="button" id="key-mode-paste"
                   class="button is-small is-light"
                   onclick="toggleFieldMode('key', 'paste')"
                   style="font-weight: 600;">
                   <span class="icon is-small"><i class="fas fa-paste"></i></span>
-                  <span>Paste PEM</span>
+                  <span>{% translate "Paste PEM" %}</span>
                 </button>
               </div>
               <div id="key-input-upload">
@@ -503,9 +501,9 @@
                         onchange="this.closest('.file').querySelector('.file-name').textContent = this.files[0].name">
                       <span class="file-cta">
                         <span class="file-icon"><i class="fas fa-key"></i></span>
-                        <span class="file-label">Choose file</span>
+                        <span class="file-label">{% translate "Choose file" %}</span>
                       </span>
-                      <span class="file-name">No file selected</span>
+                      <span class="file-name">{% translate "No file selected" %}</span>
                     </label>
                   </div>
                 </div>
@@ -517,19 +515,19 @@
                     style="font-family: var(--font-mono);font-size: 0.8125rem;resize: vertical;"></textarea>
                 </div>
               </div>
-              <p class="field-hint">RSA or ECDSA private key. Must not be password-protected.</p>
+              <p class="field-hint">{% translate "RSA or ECDSA private key. Must not be password-protected." %}</p>
             </div>
 
             <div class="info-box is-warning" style="margin-bottom: 1.25rem;">
               <div class="info-box-icon"><i class="fas fa-exclamation-triangle"></i></div>
               <div style="font-size: 0.8125rem;">
-                Installing the certificate will reload nginx. You may need to refresh the page after a few seconds.
+                {% translate "Installing the certificate will reload nginx. You may need to refresh the page after a few seconds." %}
               </div>
             </div>
 
             <button type="submit" class="button is-primary is-fullwidth" style="font-weight: 600;">
               <span class="icon"><i class="fas fa-certificate"></i></span>
-              <span>Install Certificate</span>
+              <span>{% translate "Install Certificate" %}</span>
             </button>
           </form>
 
@@ -541,31 +539,30 @@
     <div class="tab-pane" id="tab-self-signed" style="display: none;">
       <div class="proxorchestrator-card" style="border-radius: 0 10px 10px 10px;">
         <div class="card-header">
-          <i class="fas fa-magic" style="color: var(--text-muted);"></i> Generate Self-Signed Certificate
+          <i class="fas fa-magic" style="color: var(--text-muted);"></i> {% translate "Generate Self-Signed Certificate" %}
         </div>
         <div class="card-body">
 
           <div class="info-box" style="margin-bottom: 1.25rem;">
             <div class="info-box-icon"><i class="fas fa-info-circle"></i></div>
             <div style="font-size: 0.8125rem;">
-              Generates a new RSA 2048-bit self-signed certificate valid for <strong>10 years</strong>.
-              This is suitable for internal use where you trust the server directly. Browsers will show a security warning.
+              {% translate "Generates a new RSA 2048-bit self-signed certificate valid for" %} <strong>{% translate "10 years" %}</strong>{% translate ". This is suitable for internal use where you trust the server directly. Browsers will show a security warning." %}
             </div>
           </div>
 
           <div class="info-box is-warning" style="margin-bottom: 1.5rem;">
             <div class="info-box-icon"><i class="fas fa-exclamation-triangle"></i></div>
             <div style="font-size: 0.8125rem;">
-              This will replace the current certificate immediately. If you have a CA-signed certificate installed, this will overwrite it.
+              {% translate "This will replace the current certificate immediately. If you have a CA-signed certificate installed, this will overwrite it." %}
             </div>
           </div>
 
           <form method="post" action="{% url 'cert_generate' %}">
             {% csrf_token %}
             <button type="submit" class="button is-light is-fullwidth" style="font-weight: 600;"
-              onclick="return confirm('Replace the current certificate with a new self-signed certificate?')">
+              onclick="return confirm('{{ _("Replace the current certificate with a new self-signed certificate?")|escapejs }}')">
               <span class="icon"><i class="fas fa-magic"></i></span>
-              <span>Generate New Self-Signed Certificate</span>
+              <span>{% translate "Generate New Self-Signed Certificate" %}</span>
             </button>
           </form>
 
@@ -577,7 +574,7 @@
     <div class="tab-pane" id="tab-acme" style="display:none;">
       <div class="proxorchestrator-card" style="border-radius:0 10px 10px 10px;">
         <div class="card-header">
-          <i class="fas fa-lock" style="color:#3273dc;"></i> Certificate Automation (ACME)
+          <i class="fas fa-lock" style="color:#3273dc;"></i> {% translate "Certificate Automation (ACME)" %}
         </div>
         <div class="card-body">
 
@@ -585,40 +582,40 @@
             {# ── State 3: Active & managed ── #}
             <div class="notification is-success is-light" data-persist="true" style="padding:0.75rem 1rem;margin-bottom:1.25rem;border-radius:6px;font-size:0.875rem;">
               <i class="fas fa-check-circle" style="margin-right:0.4rem;"></i>
-              <strong>Automated certificate management is active.</strong>
+              <strong>{% translate "Automated certificate management is active." %}</strong>
             </div>
 
             <div class="cert-detail-row">
-              <div class="cert-detail-label">Provider</div>
+              <div class="cert-detail-label">{% translate "Provider" %}</div>
               <div class="cert-detail-value">{{ acme.get_provider_display }}</div>
             </div>
             <div class="cert-detail-row">
-              <div class="cert-detail-label">Domain</div>
+              <div class="cert-detail-label">{% translate "Domain" %}</div>
               <div class="cert-detail-value" style="font-family: var(--font-mono);">{{ acme.domain }}</div>
             </div>
             <div class="cert-detail-row">
-              <div class="cert-detail-label">Challenge</div>
+              <div class="cert-detail-label">{% translate "Challenge" %}</div>
               <div class="cert-detail-value">{{ acme.get_challenge_type_display }}</div>
             </div>
             <div class="cert-detail-row">
-              <div class="cert-detail-label">Last Renewed</div>
+              <div class="cert-detail-label">{% translate "Last Renewed" %}</div>
               <div class="cert-detail-value">{{ acme.last_renewed_at|date:"N j, Y g:i A"|default:"\u2014" }}</div>
             </div>
             {% if cert_days_remaining is not None %}
             <div class="cert-detail-row">
-              <div class="cert-detail-label">Expires In</div>
-              <div class="cert-detail-value">{{ cert_days_remaining }} days</div>
+              <div class="cert-detail-label">{% translate "Expires In" %}</div>
+              <div class="cert-detail-value">{% blocktranslate trimmed %}{{ cert_days_remaining }} days{% endblocktranslate %}</div>
             </div>
             {% endif %}
             <div class="cert-detail-row">
-              <div class="cert-detail-label">Auto-Renewal</div>
+              <div class="cert-detail-label">{% translate "Auto-Renewal" %}</div>
               <div class="cert-detail-value">
                 {% if acme.challenge_type == 'http-01' %}
-                  <span style="color:#257953;"><i class="fas fa-check"></i> Automatic (renews at half cert validity)</span>
+                  <span style="color:#257953;"><i class="fas fa-check"></i> {% translate "Automatic (renews at half cert validity)" %}</span>
                 {% elif acme.dns_provider and acme.dns_provider != 'none' and acme.dns_provider != 'manual' %}
-                  <span style="color:#257953;"><i class="fas fa-check"></i> Automatic via {{ acme.get_dns_provider_display }} (renews at half cert validity)</span>
+                  <span style="color:#257953;"><i class="fas fa-check"></i> {% blocktranslate with get_dns_provider_display=acme.get_dns_provider_display trimmed %}Automatic via {{ get_dns_provider_display }} (renews at half cert validity){% endblocktranslate %}</span>
                 {% else %}
-                  <span style="color:#257953;"><i class="fas fa-check"></i> Semi-automatic (emails TXT record to admins at half cert validity)</span>
+                  <span style="color:#257953;"><i class="fas fa-check"></i> {% translate "Semi-automatic (emails TXT record to admins at half cert validity)" %}</span>
                 {% endif %}
               </div>
             </div>
@@ -626,7 +623,7 @@
             {% if acme.last_renewal_error %}
             <div class="notification is-danger is-light" data-persist="true" style="padding:0.6rem 0.9rem;margin-top:1rem;font-size:0.8125rem;">
               <i class="fas fa-times-circle" style="margin-right:0.4rem;"></i>
-              <strong>Last error:</strong> {{ acme.last_renewal_error }}
+              <strong>{% translate "Last error:" %}</strong> {{ acme.last_renewal_error }}
             </div>
             {% endif %}
 
@@ -635,15 +632,15 @@
                 {% csrf_token %}
                 <button type="submit" class="button is-primary" style="font-weight:600;">
                   <span class="icon"><i class="fas fa-sync-alt"></i></span>
-                  <span>Renew Now</span>
+                  <span>{% translate "Renew Now" %}</span>
                 </button>
               </form>
               <form method="post" action="{% url 'acme_disable' %}">
                 {% csrf_token %}
                 <button type="submit" class="button is-light" style="font-weight:600;"
-                  onclick="return confirm('Disable ACME automation? The current certificate will remain in place.')">
+                  onclick="return confirm('{{ _("Disable ACME automation? The current certificate will remain in place.")|escapejs }}')">
                   <span class="icon"><i class="fas fa-power-off"></i></span>
-                  <span>Disable ACME</span>
+                  <span>{% translate "Disable ACME" %}</span>
                 </button>
               </form>
             </div>
@@ -656,7 +653,7 @@
             {# Recent ACME log #}
             {% if acme_logs %}
             <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid #f0f0f0;">
-              <div style="font-size:0.8125rem;font-weight:600;color:#4a4a4a;margin-bottom:0.5rem;">Recent Activity</div>
+              <div style="font-size:0.8125rem;font-weight:600;color:#4a4a4a;margin-bottom:0.5rem;">{% translate "Recent Activity" %}</div>
               {% for log in acme_logs %}
               <div style="display:flex;justify-content:space-between;font-size:0.8125rem;color:#7a7a7a;padding:0.25rem 0;border-bottom:1px solid #fafafa;">
                 <span>{{ log.created_at|date:"M j, g:i A" }}</span>
@@ -671,56 +668,56 @@
             {# ── State 2: Configured, ready to issue ── #}
             <div class="notification is-info is-light" data-persist="true" style="padding:0.75rem 1rem;margin-bottom:1.25rem;border-radius:6px;font-size:0.875rem;">
               <i class="fas fa-info-circle" style="margin-right:0.4rem;"></i>
-              ACME account registered. Ready to issue a certificate.
+              {% translate "ACME account registered. Ready to issue a certificate." %}
             </div>
 
             <div class="cert-detail-row">
-              <div class="cert-detail-label">Provider</div>
+              <div class="cert-detail-label">{% translate "Provider" %}</div>
               <div class="cert-detail-value">{{ acme.get_provider_display }}</div>
             </div>
             <div class="cert-detail-row">
-              <div class="cert-detail-label">Domain</div>
+              <div class="cert-detail-label">{% translate "Domain" %}</div>
               <div class="cert-detail-value" style="font-family: var(--font-mono);">{{ acme.domain }}</div>
             </div>
             <div class="cert-detail-row">
-              <div class="cert-detail-label">Challenge</div>
+              <div class="cert-detail-label">{% translate "Challenge" %}</div>
               <div class="cert-detail-value">{{ acme.get_challenge_type_display }}</div>
             </div>
             <div class="cert-detail-row">
-              <div class="cert-detail-label">Directory</div>
+              <div class="cert-detail-label">{% translate "Directory" %}</div>
               <div class="cert-detail-value" style="font-family: var(--font-mono);font-size:0.8125rem;word-break:break-all;">{{ acme.directory_url }}</div>
             </div>
 
             {% if acme.dns_challenge_pending %}
             <div class="proxorchestrator-card" style="margin-top:1.25rem;border-left:4px solid #f59e0b;border-radius:0 10px 10px 0;">
               <div class="card-header" style="background:#fffbeb;">
-                <i class="fas fa-exclamation-triangle" style="color:#f59e0b;"></i> DNS Record Required
+                <i class="fas fa-exclamation-triangle" style="color:#f59e0b;"></i> {% translate "DNS Record Required" %}
               </div>
               <div class="card-body">
                 <div style="font-size:0.8125rem;margin-bottom:0.75rem;">
-                  Create this DNS TXT record at your DNS provider:
+                  {% translate "Create this DNS TXT record at your DNS provider:" %}
                 </div>
                 <div style="background:#f9f9f9;padding:0.75rem;border-radius:4px;margin-bottom:0.75rem;">
-                  <div style="font-size:0.8125rem;color:#7a7a7a;">Name:</div>
-                  <div style="font-family: var(--font-mono);font-size:0.875rem;font-weight:600;margin-bottom:0.4rem;">_acme-challenge.{{ acme.domain }}</div>
-                  <div style="font-size:0.8125rem;color:#7a7a7a;">Value:</div>
+                  <div style="font-size:0.8125rem;color:#7a7a7a;">{% translate "Name:" %}</div>
+                  <div style="font-family: var(--font-mono);font-size:0.875rem;font-weight:600;margin-bottom:0.4rem;">{% blocktranslate with domain=acme.domain trimmed %}_acme-challenge.{{ domain }}{% endblocktranslate %}</div>
+                  <div style="font-size:0.8125rem;color:#7a7a7a;">{% translate "Value:" %}</div>
                   <div style="font-family: var(--font-mono);font-size:0.875rem;font-weight:600;word-break:break-all;">{{ acme.dns_txt_value }}</div>
-                  <div style="font-size:0.8125rem;color:#7a7a7a;margin-top:0.4rem;">TTL: 300 (or lowest available)</div>
+                  <div style="font-size:0.8125rem;color:#7a7a7a;margin-top:0.4rem;">{% translate "TTL: 300 (or lowest available)" %}</div>
                 </div>
                 <div style="display:flex;gap:0.5rem;">
                   <form method="post" action="{% url 'acme_dns_confirm' %}">
                     {% csrf_token %}
                     <button type="submit" class="button is-warning" style="font-weight:600;">
                       <span class="icon"><i class="fas fa-check"></i></span>
-                      <span>I've Created the DNS Record</span>
+                      <span>{% translate "I've Created the DNS Record" %}</span>
                     </button>
                   </form>
                   <form method="post" action="{% url 'acme_reset' %}">
                     {% csrf_token %}
                     <button type="submit" class="button is-light" style="font-weight:600;"
-                      onclick="return confirm('Cancel and reset ACME configuration?')">
+                      onclick="return confirm('{{ _("Cancel and reset ACME configuration?")|escapejs }}')">
                       <span class="icon"><i class="fas fa-undo"></i></span>
-                      <span>Reconfigure</span>
+                      <span>{% translate "Reconfigure" %}</span>
                     </button>
                   </form>
                 </div>
@@ -732,15 +729,15 @@
                 {% csrf_token %}
                 <button type="submit" class="button is-primary is-fullwidth" style="font-weight:600;">
                   <span class="icon"><i class="fas fa-certificate"></i></span>
-                  <span>Issue Certificate</span>
+                  <span>{% translate "Issue Certificate" %}</span>
                 </button>
               </form>
               <form method="post" action="{% url 'acme_reset' %}">
                 {% csrf_token %}
                 <button type="submit" class="button is-light" style="font-weight:600;"
-                  onclick="return confirm('Reset ACME configuration? You can then reconfigure with different settings.')">
+                  onclick="return confirm('{{ _("Reset ACME configuration? You can then reconfigure with different settings.")|escapejs }}')">
                   <span class="icon"><i class="fas fa-undo"></i></span>
-                  <span>Reconfigure</span>
+                  <span>{% translate "Reconfigure" %}</span>
                 </button>
               </form>
             </div>
@@ -756,9 +753,7 @@
             <div class="info-box" style="margin-bottom:1.25rem;">
               <div class="info-box-icon"><i class="fas fa-info-circle"></i></div>
               <div style="font-size:0.8125rem;">
-                Automate certificate issuance and renewal using the ACME protocol (RFC 8555).
-                Works with <strong>Let's Encrypt</strong> and internal enterprise certificate authorities
-                (Microsoft ADCS, Smallstep, Keyfactor, etc.).
+                {% translate "Automate certificate issuance and renewal using the ACME protocol (RFC 8555). Works with" %} <strong>{% translate "Let's Encrypt" %}</strong> {% translate "and internal enterprise certificate authorities (Microsoft ADCS, Smallstep, Keyfactor, etc.)." %}
               </div>
             </div>
 
@@ -766,93 +761,93 @@
               {% csrf_token %}
 
               <div class="field" style="margin-bottom:1.25rem;">
-                <label class="label form-label">Provider</label>
+                <label class="label form-label">{% translate "Provider" %}</label>
                 <div class="control">
                   <div class="select is-fullwidth">
                     <select name="provider" id="acme-provider" onchange="onAcmeProviderChange()">
-                      <option value="letsencrypt">Let's Encrypt</option>
-                      <option value="letsencrypt_staging">Let's Encrypt (Staging)</option>
-                      <option value="custom">Custom / Internal CA</option>
+                      <option value="letsencrypt">{% translate "Let's Encrypt" %}</option>
+                      <option value="letsencrypt_staging">{% translate "Let's Encrypt (Staging)" %}</option>
+                      <option value="custom">{% translate "Custom / Internal CA" %}</option>
                     </select>
                   </div>
                 </div>
               </div>
 
               <div class="field" id="acme-directory-field" style="margin-bottom:1.25rem;display:none;">
-                <label class="label form-label">Directory URL</label>
+                <label class="label form-label">{% translate "Directory URL" %}</label>
                 <div class="control">
                   <input class="input" type="url" name="directory_url" id="acme-directory-url"
-                         placeholder="https://your-ca.example.com/acme/directory"
+                         placeholder="{% translate "https://your-ca.example.com/acme/directory" %}"
                          style="font-family: var(--font-mono);font-size:0.875rem;">
                 </div>
-                <p class="field-hint">The ACME directory URL for your certificate authority.</p>
+                <p class="field-hint">{% translate "The ACME directory URL for your certificate authority." %}</p>
               </div>
 
               <div class="field" style="margin-bottom:1.25rem;">
                 <label class="label form-label">
-                  Domain (FQDN) <span style="color:#f14668;">*</span>
+                  {% translate "Domain (FQDN)" %} <span style="color:#f14668;">*</span>
                 </label>
                 <div class="control">
                   <input class="input" type="text" name="domain" required
-                         placeholder="proxorchestrator.example.com"
+                         placeholder="{% translate "proxorchestrator.example.com" %}"
                          style="font-family: var(--font-mono);">
                 </div>
-                <p class="field-hint">The fully qualified domain name for the certificate.</p>
+                <p class="field-hint">{% translate "The fully qualified domain name for the certificate." %}</p>
               </div>
 
               <div class="field" style="margin-bottom:1.25rem;">
-                <label class="label form-label">IP SANs</label>
+                <label class="label form-label">{% translate "IP SANs" %}</label>
                 <div class="control">
                   <input class="input" type="text" name="ip_sans"
                          placeholder="192.168.1.100, 10.0.0.5"
                          style="font-family: var(--font-mono);">
                 </div>
-                <p class="field-hint">Optional. Comma-separated IP addresses to include as Subject Alternative Names. Useful for internal CAs where the server is accessed by IP.</p>
+                <p class="field-hint">{% translate "Optional. Comma-separated IP addresses to include as Subject Alternative Names. Useful for internal CAs where the server is accessed by IP." %}</p>
               </div>
 
               <div class="field" id="acme-email-field" style="margin-bottom:1.25rem;">
                 <label class="label form-label">
-                  Email <span id="acme-email-required" style="color:#f14668;">*</span>
+                  {% translate "Email" %} <span id="acme-email-required" style="color:#f14668;">*</span>
                 </label>
                 <div class="control">
                   <input class="input" type="email" name="email" id="acme-email"
-                         placeholder="admin@example.com">
+                         placeholder="{% translate "admin@example.com" %}">
                 </div>
                 <p class="field-hint">
-                  <span id="acme-email-hint">Required by Let's Encrypt for expiry notices.</span>
+                  <span id="acme-email-hint">{% translate "Required by Let's Encrypt for expiry notices." %}</span>
                 </p>
               </div>
 
               <div class="field" style="margin-bottom:1.25rem;">
-                <label class="label form-label">Challenge Type</label>
+                <label class="label form-label">{% translate "Challenge Type" %}</label>
                 <div class="control">
                   <label class="radio" style="font-size:0.875rem;display:block;margin-bottom:0.5rem;">
                     <input type="radio" name="challenge_type" value="http-01" checked onchange="onChallengeTypeChange()">
-                    <strong>HTTP-01</strong> &mdash; Port 80 must be open to the internet. Fully automatic.
+                    <strong>{% translate "HTTP-01" %}</strong> {% translate "&mdash; Port 80 must be open to the internet. Fully automatic." %}
                   </label>
                   <label class="radio" style="font-size:0.875rem;display:block;">
                     <input type="radio" name="challenge_type" value="dns-01" onchange="onChallengeTypeChange()">
-                    <strong>DNS-01</strong> &mdash; Works on private networks. Automatic with DNS provider API.
+                    <strong>{% translate "DNS-01" %}</strong> {% translate "&mdash; Works on private networks. Automatic with DNS provider API." %}
                   </label>
                 </div>
                 <p class="field-hint" style="margin-top:0.5rem;">
-                  Some internal CAs may issue certificates without a challenge &mdash; if so, the challenge step will be skipped automatically.
+                  {% translate "Some internal CAs may issue certificates without a challenge &mdash; if so, the challenge step will be skipped automatically." %}
                 </p>
               </div>
 
               {# DNS Provider — shown when DNS-01 is selected #}
               <div id="dns-provider-section" style="display:none;margin-bottom:1.25rem;">
                 <div class="field" style="margin-bottom:1rem;">
-                  <label class="label form-label">DNS Provider</label>
+                  <label class="label form-label">{% translate "DNS Provider" %}</label>
                   <div class="control">
                     <div class="select is-fullwidth">
                       <select name="dns_provider" id="dns-provider-select" onchange="onDnsProviderChange()">
-                        <option value="cloudflare">Cloudflare</option>
-                        <option value="route53">AWS Route 53</option>
-                        <option value="azure">Azure DNS</option>
-                        <option value="godaddy">GoDaddy</option>
-                        <option value="digitalocean">DigitalOcean</option>
-                        <option value="manual">Manual (email TXT record to admins)</option>
+                        <option value="cloudflare">{% translate "Cloudflare" %}</option>
+                        <option value="route53">{% translate "AWS Route 53" %}</option>
+                        <option value="azure">{% translate "Azure DNS" %}</option>
+                        <option value="godaddy">{% translate "GoDaddy" %}</option>
+                        <option value="digitalocean">{% translate "DigitalOcean" %}</option>
+                        <option value="manual">{% translate "Manual (email TXT record to admins)" %}</option>
                       </select>
                     </div>
                   </div>
@@ -860,29 +855,29 @@
 
                 <div id="dns-api-fields">
                   <div class="field" style="margin-bottom:1rem;">
-                    <label class="label form-label" id="dns-token-label">API Token</label>
+                    <label class="label form-label" id="dns-token-label">{% translate "API Token" %}</label>
                     <div class="control">
                       <input class="input" type="password" name="dns_api_token"
-                             placeholder="Your API token" style="font-family: var(--font-mono);">
+                             placeholder="{% translate "Your API token" %}" style="font-family: var(--font-mono);">
                     </div>
-                    <p class="field-hint" id="dns-token-hint">API token with DNS edit permissions.</p>
+                    <p class="field-hint" id="dns-token-hint">{% translate "API token with DNS edit permissions." %}</p>
                   </div>
 
                   <div class="field" id="dns-secret-field" style="margin-bottom:1rem;display:none;">
-                    <label class="label form-label" id="dns-secret-label">API Secret</label>
+                    <label class="label form-label" id="dns-secret-label">{% translate "API Secret" %}</label>
                     <div class="control">
                       <input class="input" type="password" name="dns_api_secret"
-                             placeholder="API secret key" style="font-family: var(--font-mono);">
+                             placeholder="{% translate "API secret key" %}" style="font-family: var(--font-mono);">
                     </div>
                   </div>
 
                   <div class="field" id="dns-zone-field" style="margin-bottom:1rem;">
-                    <label class="label form-label" id="dns-zone-label">Zone ID</label>
+                    <label class="label form-label" id="dns-zone-label">{% translate "Zone ID" %}</label>
                     <div class="control">
                       <input class="input" type="text" name="dns_zone_id"
                              placeholder="" id="dns-zone-input" style="font-family: var(--font-mono);">
                     </div>
-                    <p class="field-hint" id="dns-zone-hint">Optional — auto-detected if not provided.</p>
+                    <p class="field-hint" id="dns-zone-hint">{% translate "Optional — auto-detected if not provided." %}</p>
                   </div>
                 </div>
               </div>
@@ -891,20 +886,20 @@
               <div class="form-section-header" style="cursor:pointer;margin-bottom:0;">
                 <span style="font-size:0.875rem;font-weight:600;color:#4a4a4a;">
                   <i class="fas fa-chevron-down section-toggle-icon" style="margin-right:0.4rem;font-size:0.75rem;"></i>
-                  Advanced (Internal CA Options)
+                  {% translate "Advanced (Internal CA Options)" %}
                 </span>
               </div>
               <div class="form-section-body" id="acme-advanced" style="padding-top:1rem;">
                 <div class="field" style="margin-bottom:1rem;">
-                  <label class="label form-label">CA Certificate</label>
+                  <label class="label form-label">{% translate "CA Certificate" %}</label>
                   <div style="display:flex;gap:0.5rem;margin-bottom:0.75rem;">
                     <button type="button" id="ca-mode-upload" class="button is-small is-primary" onclick="setCaBundleMode('upload')" style="font-weight:600;">
                       <span class="icon is-small"><i class="fas fa-upload"></i></span>
-                      <span>Upload File</span>
+                      <span>{% translate "Upload File" %}</span>
                     </button>
                     <button type="button" id="ca-mode-paste" class="button is-small is-light" onclick="setCaBundleMode('paste')" style="font-weight:600;">
                       <span class="icon is-small"><i class="fas fa-paste"></i></span>
-                      <span>Paste PEM</span>
+                      <span>{% translate "Paste PEM" %}</span>
                     </button>
                   </div>
                   <div id="ca-bundle-upload">
@@ -915,9 +910,9 @@
                             onchange="this.closest('.file').querySelector('.file-name').textContent = this.files[0].name">
                           <span class="file-cta">
                             <span class="file-icon"><i class="fas fa-upload"></i></span>
-                            <span class="file-label">Choose file</span>
+                            <span class="file-label">{% translate "Choose file" %}</span>
                           </span>
-                          <span class="file-name">No file selected</span>
+                          <span class="file-name">{% translate "No file selected" %}</span>
                         </label>
                       </div>
                     </div>
@@ -929,24 +924,24 @@
                         style="font-family: var(--font-mono);font-size:0.8125rem;resize:vertical;"></textarea>
                     </div>
                   </div>
-                  <p class="field-hint" style="margin-top:0.5rem;">Root or intermediate CA certificate for verifying the ACME server's TLS. Only needed for internal CAs with private root certificates.</p>
+                  <p class="field-hint" style="margin-top:0.5rem;">{% translate "Root or intermediate CA certificate for verifying the ACME server's TLS. Only needed for internal CAs with private root certificates." %}</p>
                 </div>
 
                 <div class="field">
                   <label class="checkbox" style="font-size:0.875rem;">
                     <input type="checkbox" name="skip_tls_verify">
-                    Skip TLS verification
+                    {% translate "Skip TLS verification" %}
                   </label>
                   <p class="field-hint" style="margin-top:0.3rem;">
                     <i class="fas fa-exclamation-triangle" style="color:#f59e0b;margin-right:0.3rem;"></i>
-                    Only use for testing. Disables TLS verification for the ACME server connection.
+                    {% translate "Only use for testing. Disables TLS verification for the ACME server connection." %}
                   </p>
                 </div>
               </div>
 
               <button type="submit" class="button is-primary is-fullwidth" style="font-weight:600;margin-top:1.25rem;">
                 <span class="icon"><i class="fas fa-user-plus"></i></span>
-                <span>Configure &amp; Register</span>
+                <span>{% translate "Configure &amp; Register" %}</span>
               </button>
             </form>
 
@@ -1047,34 +1042,34 @@ function onDnsProviderChange() {
   zoneField.style.display = '';
 
   if (provider === 'cloudflare') {
-    tokenLabel.textContent = 'API Token';
-    tokenHint.textContent = 'Cloudflare API token with Zone:DNS:Edit permission.';
-    zoneLabel.textContent = 'Zone ID';
-    zoneHint.textContent = 'Optional — auto-detected from domain if not provided.';
+    tokenLabel.textContent = '{{ _("API Token")|escapejs }}';
+    tokenHint.textContent = '{{ _("Cloudflare API token with Zone:DNS:Edit permission.")|escapejs }}';
+    zoneLabel.textContent = '{{ _("Zone ID")|escapejs }}';
+    zoneHint.textContent = '{{ _("Optional — auto-detected from domain if not provided.")|escapejs }}';
     zoneInput.placeholder = 'e.g. 1234567890abcdef';
   } else if (provider === 'route53') {
-    tokenLabel.textContent = 'AWS Access Key ID';
-    tokenHint.textContent = 'IAM user access key with Route 53 permissions.';
+    tokenLabel.textContent = '{{ _("AWS Access Key ID")|escapejs }}';
+    tokenHint.textContent = '{{ _("IAM user access key with Route 53 permissions.")|escapejs }}';
     secretField.style.display = '';
-    document.getElementById('dns-secret-label').textContent = 'AWS Secret Access Key';
-    zoneLabel.textContent = 'Hosted Zone ID';
-    zoneHint.textContent = 'Required. Found in the Route 53 console.';
+    document.getElementById('dns-secret-label').textContent = '{{ _("AWS Secret Access Key")|escapejs }}';
+    zoneLabel.textContent = '{{ _("Hosted Zone ID")|escapejs }}';
+    zoneHint.textContent = '{{ _("Required. Found in the Route 53 console.")|escapejs }}';
     zoneInput.placeholder = 'e.g. Z1234567890ABC';
   } else if (provider === 'azure') {
-    tokenLabel.textContent = 'Bearer Token';
-    tokenHint.textContent = 'Azure AD service principal token with DNS Contributor role.';
-    zoneLabel.textContent = 'DNS Zone Resource ID';
-    zoneHint.textContent = 'Full resource ID: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/dnsZones/{zone}';
+    tokenLabel.textContent = '{{ _("Bearer Token")|escapejs }}';
+    tokenHint.textContent = '{{ _("Azure AD service principal token with DNS Contributor role.")|escapejs }}';
+    zoneLabel.textContent = '{{ _("DNS Zone Resource ID")|escapejs }}';
+    zoneHint.textContent = '{{ _("Full resource ID: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/dnsZones/{zone}")|escapejs }}';
     zoneInput.placeholder = '/subscriptions/...';
   } else if (provider === 'godaddy') {
-    tokenLabel.textContent = 'API Key';
-    tokenHint.textContent = 'GoDaddy API key from developer.godaddy.com.';
+    tokenLabel.textContent = '{{ _("API Key")|escapejs }}';
+    tokenHint.textContent = '{{ _("GoDaddy API key from developer.godaddy.com.")|escapejs }}';
     secretField.style.display = '';
-    document.getElementById('dns-secret-label').textContent = 'API Secret';
+    document.getElementById('dns-secret-label').textContent = '{{ _("API Secret")|escapejs }}';
     zoneField.style.display = 'none';
   } else if (provider === 'digitalocean') {
-    tokenLabel.textContent = 'Personal Access Token';
-    tokenHint.textContent = 'DigitalOcean token with read/write scope.';
+    tokenLabel.textContent = '{{ _("Personal Access Token")|escapejs }}';
+    tokenHint.textContent = '{{ _("DigitalOcean token with read/write scope.")|escapejs }}';
     zoneField.style.display = 'none';
   }
 }
@@ -1091,12 +1086,12 @@ function onAcmeProviderChange() {
     dirField.style.display = '';
     emailRequired.style.display = 'none';
     emailInput.removeAttribute('required');
-    emailHint.textContent = 'Optional for internal CAs.';
+    emailHint.textContent = '{{ _("Optional for internal CAs.")|escapejs }}';
   } else {
     dirField.style.display = 'none';
     emailRequired.style.display = '';
     emailInput.setAttribute('required', '');
-    emailHint.textContent = 'Required by Let\'s Encrypt for expiry notices.';
+    emailHint.textContent = '{{ _("Required by Let’s Encrypt for expiry notices.")|escapejs }}';
   }
 }
 </script>

@@ -4,6 +4,7 @@ import re
 
 from django import forms
 from django.core.validators import RegexValidator
+from django.utils.translation import gettext_lazy
 
 logger = logging.getLogger(__name__)
 
@@ -36,82 +37,82 @@ vm_name_validator = RegexValidator(
 ALLOWED_EXTENSIONS = {".qcow2", ".vmdk", ".vhd", ".vhdx", ".raw", ".img", ".ova"}
 
 CPU_TYPE_CHOICES = [
-    ("host", "host"),
-    ("max", "max"),
-    ("kvm64", "kvm64"),
+    ("host", gettext_lazy("host")),
+    ("max", gettext_lazy("max")),
+    ("kvm64", gettext_lazy("kvm64")),
     ("x86-64-v2", "x86-64-v2"),
-    ("x86-64-v2-AES", "x86-64-v2-AES"),
+    ("x86-64-v2-AES", gettext_lazy("x86-64-v2-AES")),
     ("x86-64-v3", "x86-64-v3"),
     ("x86-64-v4", "x86-64-v4"),
-    ("qemu64", "qemu64"),
-    ("Nehalem", "Nehalem"),
-    ("Westmere", "Westmere"),
-    ("SandyBridge", "SandyBridge"),
-    ("IvyBridge", "IvyBridge"),
-    ("Haswell", "Haswell"),
-    ("Broadwell", "Broadwell"),
-    ("Skylake-Client", "Skylake-Client"),
-    ("Skylake-Server", "Skylake-Server"),
-    ("Cascadelake-Server", "Cascadelake-Server"),
-    ("Icelake-Server", "Icelake-Server"),
-    ("EPYC", "EPYC"),
-    ("EPYC-v2", "EPYC-v2"),
-    ("EPYC-v3", "EPYC-v3"),
-    ("EPYC-v4", "EPYC-v4"),
-    ("EPYC-Rome", "EPYC-Rome"),
-    ("EPYC-Milan", "EPYC-Milan"),
+    ("qemu64", gettext_lazy("qemu64")),
+    ("Nehalem", gettext_lazy("Nehalem")),
+    ("Westmere", gettext_lazy("Westmere")),
+    ("SandyBridge", gettext_lazy("SandyBridge")),
+    ("IvyBridge", gettext_lazy("IvyBridge")),
+    ("Haswell", gettext_lazy("Haswell")),
+    ("Broadwell", gettext_lazy("Broadwell")),
+    ("Skylake-Client", gettext_lazy("Skylake-Client")),
+    ("Skylake-Server", gettext_lazy("Skylake-Server")),
+    ("Cascadelake-Server", gettext_lazy("Cascadelake-Server")),
+    ("Icelake-Server", gettext_lazy("Icelake-Server")),
+    ("EPYC", gettext_lazy("EPYC")),
+    ("EPYC-v2", gettext_lazy("EPYC-v2")),
+    ("EPYC-v3", gettext_lazy("EPYC-v3")),
+    ("EPYC-v4", gettext_lazy("EPYC-v4")),
+    ("EPYC-Rome", gettext_lazy("EPYC-Rome")),
+    ("EPYC-Milan", gettext_lazy("EPYC-Milan")),
 ]
 
 OS_TYPE_CHOICES = [
-    ("l26", "Linux 6.x / 5.x"),
-    ("l24", "Linux 4.x"),
-    ("win11", "Windows 11"),
-    ("win10", "Windows 10/2022"),
-    ("win2k19", "Windows 2019"),
-    ("win2k8", "Windows 2008/Vista"),
-    ("other", "Other"),
+    ("l26", gettext_lazy("Linux 6.x / 5.x")),
+    ("l24", gettext_lazy("Linux 4.x")),
+    ("win11", gettext_lazy("Windows 11")),
+    ("win10", gettext_lazy("Windows 10/2022")),
+    ("win2k19", gettext_lazy("Windows 2019")),
+    ("win2k8", gettext_lazy("Windows 2008/Vista")),
+    ("other", gettext_lazy("Other")),
 ]
 
 BIOS_CHOICES = [
-    ("seabios", "SeaBIOS (legacy)"),
-    ("ovmf", "UEFI (OVMF)"),
+    ("seabios", gettext_lazy("SeaBIOS (legacy)")),
+    ("ovmf", gettext_lazy("UEFI (OVMF)")),
 ]
 
 MACHINE_TYPE_CHOICES = [
-    ("pc", "i440FX (legacy)"),
-    ("q35", "Q35 (modern, PCIe)"),
+    ("pc", gettext_lazy("i440FX (legacy)")),
+    ("q35", gettext_lazy("Q35 (modern, PCIe)")),
 ]
 
 DISK_BUS_CHOICES = [
-    ("scsi", "VirtIO-SCSI (recommended)"),
-    ("virtio", "VirtIO Block"),
-    ("sata", "SATA"),
-    ("ide", "IDE"),
+    ("scsi", gettext_lazy("VirtIO-SCSI (recommended)")),
+    ("virtio", gettext_lazy("VirtIO Block")),
+    ("sata", gettext_lazy("SATA")),
+    ("ide", gettext_lazy("IDE")),
 ]
 
 DISK_CACHE_CHOICES = [
-    ("none", "No cache"),
-    ("writeback", "Write back"),
-    ("writethrough", "Write through"),
-    ("directsync", "Direct sync"),
-    ("unsafe", "Unsafe"),
+    ("none", gettext_lazy("No cache")),
+    ("writeback", gettext_lazy("Write back")),
+    ("writethrough", gettext_lazy("Write through")),
+    ("directsync", gettext_lazy("Direct sync")),
+    ("unsafe", gettext_lazy("Unsafe")),
 ]
 
 NET_MODEL_CHOICES = [
-    ("virtio", "VirtIO (recommended)"),
-    ("e1000", "Intel E1000"),
-    ("e1000e", "Intel E1000e"),
-    ("vmxnet3", "VMware vmxnet3"),
-    ("rtl8139", "Realtek RTL8139"),
+    ("virtio", gettext_lazy("VirtIO (recommended)")),
+    ("e1000", gettext_lazy("Intel E1000")),
+    ("e1000e", gettext_lazy("Intel E1000e")),
+    ("vmxnet3", gettext_lazy("VMware vmxnet3")),
+    ("rtl8139", gettext_lazy("Realtek RTL8139")),
 ]
 
 VGA_TYPE_CHOICES = [
-    ("std", "Standard"),
-    ("virtio", "VirtIO"),
-    ("vmware", "VMware"),
-    ("qxl", "SPICE/QXL"),
-    ("cirrus", "Cirrus"),
-    ("none", "None"),
+    ("std", gettext_lazy("Standard")),
+    ("virtio", gettext_lazy("VirtIO")),
+    ("vmware", gettext_lazy("VMware")),
+    ("qxl", gettext_lazy("SPICE/QXL")),
+    ("cirrus", gettext_lazy("Cirrus")),
+    ("none", gettext_lazy("None")),
 ]
 
 
@@ -462,13 +463,13 @@ class UploadForm(forms.Form):
     """Disk image upload form."""
 
     disk_image = forms.FileField(
-        label="Disk Image",
+        label=gettext_lazy("Disk Image"),
         widget=forms.FileInput(
             attrs={
                 "accept": ".qcow2,.vmdk,.vhd,.vhdx,.raw,.img,.ova",
             }
         ),
-        help_text="Supported formats: qcow2, vmdk, vhd, vhdx, raw, img, ova",
+        help_text=gettext_lazy("Supported formats: qcow2, vmdk, vhd, vhdx, raw, img, ova"),
     )
 
     def clean_disk_image(self):
@@ -488,138 +489,138 @@ class VMConfigForm(forms.Form):
     # --- General ---
     vm_name = forms.CharField(
         max_length=63,
-        label="VM Name",
+        label=gettext_lazy("VM Name"),
         validators=[vm_name_validator],
         widget=forms.TextInput(attrs={"placeholder": "my-server"}),
-        help_text="Letters, numbers, and hyphens only.",
+        help_text=gettext_lazy("Letters, numbers, and hyphens only."),
     )
     vmid = forms.IntegerField(
         required=False,
-        label="VMID",
+        label=gettext_lazy("VMID"),
         min_value=100,
         max_value=999999999,
-        help_text="Leave blank to auto-assign from pool.",
+        help_text=gettext_lazy("Leave blank to auto-assign from pool."),
     )
     node = forms.ChoiceField(
-        label="Proxmox Node",
+        label=gettext_lazy("Proxmox Node"),
         choices=[],
     )
     description = forms.CharField(
         widget=forms.Textarea(attrs={"rows": 3}),
         required=False,
-        label="Description",
+        label=gettext_lazy("Description"),
     )
     os_type = forms.ChoiceField(
         choices=OS_TYPE_CHOICES,
-        label="OS Type",
+        label=gettext_lazy("OS Type"),
         initial="l26",
     )
 
     # --- Firmware ---
     machine = forms.ChoiceField(
         choices=MACHINE_TYPE_CHOICES,
-        label="Machine Type",
+        label=gettext_lazy("Machine Type"),
         initial="pc",
     )
     bios = forms.ChoiceField(
         choices=BIOS_CHOICES,
-        label="BIOS Type",
+        label=gettext_lazy("BIOS Type"),
         initial="seabios",
     )
     efi_disk = forms.BooleanField(
         required=False,
-        label="Add EFI Disk",
-        help_text="Required when using UEFI/OVMF.",
+        label=gettext_lazy("Add EFI Disk"),
+        help_text=gettext_lazy("Required when using UEFI/OVMF."),
     )
     secure_boot_keys = forms.BooleanField(
         required=False,
-        label="Enroll Secure Boot Keys",
+        label=gettext_lazy("Enroll Secure Boot Keys"),
     )
     tpm = forms.BooleanField(
         required=False,
-        label="Add TPM 2.0 State Drive",
+        label=gettext_lazy("Add TPM 2.0 State Drive"),
     )
     start_on_boot = forms.BooleanField(
         required=False,
-        label="Start on Boot",
+        label=gettext_lazy("Start on Boot"),
     )
 
     # --- CPU ---
     cpu_type = forms.ChoiceField(
         choices=CPU_TYPE_CHOICES,
-        label="CPU Type",
+        label=gettext_lazy("CPU Type"),
         initial="host",
     )
     sockets = forms.IntegerField(
         initial=1,
-        label="CPU Sockets",
+        label=gettext_lazy("CPU Sockets"),
         min_value=1,
         max_value=8,
     )
     cores = forms.IntegerField(
         initial=2,
-        label="CPU Cores (per socket)",
+        label=gettext_lazy("CPU Cores (per socket)"),
         min_value=1,
         max_value=256,
     )
     numa = forms.BooleanField(
         required=False,
-        label="Enable NUMA",
+        label=gettext_lazy("Enable NUMA"),
     )
 
     # --- Memory ---
     memory_mb = forms.IntegerField(
         initial=2048,
-        label="Memory (MB)",
+        label=gettext_lazy("Memory (MB)"),
         min_value=64,
     )
     ballooning = forms.BooleanField(
         required=False,
-        label="Enable Memory Ballooning",
+        label=gettext_lazy("Enable Memory Ballooning"),
         initial=False,
     )
     balloon_min_mb = forms.IntegerField(
         required=False,
-        label="Balloon Minimum (MB)",
+        label=gettext_lazy("Balloon Minimum (MB)"),
         min_value=0,
-        help_text="Minimum memory with ballooning enabled.",
+        help_text=gettext_lazy("Minimum memory with ballooning enabled."),
     )
 
     # --- Primary Disk ---
     disk_bus = forms.ChoiceField(
         choices=DISK_BUS_CHOICES,
-        label="Disk Bus / Controller",
+        label=gettext_lazy("Disk Bus / Controller"),
         initial="scsi",
     )
     storage_pool = forms.ChoiceField(
-        label="Storage Pool",
+        label=gettext_lazy("Storage Pool"),
         choices=[],
     )
     disk_cache = forms.ChoiceField(
         choices=DISK_CACHE_CHOICES,
-        label="Disk Cache Mode",
+        label=gettext_lazy("Disk Cache Mode"),
         initial="none",
     )
     disk_iothread = forms.BooleanField(
         required=False,
-        label="Enable I/O Thread",
+        label=gettext_lazy("Enable I/O Thread"),
         initial=True,
-        help_text="Recommended for VirtIO-SCSI.",
+        help_text=gettext_lazy("Recommended for VirtIO-SCSI."),
     )
     disk_discard = forms.BooleanField(
         required=False,
-        label="Enable Discard (TRIM)",
+        label=gettext_lazy("Enable Discard (TRIM)"),
     )
     disk_ssd = forms.BooleanField(
         required=False,
-        label="Emulate SSD",
+        label=gettext_lazy("Emulate SSD"),
     )
     keep_converted_image = forms.BooleanField(
         required=False,
         initial=False,
-        label="Keep the converted image on Proxmox for reuse",
-        help_text="Leaves a copy in the Proxmox temp directory (as large as the disk) "
-                  "so it can be imported again from Storage. Off by default.",
+        label=gettext_lazy("Keep the converted image on Proxmox for reuse"),
+        help_text=gettext_lazy("Leaves a copy in the Proxmox temp directory (as large as the disk) "
+                  "so it can be imported again from Storage. Off by default."),
     )
 
     # Extra disks (JSON array serialized by JS: [{storage, size_gb}, ...])
@@ -630,42 +631,42 @@ class VMConfigForm(forms.Form):
 
     # --- Network ---
     net_bridge = forms.ChoiceField(
-        label="Network Bridge",
+        label=gettext_lazy("Network Bridge"),
         choices=[],
     )
     net_model = forms.ChoiceField(
         choices=NET_MODEL_CHOICES,
-        label="Network Model",
+        label=gettext_lazy("Network Model"),
         initial="virtio",
     )
     net_vlan = forms.IntegerField(
         required=False,
-        label="VLAN Tag",
+        label=gettext_lazy("VLAN Tag"),
         min_value=1,
         max_value=4094,
-        help_text="Leave blank for untagged.",
+        help_text=gettext_lazy("Leave blank for untagged."),
     )
     net_firewall = forms.BooleanField(
         required=False,
-        label="Enable Proxmox Firewall",
+        label=gettext_lazy("Enable Proxmox Firewall"),
     )
     net_mac = forms.CharField(
         max_length=17,
         required=False,
-        label="MAC Address",
-        help_text="Leave blank to auto-generate. Format: AA:BB:CC:DD:EE:FF",
+        label=gettext_lazy("MAC Address"),
+        help_text=gettext_lazy("Leave blank to auto-generate. Format: AA:BB:CC:DD:EE:FF"),
     )
 
     # --- Display ---
     vga_type = forms.ChoiceField(
         choices=VGA_TYPE_CHOICES,
-        label="Display Type",
+        label=gettext_lazy("Display Type"),
         initial="std",
     )
     vga_memory = forms.IntegerField(
         required=False,
         initial=16,
-        label="Display Memory (MB)",
+        label=gettext_lazy("Display Memory (MB)"),
         min_value=4,
         max_value=512,
     )
@@ -673,20 +674,20 @@ class VMConfigForm(forms.Form):
     # --- Agent / Misc ---
     qemu_agent = forms.BooleanField(
         required=False,
-        label="Enable QEMU Guest Agent",
+        label=gettext_lazy("Enable QEMU Guest Agent"),
     )
     tablet = forms.BooleanField(
         required=False,
-        label="Enable USB Tablet (for VNC pointer sync)",
+        label=gettext_lazy("Enable USB Tablet (for VNC pointer sync)"),
     )
     serial_port = forms.BooleanField(
         required=False,
-        label="Add Serial Port (socket)",
-        help_text="Required for some appliances (e.g. Cisco Expressway install wizard).",
+        label=gettext_lazy("Add Serial Port (socket)"),
+        help_text=gettext_lazy("Required for some appliances (e.g. Cisco Expressway install wizard)."),
     )
     protection = forms.BooleanField(
         required=False,
-        label="Enable VM Protection (prevents accidental deletion)",
+        label=gettext_lazy("Enable VM Protection (prevents accidental deletion)"),
     )
     start_after_import = forms.BooleanField(required=False)
     virtio_iso_ref = forms.CharField(required=False, max_length=500)
@@ -700,7 +701,7 @@ class VMConfigForm(forms.Form):
     ci_ssh_keys = forms.CharField(required=False, widget=forms.Textarea(attrs={"rows": 3}))
     ci_ip_config = forms.ChoiceField(
         required=False,
-        choices=[("dhcp", "DHCP"), ("static", "Static"), ("none", "None")],
+        choices=[("dhcp", gettext_lazy("DHCP")), ("static", gettext_lazy("Static")), ("none", gettext_lazy("None"))],
         initial="dhcp",
     )
     ci_ip_address = forms.CharField(required=False, max_length=50, help_text="e.g. 192.168.1.100/24")

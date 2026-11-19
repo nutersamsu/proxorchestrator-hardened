@@ -1,8 +1,9 @@
+{% load i18n %}
 {% if acme.issuing_in_progress %}
   <div class="proxorchestrator-card" style="margin-top:1.25rem;border-left:4px solid #3273dc;border-radius:0 10px 10px 0;"
        hx-get="{% url 'acme_status' %}?poll=1" hx-trigger="every 3s" hx-target="#acme-status-area" hx-swap="innerHTML">
     <div class="card-header" style="background:#eff6ff;">
-      <i class="fas fa-spinner fa-spin" style="color:#3273dc;"></i> Certificate Issuance In Progress
+      <i class="fas fa-spinner fa-spin" style="color:#3273dc;"></i> {% translate "Certificate Issuance In Progress" %}
     </div>
     <div class="card-body">
       <div style="font-size:0.875rem;color:#4a4a4a;">
@@ -15,19 +16,19 @@
 {% elif is_poll and acme.is_enabled and acme.last_renewed_at %}
   <div class="proxorchestrator-card" style="margin-top:1.25rem;border-left:4px solid #48c78e;border-radius:0 10px 10px 0;">
     <div class="card-header" style="background:#f0fdf4;">
-      <i class="fas fa-check-circle" style="color:#48c78e;"></i> Certificate Issued Successfully
+      <i class="fas fa-check-circle" style="color:#48c78e;"></i> {% translate "Certificate Issued Successfully" %}
     </div>
     <div class="card-body">
       <div style="font-size:0.875rem;color:#257953;">
-        Certificate installed and nginx reloaded.
-        {% if cert_days_remaining %} Expires in {{ cert_days_remaining }} days.{% endif %}
+        {% translate "Certificate installed and nginx reloaded." %}
+        {% if cert_days_remaining %} {% blocktranslate trimmed %}Expires in {{ cert_days_remaining }} days.{% endblocktranslate %}{% endif %}
       </div>
       <p style="font-size:0.8125rem;color:#7a7a7a;margin-top:0.5rem;">
-        Renewed: {{ acme.last_renewed_at|date:"N j, Y g:i A" }}
+        {% blocktranslate with last_renewed_at=acme.last_renewed_at|date:"N j, Y g:i A" trimmed %}Renewed: {{ last_renewed_at }}{% endblocktranslate %}
       </p>
       <p style="font-size:0.8125rem;color:#7a7a7a;margin-top:0.5rem;">
         <i class="fas fa-sync-alt" style="margin-right:0.3rem;"></i>
-        Page will refresh in <strong><span id="acme-countdown">10</span></strong> seconds...
+        {% translate "Page will refresh in" %} <strong><span id="acme-countdown">10</span></strong> {% translate "seconds..." %}
       </p>
     </div>
   </div>
@@ -49,7 +50,7 @@
 {% elif acme.last_renewal_error %}
   <div class="proxorchestrator-card" style="margin-top:1.25rem;border-left:4px solid #f14668;border-radius:0 10px 10px 0;">
     <div class="card-header" style="background:#fef2f2;">
-      <i class="fas fa-times-circle" style="color:#f14668;"></i> Certificate Issuance Failed
+      <i class="fas fa-times-circle" style="color:#f14668;"></i> {% translate "Certificate Issuance Failed" %}
     </div>
     <div class="card-body">
       <div style="font-size:0.875rem;color:#cc0f35;">

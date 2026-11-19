@@ -1,7 +1,8 @@
 {% extends "base.html" %}
-{% block title %}Container Inventory — ProxOrchestrator{% endblock %}
-{% block page_title %}Container Inventory{% endblock %}
-{% block help_slug %}lxc{% endblock %}
+{% load i18n %}
+{% block title %}{% translate "Container Inventory — ProxOrchestrator" %}{% endblock %}
+{% block page_title %}{% translate "Container Inventory" %}{% endblock %}
+{% block help_slug %}{% translate "lxc" %}{% endblock %}
 
 {% block extra_head %}
 <style>
@@ -23,7 +24,7 @@
           hx-indicator="#refresh-spinner">
     <span id="refresh-spinner" class="htmx-indicator spinner" style="margin-right: 0.3rem;"></span>
     <span class="icon is-small"><i class="fas fa-sync-alt"></i></span>
-    <span>Refresh</span>
+    <span>{% translate "Refresh" %}</span>
   </button>
 {% endblock %}
 
@@ -36,7 +37,7 @@
       <div class="stat-card-icon is-blue"><i class="fas fa-cube"></i></div>
       <div>
         <div class="stat-card-value">{{ total_count|default:0 }}</div>
-        <div class="stat-card-label">Total Containers</div>
+        <div class="stat-card-label">{% translate "Total Containers" %}</div>
       </div>
     </div>
   </div>
@@ -45,7 +46,7 @@
       <div class="stat-card-icon is-green"><i class="fas fa-play-circle"></i></div>
       <div>
         <div class="stat-card-value">{{ running_count|default:0 }}</div>
-        <div class="stat-card-label">Running</div>
+        <div class="stat-card-label">{% translate "Running" %}</div>
       </div>
     </div>
   </div>
@@ -54,7 +55,7 @@
       <div class="stat-card-icon is-red"><i class="fas fa-stop-circle"></i></div>
       <div>
         <div class="stat-card-value">{{ stopped_count|default:0 }}</div>
-        <div class="stat-card-label">Stopped</div>
+        <div class="stat-card-label">{% translate "Stopped" %}</div>
       </div>
     </div>
   </div>
@@ -69,16 +70,16 @@
      hx-indicator="#refresh-spinner"
      hx-disinherit="hx-select">
   <div class="card-header">
-    <i class="fas fa-cube" style="color: var(--link-color);"></i> Container Inventory
+    <i class="fas fa-cube" style="color: var(--link-color);"></i> {% translate "Container Inventory" %}
     {% if node_name %}
       <span style="font-weight: 400;color: var(--text-muted);font-size: 0.8125rem;margin-left: 0.5rem;">
-        on <strong>{{ node_name }}</strong>
+        {% translate "on" %} <strong>{{ node_name }}</strong>
       </span>
     {% endif %}
     <div style="margin-left: auto;">
       <div class="control has-icons-left" style="font-size: 0.875rem;">
         <input id="ct-filter-input" class="input is-small" type="text"
-               placeholder="Filter by name or ID…"
+               placeholder="{% translate "Filter by name or ID…" %}"
                value="{{ search_query }}"
                autocomplete="off"
                style="min-width: 220px;">
@@ -96,22 +97,22 @@
       <table class="table vm-table is-fullwidth" style="margin: 0;">
         <thead>
           <tr>
-            <th>CTID</th>
-            <th>Name</th>
-            <th>Status</th>
-            <th>IP Address</th>
-            <th>CPU</th>
-            <th>RAM</th>
-            <th>Uptime</th>
-            <th>Node</th>
-            <th style="text-align: right;">Actions</th>
+            <th>{% translate "CTID" %}</th>
+            <th>{% translate "Name" %}</th>
+            <th>{% translate "Status" %}</th>
+            <th>{% translate "IP Address" %}</th>
+            <th>{% translate "CPU" %}</th>
+            <th>{% translate "RAM" %}</th>
+            <th>{% translate "Uptime" %}</th>
+            <th>{% translate "Node" %}</th>
+            <th style="text-align: right;">{% translate "Actions" %}</th>
           </tr>
         </thead>
         <tbody id="ct-tbody">
           <tr id="ct-empty-row" style="display: none;">
             <td colspan="9" style="text-align: center;padding: 2rem;color: var(--text-muted);font-size: 0.875rem;">
               <i class="fas fa-search" style="margin-right: 0.4rem;"></i>
-              No containers matched your filter. <a href="#" onclick="document.getElementById('ct-filter-input').value='';applyCtFilter();return false;">Clear</a>
+              {% translate "No containers matched your filter." %} <a href="#" onclick="document.getElementById('ct-filter-input').value='';applyCtFilter();return false;">{% translate "Clear" %}</a>
             </td>
           </tr>
           {% for ct in containers %}
@@ -122,9 +123,9 @@
             </td>
             <td style="vertical-align: middle;">
               {% if ct.status == 'running' %}
-                <span class="status-badge vm-status-running">Running</span>
+                <span class="status-badge vm-status-running">{% translate "Running" %}</span>
               {% elif ct.status == 'stopped' %}
-                <span class="status-badge vm-status-stopped">Stopped</span>
+                <span class="status-badge vm-status-stopped">{% translate "Stopped" %}</span>
               {% else %}
                 <span class="status-badge vm-status-unknown">{{ ct.status }}</span>
               {% endif %}
@@ -141,7 +142,7 @@
                 {% if ct.status == 'running' %}
                   {{ ct.cpu_pct|floatformat:1 }}%
                 {% else %}
-                  {{ ct.cpus|default:"—" }}{% if ct.cpus %} cores{% endif %}
+                  {{ ct.cpus|default:"—" }}{% if ct.cpus %} {% translate "cores" %}{% endif %}
                 {% endif %}
               </span>
             </td>
@@ -177,49 +178,49 @@
                            hx-post="/lxc/{{ ct.vmid }}/action/shutdown/"
                            hx-target="#ct-row-{{ ct.vmid }}"
                            hx-swap="outerHTML"
-                           hx-confirm="Gracefully shut down {{ ct.name }}?">
-                          <i class="fas fa-power-off" style="width: 1.2rem;color: var(--warning-color);"></i> Shutdown
+                           hx-confirm="{% blocktranslate with name=ct.name trimmed %}Gracefully shut down {{ name }}?{% endblocktranslate %}">
+                          <i class="fas fa-power-off" style="width: 1.2rem;color: var(--warning-color);"></i> {% translate "Shutdown" %}
                         </a>
                         <a class="dropdown-item" style="font-size: 0.8125rem;"
                            hx-post="/lxc/{{ ct.vmid }}/action/stop/"
                            hx-target="#ct-row-{{ ct.vmid }}"
                            hx-swap="outerHTML"
-                           hx-confirm="Force stop {{ ct.name }}? Unsaved data may be lost.">
-                          <i class="fas fa-stop" style="width: 1.2rem;color: var(--danger-color);"></i> Force Stop
+                           hx-confirm="{% blocktranslate with name=ct.name trimmed %}Force stop {{ name }}? Unsaved data may be lost.{% endblocktranslate %}">
+                          <i class="fas fa-stop" style="width: 1.2rem;color: var(--danger-color);"></i> {% translate "Force Stop" %}
                         </a>
                         <a class="dropdown-item" style="font-size: 0.8125rem;"
                            hx-post="/lxc/{{ ct.vmid }}/action/reboot/"
                            hx-target="#ct-row-{{ ct.vmid }}"
                            hx-swap="outerHTML"
-                           hx-confirm="Reboot {{ ct.name }}?">
-                          <i class="fas fa-redo" style="width: 1.2rem;color: var(--link-color);"></i> Reboot
+                           hx-confirm="{% blocktranslate with name=ct.name trimmed %}Reboot {{ name }}?{% endblocktranslate %}">
+                          <i class="fas fa-redo" style="width: 1.2rem;color: var(--link-color);"></i> {% translate "Reboot" %}
                         </a>
                         <a class="dropdown-item" href="{% url 'lxc_console' ct.vmid %}" target="_blank" style="font-size: 0.8125rem;">
-                          <i class="fas fa-terminal" style="width: 1.2rem;color: var(--text-header);"></i> Console
+                          <i class="fas fa-terminal" style="width: 1.2rem;color: var(--text-header);"></i> {% translate "Console" %}
                         </a>
                       {% elif ct.status == 'stopped' %}
                         <a class="dropdown-item" style="font-size: 0.8125rem;"
                            hx-post="/lxc/{{ ct.vmid }}/action/start/"
                            hx-target="#ct-row-{{ ct.vmid }}"
                            hx-swap="outerHTML">
-                          <i class="fas fa-play" style="width: 1.2rem;color: var(--success-color);"></i> Start
+                          <i class="fas fa-play" style="width: 1.2rem;color: var(--success-color);"></i> {% translate "Start" %}
                         </a>
                       {% endif %}
                       <hr class="dropdown-divider" style="margin: 0.25rem 0;">
                       <a class="dropdown-item" href="{% url 'lxc_clone' ct.vmid %}" style="font-size: 0.8125rem;">
-                        <i class="fas fa-clone" style="width: 1.2rem;color: var(--link-color);"></i> Clone
+                        <i class="fas fa-clone" style="width: 1.2rem;color: var(--link-color);"></i> {% translate "Clone" %}
                       </a>
                       <a class="dropdown-item" href="{% url 'lxc_export_options' ct.vmid %}" style="font-size: 0.8125rem;">
-                        <i class="fas fa-file-export" style="width: 1.2rem;color: var(--link-color);"></i> Export Container
+                        <i class="fas fa-file-export" style="width: 1.2rem;color: var(--link-color);"></i> {% translate "Export Container" %}
                       </a>
                       <a class="dropdown-item" href="{% url 'lxc_detail' ct.vmid %}" style="font-size: 0.8125rem;">
-                        <i class="fas fa-info-circle" style="width: 1.2rem;color: var(--text-muted);"></i> Details
+                        <i class="fas fa-info-circle" style="width: 1.2rem;color: var(--text-muted);"></i> {% translate "Details" %}
                       </a>
                       {% if ct.status == 'stopped' %}
                         <hr class="dropdown-divider" style="margin: 0.25rem 0;">
                         <a class="dropdown-item" style="font-size: 0.8125rem;color: var(--danger-color);"
                            onclick="event.preventDefault();toggleKebab(event, this.closest('.ct-kebab'));openDeleteModal('{{ ct.vmid }}', '{{ ct.name|escapejs }}')">
-                          <i class="fas fa-trash-alt" style="width: 1.2rem;"></i> Delete
+                          <i class="fas fa-trash-alt" style="width: 1.2rem;"></i> {% translate "Delete" %}
                         </a>
                       {% endif %}
                     </div>
@@ -237,12 +238,12 @@
     {# Empty state #}
     <div class="empty-state">
       <div class="empty-state-icon"><i class="fas fa-cube"></i></div>
-      <h3>No Containers Found</h3>
+      <h3>{% translate "No Containers Found" %}</h3>
       <p>
         {% if search_query %}
-          No containers matched your search. <a href="{% url 'lxc_list' %}">Clear filter</a>
+          {% translate "No containers matched your search." %} <a href="{% url 'lxc_list' %}">{% translate "Clear filter" %}</a>
         {% else %}
-          Your Proxmox node doesn't have any LXC containers, or the API couldn't be reached.
+          {% translate "Your Proxmox node doesn't have any LXC containers, or the API couldn't be reached." %}
         {% endif %}
       </p>
     </div>
@@ -255,34 +256,34 @@
   <div class="modal-card" style="max-width:480px;border-radius:12px;">
     <header class="modal-card-head" style="background:var(--danger-color, #f14668);border-radius:12px 12px 0 0;">
       <p class="modal-card-title" style="color:#fff;font-size:1rem;font-weight:600;">
-        <i class="fas fa-exclamation-triangle"></i>&nbsp; Delete Container
+        <i class="fas fa-exclamation-triangle"></i>{% translate "&nbsp; Delete Container" %}
       </p>
       <button class="delete" onclick="closeDeleteModal()"></button>
     </header>
     <section class="modal-card-body">
       <div class="content">
-        <p>You are about to <strong>permanently delete</strong> the container:</p>
+        <p>{% translate "You are about to" %} <strong>{% translate "permanently delete" %}</strong> {% translate "the container:" %}</p>
         <div style="background:var(--bg-card, #f5f5f5);border-radius:8px;padding:1rem;margin:1rem 0;">
-          <strong id="delete-modal-name"></strong> (CTID <span id="delete-modal-ctid-display"></span>)
+          <strong id="delete-modal-name"></strong> {% translate "(CTID" %} <span id="delete-modal-ctid-display"></span>)
         </div>
         <p style="color:var(--danger-color, #f14668);font-weight:600;">
           <i class="fas fa-exclamation-circle"></i>
-          This will destroy all disks and data. This action cannot be undone.
+          {% translate "This will destroy all disks and data. This action cannot be undone." %}
         </p>
         <div style="margin-top:1rem;">
-          <label class="label" style="font-size:0.875rem;">Type the CTID to confirm:</label>
-          <input class="input" type="text" id="delete-confirm-input" placeholder="Enter CTID" autocomplete="off"
+          <label class="label" style="font-size:0.875rem;">{% translate "Type the CTID to confirm:" %}</label>
+          <input class="input" type="text" id="delete-confirm-input" placeholder="{% translate "Enter CTID" %}" autocomplete="off"
                  oninput="checkDeleteConfirm()">
         </div>
       </div>
     </section>
     <footer class="modal-card-foot" style="justify-content:flex-end;gap:0.75rem;">
-      <button class="button is-light" onclick="closeDeleteModal()">Cancel</button>
+      <button class="button is-light" onclick="closeDeleteModal()">{% translate "Cancel" %}</button>
       <form id="delete-ct-form" method="post" action="" style="margin:0;" onsubmit="startDeleteSpinner()">
         <input type="hidden" name="csrfmiddlewaretoken" value="">
         <button type="submit" id="delete-confirm-btn" class="button is-danger" disabled>
           <span class="icon is-small"><i class="fas fa-trash-alt"></i></span>
-          <span>Delete Container</span>
+          <span>{% translate "Delete Container" %}</span>
         </button>
       </form>
     </footer>
@@ -439,8 +440,8 @@
       body.innerHTML =
         '<div style="text-align:center;padding:2rem;">' +
           '<span class="spinner" style="width:2rem;height:2rem;border-width:3px;display:inline-block;margin-bottom:1rem;"></span>' +
-          '<p style="font-weight:600;font-size:1rem;">Deleting container…</p>' +
-          '<p style="color:var(--text-muted, #7a7a7a);font-size:0.875rem;">Waiting for Proxmox to remove disks and configuration.</p>' +
+          '<p style="font-weight:600;font-size:1rem;">{{ _("Deleting container…")|escapejs }}</p>' +
+          '<p style="color:var(--text-muted, #7a7a7a);font-size:0.875rem;">{{ _("Waiting for Proxmox to remove disks and configuration.")|escapejs }}</p>' +
         '</div>';
     }
     var cancelBtn = document.querySelector('#delete-ct-modal .modal-card-foot .button.is-light');

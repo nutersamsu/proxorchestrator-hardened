@@ -11,7 +11,7 @@ This is the first step in importing a VM into Proxmox. You'll upload your disk i
 | VHD    | `.vhd`    | Hyper-V VPC format — automatically converted |
 | VHDX   | `.vhdx`   | Hyper-V modern format — automatically converted |
 | RAW    | `.raw`, `.img` | Raw disk image — converted to qcow2 |
-| OVA    | `.ova`    | Open Virtualization Archive — disk extracted and converted |
+| OVA    | `.ova`    | Open Virtualization Archive — disks extracted and converted |
 
 All non-qcow2 formats are converted using `qemu-img convert -O qcow2` before being transferred to Proxmox.
 
@@ -34,13 +34,13 @@ For large disk images (10 GB+):
 
 ## OVA files
 
-OVA files are ZIP archives containing the VM disk (VMDK), a manifest, and an OVF descriptor. ProxOrchestrator will:
+OVA files are archives containing the VM disks (VMDK), a manifest, and an OVF descriptor. ProxOrchestrator will:
 1. Extract the OVA archive
-2. Locate the disk file (VMDK) inside
-3. Convert the VMDK to qcow2
-4. Discard the OVF metadata (use the configure screen to set VM settings manually)
+2. Read the OVF descriptor and pre-fill the hardware settings (CPU, memory, firmware, disks)
+3. Convert each VMDK disk to qcow2
+4. Import **all** disks of the OVA — you review everything on the configure screen
 
-Note: OVA files may contain multiple disks. ProxOrchestrator currently imports the first/primary disk. Multi-disk OVAs are on the roadmap.
+Some appliance OVAs also ship an installation ISO; in that case the configure screen asks for a Proxmox storage to upload it to.
 
 ## Common issues
 

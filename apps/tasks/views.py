@@ -16,6 +16,7 @@ from django.utils import timezone
 from django.views.decorators.http import require_POST
 
 from apps.proxmox.api import ProxmoxAPIError
+from django.utils.translation import gettext
 
 logger = logging.getLogger(__name__)
 
@@ -293,12 +294,12 @@ def task_stop(request, upid):
     try:
         config.get_api_client().stop_task(fields["node"], upid)
         logger.info("Task %s stopped by %s", upid, request.user)
-        messages.success(request, "Stop requested.")
+        messages.success(request, gettext("Stop requested."))
     except ProxmoxAPIError as exc:
         if exc.status_code == 403:
-            messages.error(request, "Proxmox refused: the API token may only stop tasks it started itself.")
+            messages.error(request, gettext("Proxmox refused: the API token may only stop tasks it started itself."))
         else:
-            messages.error(request, f"Could not stop the task: {exc.message}")
+            messages.error(request, gettext('Could not stop the task: %(message)s') % {"message": exc.message})
     return redirect("task_detail", upid=upid)
 
 

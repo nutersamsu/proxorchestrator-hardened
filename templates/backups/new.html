@@ -1,10 +1,11 @@
 {% extends "base.html" %}
-{% block title %}Backup now — ProxOrchestrator{% endblock %}
-{% block page_title %}Backup now{% endblock %}
-{% block help_slug %}backups{% endblock %}
+{% load i18n %}
+{% block title %}{% translate "Backup now — ProxOrchestrator" %}{% endblock %}
+{% block page_title %}{% translate "Backup now" %}{% endblock %}
+{% block help_slug %}{% translate "backups" %}{% endblock %}
 
 {% block page_actions %}
-  <a href="{% url 'backups_index' %}" class="button is-light is-small"><span class="icon is-small"><i class="fas fa-arrow-left"></i></span><span>Backups</span></a>
+  <a href="{% url 'backups_index' %}" class="button is-light is-small"><span class="icon is-small"><i class="fas fa-arrow-left"></i></span><span>{% translate "Backups" %}</span></a>
 {% endblock %}
 
 {% block content %}
@@ -14,49 +15,49 @@
   <div class="card-body" style="padding:1.25rem 1.5rem;">
     <div class="columns is-multiline">
       <div class="column is-6">
-        <label class="label is-small">Guests</label>
+        <label class="label is-small">{% translate "Guests" %}</label>
         <div class="backup-guest-list">
           {% for g in guests %}
             {% if not g.template %}
             <label class="checkbox is-size-7" style="display:block;padding:0.2rem 0;">
               <input type="checkbox" name="vmid" value="{{ g.vmid }}" {% if g.vmid in preselect %}checked{% endif %}>
-              <span class="tag is-light">{% if g.type == 'lxc' %}CT{% else %}VM{% endif %} {{ g.vmid }}</span> {{ g.name }}
+              <span class="tag is-light">{% if g.type == 'lxc' %}{% translate "CT" %}{% else %}{% translate "VM" %}{% endif %} {{ g.vmid }}</span> {{ g.name }}
               <span class="ns-sub">{{ g.status }}</span>
             </label>
             {% endif %}
-          {% empty %}<p class="ns-sub">No guests.</p>{% endfor %}
+          {% empty %}<p class="ns-sub">{% translate "No guests." %}</p>{% endfor %}
         </div>
       </div>
       <div class="column is-6">
         <div class="field">
-          <label class="label is-small">Storage</label>
+          <label class="label is-small">{% translate "Storage" %}</label>
           <div class="select is-small is-fullwidth"><select name="storage">
             {% for s in storages %}<option value="{{ s.storage }}" {% if post.storage == s.storage %}selected{% endif %}>{{ s.storage }} ({{ s.type }})</option>{% endfor %}
           </select></div>
         </div>
         <div class="field">
-          <label class="label is-small">Mode</label>
+          <label class="label is-small">{% translate "Mode" %}</label>
           <div class="select is-small is-fullwidth"><select name="mode">
             {% for k, label in modes %}<option value="{{ k }}" {% if post.mode == k %}selected{% endif %}>{{ label }}</option>{% endfor %}
           </select></div>
         </div>
         <div class="field">
-          <label class="label is-small">Compression</label>
+          <label class="label is-small">{% translate "Compression" %}</label>
           <div class="select is-small is-fullwidth"><select name="compress">
             {% for k, label in compress %}<option value="{{ k }}" {% if post.compress == k %}selected{% endif %}>{{ label }}</option>{% endfor %}
           </select></div>
         </div>
         <div class="field">
-          <label class="label is-small">Notes <span class="ns-sub">({% templatetag openvariable %}guestname{% templatetag closevariable %}, {% templatetag openvariable %}vmid{% templatetag closevariable %}, {% templatetag openvariable %}node{% templatetag closevariable %} are replaced)</span></label>
+          <label class="label is-small">{% translate "Notes" %} <span class="ns-sub">({% templatetag openvariable %}{% translate "guestname" %}{% templatetag closevariable %}, {% templatetag openvariable %}{% translate "vmid" %}{% templatetag closevariable %}, {% templatetag openvariable %}{% translate "node" %}{% templatetag closevariable %} {% translate "are replaced)" %}</span></label>
           <input class="input is-small" name="notes" value="{% if post.notes %}{{ post.notes }}{% else %}{% templatetag openvariable %}guestname{% templatetag closevariable %}{% endif %}" maxlength="1024">
         </div>
-        <label class="checkbox is-size-7"><input type="checkbox" name="protected" value="1" {% if post.protected %}checked{% endif %}> Protected (not removed by retention, cannot be deleted)</label>
+        <label class="checkbox is-size-7"><input type="checkbox" name="protected" value="1" {% if post.protected %}checked{% endif %}> {% translate "Protected (not removed by retention, cannot be deleted)" %}</label>
       </div>
     </div>
-    <p class="help">Snapshot mode keeps guests running. Progress opens in the task log.</p>
+    <p class="help">{% translate "Snapshot mode keeps guests running. Progress opens in the task log." %}</p>
   </div>
   <footer class="modal-card-foot" style="justify-content:flex-end;border-radius:0 0 8px 8px;">
-    <button type="submit" class="button is-link is-small"><i class="fas fa-save"></i>&nbsp; Start backup</button>
+    <button type="submit" class="button is-link is-small"><i class="fas fa-save"></i>{% translate "&nbsp; Start backup" %}</button>
   </footer>
 </form>
 {% endblock %}

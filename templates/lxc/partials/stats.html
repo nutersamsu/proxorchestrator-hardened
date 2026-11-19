@@ -1,3 +1,4 @@
-<span id="lxc-stats-total">{{ total }}</span> containers —
-<span style="color: var(--success-color);">{{ running }} running</span>,
-<span style="color: var(--danger-color);">{{ stopped }} stopped</span>
+{% load i18n %}
+<span id="lxc-stats-total">{{ total }}</span> {% translate "containers —" %}
+<span style="color: var(--success-color);">{% blocktranslate trimmed %}{{ running }} running{% endblocktranslate %}</span>,
+<span style="color: var(--danger-color);">{% blocktranslate trimmed %}{{ stopped }} stopped{% endblocktranslate %}</span>

@@ -1,32 +1,32 @@
+{% load i18n %}
 {# One firewall level: options, rules, aliases, IPSets. Element ids are prefixed with the scope key. #}
 {% if error %}
-  <div class="node-summary-error">Could not load the firewall: {{ error }}</div>
+  <div class="node-summary-error">{% blocktranslate trimmed %}Could not load the firewall: {{ error }}{% endblocktranslate %}</div>
 {% else %}
 
 {% if scope.kind == 'qemu' or scope.kind == 'lxc' or scope.kind == 'node' or scope.kind == 'group' %}
   {% if not dc_enabled %}
   <div class="notification is-warning is-light fw-note">
-    <i class="fas fa-exclamation-triangle"></i> The <strong>datacenter firewall is off</strong>: these settings are stored but <strong>not applied</strong>.
-    It is switched on in Proxmox (Datacenter → Firewall → Options); the API token cannot do it. Check the rules first so you do not lock yourself out.
+    <i class="fas fa-exclamation-triangle"></i> {% translate "The" %} <strong>{% translate "datacenter firewall is off" %}</strong>{% translate ": these settings are stored but" %} <strong>{% translate "not applied" %}</strong>{% translate ". It is switched on in Proxmox (Datacenter → Firewall → Options); the API token cannot do it. Check the rules first so you do not lock yourself out." %}
   </div>
   {% endif %}
 {% endif %}
 {% if nics_without_fw %}
   <div class="notification is-info is-light fw-note">
-    <i class="fas fa-info-circle"></i> Rules only filter network cards with the <em>Firewall</em> option ticked. Not ticked on: <strong>{{ nics_without_fw|join:", " }}</strong>
-    (Proxmox → {{ scope.label }} → Hardware → network device → Firewall).
+    <i class="fas fa-info-circle"></i> {% translate "Rules only filter network cards with the" %} <em>{% translate "Firewall" %}</em> {% translate "option ticked. Not ticked on:" %} <strong>{{ nics_without_fw|join:", " }}</strong>
+    {% blocktranslate with label=scope.label trimmed %}(Proxmox → {{ label }} → Hardware → network device → Firewall).{% endblocktranslate %}
   </div>
 {% endif %}
 {% if not editable %}
-  <p class="help" style="margin-bottom:0.5rem;"><i class="fas fa-lock"></i> Read-only: changing the {{ scope.label }} firewall needs <code>{{ scope.edit_privilege }}</code>, which the API token does not have.</p>
+  <p class="help" style="margin-bottom:0.5rem;"><i class="fas fa-lock"></i> {% blocktranslate with label=scope.label trimmed %}Read-only: changing the {{ label }} firewall needs{% endblocktranslate %} <code>{{ scope.edit_privilege }}</code>{% translate ", which the API token does not have." %}</p>
 {% endif %}
 
 {# ---------------- Options ---------------- #}
 {% if scope.has_options %}
 <details class="fw-section" {% if scope.kind == 'qemu' or scope.kind == 'lxc' %}open{% endif %}>
-  <summary><strong>Options</strong> —
-    {% if options.enable == 1 or options.enable == "1" %}<span class="status-badge vm-status-running">enabled</span>{% else %}<span class="status-badge vm-status-stopped">disabled</span>{% endif %}
-    {% if options.policy_in %}<span class="ns-sub">in: {{ options.policy_in }}, out: {{ options.policy_out|default:"ACCEPT" }}</span>{% endif %}
+  <summary><strong>{% translate "Options" %}</strong> —
+    {% if options.enable == 1 or options.enable == "1" %}<span class="status-badge vm-status-running">{% translate "enabled" %}</span>{% else %}<span class="status-badge vm-status-stopped">{% translate "disabled" %}</span>{% endif %}
+    {% if options.policy_in %}<span class="ns-sub">{% blocktranslate with policy_in=options.policy_in policy_out=options.policy_out|default:"ACCEPT" trimmed %}in: {{ policy_in }}, out: {{ policy_out }}{% endblocktranslate %}</span>{% endif %}
   </summary>
   <form method="post" action="{% url 'firewall_options_save' key %}" class="fw-options">
     {% csrf_token %}
@@ -34,38 +34,38 @@
     <input type="hidden" name="digest" value="{{ options_digest }}">
     <fieldset {% if not editable %}disabled{% endif %}>
     <div class="fw-grid">
-      <label class="checkbox is-size-7"><input type="checkbox" name="enable" value="1" {% if options.enable == 1 or options.enable == "1" %}checked{% endif %}> <strong>Firewall enabled</strong></label>
+      <label class="checkbox is-size-7"><input type="checkbox" name="enable" value="1" {% if options.enable == 1 or options.enable == "1" %}checked{% endif %}> <strong>{% translate "Firewall enabled" %}</strong></label>
       {% if scope.kind == 'cluster' %}
-        <label class="checkbox is-size-7"><input type="checkbox" name="ebtables" value="1" {% if options.ebtables != 0 and options.ebtables != "0" %}checked{% endif %}> ebtables</label>
+        <label class="checkbox is-size-7"><input type="checkbox" name="ebtables" value="1" {% if options.ebtables != 0 and options.ebtables != "0" %}checked{% endif %}> {% translate "ebtables" %}</label>
       {% elif scope.kind == 'node' %}
-        <label class="checkbox is-size-7"><input type="checkbox" name="ndp" value="1" {% if options.ndp != 0 and options.ndp != "0" %}checked{% endif %}> NDP</label>
-        <label class="checkbox is-size-7"><input type="checkbox" name="nosmurfs" value="1" {% if options.nosmurfs != 0 and options.nosmurfs != "0" %}checked{% endif %}> SMURFS filter</label>
-        <label class="checkbox is-size-7"><input type="checkbox" name="tcpflags" value="1" {% if options.tcpflags == 1 or options.tcpflags == "1" %}checked{% endif %}> TCP flags filter</label>
+        <label class="checkbox is-size-7"><input type="checkbox" name="ndp" value="1" {% if options.ndp != 0 and options.ndp != "0" %}checked{% endif %}> {% translate "NDP" %}</label>
+        <label class="checkbox is-size-7"><input type="checkbox" name="nosmurfs" value="1" {% if options.nosmurfs != 0 and options.nosmurfs != "0" %}checked{% endif %}> {% translate "SMURFS filter" %}</label>
+        <label class="checkbox is-size-7"><input type="checkbox" name="tcpflags" value="1" {% if options.tcpflags == 1 or options.tcpflags == "1" %}checked{% endif %}> {% translate "TCP flags filter" %}</label>
       {% else %}
-        <label class="checkbox is-size-7"><input type="checkbox" name="dhcp" value="1" {% if options.dhcp != 0 and options.dhcp != "0" %}checked{% endif %}> DHCP</label>
-        <label class="checkbox is-size-7"><input type="checkbox" name="ndp" value="1" {% if options.ndp != 0 and options.ndp != "0" %}checked{% endif %}> NDP</label>
-        <label class="checkbox is-size-7"><input type="checkbox" name="radv" value="1" {% if options.radv == 1 or options.radv == "1" %}checked{% endif %}> Router advertisement</label>
-        <label class="checkbox is-size-7"><input type="checkbox" name="macfilter" value="1" {% if options.macfilter != 0 and options.macfilter != "0" %}checked{% endif %}> MAC filter</label>
-        <label class="checkbox is-size-7"><input type="checkbox" name="ipfilter" value="1" {% if options.ipfilter == 1 or options.ipfilter == "1" %}checked{% endif %}> IP filter</label>
+        <label class="checkbox is-size-7"><input type="checkbox" name="dhcp" value="1" {% if options.dhcp != 0 and options.dhcp != "0" %}checked{% endif %}> {% translate "DHCP" %}</label>
+        <label class="checkbox is-size-7"><input type="checkbox" name="ndp" value="1" {% if options.ndp != 0 and options.ndp != "0" %}checked{% endif %}> {% translate "NDP" %}</label>
+        <label class="checkbox is-size-7"><input type="checkbox" name="radv" value="1" {% if options.radv == 1 or options.radv == "1" %}checked{% endif %}> {% translate "Router advertisement" %}</label>
+        <label class="checkbox is-size-7"><input type="checkbox" name="macfilter" value="1" {% if options.macfilter != 0 and options.macfilter != "0" %}checked{% endif %}> {% translate "MAC filter" %}</label>
+        <label class="checkbox is-size-7"><input type="checkbox" name="ipfilter" value="1" {% if options.ipfilter == 1 or options.ipfilter == "1" %}checked{% endif %}> {% translate "IP filter" %}</label>
       {% endif %}
     </div>
     <div class="fw-grid" style="margin-top:0.5rem;">
       {% if scope.kind != 'node' %}
-      <div class="field"><label class="label is-small">Input policy</label>
+      <div class="field"><label class="label is-small">{% translate "Input policy" %}</label>
         <div class="select is-small"><select name="policy_in">{% for p in policies %}<option {% if options.policy_in|default:"DROP" == p %}selected{% endif %}>{{ p }}</option>{% endfor %}</select></div></div>
-      <div class="field"><label class="label is-small">Output policy</label>
+      <div class="field"><label class="label is-small">{% translate "Output policy" %}</label>
         <div class="select is-small"><select name="policy_out">{% for p in policies %}<option {% if options.policy_out|default:"ACCEPT" == p %}selected{% endif %}>{{ p }}</option>{% endfor %}</select></div></div>
       {% endif %}
       {% if scope.kind != 'cluster' %}
-      <div class="field"><label class="label is-small">Log level in</label>
+      <div class="field"><label class="label is-small">{% translate "Log level in" %}</label>
         <div class="select is-small"><select name="log_level_in">{% for l in log_levels %}<option {% if options.log_level_in|default:"nolog" == l %}selected{% endif %}>{{ l }}</option>{% endfor %}</select></div></div>
-      <div class="field"><label class="label is-small">Log level out</label>
+      <div class="field"><label class="label is-small">{% translate "Log level out" %}</label>
         <div class="select is-small"><select name="log_level_out">{% for l in log_levels %}<option {% if options.log_level_out|default:"nolog" == l %}selected{% endif %}>{{ l }}</option>{% endfor %}</select></div></div>
       {% endif %}
     </div>
     {% if editable %}
-      {% if scope.kind == 'qemu' or scope.kind == 'lxc' %}<p class="help">With input policy DROP only what your rules accept reaches the guest — add an ACCEPT rule for SSH/web first.</p>{% endif %}
-      <button class="button is-small is-link" type="submit" style="margin-top:0.5rem;">Save options</button>
+      {% if scope.kind == 'qemu' or scope.kind == 'lxc' %}<p class="help">{% translate "With input policy DROP only what your rules accept reaches the guest — add an ACCEPT rule for SSH/web first." %}</p>{% endif %}
+      <button class="button is-small is-link" type="submit" style="margin-top:0.5rem;">{% translate "Save options" %}</button>
     {% endif %}
     </fieldset>
   </form>
@@ -75,12 +75,12 @@
 {# ---------------- Rules ---------------- #}
 <div class="fw-section">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem;">
-    <strong>Rules</strong>
-    {% if editable %}<button class="button is-small is-link is-light" type="button" onclick="fwOpenRule('{{ key }}', null)"><i class="fas fa-plus"></i>&nbsp; Add rule</button>{% endif %}
+    <strong>{% translate "Rules" %}</strong>
+    {% if editable %}<button class="button is-small is-link is-light" type="button" onclick="fwOpenRule('{{ key }}', null)"><i class="fas fa-plus"></i>{% translate "&nbsp; Add rule" %}</button>{% endif %}
   </div>
   <div class="table-container">
   <table class="table is-fullwidth task-table fw-rules" style="margin:0;">
-    <thead><tr><th>#</th><th>On</th><th>Dir</th><th>Action</th><th>What</th><th>Source</th><th>Destination</th><th>Iface</th><th>Log</th><th>Comment</th><th></th></tr></thead>
+    <thead><tr><th>#</th><th>{% translate "On" %}</th><th>{% translate "Dir" %}</th><th>{% translate "Action" %}</th><th>{% translate "What" %}</th><th>{% translate "Source" %}</th><th>{% translate "Destination" %}</th><th>{% translate "Iface" %}</th><th>{% translate "Log" %}</th><th>{% translate "Comment" %}</th><th></th></tr></thead>
     <tbody>
     {% for r in rules %}
       <tr class="{% if not r.enable %}fw-off{% endif %}">
@@ -105,23 +105,23 @@
         <td style="text-align:right;white-space:nowrap;">
           {% if editable %}
             {% if not forloop.first %}
-            <form method="post" action="{% url 'firewall_rule_move' key r.pos %}" style="display:inline;">{% csrf_token %}<input type="hidden" name="next" value="{{ next_url }}"><input type="hidden" name="digest" value="{{ digest }}"><input type="hidden" name="moveto" value="{{ r.pos|add:'-1' }}"><button class="button is-small is-white" title="Move up"><i class="fas fa-arrow-up"></i></button></form>
+            <form method="post" action="{% url 'firewall_rule_move' key r.pos %}" style="display:inline;">{% csrf_token %}<input type="hidden" name="next" value="{{ next_url }}"><input type="hidden" name="digest" value="{{ digest }}"><input type="hidden" name="moveto" value="{{ r.pos|add:'-1' }}"><button class="button is-small is-white" title="{% translate "Move up" %}"><i class="fas fa-arrow-up"></i></button></form>
             {% endif %}
             {% if not forloop.last %}
-            <form method="post" action="{% url 'firewall_rule_move' key r.pos %}" style="display:inline;">{% csrf_token %}<input type="hidden" name="next" value="{{ next_url }}"><input type="hidden" name="digest" value="{{ digest }}"><input type="hidden" name="moveto" value="{{ r.pos|add:'2' }}"><button class="button is-small is-white" title="Move down"><i class="fas fa-arrow-down"></i></button></form>
+            <form method="post" action="{% url 'firewall_rule_move' key r.pos %}" style="display:inline;">{% csrf_token %}<input type="hidden" name="next" value="{{ next_url }}"><input type="hidden" name="digest" value="{{ digest }}"><input type="hidden" name="moveto" value="{{ r.pos|add:'2' }}"><button class="button is-small is-white" title="{% translate "Move down" %}"><i class="fas fa-arrow-down"></i></button></form>
             {% endif %}
-            <button class="button is-small is-light" type="button" title="Edit" onclick="fwOpenRule('{{ key }}', this)"
+            <button class="button is-small is-light" type="button" title="{% translate "Edit" %}" onclick="fwOpenRule('{{ key }}', this)"
                     data-pos="{{ r.pos }}" data-type="{{ r.type }}" data-action="{{ r.action }}" data-enable="{{ r.enable|default:0 }}"
                     data-macro="{{ r.macro|default:'' }}" data-proto="{{ r.proto|default:'' }}" data-source="{{ r.source|default:'' }}"
                     data-dest="{{ r.dest|default:'' }}" data-sport="{{ r.sport|default:'' }}" data-dport="{{ r.dport|default:'' }}"
                     data-icmp="{{ r.icmp_type }}" data-iface="{{ r.iface|default:'' }}"
                     data-log="{{ r.log|default:'nolog' }}" data-comment="{{ r.comment|default:'' }}"><i class="fas fa-pencil-alt"></i></button>
-            <form method="post" action="{% url 'firewall_rule_delete' key r.pos %}" style="display:inline;" onsubmit="return confirm('Delete rule {{ r.pos }}?');">{% csrf_token %}<input type="hidden" name="next" value="{{ next_url }}"><input type="hidden" name="digest" value="{{ digest }}"><button class="button is-small is-danger is-light" title="Delete"><i class="fas fa-trash-alt"></i></button></form>
+            <form method="post" action="{% url 'firewall_rule_delete' key r.pos %}" style="display:inline;" onsubmit="return confirm('Delete rule {{ r.pos }}?');">{% csrf_token %}<input type="hidden" name="next" value="{{ next_url }}"><input type="hidden" name="digest" value="{{ digest }}"><button class="button is-small is-danger is-light" title="{% translate "Delete" %}"><i class="fas fa-trash-alt"></i></button></form>
           {% endif %}
         </td>
       </tr>
     {% empty %}
-      <tr><td colspan="11" class="ns-sub">No rules.</td></tr>
+      <tr><td colspan="11" class="ns-sub">{% translate "No rules." %}</td></tr>
     {% endfor %}
     </tbody>
   </table>
@@ -133,21 +133,21 @@
 <div class="columns" style="margin-top:0.25rem;">
   <div class="column is-5">
     <div class="fw-section">
-      <strong>Aliases</strong> <span class="ns-sub">(names for addresses, usable in rules)</span>
+      <strong>{% translate "Aliases" %}</strong> <span class="ns-sub">{% translate "(names for addresses, usable in rules)" %}</span>
       <table class="table is-fullwidth task-table" style="margin:0.25rem 0;">
         <tbody>
         {% for a in aliases %}
           <tr><td class="mono-cell">{{ a.name }}</td><td class="mono-cell">{{ a.cidr }}</td><td>{{ a.comment|default:"" }}</td>
             <td style="text-align:right;">{% if editable %}<form method="post" action="{% url 'firewall_alias_delete' key a.name %}" onsubmit="return confirm('Delete alias {{ a.name }}?');">{% csrf_token %}<input type="hidden" name="next" value="{{ next_url }}"><button class="button is-small is-danger is-light"><i class="fas fa-trash-alt"></i></button></form>{% endif %}</td></tr>
-        {% empty %}<tr><td class="ns-sub">No aliases.</td></tr>{% endfor %}
+        {% empty %}<tr><td class="ns-sub">{% translate "No aliases." %}</td></tr>{% endfor %}
         </tbody>
       </table>
       {% if editable %}
       <form method="post" action="{% url 'firewall_alias_add' key %}" class="fw-inline-form">
         {% csrf_token %}<input type="hidden" name="next" value="{{ next_url }}">
-        <input class="input is-small" name="name" placeholder="name" required maxlength="64">
+        <input class="input is-small" name="name" placeholder="{% translate "name" %}" required maxlength="64">
         <input class="input is-small" name="cidr" placeholder="192.168.1.0/24" required>
-        <input class="input is-small" name="comment" placeholder="comment">
+        <input class="input is-small" name="comment" placeholder="{% translate "comment" %}">
         <button class="button is-small is-link is-light"><i class="fas fa-plus"></i></button>
       </form>
       {% endif %}
@@ -155,7 +155,7 @@
   </div>
   <div class="column is-7">
     <div class="fw-section">
-      <strong>IPSets</strong> <span class="ns-sub">(groups of addresses, used as +name)</span>
+      <strong>{% translate "IPSets" %}</strong> <span class="ns-sub">{% translate "(groups of addresses, used as +name)" %}</span>
       {% for s in ipsets %}
         <div class="fw-ipset">
           <div style="display:flex;justify-content:space-between;align-items:center;">
@@ -164,26 +164,26 @@
           </div>
           {% for e in s.entries %}
             <div class="fw-ipset-entry"><span class="mono-cell">{% if e.nomatch %}!{% endif %}{{ e.cidr }}</span> <span class="ns-sub">{{ e.comment|default:"" }}</span>
-              {% if editable %}<form method="post" action="{% url 'firewall_ipset_entry_remove' key s.name %}" style="display:inline;">{% csrf_token %}<input type="hidden" name="next" value="{{ next_url }}"><input type="hidden" name="cidr" value="{{ e.cidr }}"><button class="button is-small is-white" title="Remove"><i class="fas fa-times"></i></button></form>{% endif %}
+              {% if editable %}<form method="post" action="{% url 'firewall_ipset_entry_remove' key s.name %}" style="display:inline;">{% csrf_token %}<input type="hidden" name="next" value="{{ next_url }}"><input type="hidden" name="cidr" value="{{ e.cidr }}"><button class="button is-small is-white" title="{% translate "Remove" %}"><i class="fas fa-times"></i></button></form>{% endif %}
             </div>
           {% endfor %}
           {% if editable %}
           <form method="post" action="{% url 'firewall_ipset_entry_add' key s.name %}" class="fw-inline-form">
             {% csrf_token %}<input type="hidden" name="next" value="{{ next_url }}">
-            <input class="input is-small" name="cidr" placeholder="10.0.0.0/8 or alias" required>
-            <input class="input is-small" name="comment" placeholder="comment">
-            <label class="checkbox is-size-7"><input type="checkbox" name="nomatch" value="1"> exclude</label>
+            <input class="input is-small" name="cidr" placeholder="{% translate "10.0.0.0/8 or alias" %}" required>
+            <input class="input is-small" name="comment" placeholder="{% translate "comment" %}">
+            <label class="checkbox is-size-7"><input type="checkbox" name="nomatch" value="1"> {% translate "exclude" %}</label>
             <button class="button is-small is-light"><i class="fas fa-plus"></i></button>
           </form>
           {% endif %}
         </div>
-      {% empty %}<p class="ns-sub">No IPSets.</p>{% endfor %}
+      {% empty %}<p class="ns-sub">{% translate "No IPSets." %}</p>{% endfor %}
       {% if editable %}
       <form method="post" action="{% url 'firewall_ipset_add' key %}" class="fw-inline-form">
         {% csrf_token %}<input type="hidden" name="next" value="{{ next_url }}">
-        <input class="input is-small" name="name" placeholder="new IPSet name" required maxlength="64">
-        <input class="input is-small" name="comment" placeholder="comment">
-        <button class="button is-small is-link is-light"><i class="fas fa-plus"></i>&nbsp; Create</button>
+        <input class="input is-small" name="name" placeholder="{% translate "new IPSet name" %}" required maxlength="64">
+        <input class="input is-small" name="comment" placeholder="{% translate "comment" %}">
+        <button class="button is-small is-link is-light"><i class="fas fa-plus"></i>{% translate "&nbsp; Create" %}</button>
       </form>
       {% endif %}
     </div>
@@ -197,7 +197,7 @@
   <div class="modal-background" onclick="this.parentElement.classList.remove('is-active')"></div>
   <div class="modal-card" style="max-width:620px;border-radius:12px;">
     <header class="modal-card-head" style="border-radius:12px 12px 0 0;">
-      <p class="modal-card-title" style="font-size:1rem;font-weight:600;"><i class="fas fa-shield-alt"></i>&nbsp; <span class="fw-rule-title">Add rule</span> — {{ scope.label }}</p>
+      <p class="modal-card-title" style="font-size:1rem;font-weight:600;"><i class="fas fa-shield-alt"></i>&nbsp; <span class="fw-rule-title">{% translate "Add rule" %}</span> — {{ scope.label }}</p>
       <button class="delete" type="button" onclick="document.getElementById('fw-{{ key }}-rule-modal').classList.remove('is-active')"></button>
     </header>
     <form method="post" action="{% url 'firewall_rule_add' key %}" data-add-action="{% url 'firewall_rule_add' key %}" data-edit-action="{% url 'firewall_rule_edit' key 0 %}">
@@ -206,36 +206,36 @@
       <input type="hidden" name="digest" value="">
       <section class="modal-card-body">
         <div class="columns is-multiline is-variable is-2">
-          <div class="column is-3 field"><label class="label is-small">Direction</label>
+          <div class="column is-3 field"><label class="label is-small">{% translate "Direction" %}</label>
             <div class="select is-small is-fullwidth"><select name="type" onchange="fwTypeChanged(this)">
-              <option value="in">in</option><option value="out">out</option>{% if groups %}<option value="group">group</option>{% endif %}
+              <option value="in">{% translate "in" %}</option><option value="out">{% translate "out" %}</option>{% if groups %}<option value="group">{% translate "group" %}</option>{% endif %}
             </select></div></div>
-          <div class="column is-3 field"><label class="label is-small">Action</label>
+          <div class="column is-3 field"><label class="label is-small">{% translate "Action" %}</label>
             <div class="select is-small is-fullwidth"><select name="action" data-actions="{{ actions|join:',' }}" data-groups="{{ groups|join:',' }}">
               {% for a in actions %}<option>{{ a }}</option>{% endfor %}
             </select></div></div>
-          <div class="column is-6 field fw-not-group"><label class="label is-small">Macro <span class="ns-sub">(predefined service)</span></label>
-            <div class="select is-small is-fullwidth"><select name="macro"><option value="">— none —</option>
+          <div class="column is-6 field fw-not-group"><label class="label is-small">{% translate "Macro" %} <span class="ns-sub">{% translate "(predefined service)" %}</span></label>
+            <div class="select is-small is-fullwidth"><select name="macro"><option value="">{% translate "— none —" %}</option>
               {% for m, d in macros %}<option value="{{ m }}" title="{{ d }}">{{ m }}</option>{% endfor %}
             </select></div></div>
-          <div class="column is-3 field fw-not-group"><label class="label is-small">Protocol</label>
-            <div class="select is-small is-fullwidth"><select name="proto"><option value="">any</option>{% for p in protocols %}<option>{{ p }}</option>{% endfor %}</select></div></div>
-          <div class="column is-3 field fw-not-group"><label class="label is-small">Dest. port</label><input class="input is-small" name="dport" placeholder="22, 80:90"></div>
-          <div class="column is-3 field fw-not-group"><label class="label is-small">Source port</label><input class="input is-small" name="sport"></div>
-          <div class="column is-3 field fw-not-group"><label class="label is-small">ICMP type</label><input class="input is-small" name="icmp-type" placeholder="echo-request"></div>
-          <div class="column is-6 field fw-not-group"><label class="label is-small">Source</label><input class="input is-small" name="source" placeholder="any — IP, CIDR, a-b, alias, +ipset"></div>
-          <div class="column is-6 field fw-not-group"><label class="label is-small">Destination</label><input class="input is-small" name="dest" placeholder="any"></div>
-          <div class="column is-3 field"><label class="label is-small">Interface</label><input class="input is-small" name="iface" placeholder="{% if scope.kind == 'qemu' or scope.kind == 'lxc' %}net0{% else %}any{% endif %}"></div>
-          <div class="column is-3 field fw-not-group"><label class="label is-small">Log</label>
+          <div class="column is-3 field fw-not-group"><label class="label is-small">{% translate "Protocol" %}</label>
+            <div class="select is-small is-fullwidth"><select name="proto"><option value="">{% translate "any" %}</option>{% for p in protocols %}<option>{{ p }}</option>{% endfor %}</select></div></div>
+          <div class="column is-3 field fw-not-group"><label class="label is-small">{% translate "Dest. port" %}</label><input class="input is-small" name="dport" placeholder="22, 80:90"></div>
+          <div class="column is-3 field fw-not-group"><label class="label is-small">{% translate "Source port" %}</label><input class="input is-small" name="sport"></div>
+          <div class="column is-3 field fw-not-group"><label class="label is-small">{% translate "ICMP type" %}</label><input class="input is-small" name="icmp-type" placeholder="{% translate "echo-request" %}"></div>
+          <div class="column is-6 field fw-not-group"><label class="label is-small">{% translate "Source" %}</label><input class="input is-small" name="source" placeholder="{% translate "any — IP, CIDR, a-b, alias, +ipset" %}"></div>
+          <div class="column is-6 field fw-not-group"><label class="label is-small">{% translate "Destination" %}</label><input class="input is-small" name="dest" placeholder="{% translate "any" %}"></div>
+          <div class="column is-3 field"><label class="label is-small">{% translate "Interface" %}</label><input class="input is-small" name="iface" placeholder="{% if scope.kind == 'qemu' or scope.kind == 'lxc' %}net0{% else %}any{% endif %}"></div>
+          <div class="column is-3 field fw-not-group"><label class="label is-small">{% translate "Log" %}</label>
             <div class="select is-small is-fullwidth"><select name="log">{% for l in log_levels %}<option>{{ l }}</option>{% endfor %}</select></div></div>
-          <div class="column is-6 field"><label class="label is-small">Comment</label><input class="input is-small" name="comment" maxlength="255"></div>
-          <div class="column is-12"><label class="checkbox is-size-7"><input type="checkbox" name="enable" value="1" checked> Enabled</label></div>
+          <div class="column is-6 field"><label class="label is-small">{% translate "Comment" %}</label><input class="input is-small" name="comment" maxlength="255"></div>
+          <div class="column is-12"><label class="checkbox is-size-7"><input type="checkbox" name="enable" value="1" checked> {% translate "Enabled" %}</label></div>
         </div>
-        <p class="help">New rules go to the top. Rules are checked from top to bottom; the first match wins.</p>
+        <p class="help">{% translate "New rules go to the top. Rules are checked from top to bottom; the first match wins." %}</p>
       </section>
       <footer class="modal-card-foot" style="justify-content:flex-end;gap:0.5rem;">
-        <button type="button" class="button is-small is-light" onclick="document.getElementById('fw-{{ key }}-rule-modal').classList.remove('is-active')">Cancel</button>
-        <button type="submit" class="button is-small is-link">Save rule</button>
+        <button type="button" class="button is-small is-light" onclick="document.getElementById('fw-{{ key }}-rule-modal').classList.remove('is-active')">{% translate "Cancel" %}</button>
+        <button type="submit" class="button is-small is-link">{% translate "Save rule" %}</button>
       </footer>
     </form>
   </div>
@@ -260,7 +260,7 @@
     var editing = !!btn;
     form.action = editing ? form.dataset.editAction.replace(/\/0\/edit\/$/, '/' + d.pos + '/edit/') : form.dataset.addAction;
     form.elements['digest'].value = editing ? document.getElementById('fw-' + key + '-digest').value : '';
-    modal.querySelector('.fw-rule-title').textContent = editing ? 'Edit rule ' + d.pos : 'Add rule';
+    modal.querySelector('.fw-rule-title').textContent = editing ? '{{ _("Edit rule ")|escapejs }}' + d.pos : '{{ _("Add rule")|escapejs }}';
     form.elements['type'].value = d.type || 'in';
     window.fwTypeChanged(form.elements['type']);
     if (editing) {

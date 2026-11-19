@@ -1,3 +1,4 @@
+{% load i18n %}
 {# Dashboard job row partial — self-polls via HTMX when in progress #}
 <tr id="job-row-{{ job.job_type }}-{{ job.id }}"
     {% if job.stage != 'DONE' and job.stage != 'FAILED' and job.stage != 'CANCELLED' and job.stage != 'QUEUED' %}
@@ -16,30 +17,30 @@
   </td>
   <td style="vertical-align:middle;">
     {% if job.job_type == 'import' %}
-      <span style="font-size:0.75rem;background:#f0f4ff;color:#3273dc;border-radius:4px;padding:0.15rem 0.5rem;font-weight:600;">Import</span>
+      <span style="font-size:0.75rem;background:#f0f4ff;color:#3273dc;border-radius:4px;padding:0.15rem 0.5rem;font-weight:600;">{% translate "Import" %}</span>
     {% elif job.job_type == 'lxc_create' %}
-      <span style="font-size:0.75rem;background:#faf5ff;color:#7c3aed;border-radius:4px;padding:0.15rem 0.5rem;font-weight:600;">New LXC</span>
+      <span style="font-size:0.75rem;background:#faf5ff;color:#7c3aed;border-radius:4px;padding:0.15rem 0.5rem;font-weight:600;">{% translate "New LXC" %}</span>
     {% elif job.job_type == 'lxc_clone' %}
-      <span style="font-size:0.75rem;background:#fff7ed;color:#c2410c;border-radius:4px;padding:0.15rem 0.5rem;font-weight:600;">Clone</span>
+      <span style="font-size:0.75rem;background:#fff7ed;color:#c2410c;border-radius:4px;padding:0.15rem 0.5rem;font-weight:600;">{% translate "Clone" %}</span>
     {% elif job.job_type == 'lxc_snapshot' %}
-      <span style="font-size:0.75rem;background:#ecfdf5;color:#047857;border-radius:4px;padding:0.15rem 0.5rem;font-weight:600;">Snapshot</span>
+      <span style="font-size:0.75rem;background:#ecfdf5;color:#047857;border-radius:4px;padding:0.15rem 0.5rem;font-weight:600;">{% translate "Snapshot" %}</span>
     {% elif job.job_type == 'community_script' %}
-      <span style="font-size:0.75rem;background:var(--bg-warning-light, #fffbeb);color:var(--text-warning-dark, #b45309);border-radius:4px;padding:0.15rem 0.5rem;font-weight:600;">Community</span>
+      <span style="font-size:0.75rem;background:var(--bg-warning-light, #fffbeb);color:var(--text-warning-dark, #b45309);border-radius:4px;padding:0.15rem 0.5rem;font-weight:600;">{% translate "Community" %}</span>
     {% elif job.job_type == 'vm_community_script' %}
-      <span style="font-size:0.75rem;background:var(--bg-warning-light, #fffbeb);color:var(--text-warning-dark, #b45309);border-radius:4px;padding:0.15rem 0.5rem;font-weight:600;">VM Script</span>
+      <span style="font-size:0.75rem;background:var(--bg-warning-light, #fffbeb);color:var(--text-warning-dark, #b45309);border-radius:4px;padding:0.15rem 0.5rem;font-weight:600;">{% translate "VM Script" %}</span>
     {% else %}
-      <span style="font-size:0.75rem;background:#f0fdf4;color:#257953;border-radius:4px;padding:0.15rem 0.5rem;font-weight:600;">New VM</span>
+      <span style="font-size:0.75rem;background:#f0fdf4;color:#257953;border-radius:4px;padding:0.15rem 0.5rem;font-weight:600;">{% translate "New VM" %}</span>
     {% endif %}
   </td>
   <td style="vertical-align:middle;">
     {% if job.stage == 'DONE' %}
-      <span class="status-badge vm-status-running">Done</span>
+      <span class="status-badge vm-status-running">{% translate "Done" %}</span>
     {% elif job.stage == 'FAILED' %}
-      <span class="status-badge vm-status-stopped">Failed</span>
+      <span class="status-badge vm-status-stopped">{% translate "Failed" %}</span>
     {% elif job.stage == 'CANCELLED' %}
-      <span class="status-badge" style="background:#f5f5f5;color:#7a7a7a;">Cancelled</span>
+      <span class="status-badge" style="background:#f5f5f5;color:#7a7a7a;">{% translate "Cancelled" %}</span>
     {% elif job.stage == 'QUEUED' %}
-      <span class="status-badge" style="background:#fff8e1;color:#f57f17;">Awaiting Config</span>
+      <span class="status-badge" style="background:#fff8e1;color:#f57f17;">{% translate "Awaiting Config" %}</span>
     {% else %}
       {# In progress — show stage + mini progress bar #}
       <div style="min-width:120px;">
@@ -61,72 +62,72 @@
     {% if job.stage == 'DONE' %}
       {% if job.job_type == 'lxc_create' or job.job_type == 'lxc_clone' or job.job_type == 'lxc_snapshot' or job.job_type == 'community_script' %}
         {% if job.vmid %}
-          <a href="{% url 'lxc_detail' job.vmid %}" class="button is-small is-light" title="View Container">
+          <a href="{% url 'lxc_detail' job.vmid %}" class="button is-small is-light" title="{% translate "View Container" %}">
             <i class="fas fa-cube"></i>
           </a>
         {% else %}
-          <a href="{% url 'lxc_list' %}" class="button is-small is-light" title="View Container Inventory">
+          <a href="{% url 'lxc_list' %}" class="button is-small is-light" title="{% translate "View Container Inventory" %}">
             <i class="fas fa-cube"></i>
           </a>
         {% endif %}
       {% elif job.job_type == 'vm_community_script' %}
         {% if job.vmid %}
-          <a href="{% url 'vm_detail' job.vmid %}" class="button is-small is-light" title="View VM">
+          <a href="{% url 'vm_detail' job.vmid %}" class="button is-small is-light" title="{% translate "View VM" %}">
             <i class="fas fa-server"></i>
           </a>
         {% else %}
-          <a href="{% url 'inventory' %}" class="button is-small is-light" title="View VM Inventory">
+          <a href="{% url 'inventory' %}" class="button is-small is-light" title="{% translate "View VM Inventory" %}">
             <i class="fas fa-server"></i>
           </a>
         {% endif %}
       {% elif job.vmid %}
-        <a href="{% url 'vm_detail' job.vmid %}" class="button is-small is-light" title="View VM">
+        <a href="{% url 'vm_detail' job.vmid %}" class="button is-small is-light" title="{% translate "View VM" %}">
           <i class="fas fa-external-link-alt"></i>
         </a>
       {% endif %}
 
     {% elif job.stage == 'FAILED' %}
       {% if job.job_type == 'import' %}
-        <a href="{% url 'importer_configure' job.id %}" class="button is-small is-warning is-light" title="Retry — edit config and re-run">
+        <a href="{% url 'importer_configure' job.id %}" class="button is-small is-warning is-light" title="{% translate "Retry — edit config and re-run" %}">
           <i class="fas fa-redo"></i>
         </a>
       {% elif job.job_type == 'lxc_create' %}
-        <a href="{% url 'lxc_configure' job.id %}" class="button is-small is-warning is-light" title="Retry — edit config and re-run">
+        <a href="{% url 'lxc_configure' job.id %}" class="button is-small is-warning is-light" title="{% translate "Retry — edit config and re-run" %}">
           <i class="fas fa-redo"></i>
         </a>
       {% elif job.job_type == 'lxc_clone' %}
-        <a href="{% url 'lxc_clone' job.source_vmid %}" class="button is-small is-warning is-light" title="Retry clone">
+        <a href="{% url 'lxc_clone' job.source_vmid %}" class="button is-small is-warning is-light" title="{% translate "Retry clone" %}">
           <i class="fas fa-redo"></i>
         </a>
       {% elif job.job_type == 'lxc_snapshot' %}
-        <a href="{% url 'lxc_detail' job.vmid %}" class="button is-small is-warning is-light" title="View container">
+        <a href="{% url 'lxc_detail' job.vmid %}" class="button is-small is-warning is-light" title="{% translate "View container" %}">
           <i class="fas fa-cube"></i>
         </a>
       {% elif job.job_type == 'community_script' %}
-        <a href="{% url 'lxc_community_scripts_deploy' job.app_slug %}" class="button is-small is-warning is-light" title="Retry deploy">
+        <a href="{% url 'lxc_community_scripts_deploy' job.app_slug %}" class="button is-small is-warning is-light" title="{% translate "Retry deploy" %}">
           <i class="fas fa-redo"></i>
         </a>
       {% elif job.job_type == 'vm_community_script' %}
-        <a href="{% url 'vm_community_scripts_deploy' job.app_slug %}" class="button is-small is-warning is-light" title="Retry deploy">
+        <a href="{% url 'vm_community_scripts_deploy' job.app_slug %}" class="button is-small is-warning is-light" title="{% translate "Retry deploy" %}">
           <i class="fas fa-redo"></i>
         </a>
       {% else %}
-        <a href="{% url 'vmcreator_configure' job.id %}" class="button is-small is-warning is-light" title="Retry — edit config and re-run">
+        <a href="{% url 'vmcreator_configure' job.id %}" class="button is-small is-warning is-light" title="{% translate "Retry — edit config and re-run" %}">
           <i class="fas fa-redo"></i>
         </a>
       {% endif %}
       {# Delete button for failed jobs #}
       {% if job.job_type == 'import' %}
-        <form method="post" action="{% url 'importer_delete_job' job.id %}" style="display:inline;" onsubmit="return confirm('Delete this job? This cannot be undone.')">
+        <form method="post" action="{% url 'importer_delete_job' job.id %}" style="display:inline;" onsubmit="return confirm('{{ _("Delete this job? This cannot be undone.")|escapejs }}')">
           {% csrf_token %}
-          <button type="submit" class="button is-small is-danger is-light" title="Delete job">
+          <button type="submit" class="button is-small is-danger is-light" title="{% translate "Delete job" %}">
             <i class="fas fa-trash"></i>
           </button>
         </form>
       {% elif job.job_type == 'create' %}
-        <form method="post" action="{% url 'vmcreator_delete_job' job.id %}" style="display:inline;" onsubmit="return confirm('Delete this job? This cannot be undone.')">
+        <form method="post" action="{% url 'vmcreator_delete_job' job.id %}" style="display:inline;" onsubmit="return confirm('{{ _("Delete this job? This cannot be undone.")|escapejs }}')">
           {% csrf_token %}
-          <button type="submit" class="button is-small is-danger is-light" title="Delete job">
+          <button type="submit" class="button is-small is-danger is-light" title="{% translate "Delete job" %}">
             <i class="fas fa-trash"></i>
           </button>
         </form>
@@ -135,51 +136,51 @@
     {% elif job.stage == 'QUEUED' %}
       {# Queued — continue + cancel buttons #}
       {% if job.job_type == 'import' %}
-        <a href="{% url 'importer_configure' job.id %}" class="button is-small is-primary is-light" title="Continue — configure and deploy">
+        <a href="{% url 'importer_configure' job.id %}" class="button is-small is-primary is-light" title="{% translate "Continue — configure and deploy" %}">
           <span class="icon is-small"><i class="fas fa-play"></i></span>
-          <span>Continue</span>
+          <span>{% translate "Continue" %}</span>
         </a>
-        <form method="post" action="{% url 'importer_cancel_job' job.id %}" style="display:inline;" onsubmit="return confirm('Cancel this job?')">
+        <form method="post" action="{% url 'importer_cancel_job' job.id %}" style="display:inline;" onsubmit="return confirm('{{ _("Cancel this job?")|escapejs }}')">
           {% csrf_token %}
-          <button type="submit" class="button is-small is-danger is-light" title="Cancel job">
+          <button type="submit" class="button is-small is-danger is-light" title="{% translate "Cancel job" %}">
             <i class="fas fa-trash"></i>
           </button>
         </form>
       {% elif job.job_type == 'lxc_create' %}
-        <a href="{% url 'lxc_configure' job.id %}" class="button is-small is-primary is-light" title="Continue — configure and deploy">
+        <a href="{% url 'lxc_configure' job.id %}" class="button is-small is-primary is-light" title="{% translate "Continue — configure and deploy" %}">
           <span class="icon is-small"><i class="fas fa-play"></i></span>
-          <span>Continue</span>
+          <span>{% translate "Continue" %}</span>
         </a>
-        <form method="post" action="{% url 'lxc_cancel_job' job.id %}" style="display:inline;" onsubmit="return confirm('Cancel this job?')">
+        <form method="post" action="{% url 'lxc_cancel_job' job.id %}" style="display:inline;" onsubmit="return confirm('{{ _("Cancel this job?")|escapejs }}')">
           {% csrf_token %}
-          <button type="submit" class="button is-small is-danger is-light" title="Cancel job">
+          <button type="submit" class="button is-small is-danger is-light" title="{% translate "Cancel job" %}">
             <i class="fas fa-trash"></i>
           </button>
         </form>
       {% elif job.job_type == 'lxc_clone' %}
-        <a href="{% url 'lxc_clone_progress' job.id %}" class="button is-small is-primary is-light" title="Continue — view progress">
+        <a href="{% url 'lxc_clone_progress' job.id %}" class="button is-small is-primary is-light" title="{% translate "Continue — view progress" %}">
           <span class="icon is-small"><i class="fas fa-play"></i></span>
-          <span>Continue</span>
+          <span>{% translate "Continue" %}</span>
         </a>
       {% elif job.job_type == 'community_script' %}
-        <a href="{% url 'lxc_community_scripts_progress' job.id %}" class="button is-small is-primary is-light" title="Continue — view progress">
+        <a href="{% url 'lxc_community_scripts_progress' job.id %}" class="button is-small is-primary is-light" title="{% translate "Continue — view progress" %}">
           <span class="icon is-small"><i class="fas fa-play"></i></span>
-          <span>Continue</span>
+          <span>{% translate "Continue" %}</span>
         </a>
-        <form method="post" action="{% url 'lxc_community_scripts_cancel' job.id %}" style="display:inline;" onsubmit="return confirm('Cancel this job?')">
+        <form method="post" action="{% url 'lxc_community_scripts_cancel' job.id %}" style="display:inline;" onsubmit="return confirm('{{ _("Cancel this job?")|escapejs }}')">
           {% csrf_token %}
-          <button type="submit" class="button is-small is-danger is-light" title="Cancel job">
+          <button type="submit" class="button is-small is-danger is-light" title="{% translate "Cancel job" %}">
             <i class="fas fa-trash"></i>
           </button>
         </form>
       {% elif job.job_type == 'create' %}
-        <a href="{% url 'vmcreator_configure' job.id %}" class="button is-small is-primary is-light" title="Continue — configure and deploy">
+        <a href="{% url 'vmcreator_configure' job.id %}" class="button is-small is-primary is-light" title="{% translate "Continue — configure and deploy" %}">
           <span class="icon is-small"><i class="fas fa-play"></i></span>
-          <span>Continue</span>
+          <span>{% translate "Continue" %}</span>
         </a>
-        <form method="post" action="{% url 'vmcreator_cancel_job' job.id %}" style="display:inline;" onsubmit="return confirm('Cancel this job?')">
+        <form method="post" action="{% url 'vmcreator_cancel_job' job.id %}" style="display:inline;" onsubmit="return confirm('{{ _("Cancel this job?")|escapejs }}')">
           {% csrf_token %}
-          <button type="submit" class="button is-small is-danger is-light" title="Cancel job">
+          <button type="submit" class="button is-small is-danger is-light" title="{% translate "Cancel job" %}">
             <i class="fas fa-trash"></i>
           </button>
         </form>
@@ -188,56 +189,56 @@
     {% else %}
       {# In progress — view progress + cancel #}
       {% if job.job_type == 'import' %}
-        <a href="{% url 'importer_progress' job.id %}" class="button is-small is-info is-light" title="View progress">
+        <a href="{% url 'importer_progress' job.id %}" class="button is-small is-info is-light" title="{% translate "View progress" %}">
           <i class="fas fa-tasks"></i>
         </a>
-        <form method="post" action="{% url 'importer_cancel_job' job.id %}" style="display:inline;" onsubmit="return confirm('Cancel this running job?')">
+        <form method="post" action="{% url 'importer_cancel_job' job.id %}" style="display:inline;" onsubmit="return confirm('{{ _("Cancel this running job?")|escapejs }}')">
           {% csrf_token %}
-          <button type="submit" class="button is-small is-warning is-light" title="Cancel job">
+          <button type="submit" class="button is-small is-warning is-light" title="{% translate "Cancel job" %}">
             <i class="fas fa-ban"></i>
           </button>
         </form>
       {% elif job.job_type == 'lxc_create' %}
-        <a href="{% url 'lxc_progress' job.id %}" class="button is-small is-info is-light" title="View progress">
+        <a href="{% url 'lxc_progress' job.id %}" class="button is-small is-info is-light" title="{% translate "View progress" %}">
           <i class="fas fa-tasks"></i>
         </a>
-        <form method="post" action="{% url 'lxc_cancel_job' job.id %}" style="display:inline;" onsubmit="return confirm('Cancel this running job?')">
+        <form method="post" action="{% url 'lxc_cancel_job' job.id %}" style="display:inline;" onsubmit="return confirm('{{ _("Cancel this running job?")|escapejs }}')">
           {% csrf_token %}
-          <button type="submit" class="button is-small is-warning is-light" title="Cancel job">
+          <button type="submit" class="button is-small is-warning is-light" title="{% translate "Cancel job" %}">
             <i class="fas fa-ban"></i>
           </button>
         </form>
       {% elif job.job_type == 'lxc_clone' %}
-        <a href="{% url 'lxc_clone_progress' job.id %}" class="button is-small is-info is-light" title="View progress">
+        <a href="{% url 'lxc_clone_progress' job.id %}" class="button is-small is-info is-light" title="{% translate "View progress" %}">
           <i class="fas fa-tasks"></i>
         </a>
       {% elif job.job_type == 'community_script' %}
-        <a href="{% url 'lxc_community_scripts_progress' job.id %}" class="button is-small is-info is-light" title="View progress">
+        <a href="{% url 'lxc_community_scripts_progress' job.id %}" class="button is-small is-info is-light" title="{% translate "View progress" %}">
           <i class="fas fa-tasks"></i>
         </a>
-        <form method="post" action="{% url 'lxc_community_scripts_cancel' job.id %}" style="display:inline;" onsubmit="return confirm('Cancel this running job?')">
+        <form method="post" action="{% url 'lxc_community_scripts_cancel' job.id %}" style="display:inline;" onsubmit="return confirm('{{ _("Cancel this running job?")|escapejs }}')">
           {% csrf_token %}
-          <button type="submit" class="button is-small is-warning is-light" title="Cancel job">
+          <button type="submit" class="button is-small is-warning is-light" title="{% translate "Cancel job" %}">
             <i class="fas fa-ban"></i>
           </button>
         </form>
       {% elif job.job_type == 'vm_community_script' %}
-        <a href="{% url 'vm_community_scripts_progress' job.id %}" class="button is-small is-info is-light" title="View progress">
+        <a href="{% url 'vm_community_scripts_progress' job.id %}" class="button is-small is-info is-light" title="{% translate "View progress" %}">
           <i class="fas fa-tasks"></i>
         </a>
-        <form method="post" action="{% url 'vm_community_scripts_cancel' job.id %}" style="display:inline;" onsubmit="return confirm('Cancel this running job?')">
+        <form method="post" action="{% url 'vm_community_scripts_cancel' job.id %}" style="display:inline;" onsubmit="return confirm('{{ _("Cancel this running job?")|escapejs }}')">
           {% csrf_token %}
-          <button type="submit" class="button is-small is-warning is-light" title="Cancel job">
+          <button type="submit" class="button is-small is-warning is-light" title="{% translate "Cancel job" %}">
             <i class="fas fa-ban"></i>
           </button>
         </form>
       {% else %}
-        <a href="{% url 'vmcreator_progress' job.id %}" class="button is-small is-info is-light" title="View progress">
+        <a href="{% url 'vmcreator_progress' job.id %}" class="button is-small is-info is-light" title="{% translate "View progress" %}">
           <i class="fas fa-tasks"></i>
         </a>
-        <form method="post" action="{% url 'vmcreator_cancel_job' job.id %}" style="display:inline;" onsubmit="return confirm('Cancel this running job?')">
+        <form method="post" action="{% url 'vmcreator_cancel_job' job.id %}" style="display:inline;" onsubmit="return confirm('{{ _("Cancel this running job?")|escapejs }}')">
           {% csrf_token %}
-          <button type="submit" class="button is-small is-warning is-light" title="Cancel job">
+          <button type="submit" class="button is-small is-warning is-light" title="{% translate "Cancel job" %}">
             <i class="fas fa-ban"></i>
           </button>
         </form>

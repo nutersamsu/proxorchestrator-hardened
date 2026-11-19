@@ -1,51 +1,52 @@
 {% extends "base.html" %}
+{% load i18n %}
 {% load vm_filters %}
-{% block title %}{{ vm.name }} — VM Details — ProxOrchestrator{% endblock %}
+{% block title %}{% blocktranslate with name=vm.name trimmed %}{{ name }} — VM Details — ProxOrchestrator{% endblocktranslate %}{% endblock %}
 {% block page_title %}{{ vm.name }}{% endblock %}
-{% block help_slug %}vm-detail{% endblock %}
+{% block help_slug %}{% translate "vm-detail" %}{% endblock %}
 
 {% block page_actions %}
   <a href="{% url 'inventory' %}" class="button is-light is-small">
     <span class="icon is-small"><i class="fas fa-arrow-left"></i></span>
-    <span>Back to Inventory</span>
+    <span>{% translate "Back to Inventory" %}</span>
   </a>
   &nbsp;
   {% if vm.status == 'running' %}
-  <a href="{% url 'vm_console' vmid %}" target="_blank" class="button is-dark is-small" title="Open VM console in new tab">
+  <a href="{% url 'vm_console' vmid %}" target="_blank" class="button is-dark is-small" title="{% translate "Open VM console in new tab" %}">
     <span class="icon is-small"><i class="fas fa-terminal"></i></span>
-    <span>Console</span>
+    <span>{% translate "Console" %}</span>
   </a>
   &nbsp;
   {% endif %}
   {% if vm.status == 'running' %}
     <button class="button is-warning is-small"
             hx-post="/inventory/{{ vm.vmid }}/action/shutdown/"
-            hx-confirm="Gracefully shut down {{ vm.name }}?"
+            hx-confirm="{% blocktranslate with name=vm.name trimmed %}Gracefully shut down {{ name }}?{% endblocktranslate %}"
             hx-swap="none"
             hx-on::after-request="htmx.ajax('GET','/inventory/{{ vm.vmid }}/detail-status/?action=shutdown',{target:'#vm-status-banner',swap:'outerHTML'})">
       <span class="icon is-small"><i class="fas fa-power-off"></i></span>
-      <span>Shutdown</span>
+      <span>{% translate "Shutdown" %}</span>
     </button>
     <button class="button is-danger is-small"
             hx-post="/inventory/{{ vm.vmid }}/action/stop/"
-            hx-confirm="Force stop {{ vm.name }}? Unsaved data may be lost."
+            hx-confirm="{% blocktranslate with name=vm.name trimmed %}Force stop {{ name }}? Unsaved data may be lost.{% endblocktranslate %}"
             hx-swap="none"
             hx-on::after-request="htmx.ajax('GET','/inventory/{{ vm.vmid }}/detail-status/?action=stop',{target:'#vm-status-banner',swap:'outerHTML'})">
       <span class="icon is-small"><i class="fas fa-stop"></i></span>
-      <span>Force Stop</span>
+      <span>{% translate "Force Stop" %}</span>
     </button>
     <button class="button is-info is-small"
             hx-post="/inventory/{{ vm.vmid }}/action/reboot/"
-            hx-confirm="Reboot {{ vm.name }}?"
+            hx-confirm="{% blocktranslate with name=vm.name trimmed %}Reboot {{ name }}?{% endblocktranslate %}"
             hx-swap="none"
             hx-on::after-request="htmx.ajax('GET','/inventory/{{ vm.vmid }}/detail-status/?action=reboot',{target:'#vm-status-banner',swap:'outerHTML'})">
       <span class="icon is-small"><i class="fas fa-redo"></i></span>
-      <span>Reboot</span>
+      <span>{% translate "Reboot" %}</span>
     </button>
     <div class="dropdown is-hoverable is-right">
       <div class="dropdown-trigger">
         <button class="button is-light is-small" aria-haspopup="true" aria-controls="vm-more-power">
-          <span>More</span><span class="icon is-small"><i class="fas fa-angle-down"></i></span>
+          <span>{% translate "More" %}</span><span class="icon is-small"><i class="fas fa-angle-down"></i></span>
         </button>
       </div>
       <div class="dropdown-menu" id="vm-more-power" role="menu">
@@ -63,14 +64,14 @@
       </div>
     </div>
   {% elif vm.is_template %}
-    <span class="status-badge vm-status-unknown" title="Templates cannot be started; clone them instead."><i class="fas fa-copy"></i> Template</span>
+    <span class="status-badge vm-status-unknown" title="{% translate "Templates cannot be started; clone them instead." %}"><i class="fas fa-copy"></i> {% translate "Template" %}</span>
   {% elif vm.status == 'stopped' %}
     <button class="button is-success is-small"
             hx-post="/inventory/{{ vm.vmid }}/action/start/"
             hx-swap="none"
             hx-on::after-request="htmx.ajax('GET','/inventory/{{ vm.vmid }}/detail-status/?action=start',{target:'#vm-status-banner',swap:'outerHTML'})">
       <span class="icon is-small"><i class="fas fa-play"></i></span>
-      <span>Start</span>
+      <span>{% translate "Start" %}</span>
     </button>
   {% elif vm.status == 'paused' %}
     <button class="button is-warning is-small"
@@ -78,31 +79,31 @@
             hx-swap="none"
             hx-on::after-request="htmx.ajax('GET','/inventory/{{ vm.vmid }}/detail-status/?action=resume',{target:'#vm-status-banner',swap:'outerHTML'})">
       <span class="icon is-small"><i class="fas fa-play"></i></span>
-      <span>Resume</span>
+      <span>{% translate "Resume" %}</span>
     </button>
   {% endif %}
   &nbsp;
   <a href="{% url 'vm_clone' vmid %}" class="button is-primary is-small">
     <span class="icon is-small"><i class="fas fa-clone"></i></span>
-    <span>Clone</span>
+    <span>{% translate "Clone" %}</span>
   </a>
   &nbsp;
   <a href="{% url 'export_options' vmid %}" class="button is-info is-small">
     <span class="icon is-small"><i class="fas fa-file-export"></i></span>
-    <span>Export VM</span>
+    <span>{% translate "Export VM" %}</span>
   </a>
   {% if vm.status == 'stopped' and not vm.is_template %}
   &nbsp;
-  <button class="button is-light is-small" onclick="document.getElementById('template-vm-modal').classList.add('is-active')" title="Convert to template">
+  <button class="button is-light is-small" onclick="document.getElementById('template-vm-modal').classList.add('is-active')" title="{% translate "Convert to template" %}">
     <span class="icon is-small"><i class="fas fa-copy"></i></span>
-    <span>Convert to template</span>
+    <span>{% translate "Convert to template" %}</span>
   </button>
   {% endif %}
   {% if vm.status == 'stopped' %}
   &nbsp;
   <button class="button is-danger is-small" onclick="document.getElementById('delete-vm-modal').classList.add('is-active')">
     <span class="icon is-small"><i class="fas fa-trash-alt"></i></span>
-    <span>Delete VM</span>
+    <span>{% translate "Delete VM" %}</span>
   </button>
   {% endif %}
 {% endblock %}
@@ -119,18 +120,18 @@
   <div class="column is-6">
     <div class="proxorchestrator-card">
       <div class="card-header" style="display: flex;justify-content: space-between;align-items: center;">
-        <span><i class="fas fa-info-circle" style="color: var(--link-color);"></i> General</span>
-        <button class="button is-small is-white" onclick="openSettingsModal('general')" title="Edit description">
+        <span><i class="fas fa-info-circle" style="color: var(--link-color);"></i> {% translate "General" %}</span>
+        <button class="button is-small is-white" onclick="openSettingsModal('general')" title="{% translate "Edit description" %}">
           <i class="fas fa-pencil-alt" style="font-size: 0.75rem;color: var(--text-muted);"></i>
         </button>
       </div>
       <div class="card-body" style="padding: 1rem 1.5rem;">
-        <div class="cert-detail-row"><div class="cert-detail-label">VMID</div><div class="cert-detail-value">{{ vm.vmid }}</div></div>
+        <div class="cert-detail-row"><div class="cert-detail-label">{% translate "VMID" %}</div><div class="cert-detail-value">{{ vm.vmid }}</div></div>
         <div class="cert-detail-row">
-          <div class="cert-detail-label">Name</div>
+          <div class="cert-detail-label">{% translate "Name" %}</div>
           <div class="cert-detail-value" id="vm-name-display" style="font-family:inherit;font-size:0.875rem;">
             <span id="vm-name-text">{{ vm.name }}</span>
-            <button class="button is-small is-white" style="margin-left:0.5rem;padding:0 0.4rem;height:1.5rem;" onclick="startRename()" title="Rename VM">
+            <button class="button is-small is-white" style="margin-left:0.5rem;padding:0 0.4rem;height:1.5rem;" onclick="startRename()" title="{% translate "Rename VM" %}">
               <i class="fas fa-pencil-alt" style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);"></i>
             </button>
             <form id="vm-rename-form" method="post" action="{% url 'vm_rename' vmid %}" style="display:none;margin:0;">
@@ -139,26 +140,26 @@
                 <input class="input is-small" type="text" name="name" id="vm-rename-input" value="{{ vm.name }}"
                        style="max-width:220px;" autocomplete="off"
                        onkeydown="if(event.key==='Escape'){cancelRename();event.preventDefault();}">
-                <button type="submit" class="button is-small is-success" title="Save">
+                <button type="submit" class="button is-small is-success" title="{% translate "Save" %}">
                   <i class="fas fa-check"></i>
                 </button>
-                <button type="button" class="button is-small is-light" onclick="cancelRename()" title="Cancel">
+                <button type="button" class="button is-small is-light" onclick="cancelRename()" title="{% translate "Cancel" %}">
                   <i class="fas fa-times"></i>
                 </button>
               </div>
             </form>
           </div>
         </div>
-        <div class="cert-detail-row"><div class="cert-detail-label">OS Type</div><div class="cert-detail-value">{{ vm.ostype|default:"—" }}</div></div>
+        <div class="cert-detail-row"><div class="cert-detail-label">{% translate "OS Type" %}</div><div class="cert-detail-value">{{ vm.ostype|default:"—" }}</div></div>
         <div class="cert-detail-row">
-          <div class="cert-detail-label">Description</div>
+          <div class="cert-detail-label">{% translate "Description" %}</div>
           <div class="cert-detail-value">
             {% if vm.description %}
               {{ vm.description|safe_html_description }}
             {% else %}
               —
             {% endif %}
-            <button class="button is-small is-white" style="margin-left:0.5rem;padding:0 0.4rem;height:1.5rem;" onclick="openSettingsModal('general')" title="Edit description">
+            <button class="button is-small is-white" style="margin-left:0.5rem;padding:0 0.4rem;height:1.5rem;" onclick="openSettingsModal('general')" title="{% translate "Edit description" %}">
               <i class="fas fa-pencil-alt" style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);"></i>
             </button>
           </div>
@@ -171,36 +172,36 @@
   <div class="column is-6">
     <div class="proxorchestrator-card">
       <div class="card-header" style="display: flex;justify-content: space-between;align-items: center;">
-        <span><i class="fas fa-microchip" style="color: var(--purple-color);"></i> Firmware &amp; Boot</span>
-        <button class="button is-small is-white" onclick="openSettingsModal('firmware')" title="Edit firmware settings">
+        <span><i class="fas fa-microchip" style="color: var(--purple-color);"></i> {% translate "Firmware &amp; Boot" %}</span>
+        <button class="button is-small is-white" onclick="openSettingsModal('firmware')" title="{% translate "Edit firmware settings" %}">
           <i class="fas fa-pencil-alt" style="font-size: 0.75rem;color: var(--text-muted);"></i>
         </button>
       </div>
       <div class="card-body" style="padding: 1rem 1.5rem;">
         <div class="cert-detail-row">
-          <div class="cert-detail-label">BIOS</div>
+          <div class="cert-detail-label">{% translate "BIOS" %}</div>
           <div class="cert-detail-value">{{ vm.bios|default:"SeaBIOS" }}</div>
         </div>
         <div class="cert-detail-row">
-          <div class="cert-detail-label">EFI Disk</div>
+          <div class="cert-detail-label">{% translate "EFI Disk" %}</div>
           <div class="cert-detail-value">
-            {% if vm.efidisk0 %}<span style="color: var(--success-color);">Yes</span>{% else %}<span style="color: var(--text-muted);">No</span>{% endif %}
+            {% if vm.efidisk0 %}<span style="color: var(--success-color);">{% translate "Yes" %}</span>{% else %}<span style="color: var(--text-muted);">{% translate "No" %}</span>{% endif %}
           </div>
         </div>
         <div class="cert-detail-row">
-          <div class="cert-detail-label">TPM</div>
+          <div class="cert-detail-label">{% translate "TPM" %}</div>
           <div class="cert-detail-value">
-            {% if vm.tpmstate0 %}<span style="color: var(--success-color);">TPM 2.0</span>{% else %}<span style="color: var(--text-muted);">None</span>{% endif %}
+            {% if vm.tpmstate0 %}<span style="color: var(--success-color);">{% translate "TPM 2.0" %}</span>{% else %}<span style="color: var(--text-muted);">{% translate "None" %}</span>{% endif %}
           </div>
         </div>
         <div class="cert-detail-row">
-          <div class="cert-detail-label">Start on Boot</div>
+          <div class="cert-detail-label">{% translate "Start on Boot" %}</div>
           <div class="cert-detail-value">
-            {% if vm.onboot %}<span style="color: var(--success-color);">Yes</span>{% else %}No{% endif %}
+            {% if vm.onboot %}<span style="color: var(--success-color);">{% translate "Yes" %}</span>{% else %}{% translate "No" %}{% endif %}
           </div>
         </div>
         <div class="cert-detail-row">
-          <div class="cert-detail-label">Boot Order</div>
+          <div class="cert-detail-label">{% translate "Boot Order" %}</div>
           <div class="cert-detail-value" style="font-family: var(--font-mono);font-size: 0.8125rem;">{{ vm.boot|default:"—" }}</div>
         </div>
       </div>
@@ -211,31 +212,31 @@
   <div class="column is-6">
     <div class="proxorchestrator-card">
       <div class="card-header" style="display: flex;justify-content: space-between;align-items: center;">
-        <span><i class="fas fa-microchip" style="color: var(--success-color);"></i> CPU</span>
-        <button class="button is-small is-white" onclick="openSettingsModal('cpu')" title="Edit CPU settings">
+        <span><i class="fas fa-microchip" style="color: var(--success-color);"></i> {% translate "CPU" %}</span>
+        <button class="button is-small is-white" onclick="openSettingsModal('cpu')" title="{% translate "Edit CPU settings" %}">
           <i class="fas fa-pencil-alt" style="font-size: 0.75rem;color: var(--text-muted);"></i>
         </button>
       </div>
       <div class="card-body" style="padding: 1rem 1.5rem;">
         <div class="cert-detail-row">
-          <div class="cert-detail-label">CPU Type</div>
+          <div class="cert-detail-label">{% translate "CPU Type" %}</div>
           <div class="cert-detail-value">{{ vm.cpu|default:"—" }}</div>
         </div>
         <div class="cert-detail-row">
-          <div class="cert-detail-label">Sockets</div>
+          <div class="cert-detail-label">{% translate "Sockets" %}</div>
           <div class="cert-detail-value">{{ vm.sockets|default:"1" }}</div>
         </div>
         <div class="cert-detail-row">
-          <div class="cert-detail-label">Cores</div>
+          <div class="cert-detail-label">{% translate "Cores" %}</div>
           <div class="cert-detail-value">{{ vm.cores|default:"—" }}</div>
         </div>
         <div class="cert-detail-row">
-          <div class="cert-detail-label">Total vCPUs</div>
+          <div class="cert-detail-label">{% translate "Total vCPUs" %}</div>
           <div class="cert-detail-value"><strong>{{ vm.vcpus|default:"—" }}</strong></div>
         </div>
         <div class="cert-detail-row">
-          <div class="cert-detail-label">NUMA</div>
-          <div class="cert-detail-value">{% if vm.numa %}Enabled{% else %}Disabled{% endif %}</div>
+          <div class="cert-detail-label">{% translate "NUMA" %}</div>
+          <div class="cert-detail-value">{% if vm.numa %}{% translate "Enabled" %}{% else %}{% translate "Disabled" %}{% endif %}</div>
         </div>
       </div>
     </div>
@@ -245,23 +246,23 @@
   <div class="column is-6">
     <div class="proxorchestrator-card">
       <div class="card-header" style="display: flex;justify-content: space-between;align-items: center;">
-        <span><i class="fas fa-memory" style="color: var(--warning-color);"></i> Memory</span>
-        <button class="button is-small is-white" onclick="openSettingsModal('memory')" title="Edit memory settings">
+        <span><i class="fas fa-memory" style="color: var(--warning-color);"></i> {% translate "Memory" %}</span>
+        <button class="button is-small is-white" onclick="openSettingsModal('memory')" title="{% translate "Edit memory settings" %}">
           <i class="fas fa-pencil-alt" style="font-size: 0.75rem;color: var(--text-muted);"></i>
         </button>
       </div>
       <div class="card-body" style="padding: 1rem 1.5rem;">
         <div class="cert-detail-row">
-          <div class="cert-detail-label">Allocated RAM</div>
+          <div class="cert-detail-label">{% translate "Allocated RAM" %}</div>
           <div class="cert-detail-value"><strong>{{ vm.memory|default:"—" }} MB</strong></div>
         </div>
         <div class="cert-detail-row">
-          <div class="cert-detail-label">Balloon Min</div>
-          <div class="cert-detail-value">{% if vm.balloon_enabled %}{{ vm.balloon_min_mb }} MB{% else %}—{% endif %}</div>
+          <div class="cert-detail-label">{% translate "Balloon Min" %}</div>
+          <div class="cert-detail-value">{% if vm.balloon_enabled %}{% blocktranslate with balloon_min_mb=vm.balloon_min_mb trimmed %}{{ balloon_min_mb }} MB{% endblocktranslate %}{% else %}—{% endif %}</div>
         </div>
         <div class="cert-detail-row">
-          <div class="cert-detail-label">Ballooning</div>
-          <div class="cert-detail-value">{% if vm.balloon_enabled %}Enabled{% else %}Disabled{% endif %}</div>
+          <div class="cert-detail-label">{% translate "Ballooning" %}</div>
+          <div class="cert-detail-value">{% if vm.balloon_enabled %}{% translate "Enabled" %}{% else %}{% translate "Disabled" %}{% endif %}</div>
         </div>
       </div>
     </div>
@@ -270,14 +271,14 @@
   {# Disks #}
   <div class="column is-12">
     <div class="proxorchestrator-card">
-      <div class="card-header"><i class="fas fa-hdd" style="color: var(--success-color);"></i> Disks</div>
+      <div class="card-header"><i class="fas fa-hdd" style="color: var(--success-color);"></i> {% translate "Disks" %}</div>
       <div style="overflow-x: auto;">
         <div hx-get="{% url 'vm_disks' vmid %}"
              hx-trigger="load"
              hx-swap="innerHTML">
           <div style="padding: 1rem;text-align: center;color: var(--text-muted);">
             <span class="spinner" style="width: 16px;height: 16px;border-width: 2px;display: inline-block;vertical-align: middle;margin-right: 0.5rem;"></span>
-            Loading disks...
+            {% translate "Loading disks..." %}
           </div>
         </div>
       </div>
@@ -287,14 +288,14 @@
   {# Network Interfaces #}
   <div class="column is-12">
     <div class="proxorchestrator-card">
-      <div class="card-header"><i class="fas fa-ethernet" style="color: var(--link-color);"></i> Network Interfaces</div>
+      <div class="card-header"><i class="fas fa-ethernet" style="color: var(--link-color);"></i> {% translate "Network Interfaces" %}</div>
       <div style="overflow-x: auto;">
         <div hx-get="{% url 'vm_networks' vmid %}"
              hx-trigger="load"
              hx-swap="innerHTML">
           <div style="padding: 1rem;text-align: center;color: var(--text-muted);">
             <span class="spinner" style="width: 16px;height: 16px;border-width: 2px;display: inline-block;vertical-align: middle;margin-right: 0.5rem;"></span>
-            Loading network interfaces...
+            {% translate "Loading network interfaces..." %}
           </div>
         </div>
       </div>
@@ -308,10 +309,10 @@
   {% if vm.status == 'running' and vm.opt_agent %}
   <div class="column is-12">
     <div class="proxorchestrator-card">
-      <div class="card-header"><i class="fas fa-robot" style="color: var(--link-color);"></i> Guest agent</div>
+      <div class="card-header"><i class="fas fa-robot" style="color: var(--link-color);"></i> {% translate "Guest agent" %}</div>
       <div class="card-body" style="padding:1rem 1.5rem;">
         <div hx-get="{% url 'vm_agent_info' vmid %}" hx-trigger="load" hx-swap="innerHTML">
-          <div class="ns-sub">Asking the guest agent…</div>
+          <div class="ns-sub">{% translate "Asking the guest agent…" %}</div>
         </div>
       </div>
     </div>
@@ -322,17 +323,17 @@
   <div class="column is-12" id="cloudinit">
     <div class="proxorchestrator-card">
       <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;">
-        <span><i class="fas fa-cloud" style="color: var(--link-color);"></i> Cloud-Init</span>
+        <span><i class="fas fa-cloud" style="color: var(--link-color);"></i> {% translate "Cloud-Init" %}</span>
         {% if vm.has_cloudinit %}
         <form method="post" action="{% url 'vm_cloudinit_regenerate' vmid %}" style="margin:0;">
           {% csrf_token %}
-          <button class="button is-small is-light" type="submit" title="Rebuild the cloud-init drive with the current values"><i class="fas fa-sync-alt"></i>&nbsp; Regenerate image</button>
+          <button class="button is-small is-light" type="submit" title="{% translate "Rebuild the cloud-init drive with the current values" %}"><i class="fas fa-sync-alt"></i>{% translate "&nbsp; Regenerate image" %}</button>
         </form>
         {% endif %}
       </div>
       <div class="card-body" style="padding:1rem 1.5rem;">
         <div hx-get="{% url 'vm_cloudinit' vmid %}" hx-trigger="load" hx-swap="innerHTML">
-          <div class="ns-sub">Loading cloud-init…</div>
+          <div class="ns-sub">{% translate "Loading cloud-init…" %}</div>
         </div>
       </div>
     </div>
@@ -341,14 +342,14 @@
   {# Snapshots #}
   <div class="column is-12" id="snapshots">
     <div class="proxorchestrator-card">
-      <div class="card-header"><i class="fas fa-camera" style="color:var(--link-color, #3273dc);"></i> Snapshots</div>
+      <div class="card-header"><i class="fas fa-camera" style="color:var(--link-color, #3273dc);"></i> {% translate "Snapshots" %}</div>
       <div class="card-body" style="padding:1rem 1.5rem;">
         <div hx-get="{% url 'vm_snapshots' vmid %}"
              hx-trigger="load"
              hx-swap="innerHTML">
           <div style="padding:1rem;text-align:center;color:var(--text-muted, #7a7a7a);">
             <span class="spinner" style="width:16px;height:16px;border-width:2px;display:inline-block;vertical-align:middle;margin-right:0.5rem;"></span>
-            Loading snapshots...
+            {% translate "Loading snapshots..." %}
           </div>
         </div>
       </div>
@@ -358,10 +359,10 @@
   {# Firewall #}
   <div class="column is-12" id="firewall">
     <div class="proxorchestrator-card">
-      <div class="card-header"><i class="fas fa-shield-alt" style="color:var(--link-color);"></i> Firewall</div>
+      <div class="card-header"><i class="fas fa-shield-alt" style="color:var(--link-color);"></i> {% translate "Firewall" %}</div>
       <div class="card-body" style="padding:1rem 1.5rem;">
         <div hx-get="/firewall/vm-{{ vmid }}/panel/?next=/vm/{{ vmid }}/%23firewall" hx-trigger="load" hx-swap="innerHTML">
-          <div class="ns-sub">Loading firewall…</div>
+          <div class="ns-sub">{% translate "Loading firewall…" %}</div>
         </div>
       </div>
     </div>
@@ -370,10 +371,10 @@
   {# Backups #}
   <div class="column is-12" id="backups">
     <div class="proxorchestrator-card">
-      <div class="card-header"><i class="fas fa-archive" style="color:var(--link-color);"></i> Backup</div>
+      <div class="card-header"><i class="fas fa-archive" style="color:var(--link-color);"></i> {% translate "Backup" %}</div>
       <div class="card-body" style="padding:1rem 1.5rem;">
         <div hx-get="{% url 'guest_backups' 'qemu' vmid %}" hx-trigger="load" hx-swap="innerHTML">
-          <div class="ns-sub">Loading backups…</div>
+          <div class="ns-sub">{% translate "Loading backups…" %}</div>
         </div>
       </div>
     </div>
@@ -382,10 +383,10 @@
   {# Performance (RRD) #}
   <div class="column is-12" id="performance">
     <div class="proxorchestrator-card">
-      <div class="card-header"><i class="fas fa-chart-area" style="color:var(--link-color);"></i> Performance</div>
+      <div class="card-header"><i class="fas fa-chart-area" style="color:var(--link-color);"></i> {% translate "Performance" %}</div>
       <div class="card-body" style="padding:1rem 1.5rem;">
         <div id="rrd-qemu-{{ vmid }}" hx-get="{% url 'rrd_guest' 'qemu' vmid %}" hx-trigger="load" hx-swap="innerHTML">
-          <div class="ns-sub">Loading statistics…</div>
+          <div class="ns-sub">{% translate "Loading statistics…" %}</div>
         </div>
       </div>
     </div>
@@ -400,7 +401,7 @@
   <div class="modal-background" onclick="closeSettingsModal('general')"></div>
   <div class="modal-card" style="max-width:500px;border-radius:12px;">
     <header class="modal-card-head" style="background:var(--link-color, #3273dc);border-radius:12px 12px 0 0;">
-      <p class="modal-card-title" style="color:#fff;font-size:1rem;font-weight:600;"><i class="fas fa-info-circle"></i>&nbsp; Edit Description</p>
+      <p class="modal-card-title" style="color:#fff;font-size:1rem;font-weight:600;"><i class="fas fa-info-circle"></i>{% translate "&nbsp; Edit Description" %}</p>
       <button class="delete" onclick="closeSettingsModal('general')"></button>
     </header>
     <form method="post" action="{% url 'vm_update_settings' vmid %}">
@@ -408,15 +409,15 @@
       <input type="hidden" name="section" value="general">
       <section class="modal-card-body">
         <div class="field">
-          <label class="label" style="font-size:0.875rem;">Description</label>
+          <label class="label" style="font-size:0.875rem;">{% translate "Description" %}</label>
           <div class="control">
             <textarea class="textarea" name="description" rows="4" placeholder="VM description...">{{ vm.description }}</textarea>
           </div>
         </div>
       </section>
       <footer class="modal-card-foot" style="justify-content:flex-end;gap:0.75rem;">
-        <button type="button" class="button is-light" onclick="closeSettingsModal('general')">Cancel</button>
-        <button type="submit" class="button is-primary" style="font-weight:600;">Save</button>
+        <button type="button" class="button is-light" onclick="closeSettingsModal('general')">{% translate "Cancel" %}</button>
+        <button type="submit" class="button is-primary" style="font-weight:600;">{% translate "Save" %}</button>
       </footer>
     </form>
   </div>
@@ -427,7 +428,7 @@
   <div class="modal-background" onclick="closeSettingsModal('cpu')"></div>
   <div class="modal-card" style="max-width:500px;border-radius:12px;">
     <header class="modal-card-head" style="background:var(--success-color, #48c78e);border-radius:12px 12px 0 0;">
-      <p class="modal-card-title" style="color:#fff;font-size:1rem;font-weight:600;"><i class="fas fa-microchip"></i>&nbsp; CPU Settings</p>
+      <p class="modal-card-title" style="color:#fff;font-size:1rem;font-weight:600;"><i class="fas fa-microchip"></i>{% translate "&nbsp; CPU Settings" %}</p>
       <button class="delete" onclick="closeSettingsModal('cpu')"></button>
     </header>
     <form method="post" action="{% url 'vm_update_settings' vmid %}">
@@ -436,11 +437,11 @@
       <section class="modal-card-body">
         {% if vm.status == 'running' %}
         <div class="notification is-warning is-light" style="padding:0.5rem 0.75rem;font-size:0.8125rem;margin-bottom:1rem;">
-          <i class="fas fa-exclamation-triangle"></i> VM is running. Changes take effect after restart.
+          <i class="fas fa-exclamation-triangle"></i> {% translate "VM is running. Changes take effect after restart." %}
         </div>
         {% endif %}
         <div class="field">
-          <label class="label" style="font-size:0.875rem;">CPU Type</label>
+          <label class="label" style="font-size:0.875rem;">{% translate "CPU Type" %}</label>
           <div class="control">
             <div class="select is-fullwidth">
               <select name="cpu">
@@ -454,7 +455,7 @@
         <div class="columns" style="margin-bottom:0;">
           <div class="column">
             <div class="field">
-              <label class="label" style="font-size:0.875rem;">Sockets</label>
+              <label class="label" style="font-size:0.875rem;">{% translate "Sockets" %}</label>
               <div class="control">
                 <input class="input" type="number" name="sockets" value="{{ vm.sockets }}" min="1" max="4">
               </div>
@@ -462,7 +463,7 @@
           </div>
           <div class="column">
             <div class="field">
-              <label class="label" style="font-size:0.875rem;">Cores per Socket</label>
+              <label class="label" style="font-size:0.875rem;">{% translate "Cores per Socket" %}</label>
               <div class="control">
                 <input class="input" type="number" name="cores" value="{{ vm.cores }}" min="1" max="128">
               </div>
@@ -472,14 +473,14 @@
         <div class="field">
           <label class="checkbox" style="font-size:0.875rem;">
             <input type="checkbox" name="numa" value="1"{% if vm.numa %} checked{% endif %}>
-            Enable NUMA
+            {% translate "Enable NUMA" %}
           </label>
-          <p class="help">Match CPU topology to physical NUMA nodes for better performance on multi-socket systems.</p>
+          <p class="help">{% translate "Match CPU topology to physical NUMA nodes for better performance on multi-socket systems." %}</p>
         </div>
       </section>
       <footer class="modal-card-foot" style="justify-content:flex-end;gap:0.75rem;">
-        <button type="button" class="button is-light" onclick="closeSettingsModal('cpu')">Cancel</button>
-        <button type="submit" class="button is-primary" style="font-weight:600;">Save</button>
+        <button type="button" class="button is-light" onclick="closeSettingsModal('cpu')">{% translate "Cancel" %}</button>
+        <button type="submit" class="button is-primary" style="font-weight:600;">{% translate "Save" %}</button>
       </footer>
     </form>
   </div>
@@ -490,7 +491,7 @@
   <div class="modal-background" onclick="closeSettingsModal('memory')"></div>
   <div class="modal-card" style="max-width:500px;border-radius:12px;">
     <header class="modal-card-head" style="background:#f59e0b;border-radius:12px 12px 0 0;">
-      <p class="modal-card-title" style="color:#fff;font-size:1rem;font-weight:600;"><i class="fas fa-memory"></i>&nbsp; Memory Settings</p>
+      <p class="modal-card-title" style="color:#fff;font-size:1rem;font-weight:600;"><i class="fas fa-memory"></i>{% translate "&nbsp; Memory Settings" %}</p>
       <button class="delete" onclick="closeSettingsModal('memory')"></button>
     </header>
     <form method="post" action="{% url 'vm_update_settings' vmid %}">
@@ -499,35 +500,35 @@
       <section class="modal-card-body">
         {% if vm.status == 'running' %}
         <div class="notification is-warning is-light" style="padding:0.5rem 0.75rem;font-size:0.8125rem;margin-bottom:1rem;">
-          <i class="fas fa-exclamation-triangle"></i> VM is running. Changes take effect after restart.
+          <i class="fas fa-exclamation-triangle"></i> {% translate "VM is running. Changes take effect after restart." %}
         </div>
         {% endif %}
         <div class="field">
-          <label class="label" style="font-size:0.875rem;">Allocated RAM (GB)</label>
+          <label class="label" style="font-size:0.875rem;">{% translate "Allocated RAM (GB)" %}</label>
           <div class="control">
             <input class="input" type="number" name="memory_gb" value="{{ vm.memory_gb }}" min="0.5" step="0.5" id="memory-gb-input">
           </div>
-          <p class="help">e.g. 2, 4, 8, 16 — or 0.5, 1.5, 2.5 for half-GB increments.</p>
+          <p class="help">{% translate "e.g. 2, 4, 8, 16 — or 0.5, 1.5, 2.5 for half-GB increments." %}</p>
         </div>
         <div class="field">
           <label class="checkbox" style="font-size:0.875rem;">
             <input type="checkbox" id="ballooning-toggle"{% if vm.raw_balloon %} checked{% endif %}
                    onchange="toggleBalloon(this.checked)">
-            Enable Ballooning
+            {% translate "Enable Ballooning" %}
           </label>
-          <p class="help">When enabled, Proxmox can reclaim unused memory from the guest OS.</p>
+          <p class="help">{% translate "When enabled, Proxmox can reclaim unused memory from the guest OS." %}</p>
         </div>
         <div class="field" id="balloon-min-field"{% if not vm.raw_balloon %} style="display:none;"{% endif %}>
-          <label class="label" style="font-size:0.875rem;">Balloon Minimum (GB)</label>
+          <label class="label" style="font-size:0.875rem;">{% translate "Balloon Minimum (GB)" %}</label>
           <div class="control">
             <input class="input" type="number" name="balloon_gb" value="{{ vm.balloon_gb }}" min="0" step="0.5" id="balloon-input">
           </div>
-          <p class="help">Minimum memory the guest is guaranteed. Set to 0 to allow full reclaim.</p>
+          <p class="help">{% translate "Minimum memory the guest is guaranteed. Set to 0 to allow full reclaim." %}</p>
         </div>
       </section>
       <footer class="modal-card-foot" style="justify-content:flex-end;gap:0.75rem;">
-        <button type="button" class="button is-light" onclick="closeSettingsModal('memory')">Cancel</button>
-        <button type="submit" class="button is-primary" style="font-weight:600;">Save</button>
+        <button type="button" class="button is-light" onclick="closeSettingsModal('memory')">{% translate "Cancel" %}</button>
+        <button type="submit" class="button is-primary" style="font-weight:600;">{% translate "Save" %}</button>
       </footer>
     </form>
   </div>
@@ -538,7 +539,7 @@
   <div class="modal-background" onclick="closeSettingsModal('firmware')"></div>
   <div class="modal-card" style="max-width:540px;border-radius:12px;">
     <header class="modal-card-head" style="background:#7c3aed;border-radius:12px 12px 0 0;">
-      <p class="modal-card-title" style="color:#fff;font-size:1rem;font-weight:600;"><i class="fas fa-microchip"></i>&nbsp; Firmware &amp; Boot Settings</p>
+      <p class="modal-card-title" style="color:#fff;font-size:1rem;font-weight:600;"><i class="fas fa-microchip"></i>{% translate "&nbsp; Firmware &amp; Boot Settings" %}</p>
       <button class="delete" onclick="closeSettingsModal('firmware')"></button>
     </header>
     <form method="post" action="{% url 'vm_update_settings' vmid %}" id="firmware-form">
@@ -548,11 +549,11 @@
       <section class="modal-card-body">
         {% if vm.status == 'running' %}
         <div class="notification is-warning is-light" style="padding:0.5rem 0.75rem;font-size:0.8125rem;margin-bottom:1rem;">
-          <i class="fas fa-exclamation-triangle"></i> VM is running. Changes take effect after restart.
+          <i class="fas fa-exclamation-triangle"></i> {% translate "VM is running. Changes take effect after restart." %}
         </div>
         {% endif %}
         <div class="field">
-          <label class="label" style="font-size:0.875rem;">BIOS</label>
+          <label class="label" style="font-size:0.875rem;">{% translate "BIOS" %}</label>
           <div class="control">
             <div class="select is-fullwidth">
               <select name="bios" id="bios-select" onchange="toggleUefiOptions()">
@@ -562,14 +563,14 @@
               </select>
             </div>
           </div>
-          <p class="help">Changing BIOS type on an existing VM may prevent it from booting. Use with caution.</p>
+          <p class="help">{% translate "Changing BIOS type on an existing VM may prevent it from booting. Use with caution." %}</p>
         </div>
 
         {# UEFI options — shown when OVMF is selected #}
         <div id="uefi-options" style="{% if vm.raw_bios != 'ovmf' %}display:none;{% endif %}">
           {% if not vm.efidisk0 %}
           <div class="field">
-            <label class="label" style="font-size:0.875rem;">EFI Disk Storage</label>
+            <label class="label" style="font-size:0.875rem;">{% translate "EFI Disk Storage" %}</label>
             <div class="control">
               <div class="select is-fullwidth">
                 <select name="efi_storage">
@@ -579,11 +580,11 @@
                 </select>
               </div>
             </div>
-            <p class="help">A small EFI disk will be created to store UEFI firmware variables.</p>
+            <p class="help">{% translate "A small EFI disk will be created to store UEFI firmware variables." %}</p>
           </div>
           {% else %}
           <div class="notification is-success is-light" style="padding:0.5rem 0.75rem;font-size:0.8125rem;margin-bottom:1rem;">
-            <i class="fas fa-check-circle"></i> EFI disk is already configured.
+            <i class="fas fa-check-circle"></i> {% translate "EFI disk is already configured." %}
           </div>
           {% endif %}
 
@@ -591,11 +592,11 @@
           <div class="field">
             <label class="checkbox" style="font-size:0.875rem;">
               <input type="checkbox" name="tpm" value="1">
-              Add TPM 2.0
+              {% translate "Add TPM 2.0" %}
             </label>
           </div>
           <div class="field" id="tpm-storage-field" style="display:none;">
-            <label class="label" style="font-size:0.875rem;">TPM Storage</label>
+            <label class="label" style="font-size:0.875rem;">{% translate "TPM Storage" %}</label>
             <div class="control">
               <div class="select is-fullwidth">
                 <select name="tpm_storage">
@@ -608,19 +609,19 @@
           </div>
           {% else %}
           <div class="notification is-success is-light" style="padding:0.5rem 0.75rem;font-size:0.8125rem;margin-bottom:1rem;">
-            <i class="fas fa-check-circle"></i> TPM 2.0 is already configured.
+            <i class="fas fa-check-circle"></i> {% translate "TPM 2.0 is already configured." %}
           </div>
           {% endif %}
         </div>
 
         {# Boot order builder #}
         <div class="field">
-          <label class="label" style="font-size:0.875rem;">Boot Order</label>
+          <label class="label" style="font-size:0.875rem;">{% translate "Boot Order" %}</label>
           <div id="boot-order-list" style="margin-bottom:0.5rem;"></div>
           <div style="display:flex;gap:0.5rem;">
             <div class="select is-small" style="flex:1;">
               <select id="boot-add-select" style="width:100%;">
-                <option value="">Add device...</option>
+                <option value="">{% translate "Add device..." %}</option>
                 {% for dev in boot_devices %}
                   <option value="{{ dev }}">{{ dev }}</option>
                 {% endfor %}
@@ -630,20 +631,20 @@
               <i class="fas fa-plus"></i>
             </button>
           </div>
-          <p class="help">Drag to reorder. Devices not listed will not be used for booting.</p>
+          <p class="help">{% translate "Drag to reorder. Devices not listed will not be used for booting." %}</p>
         </div>
 
         <div class="field">
           <label class="checkbox" style="font-size:0.875rem;">
             <input type="checkbox" name="onboot" value="1"{% if vm.onboot %} checked{% endif %}>
-            Start at boot
+            {% translate "Start at boot" %}
           </label>
-          <p class="help">Automatically start this VM when the Proxmox host boots.</p>
+          <p class="help">{% translate "Automatically start this VM when the Proxmox host boots." %}</p>
         </div>
       </section>
       <footer class="modal-card-foot" style="justify-content:flex-end;gap:0.75rem;">
-        <button type="button" class="button is-light" onclick="closeSettingsModal('firmware')">Cancel</button>
-        <button type="submit" class="button is-primary" style="font-weight:600;">Save</button>
+        <button type="button" class="button is-light" onclick="closeSettingsModal('firmware')">{% translate "Cancel" %}</button>
+        <button type="submit" class="button is-primary" style="font-weight:600;">{% translate "Save" %}</button>
       </footer>
     </form>
   </div>
@@ -655,22 +656,22 @@
   <div class="modal-background" onclick="this.parentElement.classList.remove('is-active')"></div>
   <div class="modal-card" style="max-width:480px;border-radius:12px;">
     <header class="modal-card-head" style="background:#475569;border-radius:12px 12px 0 0;">
-      <p class="modal-card-title" style="color:#fff;font-size:1rem;font-weight:600;"><i class="fas fa-copy"></i>&nbsp; Convert VM {{ vm.vmid }} to a template</p>
+      <p class="modal-card-title" style="color:#fff;font-size:1rem;font-weight:600;"><i class="fas fa-copy"></i>{% blocktranslate with vmid=vm.vmid trimmed %}&nbsp; Convert VM {{ vmid }} to a template{% endblocktranslate %}</p>
       <button class="delete" type="button" onclick="document.getElementById('template-vm-modal').classList.remove('is-active')"></button>
     </header>
     <form method="post" action="{% url 'vm_convert_template' vmid %}">
       {% csrf_token %}
       <section class="modal-card-body content">
-        <p>A template can no longer be started. You create new VMs from it with <strong>Clone</strong>
-           (a linked clone shares its disks and is created instantly).</p>
-        <p style="color:var(--danger-color);font-weight:600;"><i class="fas fa-exclamation-circle"></i> This cannot be undone from the web interface.</p>
-        <label class="label is-small">Type <strong>{{ vm.vmid }}</strong> to confirm:</label>
+        <p>{% translate "A template can no longer be started. You create new VMs from it with" %} <strong>{% translate "Clone" %}</strong>
+           {% translate "(a linked clone shares its disks and is created instantly)." %}</p>
+        <p style="color:var(--danger-color);font-weight:600;"><i class="fas fa-exclamation-circle"></i> {% translate "This cannot be undone from the web interface." %}</p>
+        <label class="label is-small">{% translate "Type" %} <strong>{{ vm.vmid }}</strong> {% translate "to confirm:" %}</label>
         <input class="input" type="text" name="confirm_vmid" autocomplete="off"
                oninput="document.getElementById('template-confirm-btn').disabled = (this.value !== '{{ vm.vmid }}')">
       </section>
       <footer class="modal-card-foot" style="justify-content:flex-end;gap:0.75rem;">
-        <button type="button" class="button is-light" onclick="document.getElementById('template-vm-modal').classList.remove('is-active')">Cancel</button>
-        <button type="submit" class="button is-dark" id="template-confirm-btn" disabled>Convert</button>
+        <button type="button" class="button is-light" onclick="document.getElementById('template-vm-modal').classList.remove('is-active')">{% translate "Cancel" %}</button>
+        <button type="submit" class="button is-dark" id="template-confirm-btn" disabled>{% translate "Convert" %}</button>
       </footer>
     </form>
   </div>
@@ -681,38 +682,38 @@
   <div class="modal-card" style="max-width:480px;border-radius:12px;">
     <header class="modal-card-head" style="background:var(--danger-color, #f14668);border-radius:12px 12px 0 0;">
       <p class="modal-card-title" style="color:#fff;font-size:1rem;font-weight:600;">
-        <i class="fas fa-exclamation-triangle"></i>&nbsp; Delete VM {{ vm.vmid }}
+        <i class="fas fa-exclamation-triangle"></i>{% blocktranslate with vmid=vm.vmid trimmed %}&nbsp; Delete VM {{ vmid }}{% endblocktranslate %}
       </p>
       <button class="delete" onclick="document.getElementById('delete-vm-modal').classList.remove('is-active')"></button>
     </header>
     <section class="modal-card-body">
       <div class="content">
-        <p>You are about to <strong>permanently delete</strong> the virtual machine:</p>
+        <p>{% translate "You are about to" %} <strong>{% translate "permanently delete" %}</strong> {% translate "the virtual machine:" %}</p>
         <div style="background:var(--bg-card, #f5f5f5);border-radius:8px;padding:1rem;margin:1rem 0;">
-          <strong>{{ vm.name }}</strong> (VMID {{ vm.vmid }})<br>
+          <strong>{{ vm.name }}</strong> {% blocktranslate with vmid=vm.vmid trimmed %}(VMID {{ vmid }}){% endblocktranslate %}<br>
           <span style="font-size:0.875rem;color:var(--text-muted, #7a7a7a);">
-            {{ vm.vcpus }} vCPU &middot; {{ vm.memory }} MB RAM &middot; {{ vm.disks|length }} disk{{ vm.disks|length|pluralize }}
+            {% blocktranslate with vcpus=vm.vcpus memory=vm.memory disks=vm.disks|length disks2=vm.disks|length|pluralize trimmed %}{{ vcpus }} vCPU &middot; {{ memory }} MB RAM &middot; {{ disks }} disk{{ disks2 }}{% endblocktranslate %}
           </span>
         </div>
         <p style="color:var(--danger-color, #f14668);font-weight:600;">
           <i class="fas fa-exclamation-circle"></i>
-          This will destroy all disks and data. This action cannot be undone.
+          {% translate "This will destroy all disks and data. This action cannot be undone." %}
         </p>
         <div style="margin-top:1rem;">
-          <label class="label" style="font-size:0.875rem;">Type <strong>{{ vm.vmid }}</strong> to confirm:</label>
-          <input class="input" type="text" id="delete-confirm-input" placeholder="Enter VMID" autocomplete="off"
+          <label class="label" style="font-size:0.875rem;">{% translate "Type" %} <strong>{{ vm.vmid }}</strong> {% translate "to confirm:" %}</label>
+          <input class="input" type="text" id="delete-confirm-input" placeholder="{% translate "Enter VMID" %}" autocomplete="off"
                  oninput="document.getElementById('delete-confirm-btn').disabled = (this.value !== '{{ vm.vmid }}')">
         </div>
       </div>
     </section>
     <footer class="modal-card-foot" style="justify-content:flex-end;gap:0.75rem;">
-      <button class="button is-light" onclick="document.getElementById('delete-vm-modal').classList.remove('is-active')">Cancel</button>
+      <button class="button is-light" onclick="document.getElementById('delete-vm-modal').classList.remove('is-active')">{% translate "Cancel" %}</button>
       <form method="post" action="{% url 'vm_delete' vmid %}" style="margin:0;" id="delete-vm-form"
             onsubmit="startDeleteSpinner()">
         {% csrf_token %}
         <button type="submit" id="delete-confirm-btn" class="button is-danger" disabled>
           <span class="icon is-small"><i class="fas fa-trash-alt"></i></span>
-          <span>Delete VM</span>
+          <span>{% translate "Delete VM" %}</span>
         </button>
       </form>
     </footer>
@@ -745,8 +746,8 @@
       body.innerHTML =
         '<div style="text-align:center;padding:2rem;">' +
           '<span class="spinner" style="width:2rem;height:2rem;border-width:3px;display:inline-block;margin-bottom:1rem;"></span>' +
-          '<p style="font-weight:600;font-size:1rem;">Deleting VM…</p>' +
-          '<p style="color:var(--text-muted, #7a7a7a);font-size:0.875rem;">Waiting for Proxmox to remove disks and configuration.</p>' +
+          '<p style="font-weight:600;font-size:1rem;">{{ _("Deleting VM…")|escapejs }}</p>' +
+          '<p style="color:var(--text-muted, #7a7a7a);font-size:0.875rem;">{{ _("Waiting for Proxmox to remove disks and configuration.")|escapejs }}</p>' +
         '</div>';
     }
     // Disable cancel button
@@ -821,9 +822,9 @@
       row.innerHTML =
         '<span style="color:var(--text-muted,#7a7a7a);font-size:0.75rem;width:1.5rem;">' + (i+1) + '.</span>' +
         '<span style="font-family: var(--font-mono);font-weight:600;flex:1;">' + dev + '</span>' +
-        (i > 0 ? '<button type="button" class="button is-small is-white" onclick="moveBootDevice('+i+',-1)" title="Move up"><i class="fas fa-arrow-up" style="font-size:0.75rem;"></i></button>' : '') +
-        (i < bootOrder.length-1 ? '<button type="button" class="button is-small is-white" onclick="moveBootDevice('+i+',1)" title="Move down"><i class="fas fa-arrow-down" style="font-size:0.75rem;"></i></button>' : '') +
-        '<button type="button" class="button is-small is-white" onclick="removeBootDevice('+i+')" title="Remove"><i class="fas fa-times" style="font-size:0.75rem;color:var(--danger-color,#f14668);"></i></button>';
+        (i > 0 ? '<button type="button" class="button is-small is-white" onclick="moveBootDevice('+i+',-1)" title="{{ _("Move up")|escapejs }}"><i class="fas fa-arrow-up" style="font-size:0.75rem;"></i></button>' : '') +
+        (i < bootOrder.length-1 ? '<button type="button" class="button is-small is-white" onclick="moveBootDevice('+i+',1)" title="{{ _("Move down")|escapejs }}"><i class="fas fa-arrow-down" style="font-size:0.75rem;"></i></button>' : '') +
+        '<button type="button" class="button is-small is-white" onclick="removeBootDevice('+i+')" title="{{ _("Remove")|escapejs }}"><i class="fas fa-times" style="font-size:0.75rem;color:var(--danger-color,#f14668);"></i></button>';
       list.appendChild(row);
     });
     // Update hidden input

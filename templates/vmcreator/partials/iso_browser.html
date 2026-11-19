@@ -1,20 +1,21 @@
+{% load i18n %}
 {% if not storage %}
 <div style="color: var(--text-muted);font-size: 0.8125rem;padding: 0.4rem 0;">
-  Select a storage pool above to browse ISOs.
+  {% translate "Select a storage pool above to browse ISOs." %}
 </div>
 {% elif error %}
 <div style="background: var(--bg-danger-light);border: 1px solid var(--danger-color);border-radius: 6px;padding: 0.75rem 1rem;font-size: 0.8125rem;color: var(--danger-color);margin-top: 0.5rem;">
   <i class="fas fa-exclamation-circle" style="margin-right: 0.4rem;"></i>
-  <strong>Could not load ISOs:</strong> {{ error }}
+  <strong>{% translate "Could not load ISOs:" %}</strong> {{ error }}
 </div>
 {% elif not isos %}
 <div style="background: var(--bg-warning-light);border: 1px solid var(--warning-color);border-radius: 6px;padding: 0.75rem 1rem;font-size: 0.8125rem;color: var(--warning-color);margin-top: 0.5rem;">
   <i class="fas fa-exclamation-triangle" style="color: var(--warning-color);margin-right: 0.4rem;"></i>
-  No ISO files found in <strong>{{ storage }}</strong>.
+  {% translate "No ISO files found in" %} <strong>{{ storage }}</strong>.
 </div>
 {% else %}
 <div style="font-size: 0.8125rem;color: var(--text-muted);margin: 0.5rem 0 0.4rem;">
-  {{ isos|length }} ISO{{ isos|length|pluralize }} found — select one:
+  {% blocktranslate with isos=isos|length isos2=isos|length|pluralize trimmed %}{{ isos }} ISO{{ isos2 }} found — select one:{% endblocktranslate %}
 </div>
 <div style="max-height: 220px;overflow-y: auto;border: 1px solid var(--border-main);border-radius: 6px;background: var(--bg-card);">
   {% for iso in isos %}

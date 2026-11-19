@@ -1,3 +1,4 @@
+{% load i18n %}
 {# Local directory browser partial — loaded into a modal body via HTMX #}
 
 <div style="display:flex;align-items:center;gap:0.5rem;padding:0.6rem 1rem;background:#f5f7fa;border-bottom:1px solid #e8ecf0;font-size:0.875rem;">
@@ -7,7 +8,7 @@
             hx-get="{% url 'wizard_local_browse' %}?path={{ parent }}&field={{ field }}"
             hx-target="#local-browser-body"
             hx-swap="innerHTML"
-            title="Go up">
+            title="{% translate "Go up" %}">
       <span class="icon is-small"><i class="fas fa-level-up-alt"></i></span>
     </button>
   {% endif %}
@@ -16,14 +17,14 @@
   </span>
   <button class="button is-small is-primary" onclick="selectLocalDir('{{ path }}', '{{ field }}')">
     <span class="icon is-small"><i class="fas fa-check"></i></span>
-    <span>Select</span>
+    <span>{% translate "Select" %}</span>
   </button>
 </div>
 
 {% if free_bytes is not None %}
   <div style="padding:0.4rem 1rem;background:#fefce8;border-bottom:1px solid #e8ecf0;font-size:0.8125rem;color:#713f12;">
     <i class="fas fa-hdd" style="margin-right:0.3rem;"></i>
-    Free space: <strong>{{ free_bytes|filesizeformat }}</strong>
+    {% translate "Free space:" %} <strong>{{ free_bytes|filesizeformat }}</strong>
   </div>
 {% endif %}
 
@@ -35,11 +36,11 @@
 {% elif not dirs %}
   <div style="padding:1.25rem 1rem;color:#b5b5b5;font-size:0.875rem;text-align:center;">
     <i class="fas fa-folder-open" style="margin-right:0.4rem;"></i>
-    No subdirectories here.
+    {% translate "No subdirectories here." %}
     <br>
     <button class="button is-small is-primary is-light" style="margin-top:0.75rem;" onclick="selectLocalDir('{{ path }}', '{{ field }}')">
       <i class="fas fa-check" style="margin-right:0.3rem;"></i>
-      Use <code>{{ path }}</code>
+      {% translate "Use" %} <code>{{ path }}</code>
     </button>
   </div>
 {% else %}
@@ -54,7 +55,7 @@
                   hx-swap="innerHTML">
             {{ dir }}
           </button>
-          <button class="button is-small is-light" onclick="selectLocalDir('{{ path }}/{{ dir }}', '{{ field }}')" title="Select">
+          <button class="button is-small is-light" onclick="selectLocalDir('{{ path }}/{{ dir }}', '{{ field }}')" title="{% translate "Select" %}">
             <span class="icon is-small"><i class="fas fa-check"></i></span>
           </button>
         </div>
@@ -67,10 +68,10 @@
 <div style="display:flex;align-items:center;gap:0.5rem;padding:0.6rem 1rem;border-top:1px solid #e8ecf0;background:#f9fafb;">
   <i class="fas fa-folder-plus" style="color:#3273dc;flex-shrink:0;"></i>
   <input type="text" class="input is-small is-monospace" id="new-dir-name"
-         placeholder="New folder name" style="flex:1;"
+         placeholder="{% translate "New folder name" %}" style="flex:1;"
          onkeydown="if(event.key==='Enter'){event.preventDefault();createLocalDir('{{ path }}','{{ field }}');}">
   <button class="button is-small is-primary is-light" onclick="createLocalDir('{{ path }}', '{{ field }}')">
     <span class="icon is-small"><i class="fas fa-plus"></i></span>
-    <span>Create</span>
+    <span>{% translate "Create" %}</span>
   </button>
 </div>

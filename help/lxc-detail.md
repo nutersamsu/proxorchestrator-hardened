@@ -26,7 +26,7 @@ Running containers show real-time CPU utilization percentage, current memory usa
 ## Configuration sections
 
 ### General
-Basic container properties: CTID, hostname, OS type, architecture, and description. These can be changed in Proxmox's web UI directly — ProxOrchestrator reads but does not (currently) edit these fields.
+Basic container properties: CTID, hostname, OS type, architecture, and description. Use the pencil next to the description to edit the notes (Markdown, as in Proxmox).
 
 ### Options
 Container options and flags: privilege mode (unprivileged recommended for security), start-on-boot setting, startup order, protection flag, enabled features (e.g. nesting for Docker-in-LXC), console mode and number of TTYs, hookscript path, lock state, and tags. Only the values you change are sent to Proxmox.

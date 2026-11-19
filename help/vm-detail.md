@@ -31,7 +31,7 @@ Running VMs show real-time CPU utilization percentage and current memory usage a
 ## Configuration sections
 
 ### General
-Basic VM properties: VMID, name, OS type, and description. These can be changed in Proxmox's web UI directly — ProxOrchestrator reads but does not (currently) edit these fields.
+Basic VM properties: VMID, name, OS type, and description. Use **Rename VM** to change the name and the pencil next to the description to edit the notes (Markdown, as in Proxmox).
 
 ### Firmware & Boot
 Shows the BIOS type (SeaBIOS or OVMF), whether an EFI disk and TPM are configured, boot order, and start-on-boot status.

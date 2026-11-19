@@ -1,12 +1,13 @@
 {% extends "base.html" %}
-{% block title %}New LXC Container — ProxOrchestrator{% endblock %}
-{% block page_title %}New LXC Container{% endblock %}
-{% block help_slug %}lxc-create{% endblock %}
+{% load i18n %}
+{% block title %}{% translate "New LXC Container — ProxOrchestrator" %}{% endblock %}
+{% block page_title %}{% translate "New LXC Container" %}{% endblock %}
+{% block help_slug %}{% translate "lxc-create" %}{% endblock %}
 
 {% block page_actions %}
   <a href="{% url 'lxc_list' %}" class="button is-light is-small">
     <span class="icon is-small"><i class="fas fa-arrow-left"></i></span>
-    <span>Back to Containers</span>
+    <span>{% translate "Back to Containers" %}</span>
   </a>
 {% endblock %}
 
@@ -23,13 +24,13 @@
 
     <div class="proxorchestrator-card">
       <div class="card-header">
-        <i class="fas fa-cube" style="color: var(--link-color);"></i> Select Container Template
+        <i class="fas fa-cube" style="color: var(--link-color);"></i> {% translate "Select Container Template" %}
       </div>
       <div class="card-body" style="padding: 1.5rem;">
 
         {# Storage selector #}
         <div class="field">
-          <label class="label" style="font-size: 0.875rem;font-weight: 600;">Template Storage</label>
+          <label class="label" style="font-size: 0.875rem;font-weight: 600;">{% translate "Template Storage" %}</label>
           <div class="control">
             <div class="select is-fullwidth">
               <select id="template-storage"
@@ -38,14 +39,14 @@
                       hx-include="#template-storage, #template-section"
                       hx-trigger="change"
                       name="storage">
-                <option value="">— Select storage pool —</option>
+                <option value="">{% translate "— Select storage pool —" %}</option>
                 {% for s in storage_pools %}
                   <option value="{{ s.storage }}">{{ s.storage }}</option>
                 {% endfor %}
               </select>
             </div>
           </div>
-          <p class="field-hint">Storage pool with vztmpl content type enabled.</p>
+          <p class="field-hint">{% translate "Storage pool with vztmpl content type enabled." %}</p>
         </div>
 
         {# Tab toggle: Downloaded vs Available #}
@@ -58,7 +59,7 @@
                  hx-vals='{"section": "downloaded"}'
                  onclick="document.getElementById('tab-downloaded').classList.add('is-active');document.getElementById('tab-available').classList.remove('is-active');document.getElementById('template-section').value='downloaded';">
                 <span class="icon is-small"><i class="fas fa-hdd"></i></span>
-                <span>Downloaded</span>
+                <span>{% translate "Downloaded" %}</span>
               </a>
             </li>
             <li id="tab-available">
@@ -68,7 +69,7 @@
                  hx-vals='{"section": "available"}'
                  onclick="document.getElementById('tab-available').classList.add('is-active');document.getElementById('tab-downloaded').classList.remove('is-active');document.getElementById('template-section').value='available';">
                 <span class="icon is-small"><i class="fas fa-cloud-download-alt"></i></span>
-                <span>Available to Download</span>
+                <span>{% translate "Available to Download" %}</span>
               </a>
             </li>
           </ul>
@@ -79,7 +80,7 @@
         <div id="template-list">
           <div style="padding: 2rem;text-align: center;color: var(--text-muted);font-size: 0.875rem;">
             <i class="fas fa-arrow-up" style="margin-right: 0.4rem;"></i>
-            Select a storage pool to browse templates.
+            {% translate "Select a storage pool to browse templates." %}
           </div>
         </div>
 
@@ -92,23 +93,22 @@
   <div class="column is-5">
     <div class="proxorchestrator-card">
       <div class="card-header">
-        <i class="fas fa-info-circle" style="color: var(--link-color);"></i> About New LXC Container
+        <i class="fas fa-info-circle" style="color: var(--link-color);"></i> {% translate "About New LXC Container" %}
       </div>
       <div class="card-body" style="font-size: 0.875rem;color: var(--text-semi);line-height: 1.7;">
         <p style="margin-bottom: 0.75rem;">
-          <strong>Downloaded Templates</strong> — choose from templates already stored on your Proxmox node. These are ready to use immediately with no download required.
+          <strong>{% translate "Downloaded Templates" %}</strong> {% translate "— choose from templates already stored on your Proxmox node. These are ready to use immediately with no download required." %}
         </p>
         <p style="margin-bottom: 0.75rem;">
-          <strong>Available to Download</strong> — browse the official Proxmox template catalogue. Selecting a template will download it to your storage before creating the container.
+          <strong>{% translate "Available to Download" %}</strong> {% translate "— browse the official Proxmox template catalogue. Selecting a template will download it to your storage before creating the container." %}
         </p>
         <p style="margin-bottom: 0.75rem;">
-          <strong>After selecting a template</strong> you'll configure the container — hostname, resources (CPU, RAM, swap), storage, networking, and authentication — before creation begins.
+          <strong>{% translate "After selecting a template" %}</strong> {% translate "you'll configure the container — hostname, resources (CPU, RAM, swap), storage, networking, and authentication — before creation begins." %}
         </p>
         <hr style="border: none;border-top: 1px solid var(--border-main);margin: 0.75rem 0;">
         <p style="font-size: 0.8125rem;color: var(--text-muted);">
           <i class="fas fa-hdd" style="margin-right: 0.3rem;"></i>
-          Template storage must have the <strong>vztmpl</strong> content type enabled in Proxmox.
-          Go to Datacenter &rarr; Storage &rarr; select pool &rarr; Edit &rarr; Content.
+          {% translate "Template storage must have the" %} <strong>{% translate "vztmpl" %}</strong> {% translate "content type enabled in Proxmox. Go to Datacenter &rarr; Storage &rarr; select pool &rarr; Edit &rarr; Content." %}
         </p>
       </div>
     </div>
@@ -116,17 +116,15 @@
     {# ===== Community Scripts ===== #}
     <div class="proxorchestrator-card">
       <div class="card-header">
-        <i class="fas fa-store" style="color:var(--purple-color, #7c3aed);"></i> Or deploy a pre-built app
+        <i class="fas fa-store" style="color:var(--purple-color, #7c3aed);"></i> {% translate "Or deploy a pre-built app" %}
       </div>
       <div class="card-body" style="font-size:0.875rem;color:var(--text-semi, #4a4a4a);line-height:1.7;">
         <p style="margin-bottom:0.75rem;">
-          Browse <strong>{{ community_script_count }} community scripts</strong> — apps like Docker,
-          Pi-hole, Home Assistant, and Plex, plus base OS containers like Debian
-          and Alpine. One-click deploy with sensible defaults.
+          {% translate "Browse" %} <strong>{% blocktranslate trimmed %}{{ community_script_count }} community scripts{% endblocktranslate %}</strong> {% translate "— apps like Docker, Pi-hole, Home Assistant, and Plex, plus base OS containers like Debian and Alpine. One-click deploy with sensible defaults." %}
         </p>
         <a href="{% url 'lxc_community_scripts' %}" class="button is-primary is-outlined is-fullwidth" style="font-weight:600;">
           <span class="icon"><i class="fas fa-store"></i></span>
-          <span>Browse Community Scripts</span>
+          <span>{% translate "Browse Community Scripts" %}</span>
           <span class="icon"><i class="fas fa-arrow-right"></i></span>
         </a>
       </div>

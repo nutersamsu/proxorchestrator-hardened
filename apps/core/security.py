@@ -49,6 +49,8 @@ def safe_next_url(request, candidate, default="/"):
 # Reachable without a session.
 PUBLIC_PREFIXES = (
     "/login/",
+    # Language selector (POST + CSRF; only sets the language cookie).
+    "/i18n/setlang/",
     "/logout/",
     "/static/",
     "/help/",

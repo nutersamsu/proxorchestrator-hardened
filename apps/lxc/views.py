@@ -26,6 +26,7 @@ from django.http import JsonResponse
 
 from .catalog import can_refresh, check_for_updates, get_catalog, get_categories, get_script, search_catalog
 from .models import CommunityScriptJob, LxcCloneJob, LxcCreateJob, LxcSnapshotLog
+from django.utils.translation import gettext
 
 logger = logging.getLogger(__name__)
 
@@ -430,7 +431,7 @@ def lxc_action(request, vmid, action):
         return render(
             request,
             "lxc/partials/ct_row_error.html",
-            {"vmid": vmid, "error": f"Unknown action: {action!r}"},
+            {"vmid": vmid, "error": gettext('Unknown action: %(action)s') % {"action": repr(action)}},
         )
 
     config = ProxmoxConfig.get_config()
@@ -511,7 +512,7 @@ def lxc_row_status(request, vmid):
         return render(
             request,
             "lxc/partials/ct_row_error.html",
-            {"vmid": vmid, "error": f"Could not check container status: {exc}"},
+            {"vmid": vmid, "error": gettext('Could not check container status: %(exc)s') % {"exc": exc}},
         )
 
     target_status = ACTION_TARGET_STATUS.get(action)
@@ -599,7 +600,7 @@ def template_browser(request):
 
     if not storage:
         return render(request, "lxc/partials/template_list.html", {
-            "templates": [], "error": "No storage selected."
+            "templates": [], "error": gettext("No storage selected.")
         })
 
     try:
@@ -651,7 +652,7 @@ def template_delete(request):
 
     if not storage or not template:
         return render(request, "lxc/partials/template_list.html", {
-            "templates": [], "error": "Missing storage or template name.",
+            "templates": [], "error": gettext("Missing storage or template name."),
         })
 
     volid = f"{storage}:vztmpl/{template}"
@@ -847,7 +848,7 @@ def cancel_job(request, job_id):
     """Cancel a queued or in-progress LXC creation job."""
     job = get_object_or_404(LxcCreateJob, pk=job_id)
     if job.stage in (LxcCreateJob.STAGE_DONE, LxcCreateJob.STAGE_FAILED, LxcCreateJob.STAGE_CANCELLED):
-        messages.warning(request, f'Job "{job.ct_name}" is already {job.get_stage_display().lower()}.')
+        messages.warning(request, gettext('Job "%(ct_name)s" is already %(value)s.') % {"ct_name": job.ct_name, "value": job.get_stage_display().lower()})
         return redirect("dashboard")
 
     if job.task_id:
@@ -859,7 +860,7 @@ def cancel_job(request, job_id):
     job.message = "Cancelled by user"
     job.save(update_fields=["stage", "message", "updated_at"])
     logger.info("LxcCreateJob %d: cancelled by user %s", job.pk, request.user.username)
-    messages.success(request, f'Job "{job.ct_name}" has been cancelled.')
+    messages.success(request, gettext('Job "%(ct_name)s" has been cancelled.') % {"ct_name": job.ct_name})
     return redirect("dashboard")
 
 
@@ -903,7 +904,7 @@ def lxc_delete(request, vmid):
         ct_name = status.get("name", str(vmid))
 
         if status.get("status") != "stopped":
-            messages.error(request, f"Container {ct_name} ({vmid}) must be stopped before it can be deleted.")
+            messages.error(request, gettext('Container %(ct_name)s (%(vmid)s) must be stopped before it can be deleted.') % {"ct_name": ct_name, "vmid": vmid})
             return redirect("lxc_detail", vmid=vmid)
 
         upid = api.delete_lxc(node, vmid)
@@ -916,14 +917,14 @@ def lxc_delete(request, vmid):
             result = _wait_for_task(api, node, upid)
 
             if result and result.get("exitstatus") != "OK":
-                messages.error(request, f"Failed to delete container {ct_name} ({vmid}): {result.get('exitstatus', 'unknown error')}")
+                messages.error(request, gettext('Failed to delete container %(ct_name)s (%(vmid)s): %(exitstatus_unknown_error)s') % {"ct_name": ct_name, "vmid": vmid, "exitstatus_unknown_error": result.get('exitstatus', 'unknown error')})
                 return redirect("lxc_detail", vmid=vmid)
 
-        messages.success(request, f"Container {ct_name} ({vmid}) has been deleted.")
+        messages.success(request, gettext('Container %(ct_name)s (%(vmid)s) has been deleted.') % {"ct_name": ct_name, "vmid": vmid})
         return redirect("lxc_list")
     except ProxmoxAPIError as exc:
         logger.error("lxc_delete vmid=%d: %s", vmid, exc)
-        messages.error(request, f"Failed to delete container {vmid}: {exc.message}")
+        messages.error(request, gettext('Failed to delete container %(vmid)s: %(message)s') % {"vmid": vmid, "message": exc.message})
         return redirect("lxc_detail", vmid=vmid)
 
 
@@ -1016,12 +1017,12 @@ def lxc_update_settings(request, vmid):
         # console mode and number of ttys
         cmode = request.POST.get("cmode", "tty")
         if cmode not in ("tty", "console", "shell"):
-            messages.error(request, "Unknown console mode.")
+            messages.error(request, gettext("Unknown console mode."))
             return redirect("lxc_detail", vmid=vmid)
         kwargs["cmode"] = cmode
         tty = request.POST.get("tty", "2").strip()
         if not tty.isdigit() or int(tty) > 6:
-            messages.error(request, "TTY count must be between 0 and 6.")
+            messages.error(request, gettext("TTY count must be between 0 and 6."))
             return redirect("lxc_detail", vmid=vmid)
         kwargs["tty"] = int(tty)
 
@@ -1035,7 +1036,7 @@ def lxc_update_settings(request, vmid):
         delete_keys.extend(dns_delete)
 
     else:
-        messages.error(request, "Unknown settings section.")
+        messages.error(request, gettext("Unknown settings section."))
         return redirect("lxc_detail", vmid=vmid)
 
     try:
@@ -1044,16 +1045,16 @@ def lxc_update_settings(request, vmid):
         # root@pam, even when the value is left as it was.
         kwargs, delete_keys = only_changes(api.get_lxc_config(node, vmid), kwargs, delete_keys)
         if ("startup" in kwargs or "startup" in delete_keys) and not token_can("/", "Sys.Modify"):
-            messages.error(request, "Changing the start/shutdown order needs the Sys.Modify privilege, "
-                                    "which the API token does not have. Nothing was saved.")
+            messages.error(request, gettext("Changing the start/shutdown order needs the Sys.Modify privilege, "
+                                    "which the API token does not have. Nothing was saved."))
             return redirect("lxc_detail", vmid=vmid)
         if "hookscript" in kwargs or "hookscript" in delete_keys:
-            messages.error(request, "Proxmox only lets root@pam change a hookscript. Nothing was saved.")
+            messages.error(request, gettext("Proxmox only lets root@pam change a hookscript. Nothing was saved."))
             return redirect("lxc_detail", vmid=vmid)
         if delete_keys:
             kwargs["delete"] = ",".join(delete_keys)
         if not kwargs:
-            messages.info(request, "No changes.")
+            messages.info(request, gettext("No changes."))
             return redirect("lxc_detail", vmid=vmid)
 
         api.update_lxc_config(node, vmid, **kwargs)
@@ -1062,13 +1063,13 @@ def lxc_update_settings(request, vmid):
         if status.get("status") == "running" and section in ("cpu", "memory", "options"):
             messages.warning(
                 request,
-                f"{section.title()} settings updated. A container restart may be required for all changes to take effect.",
+                gettext('%(value)s settings updated. A container restart may be required for all changes to take effect.') % {"value": section.title()},
             )
         else:
-            messages.success(request, f"{section.title()} settings updated.")
+            messages.success(request, gettext('%(value)s settings updated.') % {"value": section.title()})
     except ProxmoxAPIError as exc:
         logger.error("lxc_update_settings vmid=%d section=%s: %s", vmid, section, exc)
-        messages.error(request, f"Failed to update settings: {exc.message}")
+        messages.error(request, gettext('Failed to update settings: %(message)s') % {"message": exc.message})
 
     return redirect("lxc_detail", vmid=vmid)
 
@@ -1706,7 +1707,7 @@ def community_scripts_deploy(request, slug):
     """Configure and deploy a community script."""
     script = get_script(slug)
     if not script:
-        messages.error(request, f"Unknown community script: {slug}")
+        messages.error(request, gettext('Unknown community script: %(slug)s') % {"slug": slug})
         return redirect("lxc_community_scripts")
 
     # Attach primary category icon for logo fallback

@@ -9,6 +9,8 @@ from apps.authconfig import views as authconfig_views
 from apps.wizard.views import proxmox_settings
 
 urlpatterns = [
+    # POST /i18n/setlang/ — language selector at the top right
+    path("i18n/", include("django.conf.urls.i18n")),
     path("admin/", admin.site.urls),
     path("", include("apps.core.urls")),
     path("wizard/", include("apps.wizard.urls")),

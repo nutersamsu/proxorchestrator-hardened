@@ -1,3 +1,4 @@
+{% load i18n %}
 {# Snapshot management partial — swapped via HTMX on create / rollback / delete #}
 <div id="snapshot-table"
      {% if snap_transitioning %}
@@ -23,18 +24,18 @@
   {% if not snap_transitioning %}
   <div style="display:flex;align-items:flex-end;gap:0.75rem;margin-bottom:1rem;flex-wrap:wrap;">
     <div style="flex:1;min-width:140px;max-width:220px;">
-      <label style="font-size:0.75rem;font-weight:600;color:var(--text-muted, #7a7a7a);display:block;margin-bottom:0.25rem;">Name</label>
-      <input class="input is-small" type="text" name="snapname" placeholder="my-snapshot" form="snap-create-form" required
-             pattern="[a-zA-Z0-9][a-zA-Z0-9_\-]{0,39}" title="Alphanumeric, hyphens, underscores (max 40 chars)">
+      <label style="font-size:0.75rem;font-weight:600;color:var(--text-muted, #7a7a7a);display:block;margin-bottom:0.25rem;">{% translate "Name" %}</label>
+      <input class="input is-small" type="text" name="snapname" placeholder="{% translate "my-snapshot" %}" form="snap-create-form" required
+             pattern="[a-zA-Z0-9][a-zA-Z0-9_\-]{0,39}" title="{% translate "Alphanumeric, hyphens, underscores (max 40 chars)" %}">
     </div>
     <div style="flex:2;min-width:180px;">
-      <label style="font-size:0.75rem;font-weight:600;color:var(--text-muted, #7a7a7a);display:block;margin-bottom:0.25rem;">Description <span style="font-weight:400;">(optional)</span></label>
-      <input class="input is-small" type="text" name="description" placeholder="Before config change..." form="snap-create-form">
+      <label style="font-size:0.75rem;font-weight:600;color:var(--text-muted, #7a7a7a);display:block;margin-bottom:0.25rem;">{% translate "Description" %} <span style="font-weight:400;">{% translate "(optional)" %}</span></label>
+      <input class="input is-small" type="text" name="description" placeholder="{% translate "Before config change..." %}" form="snap-create-form">
     </div>
     <div style="display:flex;align-items:center;gap:0.5rem;">
       <label style="font-size:0.75rem;font-weight:600;color:var(--text-muted, #7a7a7a);display:flex;align-items:center;gap:0.3rem;white-space:nowrap;cursor:pointer;">
         <input type="checkbox" name="vmstate" value="1" form="snap-create-form">
-        Include RAM
+        {% translate "Include RAM" %}
       </label>
     </div>
     <form id="snap-create-form" method="post"
@@ -45,7 +46,7 @@
       {% csrf_token %}
       <button type="submit" class="button is-small is-primary" style="font-weight:600;">
         <span class="icon is-small"><i class="fas fa-camera"></i></span>
-        <span>Take Snapshot</span>
+        <span>{% translate "Take Snapshot" %}</span>
       </button>
     </form>
   </div>
@@ -56,11 +57,11 @@
     <table class="table is-fullwidth is-hoverable" style="font-size:0.875rem;">
       <thead>
         <tr>
-          <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;padding-left:1.5rem;">Name</th>
-          <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;">Description</th>
-          <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;">Date</th>
-          <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;">RAM</th>
-          <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;text-align:right;padding-right:1.5rem;">Actions</th>
+          <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;padding-left:1.5rem;">{% translate "Name" %}</th>
+          <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;">{% translate "Description" %}</th>
+          <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;">{% translate "Date" %}</th>
+          <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;">{% translate "RAM" %}</th>
+          <th style="font-size:0.75rem;color:var(--text-muted, #7a7a7a);font-weight:600;text-align:right;padding-right:1.5rem;">{% translate "Actions" %}</th>
         </tr>
       </thead>
       <tbody>
@@ -78,10 +79,10 @@
           <td>
             {% if snap.vmstate %}
               <span style="color:var(--success-color, #48c78e);font-size:0.8125rem;font-weight:600;">
-                <i class="fas fa-memory" style="margin-right:0.2rem;"></i>Yes
+                <i class="fas fa-memory" style="margin-right:0.2rem;"></i>{% translate "Yes" %}
               </span>
             {% else %}
-              <span style="color:var(--text-muted, #b5b5b5);font-size:0.8125rem;">No</span>
+              <span style="color:var(--text-muted, #b5b5b5);font-size:0.8125rem;">{% translate "No" %}</span>
             {% endif %}
           </td>
           <td style="text-align:right;padding-right:1.5rem;white-space:nowrap;">
@@ -90,17 +91,17 @@
                     hx-post="{% url 'vm_snapshot_action' vmid snap.name 'rollback' %}"
                     hx-target="#snapshot-table"
                     hx-swap="outerHTML"
-                    hx-confirm="Rollback to snapshot '{{ snap.name }}'? This will revert the VM to the state when this snapshot was taken. All changes since then will be lost."
-                    title="Rollback to this snapshot">
+                    hx-confirm="{% blocktranslate with name=snap.name trimmed %}Rollback to snapshot '{{ name }}'? This will revert the VM to the state when this snapshot was taken. All changes since then will be lost.{% endblocktranslate %}"
+                    title="{% translate "Rollback to this snapshot" %}">
               <span class="icon is-small"><i class="fas fa-undo"></i></span>
-              <span>Rollback</span>
+              <span>{% translate "Rollback" %}</span>
             </button>
             <button class="button is-small is-danger is-light" style="font-weight:600;"
                     hx-post="{% url 'vm_snapshot_action' vmid snap.name 'delete' %}"
                     hx-target="#snapshot-table"
                     hx-swap="outerHTML"
-                    hx-confirm="Delete snapshot '{{ snap.name }}'? This cannot be undone."
-                    title="Delete this snapshot">
+                    hx-confirm="{% blocktranslate with name=snap.name trimmed %}Delete snapshot '{{ name }}'? This cannot be undone.{% endblocktranslate %}"
+                    title="{% translate "Delete this snapshot" %}">
               <span class="icon is-small"><i class="fas fa-trash"></i></span>
             </button>
             {% endif %}
@@ -113,7 +114,7 @@
     {% if not snap_transitioning %}
     <div style="padding:1.5rem;color:var(--text-muted, #7a7a7a);font-size:0.875rem;text-align:center;">
       <i class="fas fa-camera" style="margin-right:0.4rem;opacity:0.5;"></i>
-      No snapshots yet. Create one using the form above.
+      {% translate "No snapshots yet. Create one using the form above." %}
     </div>
     {% endif %}
   {% endif %}

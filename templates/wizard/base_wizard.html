@@ -1,9 +1,10 @@
+{% load i18n %}{% get_current_language as HTML_LANG %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ HTML_LANG }}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block title %}Setup Wizard — ProxOrchestrator{% endblock %}</title>
+  <title>{% block title %}{% translate "Setup Wizard — ProxOrchestrator" %}{% endblock %}</title>
   <link rel="stylesheet" href="/static/vendor/css/bulma.min.css">
   <link rel="stylesheet" href="/static/vendor/css/all.min.css">
   <link rel="stylesheet" href="/static/css/proxorchestrator.css?v={{ css_version }}">
@@ -13,17 +14,18 @@
 {# ===== Wizard Top Bar ===== #}
 <div class="wizard-topbar">
   <div>
-    <div class="logo-title">&#9889; ProxOrchestrator</div>
-    <div class="logo-subtitle">by ForgedIO</div>
+    <div class="logo-title">{% translate "&#9889; ProxOrchestrator" %}</div>
+    <div class="logo-subtitle">{% translate "by ForgedIO" %}</div>
   </div>
   <div class="wizard-topbar-divider"></div>
   <div class="wizard-title">
     <i class="fas fa-magic" style="margin-right: 0.4rem;opacity: 0.6;"></i>
-    Setup Wizard
+    {% translate "Setup Wizard" %}
   </div>
   <div style="flex: 1;"></div>
+  <div class="lang-switch-wizard">{% include "core/partials/language_switcher.html" %}</div>
   <div style="color: rgba(255,255,255,0.35);font-size: 0.8125rem;">
-    Step {% block current_step_display %}1{% endblock %} of 6
+    {% translate "Step" %} {% block current_step_display %}1{% endblock %} {% translate "of 6" %}
   </div>
 </div>
 
@@ -36,37 +38,37 @@
   {% comment %}Hardcode all 6 steps{% endcomment %}
   <div class="wizard-step {% if cs > 1 %}is-done{% elif cs == 1 %}is-active{% endif %}">
     <div class="wizard-step-number">{% if cs > 1 %}<i class="fas fa-check" style="font-size: 0.75rem;"></i>{% else %}1{% endif %}</div>
-    <div class="wizard-step-label">Proxmox Host</div>
+    <div class="wizard-step-label">{% translate "Proxmox Host" %}</div>
   </div>
 
   <div class="wizard-connector {% if cs > 2 %}is-done{% endif %}"></div>
   <div class="wizard-step {% if cs > 2 %}is-done{% elif cs == 2 %}is-active{% endif %}">
     <div class="wizard-step-number">{% if cs > 2 %}<i class="fas fa-check" style="font-size: 0.75rem;"></i>{% else %}2{% endif %}</div>
-    <div class="wizard-step-label">SSH Key</div>
+    <div class="wizard-step-label">{% translate "SSH Key" %}</div>
   </div>
 
   <div class="wizard-connector {% if cs > 3 %}is-done{% endif %}"></div>
   <div class="wizard-step {% if cs > 3 %}is-done{% elif cs == 3 %}is-active{% endif %}">
     <div class="wizard-step-number">{% if cs > 3 %}<i class="fas fa-check" style="font-size: 0.75rem;"></i>{% else %}3{% endif %}</div>
-    <div class="wizard-step-label">API Token</div>
+    <div class="wizard-step-label">{% translate "API Token" %}</div>
   </div>
 
   <div class="wizard-connector {% if cs > 4 %}is-done{% endif %}"></div>
   <div class="wizard-step {% if cs > 4 %}is-done{% elif cs == 4 %}is-active{% endif %}">
     <div class="wizard-step-number">{% if cs > 4 %}<i class="fas fa-check" style="font-size: 0.75rem;"></i>{% else %}4{% endif %}</div>
-    <div class="wizard-step-label">Discover</div>
+    <div class="wizard-step-label">{% translate "Discover" %}</div>
   </div>
 
   <div class="wizard-connector {% if cs > 5 %}is-done{% endif %}"></div>
   <div class="wizard-step {% if cs > 5 %}is-done{% elif cs == 5 %}is-active{% endif %}">
     <div class="wizard-step-number">{% if cs > 5 %}<i class="fas fa-check" style="font-size: 0.75rem;"></i>{% else %}5{% endif %}</div>
-    <div class="wizard-step-label">Configure</div>
+    <div class="wizard-step-label">{% translate "Configure" %}</div>
   </div>
 
   <div class="wizard-connector {% if cs >= 6 %}is-done{% endif %}"></div>
   <div class="wizard-step {% if cs == 6 %}is-active{% endif %}">
     <div class="wizard-step-number">{% if cs > 6 %}<i class="fas fa-check" style="font-size: 0.75rem;"></i>{% else %}6{% endif %}</div>
-    <div class="wizard-step-label">Complete</div>
+    <div class="wizard-step-label">{% translate "Complete" %}</div>
   </div>
 
 </div>
@@ -91,7 +93,7 @@
 
 {# ===== Footer ===== #}
 <div class="footer-bar" style="margin-top: auto;">
-  ProxOrchestrator &mdash; by ForgedIO &mdash; Free &amp; Open Source
+  {% translate "ProxOrchestrator &mdash; by ForgedIO &mdash; Free &amp; Open Source" %}
 </div>
 
 <script src="/static/js/vendor/htmx-1.9.12.min.js"></script>

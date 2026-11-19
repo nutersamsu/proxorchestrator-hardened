@@ -1,0 +1,14 @@
+{% load i18n %}{% get_current_language as CURRENT_LANG %}{% get_available_languages as AVAILABLE_LANGS %}{% get_language_info_list for AVAILABLE_LANGS as LANG_LIST %}
+<form class="lang-switch" action="{% url 'set_language' %}" method="post">
+  {% csrf_token %}
+  <input type="hidden" name="next" value="{{ request.get_full_path }}">
+  <span class="lang-switch-icon" aria-hidden="true"><i class="fas fa-globe"></i></span>
+  <div class="select is-small">
+    <select name="language" onchange="this.form.submit()" aria-label="{% translate "Language" %}" title="{% translate "Language" %}">
+      {% for lang in LANG_LIST %}
+        <option value="{{ lang.code }}" lang="{{ lang.code }}"{% if lang.code == CURRENT_LANG %} selected{% endif %}>{% if lang.code == "pt-br" %}Português (Brasil){% else %}{{ lang.name_local }}{% endif %}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <noscript><button type="submit" class="button is-small">{% translate "Apply" %}</button></noscript>
+</form>

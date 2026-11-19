@@ -34,6 +34,9 @@ from apps.core.security import login_is_locked
 from apps.core.security import register_login_failure
 from apps.core.security import reset_login_failures
 from apps.core.security import safe_next_url
+from django.utils.html import escape
+from django.utils.translation import get_language
+from django.utils.translation import gettext
 
 logger = logging.getLogger(__name__)
 
@@ -318,7 +321,16 @@ def help_view(request, slug):
 
     Never returns 404 — returns a friendly message if the help file is missing.
     """
+    # Translated help lives in help/<language>/<slug>.md (e.g. help/pt-br/);
+    # English (help/<slug>.md) is the fallback. `slug` is a URL slug, so it
+    # cannot contain path separators.
+    lang = (get_language() or "en").lower()
     help_path = Path(HELP_DIR) / f"{slug}.md"
+    if lang != "en":
+        localized = Path(HELP_DIR) / lang / f"{slug}.md"
+        if localized.is_file():
+            help_path = localized
+    missing = "<p>%s</p>" % escape(gettext("No help available for this page yet."))
     try:
         raw_md = help_path.read_text(encoding="utf-8")
         html_content = markdown.markdown(
@@ -327,10 +339,10 @@ def help_view(request, slug):
         )
     except FileNotFoundError:
         logger.debug("Help file not found: %s", help_path)
-        html_content = "<p>No help available for this page yet.</p>"
+        html_content = missing
     except Exception as exc:
         logger.warning("Error reading help file %s: %s", help_path, exc)
-        html_content = "<p>No help available for this page yet.</p>"
+        html_content = missing
 
     return HttpResponse(html_content)
 
@@ -360,7 +372,7 @@ def change_password_view(request):
                 pass
             # Keep the user logged in with the new password
             update_session_auth_hash(request, request.user)
-            messages.success(request, "Password updated successfully.")
+            messages.success(request, gettext("Password updated successfully."))
             return redirect("/")
 
     return render(request, "core/change_password.html", {"error": error})
@@ -377,11 +389,11 @@ def password_reset_request(request):
         email = request.POST.get("email", "").strip().lower()
 
         if not email_enabled:
-            messages.error(request, "Password recovery is unavailable — email is not configured.")
+            messages.error(request, gettext("Password recovery is unavailable — email is not configured."))
             return redirect("password_reset_request")
 
         if login_is_locked(request, email, scope="pwreset"):
-            messages.error(request, "Too many requests. Please try again later.")
+            messages.error(request, gettext("Too many requests. Please try again later."))
             return redirect("password_reset_request")
         register_login_failure(request, email, scope="pwreset")
 
@@ -394,9 +406,9 @@ def password_reset_request(request):
                 logger.info("password_reset: directory user %s (source=%s)", user.username, auth_source)
                 messages.warning(
                     request,
-                    "This is an external directory account. "
+                    gettext("This is an external directory account. "
                     "Password recovery is disabled for this account — "
-                    "please reset your password through your organisation's directory (LDAP or Entra ID).",
+                    "please reset your password through your organisation's directory (LDAP or Entra ID)."),
                 )
                 return redirect("password_reset_request")
 
@@ -427,7 +439,7 @@ def password_reset_request(request):
         # Generic message for local users and unknown emails (no account enumeration)
         messages.success(
             request,
-            "If a local account exists with that email address, a password reset link has been sent.",
+            gettext("If a local account exists with that email address, a password reset link has been sent."),
         )
         return redirect("password_reset_request")
 
@@ -465,7 +477,7 @@ def password_reset_confirm(request, uidb64, token):
                 user.profile.save()
             except Exception:
                 pass
-            messages.success(request, "Your password has been reset. You can now sign in.")
+            messages.success(request, gettext("Your password has been reset. You can now sign in."))
             logger.info("password_reset: password changed for user %s", user.username)
             return redirect("login")
 
@@ -519,7 +531,7 @@ def mfa_verify(request):
         request.session["mfa_attempts"] = attempts
 
         if attempts > 5 or login_is_locked(request, user.username, scope="mfa"):
-            messages.error(request, "Too many failed attempts. Please sign in again.")
+            messages.error(request, gettext("Too many failed attempts. Please sign in again."))
             for key in ("mfa_user_id", "mfa_next", "mfa_expires", "mfa_attempts"):
                 request.session.pop(key, None)
             return redirect("login")
@@ -576,7 +588,7 @@ def mfa_email_recovery(request):
     # Check if admin has enabled email recovery
     mfa_config = MFAConfig.get_config()
     if not mfa_config.allow_email_recovery:
-        messages.error(request, "Email recovery has been disabled by your administrator.")
+        messages.error(request, gettext("Email recovery has been disabled by your administrator."))
         return redirect("mfa_verify")
 
     user = _get_mfa_pending_user(request)
@@ -603,7 +615,7 @@ def mfa_email_recovery(request):
                             "mfa_email_code_hash", "mfa_email_code_expires",
                             "mfa_email_sent_at", "mfa_email_attempts"):
                     request.session.pop(key, None)
-                messages.error(request, "Too many failed attempts. Please sign in again.")
+                messages.error(request, gettext("Too many failed attempts. Please sign in again."))
                 return redirect("login")
             if not stored_hash or time.time() > code_expires:
                 error = "Code has expired. Please request a new one."
@@ -615,7 +627,7 @@ def mfa_email_recovery(request):
                             "mfa_email_sent_at", "mfa_email_attempts"):
                     request.session.pop(key, None)
                 login(request, user)
-                messages.success(request, "Signed in via email recovery code.")
+                messages.success(request, gettext("Signed in via email recovery code."))
                 return redirect(next_url)
             else:
                 register_login_failure(request, user.username, scope="mfa")
@@ -648,7 +660,7 @@ def mfa_email_recovery(request):
                             [user.email],
                             fail_silently=False,
                         )
-                        messages.success(request, f"A recovery code has been sent to {user.email}.")
+                        messages.success(request, gettext('A recovery code has been sent to %(email)s.') % {"email": user.email})
                         logger.info("mfa_email_recovery: sent code to %s for user %s", user.email, user.username)
                     except Exception as exc:
                         logger.error("mfa_email_recovery: failed to send: %s", exc)
@@ -666,7 +678,7 @@ def mfa_setup(request):
     """MFA setup page — show QR code and verify first TOTP code."""
     profile = request.user.profile
     if profile.auth_source == "entra":
-        messages.info(request, "MFA is managed by your Entra ID provider.")
+        messages.info(request, gettext("MFA is managed by your Entra ID provider."))
         return redirect("dashboard")
 
     # Generate or retrieve pending secret
@@ -702,14 +714,14 @@ def mfa_setup_confirm(request):
     """Verify the first TOTP code and enable MFA."""
     pending_secret = request.session.get("mfa_pending_secret")
     if not pending_secret:
-        messages.error(request, "MFA setup expired. Please try again.")
+        messages.error(request, gettext("MFA setup expired. Please try again."))
         return redirect("mfa_setup")
 
     code = request.POST.get("code", "").strip()
     totp = pyotp.TOTP(pending_secret)
 
     if not totp.verify(code, valid_window=1):
-        messages.error(request, "Invalid code. Please scan the QR code again and enter the current code.")
+        messages.error(request, gettext("Invalid code. Please scan the QR code again and enter the current code."))
         return redirect("mfa_setup")
 
     # Enable MFA
@@ -738,12 +750,12 @@ def mfa_disable(request):
     from apps.core.models import MFAConfig
 
     if MFAConfig.get_config().enforce_mfa:
-        messages.error(request, "MFA is enforced globally and cannot be disabled.")
+        messages.error(request, gettext("MFA is enforced globally and cannot be disabled."))
         return redirect("dashboard")
 
     password = request.POST.get("password", "")
     if not request.user.check_password(password):
-        messages.error(request, "Incorrect password. MFA was not disabled.")
+        messages.error(request, gettext("Incorrect password. MFA was not disabled."))
         return redirect("mfa_setup")
 
     profile = request.user.profile
@@ -754,5 +766,5 @@ def mfa_disable(request):
     profile.save(update_fields=["mfa_enabled", "mfa_secret", "mfa_recovery_codes", "mfa_confirmed_at"])
 
     logger.info("mfa_disable: MFA disabled for user %s", request.user.username)
-    messages.success(request, "MFA has been disabled for your account.")
+    messages.success(request, gettext("MFA has been disabled for your account."))
     return redirect("dashboard")

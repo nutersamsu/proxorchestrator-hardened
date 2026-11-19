@@ -1,7 +1,8 @@
 {% extends "base.html" %}
-{% block title %}Community Scripts — ProxOrchestrator{% endblock %}
-{% block page_title %}Community Scripts{% endblock %}
-{% block help_slug %}lxc-community-scripts{% endblock %}
+{% load i18n %}
+{% block title %}{% translate "Community Scripts — ProxOrchestrator" %}{% endblock %}
+{% block page_title %}{% translate "Community Scripts" %}{% endblock %}
+{% block help_slug %}{% translate "lxc-community-scripts" %}{% endblock %}
 
 
 {% block content %}
@@ -12,7 +13,7 @@
   <div class="column is-2">
     <div class="proxorchestrator-card" style="position:sticky;top:1rem;">
       <div class="card-header">
-        <i class="fas fa-filter" style="color:var(--text-muted, #7a7a7a);"></i> Categories
+        <i class="fas fa-filter" style="color:var(--text-muted, #7a7a7a);"></i> {% translate "Categories" %}
       </div>
       <div class="card-body" style="padding:0.75rem 1rem;">
         <a href="{% url 'lxc_community_scripts' %}{% if query %}?q={{ query }}{% endif %}"
@@ -22,7 +23,7 @@
            hx-swap="outerHTML"
            hx-push-url="true">
           <i class="fas fa-th" style="width:1.2rem;text-align:center;"></i>
-          <span>All Scripts</span>
+          <span>{% translate "All Scripts" %}</span>
           <span class="cs-cat-count">{{ total_count }}</span>
         </a>
 
@@ -53,7 +54,7 @@
               <input class="input"
                      type="text"
                      name="q"
-                     placeholder="Search scripts... (e.g. Docker, Pi-hole, Plex)"
+                     placeholder="{% translate "Search scripts... (e.g. Docker, Pi-hole, Plex)" %}"
                      value="{{ query }}"
                      hx-get="{% url 'lxc_community_scripts' %}{% if selected_category %}?category={{ selected_category }}{% endif %}"
                      hx-target="#script-grid-wrapper"
@@ -69,7 +70,7 @@
           </div>
           <span id="search-spinner" class="htmx-indicator spinner"></span>
           <span id="script-count" style="font-size:0.875rem;color:var(--text-muted, #7a7a7a);white-space:nowrap;">
-            {{ total_count }} script{{ total_count|pluralize }}
+            {% blocktranslate with total_count2=total_count|pluralize trimmed %}{{ total_count }} script{{ total_count2 }}{% endblocktranslate %}
           </span>
           {# Update indicator — loads async, renders nothing if current #}
           <span id="catalog-update-check"
@@ -90,7 +91,7 @@
 {# ===== Script detail modal ===== #}
 <div id="cs-modal" class="cs-modal-overlay" style="display:none;" onclick="if(event.target===this)closeScriptModal()">
   <div class="cs-modal-card">
-    <button class="cs-modal-close" onclick="closeScriptModal()" aria-label="Close">&times;</button>
+    <button class="cs-modal-close" onclick="closeScriptModal()" aria-label="{% translate "Close" %}">&times;</button>
     <div class="cs-modal-body">
       <div style="display:flex;align-items:flex-start;gap:1.25rem;margin-bottom:1.25rem;">
         <img id="cs-modal-logo" src="" alt=""
@@ -109,28 +110,28 @@
 
       <div style="background:var(--bg-main, #f5f7fa);border-radius:8px;padding:1rem 1.25rem;margin-bottom:1.5rem;">
         <div style="font-weight:700;font-size:0.8125rem;color:var(--text-semi, #4a4a4a);margin-bottom:0.6rem;">
-          <i class="fas fa-sliders-h" style="margin-right:0.3rem;color:var(--link-color, #3273dc);"></i> Script Defaults
+          <i class="fas fa-sliders-h" style="margin-right:0.3rem;color:var(--link-color, #3273dc);"></i> {% translate "Script Defaults" %}
         </div>
         <div style="display:flex;gap:1.5rem;flex-wrap:wrap;font-size:0.875rem;">
-          <div><span style="color:var(--text-muted, #7a7a7a);">CPU</span> <strong id="cs-modal-cpu"></strong></div>
-          <div><span style="color:var(--text-muted, #7a7a7a);">RAM</span> <strong id="cs-modal-ram"></strong></div>
-          <div><span style="color:var(--text-muted, #7a7a7a);">Disk</span> <strong id="cs-modal-disk"></strong></div>
-          <div><span style="color:var(--text-muted, #7a7a7a);">OS</span> <strong id="cs-modal-os"></strong></div>
-          <div id="cs-modal-priv-wrap"><span style="color:var(--text-muted, #7a7a7a);">Mode</span> <strong id="cs-modal-priv"></strong></div>
+          <div><span style="color:var(--text-muted, #7a7a7a);">{% translate "CPU" %}</span> <strong id="cs-modal-cpu"></strong></div>
+          <div><span style="color:var(--text-muted, #7a7a7a);">{% translate "RAM" %}</span> <strong id="cs-modal-ram"></strong></div>
+          <div><span style="color:var(--text-muted, #7a7a7a);">{% translate "Disk" %}</span> <strong id="cs-modal-disk"></strong></div>
+          <div><span style="color:var(--text-muted, #7a7a7a);">{% translate "OS" %}</span> <strong id="cs-modal-os"></strong></div>
+          <div id="cs-modal-priv-wrap"><span style="color:var(--text-muted, #7a7a7a);">{% translate "Mode" %}</span> <strong id="cs-modal-priv"></strong></div>
         </div>
       </div>
 
       <div id="cs-modal-source-wrap" style="margin-bottom:1.5rem;display:none;">
         <a id="cs-modal-source" href="#" target="_blank" rel="noopener"
            style="font-size:0.8125rem;color:var(--link-color, #3273dc);">
-          <i class="fas fa-external-link-alt" style="margin-right:0.3rem;"></i> <span>Project Website</span>
+          <i class="fas fa-external-link-alt" style="margin-right:0.3rem;"></i> <span>{% translate "Project Website" %}</span>
         </a>
       </div>
 
       <div style="text-align:center;padding-top:0.5rem;border-top:1px solid var(--border-main, #e8ecf0);">
         <a id="cs-modal-deploy" href="#" class="button is-primary is-medium" style="font-weight:700;min-width:220px;">
           <span class="icon"><i class="fas fa-rocket"></i></span>
-          <span>Deploy</span>
+          <span>{% translate "Deploy" %}</span>
         </a>
       </div>
     </div>
@@ -335,7 +336,7 @@
     document.getElementById('cs-modal-os').textContent = el.dataset.os;
 
     var priv = el.dataset.unprivileged === 'True';
-    document.getElementById('cs-modal-priv').textContent = priv ? 'Unprivileged' : 'Privileged';
+    document.getElementById('cs-modal-priv').textContent = priv ? '{{ _("Unprivileged")|escapejs }}' : '{{ _("Privileged")|escapejs }}';
     document.getElementById('cs-modal-priv').style.color = priv ? 'var(--text-success-dark, #257953)' : 'var(--text-danger-dark, #cc0f35)';
 
     var srcUrl = el.dataset.sourceUrl;
@@ -401,7 +402,7 @@
     .catch(function() {
       btn.disabled = false;
       btn.className = 'cs-update-pill';
-      btn.innerHTML = '<i class="fas fa-arrow-circle-up"></i> <span class="cs-update-pill-text">Update available</span>';
+      btn.innerHTML = '<i class="fas fa-arrow-circle-up"></i> <span class="cs-update-pill-text">{{ _("Update available")|escapejs }}</span>';
     });
   }
 
@@ -419,8 +420,8 @@
           pill.style.background = 'var(--bg-danger-light, #fff5f7)';
           pill.style.color = 'var(--text-danger-dark, #cc0f35)';
           pill.disabled = false;
-          pill.innerHTML = '<i class="fas fa-exclamation-circle"></i> <span class="cs-update-pill-text">Retry</span>';
-          pill.title = 'Update failed: ' + (data.error || 'Unknown error') + ' — click to retry';
+          pill.innerHTML = '<i class="fas fa-exclamation-circle"></i> <span class="cs-update-pill-text">{{ _("Retry")|escapejs }}</span>';
+          pill.title = '{{ _("Update failed: ")|escapejs }}' + (data.error || '{{ _("Unknown error")|escapejs }}') + '{{ _(" — click to retry")|escapejs }}';
         }
       } else {
         setTimeout(function() { pollRefreshStatus(taskId); }, 2000);

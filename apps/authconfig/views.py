@@ -15,6 +15,7 @@ from django.views.decorators.http import require_POST
 from apps.authconfig.backend_loader import load_auth_backends_from_db
 from apps.authconfig.models import EntraIDConfig
 from apps.authconfig.models import LDAPConfig
+from django.utils.translation import gettext
 
 logger = logging.getLogger(__name__)
 
@@ -93,7 +94,7 @@ def auth_settings_save(request, auth_type):
         config.save()
         load_auth_backends_from_db()
         logger.info("LDAP config saved by %s", request.user)
-        messages.success(request, "LDAP settings saved.")
+        messages.success(request, gettext("LDAP settings saved."))
         return redirect(reverse("auth_settings") + "?tab=ldap")
 
     elif auth_type == "entra":
@@ -103,9 +104,9 @@ def auth_settings_save(request, auth_type):
         if not tenant_is_valid(tenant_id):
             messages.error(
                 request,
-                "Enter your organisation's tenant ID (GUID) or primary domain. "
+                gettext("Enter your organisation's tenant ID (GUID) or primary domain. "
                 "'common', 'organizations' and 'consumers' are not allowed because they "
-                "would let any Microsoft account sign in.",
+                "would let any Microsoft account sign in."),
             )
             return redirect(reverse("auth_settings") + "?tab=entra")
         config.tenant_id = tenant_id
@@ -119,10 +120,10 @@ def auth_settings_save(request, auth_type):
         config.save()
         load_auth_backends_from_db()
         logger.info("Entra ID config saved by %s", request.user)
-        messages.success(request, "Entra ID settings saved.")
+        messages.success(request, gettext("Entra ID settings saved."))
         return redirect(reverse("auth_settings") + "?tab=entra")
 
-    messages.error(request, f"Unknown auth type: {auth_type}")
+    messages.error(request, gettext('Unknown auth type: %(auth_type)s') % {"auth_type": auth_type})
     return redirect("auth_settings")
 
 
@@ -136,7 +137,7 @@ def auth_settings_toggle(request, auth_type):
         load_auth_backends_from_db()
         state = "enabled" if config.is_enabled else "disabled"
         logger.info("LDAP %s by %s", state, request.user)
-        messages.success(request, f"LDAP authentication {state}.")
+        messages.success(request, gettext("LDAP authentication enabled.") if config.is_enabled else gettext("LDAP authentication disabled."))
         return redirect(reverse("auth_settings") + "?tab=ldap")
     elif auth_type == "entra":
         config, _ = EntraIDConfig.objects.get_or_create(pk=1)
@@ -145,7 +146,7 @@ def auth_settings_toggle(request, auth_type):
         load_auth_backends_from_db()
         state = "enabled" if config.is_enabled else "disabled"
         logger.info("Entra ID %s by %s", state, request.user)
-        messages.success(request, f"Entra ID authentication {state}.")
+        messages.success(request, gettext("Entra ID authentication enabled.") if config.is_enabled else gettext("Entra ID authentication disabled."))
         return redirect(reverse("auth_settings") + "?tab=entra")
     elif auth_type == "mfa":
         from apps.core.models import MFAConfig
@@ -154,7 +155,7 @@ def auth_settings_toggle(request, auth_type):
         config.save()
         state = "enforced" if config.enforce_mfa else "optional"
         logger.info("MFA %s by %s", state, request.user)
-        messages.success(request, f"MFA is now {state} for all local and LDAP users.")
+        messages.success(request, gettext("MFA is now enforced for all local and LDAP users.") if config.enforce_mfa else gettext("MFA is now optional for all local and LDAP users."))
         return redirect(reverse("auth_settings") + "?tab=mfa")
     elif auth_type == "mfa_email":
         from apps.core.models import MFAConfig
@@ -163,7 +164,7 @@ def auth_settings_toggle(request, auth_type):
         config.save()
         state = "enabled" if config.allow_email_recovery else "disabled"
         logger.info("MFA email recovery %s by %s", state, request.user)
-        messages.success(request, f"MFA email recovery is now {state}.")
+        messages.success(request, gettext("MFA email recovery is now enabled.") if config.allow_email_recovery else gettext("MFA email recovery is now disabled."))
         return redirect(reverse("auth_settings") + "?tab=mfa")
     else:
         return HttpResponse("Unknown auth type", status=400)
@@ -271,19 +272,19 @@ def user_create(request):
     is_superuser = bool(request.POST.get("is_superuser"))
 
     if not username:
-        messages.error(request, "Username is required.")
+        messages.error(request, gettext("Username is required."))
         return redirect("user_list")
     if User.objects.filter(username=username).exists():
-        messages.error(request, f"Username '{username}' is already taken.")
+        messages.error(request, gettext("Username '%(username)s' is already taken.") % {"username": username})
         return redirect("user_list")
     if not password1:
-        messages.error(request, "Password is required.")
+        messages.error(request, gettext("Password is required."))
         return redirect("user_list")
     if password1 != password2:
-        messages.error(request, "Passwords do not match.")
+        messages.error(request, gettext("Passwords do not match."))
         return redirect("user_list")
     if len(password1) < 8:
-        messages.error(request, "Password must be at least 8 characters.")
+        messages.error(request, gettext("Password must be at least 8 characters."))
         return redirect("user_list")
 
     user = User.objects.create_user(username=username, email=email, password=password1)
@@ -291,7 +292,7 @@ def user_create(request):
     user.is_superuser = is_superuser
     user.save()
     logger.info("User %s created by %s", username, request.user)
-    messages.success(request, f"User '{username}' created successfully.")
+    messages.success(request, gettext("User '%(username)s' created successfully.") % {"username": username})
     return redirect("user_list")
 
 
@@ -409,12 +410,12 @@ def user_reset_mfa(request, user_id):
 def user_delete(request, user_id):
     user = get_object_or_404(User, pk=user_id)
     if user == request.user:
-        messages.error(request, "You cannot delete your own account.")
+        messages.error(request, gettext("You cannot delete your own account."))
         return redirect("user_list")
     username = user.username
     user.delete()
     logger.info("User %s deleted by %s", username, request.user)
-    messages.success(request, f"User '{username}' deleted.")
+    messages.success(request, gettext("User '%(username)s' deleted.") % {"username": username})
     return redirect("user_list")
 
 
@@ -427,18 +428,18 @@ def change_own_password(request):
     confirm_password = request.POST.get("confirm_password", "")
 
     if not request.user.check_password(current_password):
-        messages.error(request, "Current password is incorrect.")
+        messages.error(request, gettext("Current password is incorrect."))
         return redirect("user_list")
     if len(new_password) < 8:
-        messages.error(request, "New password must be at least 8 characters.")
+        messages.error(request, gettext("New password must be at least 8 characters."))
         return redirect("user_list")
     if new_password != confirm_password:
-        messages.error(request, "New passwords do not match.")
+        messages.error(request, gettext("New passwords do not match."))
         return redirect("user_list")
 
     request.user.set_password(new_password)
     request.user.save()
     update_session_auth_hash(request, request.user)  # keep user logged in
     logger.info("Password changed by %s", request.user)
-    messages.success(request, "Your password has been updated.")
+    messages.success(request, gettext("Your password has been updated."))
     return redirect("user_list")

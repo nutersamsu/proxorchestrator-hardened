@@ -1,15 +1,16 @@
 {% extends "base.html" %}
-{% block title %}{{ task.label }} — Task — ProxOrchestrator{% endblock %}
-{% block page_title %}Task: {{ task.label }}{% endblock %}
-{% block help_slug %}tasks{% endblock %}
+{% load i18n %}
+{% block title %}{% blocktranslate with label=task.label trimmed %}{{ label }} — Task — ProxOrchestrator{% endblocktranslate %}{% endblock %}
+{% block page_title %}{% blocktranslate with label=task.label trimmed %}Task: {{ label }}{% endblocktranslate %}{% endblock %}
+{% block help_slug %}{% translate "tasks" %}{% endblock %}
 
 {% block page_actions %}
   <a href="{% url 'task_list' %}" class="button is-light is-small">
-    <span class="icon is-small"><i class="fas fa-arrow-left"></i></span><span>All tasks</span>
+    <span class="icon is-small"><i class="fas fa-arrow-left"></i></span><span>{% translate "All tasks" %}</span>
   </a>
   {% if task.guest_url %}
   <a href="{{ task.guest_url }}" class="button is-light is-small">
-    <span class="icon is-small"><i class="fas fa-desktop"></i></span><span>Open guest</span>
+    <span class="icon is-small"><i class="fas fa-desktop"></i></span><span>{% translate "Open guest" %}</span>
   </a>
   {% endif %}
 {% endblock %}
@@ -17,16 +18,16 @@
 {% block content %}
 <div class="proxorchestrator-card" style="margin-bottom:1rem;">
   <div class="card-body" style="padding:1rem 1.5rem;">
-    <div class="cert-detail-row"><div class="cert-detail-label">Type</div><div class="cert-detail-value">{{ task.type_label }} <span class="ns-sub">({{ task.type }})</span></div></div>
-    {% if task.id %}<div class="cert-detail-row"><div class="cert-detail-label">ID</div><div class="cert-detail-value">{{ task.id }}</div></div>{% endif %}
-    <div class="cert-detail-row"><div class="cert-detail-label">User</div><div class="cert-detail-value">{{ task.user }}</div></div>
-    <div class="cert-detail-row"><div class="cert-detail-label">Node</div><div class="cert-detail-value">{{ task.node }}</div></div>
-    <div class="cert-detail-row"><div class="cert-detail-label">Started</div><div class="cert-detail-value">{{ task.start|date:"Y-m-d H:i:s" }}</div></div>
-    <div class="cert-detail-row"><div class="cert-detail-label">UPID</div><div class="cert-detail-value mono-cell" style="word-break:break-all;">{{ upid }}</div></div>
+    <div class="cert-detail-row"><div class="cert-detail-label">{% translate "Type" %}</div><div class="cert-detail-value">{{ task.type_label }} <span class="ns-sub">({{ task.type }})</span></div></div>
+    {% if task.id %}<div class="cert-detail-row"><div class="cert-detail-label">{% translate "ID" %}</div><div class="cert-detail-value">{{ task.id }}</div></div>{% endif %}
+    <div class="cert-detail-row"><div class="cert-detail-label">{% translate "User" %}</div><div class="cert-detail-value">{{ task.user }}</div></div>
+    <div class="cert-detail-row"><div class="cert-detail-label">{% translate "Node" %}</div><div class="cert-detail-value">{{ task.node }}</div></div>
+    <div class="cert-detail-row"><div class="cert-detail-label">{% translate "Started" %}</div><div class="cert-detail-value">{{ task.start|date:"Y-m-d H:i:s" }}</div></div>
+    <div class="cert-detail-row"><div class="cert-detail-label">{% translate "UPID" %}</div><div class="cert-detail-value mono-cell" style="word-break:break-all;">{{ upid }}</div></div>
   </div>
 </div>
 
 <div id="task-log" hx-get="{% url 'task_log' upid %}" hx-trigger="load" hx-swap="innerHTML">
-  <div class="proxorchestrator-card"><div class="card-body ns-sub" style="padding:1rem 1.5rem;">Loading log…</div></div>
+  <div class="proxorchestrator-card"><div class="card-body ns-sub" style="padding:1rem 1.5rem;">{% translate "Loading log…" %}</div></div>
 </div>
 {% endblock %}

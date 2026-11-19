@@ -2,6 +2,7 @@ import logging
 
 from django.db import models
 from encrypted_model_fields.fields import EncryptedCharField
+from django.utils.translation import gettext_lazy
 
 logger = logging.getLogger(__name__)
 
@@ -60,21 +61,21 @@ class AcmeConfig(models.Model):
     directory_url = models.CharField(
         max_length=500,
         default=DIRECTORY_URLS[PROVIDER_LETSENCRYPT],
-        help_text="ACME directory URL for the certificate authority.",
+        help_text=gettext_lazy("ACME directory URL for the certificate authority."),
     )
     domain = models.CharField(
         max_length=255,
         blank=True,
-        help_text="Fully qualified domain name for the certificate.",
+        help_text=gettext_lazy("Fully qualified domain name for the certificate."),
     )
     ip_sans = models.CharField(
         max_length=500,
         blank=True,
-        help_text="Comma-separated IP addresses to include as SANs.",
+        help_text=gettext_lazy("Comma-separated IP addresses to include as SANs."),
     )
     email = models.EmailField(
         blank=True,
-        help_text="Contact email for the ACME account. Required by Let's Encrypt.",
+        help_text=gettext_lazy("Contact email for the ACME account. Required by Let's Encrypt."),
     )
     challenge_type = models.CharField(
         max_length=10,
@@ -90,15 +91,15 @@ class AcmeConfig(models.Model):
     )
     dns_api_token = EncryptedCharField(
         max_length=500, blank=True,
-        help_text="API token for the DNS provider.",
+        help_text=gettext_lazy("API token for the DNS provider."),
     )
     dns_api_secret = EncryptedCharField(
         max_length=500, blank=True,
-        help_text="API secret (Route 53 secret key, GoDaddy API secret).",
+        help_text=gettext_lazy("API secret (Route 53 secret key, GoDaddy API secret)."),
     )
     dns_zone_id = models.CharField(
         max_length=255, blank=True,
-        help_text="Zone ID or hosted zone ID (Cloudflare, Route 53, Azure).",
+        help_text=gettext_lazy("Zone ID or hosted zone ID (Cloudflare, Route 53, Azure)."),
     )
 
     # ACME account credentials (encrypted at rest)
@@ -108,11 +109,11 @@ class AcmeConfig(models.Model):
     # Internal CA TLS settings
     ca_bundle = models.TextField(
         blank=True,
-        help_text="PEM-encoded CA certificate for verifying the ACME server's TLS.",
+        help_text=gettext_lazy("PEM-encoded CA certificate for verifying the ACME server's TLS."),
     )
     skip_tls_verify = models.BooleanField(
         default=False,
-        help_text="Disable TLS verification for the ACME server. Testing only.",
+        help_text=gettext_lazy("Disable TLS verification for the ACME server. Testing only."),
     )
 
     # DNS-01 transient state

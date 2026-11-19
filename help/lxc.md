@@ -48,7 +48,7 @@ The container table automatically refreshes every 10 seconds to keep status info
 
 ## Community Scripts
 
-Want to deploy a pre-built app like Docker, Pi-hole, or Home Assistant? Visit **Community Scripts** from the sidebar or the New Container page. Browse 460+ community scripts and deploy with one click. See the [Community Scripts help page](/help/lxc-community-scripts/) for details.
+Want to deploy a pre-built app like Docker, Pi-hole, or Home Assistant? Visit **Community Scripts** from the sidebar or the New Container page. Browse 680+ community scripts and deploy with one click. See the [Community Scripts help page](/help/lxc-community-scripts/) for details.
 
 ## Common issues
 

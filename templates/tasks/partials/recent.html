@@ -1,5 +1,6 @@
+{% load i18n %}
 {% if error %}
-  <div class="taskbar-empty">Tasks unavailable: {{ error|truncatechars:80 }}</div>
+  <div class="taskbar-empty">{% blocktranslate with error=error|truncatechars:80 trimmed %}Tasks unavailable: {{ error }}{% endblocktranslate %}</div>
 {% else %}
   <table class="taskbar-table">
     {% for t in tasks %}
@@ -11,7 +12,7 @@
         <td class="taskbar-status">{% include "tasks/partials/status_badge.html" with t=t %}</td>
       </tr>
     {% empty %}
-      <tr><td class="taskbar-empty">No recent tasks.</td></tr>
+      <tr><td class="taskbar-empty">{% translate "No recent tasks." %}</td></tr>
     {% endfor %}
   </table>
 {% endif %}

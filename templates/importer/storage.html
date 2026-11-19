@@ -1,6 +1,7 @@
 {% extends "base.html" %}
-{% block title %}Storage Management — ProxOrchestrator{% endblock %}
-{% block page_title %}Storage Management{% endblock %}
+{% load i18n %}
+{% block title %}{% translate "Storage Management — ProxOrchestrator" %}{% endblock %}
+{% block page_title %}{% translate "Storage Management" %}{% endblock %}
 {% block help_slug %}{{ help_slug }}{% endblock %}
 
 {% block content %}
@@ -10,7 +11,7 @@
   <div class="column is-7">
     <div class="proxorchestrator-card" style="margin-bottom: 1.5rem;">
       <div class="card-header">
-        <i class="fas fa-hdd" style="color: var(--link-color);"></i> Local Upload Storage
+        <i class="fas fa-hdd" style="color: var(--link-color);"></i> {% translate "Local Upload Storage" %}
         <span style="margin-left: auto;font-size: 0.8125rem;color: var(--text-muted);">{{ upload_root }}</span>
       </div>
       <div class="card-body">
@@ -18,8 +19,8 @@
         {# Disk usage bar #}
         <div style="margin-bottom: 1.25rem;">
           <div style="display: flex;justify-content: space-between;font-size: 0.8125rem;color: var(--text-muted);margin-bottom: 0.4rem;">
-            <span>{{ local_used }} used</span>
-            <span>{{ local_free }} free of {{ local_total }}</span>
+            <span>{% blocktranslate trimmed %}{{ local_used }} used{% endblocktranslate %}</span>
+            <span>{% blocktranslate trimmed %}{{ local_free }} free of {{ local_total }}{% endblocktranslate %}</span>
           </div>
           <div style="background: var(--border-main);border-radius: 4px;height: 8px;overflow: hidden;">
             <div style="background: {% if local_pct > 90 %}var(--danger-color){% elif local_pct > 70 %}var(--warning-color){% else %}var(--success-color){% endif %};width: {{ local_pct }}%;height: 100%;border-radius: 4px;transition: width 0.3s;"></div>
@@ -28,10 +29,10 @@
 
         {% if local_files %}
           <div style="margin-bottom: 0.75rem;display: flex;justify-content: space-between;align-items: center;">
-            <span style="font-size: 0.875rem;color: var(--text-semi);">{{ local_files|length }} file{{ local_files|length|pluralize }} on disk</span>
+            <span style="font-size: 0.875rem;color: var(--text-semi);">{% blocktranslate with local_files=local_files|length local_files2=local_files|length|pluralize trimmed %}{{ local_files }} file{{ local_files2 }} on disk{% endblocktranslate %}</span>
             <button class="button is-warning is-small" id="btn-clean-orphans" style="font-weight: 600;">
               <span class="icon is-small"><i class="fas fa-broom"></i></span>
-              <span>Clean Up Completed &amp; Failed</span>
+              <span>{% translate "Clean Up Completed &amp; Failed" %}</span>
             </button>
           </div>
 
@@ -39,9 +40,9 @@
             <table style="width: 100%;border-collapse: collapse;font-size: 0.8125rem;">
               <thead>
                 <tr style="background: var(--bg-main);border-bottom: 1px solid var(--border-main);">
-                  <th style="padding: 0.6rem 1rem;text-align: left;font-weight: 600;color: var(--text-semi);">File</th>
-                  <th style="padding: 0.6rem 0.5rem;text-align: right;font-weight: 600;color: var(--text-semi);">Size</th>
-                  <th style="padding: 0.6rem 0.75rem;text-align: left;font-weight: 600;color: var(--text-semi);">Job</th>
+                  <th style="padding: 0.6rem 1rem;text-align: left;font-weight: 600;color: var(--text-semi);">{% translate "File" %}</th>
+                  <th style="padding: 0.6rem 0.5rem;text-align: right;font-weight: 600;color: var(--text-semi);">{% translate "Size" %}</th>
+                  <th style="padding: 0.6rem 0.75rem;text-align: left;font-weight: 600;color: var(--text-semi);">{% translate "Job" %}</th>
                   <th style="padding: 0.6rem 0.75rem;"></th>
                 </tr>
               </thead>
@@ -57,20 +58,20 @@
                       </span>
                       <span style="color: var(--text-muted);font-size: 0.8125rem;margin-left: 0.3rem;">{{ f.job.vm_name }}</span>
                     {% else %}
-                      <span class="tag is-small is-warning is-light">No job</span>
+                      <span class="tag is-small is-warning is-light">{% translate "No job" %}</span>
                     {% endif %}
                   </td>
                   <td style="padding: 0.55rem 0.75rem;text-align: right;white-space: nowrap;">
                     <button class="button is-primary is-small is-light btn-create-vm"
                       data-path="{{ f.path }}"
-                      title="Create a VM from this file"
+                      title="{% translate "Create a VM from this file" %}"
                       style="margin-right: 0.3rem;">
                       <span class="icon is-small"><i class="fas fa-plus-circle"></i></span>
-                      <span>Create VM</span>
+                      <span>{% translate "Create VM" %}</span>
                     </button>
                     <button class="button is-danger is-small is-light btn-delete-local"
                       data-path="{{ f.path }}" data-row="local-row-{{ forloop.counter }}"
-                      title="Delete this file">
+                      title="{% translate "Delete this file" %}">
                       <span class="icon is-small"><i class="fas fa-trash"></i></span>
                     </button>
                   </td>
@@ -82,7 +83,7 @@
         {% else %}
           <div style="text-align: center;padding: 2rem;color: var(--text-muted);">
             <i class="fas fa-check-circle" style="font-size: 2rem;margin-bottom: 0.5rem;display: block;color: var(--success-color);"></i>
-            No uploaded files on disk. All clean.
+            {% translate "No uploaded files on disk. All clean." %}
           </div>
         {% endif %}
 
@@ -92,7 +93,7 @@
     {# ===== Proxmox Temp Dir ===== #}
     <div class="proxorchestrator-card">
       <div class="card-header">
-        <i class="fas fa-server" style="color: var(--purple-color);"></i> Proxmox Temp Directory
+        <i class="fas fa-server" style="color: var(--purple-color);"></i> {% translate "Proxmox Temp Directory" %}
         <span style="margin-left: auto;font-size: 0.8125rem;color: var(--text-muted);">{{ proxmox_temp_dir|default:"Not configured" }}</span>
       </div>
       <div class="card-body">
@@ -107,8 +108,8 @@
           {% if proxmox_dir_info %}
           <div style="margin-bottom: 1.25rem;">
             <div style="display: flex;justify-content: space-between;font-size: 0.8125rem;color: var(--text-muted);margin-bottom: 0.4rem;">
-              <span>{{ proxmox_dir_info.used_human }} used on Proxmox filesystem</span>
-              <span>{{ proxmox_dir_info.free_human }} free</span>
+              <span>{% blocktranslate with used_human=proxmox_dir_info.used_human trimmed %}{{ used_human }} used on Proxmox filesystem{% endblocktranslate %}</span>
+              <span>{% blocktranslate with free_human=proxmox_dir_info.free_human trimmed %}{{ free_human }} free{% endblocktranslate %}</span>
             </div>
             <div style="background: var(--border-main);border-radius: 4px;height: 8px;overflow: hidden;">
               {% with pct=proxmox_dir_info.used|floatformat:0 %}
@@ -120,14 +121,14 @@
 
           {% if proxmox_files %}
             <p style="font-size: 0.8125rem;color: var(--text-muted);margin-bottom: 0.75rem;">
-              These are temporary files in the Proxmox staging directory. The import pipeline cleans them up automatically on success or failure. Files listed here may be from interrupted jobs.
+              {% translate "These are temporary files in the Proxmox staging directory. The import pipeline cleans them up automatically on success or failure. Files listed here may be from interrupted jobs." %}
             </p>
             <div style="border: 1px solid var(--border-main);border-radius: 8px;overflow: hidden;">
               <table style="width: 100%;border-collapse: collapse;font-size: 0.8125rem;">
                 <thead>
                   <tr style="background: var(--bg-main);border-bottom: 1px solid var(--border-main);">
-                    <th style="padding: 0.6rem 1rem;text-align: left;font-weight: 600;color: var(--text-semi);">File</th>
-                    <th style="padding: 0.6rem 0.5rem;text-align: right;font-weight: 600;color: var(--text-semi);">Size</th>
+                    <th style="padding: 0.6rem 1rem;text-align: left;font-weight: 600;color: var(--text-semi);">{% translate "File" %}</th>
+                    <th style="padding: 0.6rem 0.5rem;text-align: right;font-weight: 600;color: var(--text-semi);">{% translate "Size" %}</th>
                     <th style="padding: 0.6rem 0.75rem;"></th>
                   </tr>
                 </thead>
@@ -140,15 +141,15 @@
                       {% if f.is_disk %}
                       <button class="button is-primary is-small is-light btn-create-vm-proxmox"
                         data-path="{{ f.path }}"
-                        title="Create a VM from this file"
+                        title="{% translate "Create a VM from this file" %}"
                         style="margin-right: 0.3rem;">
                         <span class="icon is-small"><i class="fas fa-plus-circle"></i></span>
-                        <span>Create VM</span>
+                        <span>{% translate "Create VM" %}</span>
                       </button>
                       {% endif %}
                       <button class="button is-danger is-small is-light btn-delete-proxmox"
                         data-path="{{ f.path }}" data-row="prox-row-{{ forloop.counter }}"
-                        title="Delete from Proxmox">
+                        title="{% translate "Delete from Proxmox" %}">
                         <span class="icon is-small"><i class="fas fa-trash"></i></span>
                       </button>
                     </td>
@@ -160,7 +161,7 @@
           {% else %}
             <div style="text-align: center;padding: 2rem;color: var(--text-muted);">
               <i class="fas fa-check-circle" style="font-size: 2rem;margin-bottom: 0.5rem;display: block;color: var(--success-color);"></i>
-              No temp files on Proxmox. All clean.
+              {% translate "No temp files on Proxmox. All clean." %}
             </div>
           {% endif %}
         {% endif %}
@@ -175,49 +176,49 @@
 
     <div class="proxorchestrator-card" style="margin-bottom: 1.5rem;">
       <div class="card-header">
-        <i class="fas fa-info-circle" style="color: var(--link-color);"></i> How Cleanup Works
+        <i class="fas fa-info-circle" style="color: var(--link-color);"></i> {% translate "How Cleanup Works" %}
       </div>
       <div class="card-body" style="font-size: 0.875rem;color: var(--text-semi);line-height: 1.7;">
         <p style="margin-bottom: 0.75rem;">
-          <strong>Automatic cleanup:</strong> When an import job completes successfully or fails, ProxOrchestrator automatically deletes the local upload file and any temporary files on the Proxmox staging directory.
+          <strong>{% translate "Automatic cleanup:" %}</strong> {% translate "When an import job completes successfully or fails, ProxOrchestrator automatically deletes the local upload file and any temporary files on the Proxmox staging directory." %}
         </p>
         <p style="margin-bottom: 0.75rem;">
-          <strong>What can remain on disk:</strong>
+          <strong>{% translate "What can remain on disk:" %}</strong>
         </p>
         <ul style="list-style: disc;padding-left: 1.25rem;margin-bottom: 0.75rem;">
-          <li>Jobs that were interrupted (e.g. server restarted mid-transfer)</li>
-          <li>Jobs still in progress</li>
-          <li>Files uploaded but never configured/submitted</li>
+          <li>{% translate "Jobs that were interrupted (e.g. server restarted mid-transfer)" %}</li>
+          <li>{% translate "Jobs still in progress" %}</li>
+          <li>{% translate "Files uploaded but never configured/submitted" %}</li>
         </ul>
         <p>
-          Use <strong>Clean Up Completed &amp; Failed</strong> to remove all local files for jobs that have finished (successfully or not). Files for jobs still in progress are left untouched.
+          {% translate "Use" %} <strong>{% translate "Clean Up Completed &amp; Failed" %}</strong> {% translate "to remove all local files for jobs that have finished (successfully or not). Files for jobs still in progress are left untouched." %}
         </p>
       </div>
     </div>
 
     <div class="proxorchestrator-card">
       <div class="card-header">
-        <i class="fas fa-cog" style="color: var(--text-muted);"></i> Storage Paths
+        <i class="fas fa-cog" style="color: var(--text-muted);"></i> {% translate "Storage Paths" %}
       </div>
       <div class="card-body" style="font-size: 0.8125rem;">
         <div class="cert-detail-row">
-          <div class="cert-detail-label">Local upload store</div>
+          <div class="cert-detail-label">{% translate "Local upload store" %}</div>
           <div class="cert-detail-value is-monospace" style="font-size: 0.8125rem;word-break: break-all;">{{ upload_root }}</div>
         </div>
         <div class="cert-detail-row">
-          <div class="cert-detail-label">Proxmox temp dir</div>
+          <div class="cert-detail-label">{% translate "Proxmox temp dir" %}</div>
           <div class="cert-detail-value is-monospace" style="font-size: 0.8125rem;word-break: break-all;">{{ proxmox_temp_dir|default:"—" }}</div>
         </div>
         <div class="cert-detail-row">
-          <div class="cert-detail-label">Upload temp dir</div>
+          <div class="cert-detail-label">{% translate "Upload temp dir" %}</div>
           <div class="cert-detail-value is-monospace" style="font-size: 0.8125rem;word-break: break-all;">
-            {% if config.upload_temp_dir %}{{ config.upload_temp_dir }}{% else %}OS default (/tmp){% endif %}
+            {% if config.upload_temp_dir %}{{ config.upload_temp_dir }}{% else %}{% translate "OS default (/tmp)" %}{% endif %}
           </div>
         </div>
         <div style="margin-top: 1rem;">
           <a href="{% url 'proxmox_settings' %}" class="button is-light is-small is-fullwidth">
             <span class="icon is-small"><i class="fas fa-cog"></i></span>
-            <span>Change storage paths in Settings</span>
+            <span>{% translate "Change storage paths in Settings" %}</span>
           </a>
         </div>
       </div>
@@ -253,12 +254,12 @@
       const data = await r.json();
       if (data.ok) {
         row?.remove();
-        toast('Deleted successfully');
+        toast('{{ _("Deleted successfully")|escapejs }}');
       } else {
-        toast(data.error || 'Delete failed', '#f14668');
+        toast(data.error || '{{ _("Delete failed")|escapejs }}', '#f14668');
       }
     } catch (e) {
-      toast('Network error', '#f14668');
+      toast('{{ _("Network error")|escapejs }}', '#f14668');
     }
   }
 
@@ -266,7 +267,7 @@
   document.querySelectorAll('.btn-create-vm').forEach(btn => {
     btn.addEventListener('click', async () => {
       btn.disabled = true;
-      btn.innerHTML = '<span class="icon is-small"><i class="fas fa-spinner fa-spin"></i></span><span>Starting…</span>';
+      btn.innerHTML = '<span class="icon is-small"><i class="fas fa-spinner fa-spin"></i></span><span>{{ _("Starting…")|escapejs }}</span>';
       try {
         const r = await fetch("{% url 'storage_create_from_existing' %}", {
           method: 'POST',
@@ -277,14 +278,14 @@
         if (data.ok) {
           window.location.href = data.redirect;
         } else {
-          toast(data.error || 'Failed to create job', '#f14668');
+          toast(data.error || '{{ _("Failed to create job")|escapejs }}', '#f14668');
           btn.disabled = false;
-          btn.innerHTML = '<span class="icon is-small"><i class="fas fa-plus-circle"></i></span><span>Create VM</span>';
+          btn.innerHTML = '<span class="icon is-small"><i class="fas fa-plus-circle"></i></span><span>{{ _("Create VM")|escapejs }}</span>';
         }
       } catch (e) {
-        toast('Network error', '#f14668');
+        toast('{{ _("Network error")|escapejs }}', '#f14668');
         btn.disabled = false;
-        btn.innerHTML = '<span class="icon is-small"><i class="fas fa-plus-circle"></i></span><span>Create VM</span>';
+        btn.innerHTML = '<span class="icon is-small"><i class="fas fa-plus-circle"></i></span><span>{{ _("Create VM")|escapejs }}</span>';
       }
     });
   });
@@ -292,7 +293,7 @@
   // Local file delete buttons
   document.querySelectorAll('.btn-delete-local').forEach(btn => {
     btn.addEventListener('click', () => {
-      if (!confirm('Delete this file from disk? This cannot be undone.')) return;
+      if (!confirm('{{ _("Delete this file from disk? This cannot be undone.")|escapejs }}')) return;
       deleteFile("{% url 'storage_delete_local' %}", {path: btn.dataset.path}, btn.dataset.row);
     });
   });
@@ -301,7 +302,7 @@
   document.querySelectorAll('.btn-create-vm-proxmox').forEach(btn => {
     btn.addEventListener('click', async () => {
       btn.disabled = true;
-      btn.innerHTML = '<span class="icon is-small"><i class="fas fa-spinner fa-spin"></i></span><span>Starting…</span>';
+      btn.innerHTML = '<span class="icon is-small"><i class="fas fa-spinner fa-spin"></i></span><span>{{ _("Starting…")|escapejs }}</span>';
       try {
         const r = await fetch("{% url 'storage_create_from_proxmox' %}", {
           method: 'POST',
@@ -312,14 +313,14 @@
         if (data.ok) {
           window.location.href = data.redirect;
         } else {
-          toast(data.error || 'Failed to create job', '#f14668');
+          toast(data.error || '{{ _("Failed to create job")|escapejs }}', '#f14668');
           btn.disabled = false;
-          btn.innerHTML = '<span class="icon is-small"><i class="fas fa-plus-circle"></i></span><span>Create VM</span>';
+          btn.innerHTML = '<span class="icon is-small"><i class="fas fa-plus-circle"></i></span><span>{{ _("Create VM")|escapejs }}</span>';
         }
       } catch (e) {
-        toast('Network error', '#f14668');
+        toast('{{ _("Network error")|escapejs }}', '#f14668');
         btn.disabled = false;
-        btn.innerHTML = '<span class="icon is-small"><i class="fas fa-plus-circle"></i></span><span>Create VM</span>';
+        btn.innerHTML = '<span class="icon is-small"><i class="fas fa-plus-circle"></i></span><span>{{ _("Create VM")|escapejs }}</span>';
       }
     });
   });
@@ -327,7 +328,7 @@
   // Proxmox file delete buttons
   document.querySelectorAll('.btn-delete-proxmox').forEach(btn => {
     btn.addEventListener('click', () => {
-      if (!confirm('Delete this file from the Proxmox staging directory? This cannot be undone.')) return;
+      if (!confirm('{{ _("Delete this file from the Proxmox staging directory? This cannot be undone.")|escapejs }}')) return;
       deleteFile("{% url 'storage_delete_proxmox' %}", {path: btn.dataset.path}, btn.dataset.row);
     });
   });
@@ -336,9 +337,9 @@
   const cleanBtn = document.getElementById('btn-clean-orphans');
   if (cleanBtn) {
     cleanBtn.addEventListener('click', async () => {
-      if (!confirm('Delete all local upload files for completed and failed jobs? Files for jobs still in progress will not be touched.')) return;
+      if (!confirm('{{ _("Delete all local upload files for completed and failed jobs? Files for jobs still in progress will not be touched.")|escapejs }}')) return;
       cleanBtn.disabled = true;
-      cleanBtn.textContent = 'Cleaning…';
+      cleanBtn.textContent = '{{ _("Cleaning…")|escapejs }}';
       try {
         const r = await fetch("{% url 'storage_delete_orphans' %}", {
           method: 'POST',
@@ -347,16 +348,16 @@
         const data = await r.json();
         if (data.ok) {
           const n = data.deleted.length;
-          toast(n > 0 ? `Deleted ${n} file${n === 1 ? '' : 's'}` : 'Nothing to clean up');
+          toast(n > 0 ? (n === 1 ? '{{ _("Deleted 1 file")|escapejs }}' : '{{ _("Deleted %s files")|escapejs }}'.replace('%s', n)) : '{{ _("Nothing to clean up")|escapejs }}');
           if (n > 0) setTimeout(() => location.reload(), 1200);
         } else {
-          toast('Clean up failed', '#f14668');
+          toast('{{ _("Clean up failed")|escapejs }}', '#f14668');
         }
       } catch (e) {
-        toast('Network error', '#f14668');
+        toast('{{ _("Network error")|escapejs }}', '#f14668');
       }
       cleanBtn.disabled = false;
-      cleanBtn.textContent = 'Clean Up Completed & Failed';
+      cleanBtn.textContent = '{{ _("Clean Up Completed & Failed")|escapejs }}';
     });
   }
 </script>

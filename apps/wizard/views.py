@@ -23,6 +23,7 @@ from apps.wizard.forms import Step5Form
 from apps.wizard.discovery import run_discovery
 from apps.wizard.models import DiscoveredEnvironment
 from apps.wizard.models import ProxmoxConfig
+from django.utils.translation import gettext
 
 logger = logging.getLogger(__name__)
 
@@ -430,18 +431,18 @@ def local_mkdir(request):
 
     path = request.POST.get("path", "").strip()
     if not path or not path.startswith("/"):
-        return JsonResponse({"ok": False, "error": "Invalid path."})
+        return JsonResponse({"ok": False, "error": gettext("Invalid path.")})
 
     # Sanitise
     path = _re.sub(r"[^a-zA-Z0-9/_.\- ]", "", path)
     if not path:
-        return JsonResponse({"ok": False, "error": "Invalid path."})
+        return JsonResponse({"ok": False, "error": gettext("Invalid path.")})
 
     try:
         os.makedirs(path, exist_ok=True)
         return JsonResponse({"ok": True, "path": path})
     except PermissionError:
-        return JsonResponse({"ok": False, "error": f"Permission denied: {path}"})
+        return JsonResponse({"ok": False, "error": gettext('Permission denied: %(path)s') % {"path": path}})
     except OSError as exc:
         return JsonResponse({"ok": False, "error": str(exc)})
 
@@ -684,7 +685,7 @@ def virtio_scan(request):
     """
     config = _get_or_create_config()
     if not config.host:
-        return JsonResponse({"found": "", "error": "Proxmox not configured yet."})
+        return JsonResponse({"found": "", "error": gettext("Proxmox not configured yet.")})
 
     storage_list = []
     try:
@@ -694,7 +695,7 @@ def virtio_scan(request):
         pass
 
     if not storage_list:
-        return JsonResponse({"found": "", "error": "No storage pools discovered. Complete the wizard first."})
+        return JsonResponse({"found": "", "error": gettext("No storage pools discovered. Complete the wizard first.")})
 
     found = ""
     try:
@@ -715,7 +716,7 @@ def virtio_scan(request):
 
     if found:
         return JsonResponse({"found": found})
-    return JsonResponse({"found": "", "error": "No VirtIO ISO found in any storage pool."})
+    return JsonResponse({"found": "", "error": gettext("No VirtIO ISO found in any storage pool.")})
 
 
 @login_required

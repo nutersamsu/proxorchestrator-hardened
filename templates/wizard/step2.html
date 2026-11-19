@@ -1,5 +1,6 @@
 {% extends "wizard/base_wizard.html" %}
-{% block title %}Step 2: SSH Key Setup — Setup Wizard{% endblock %}
+{% load i18n %}
+{% block title %}{% translate "Step 2: SSH Key Setup — Setup Wizard" %}{% endblock %}
 {% block current_step_display %}2{% endblock %}
 
 {% block wizard_content %}
@@ -9,9 +10,9 @@
       <div style="width: 40px;height: 40px;border-radius: 10px;background: var(--bg-success-light);display: flex;align-items: center;justify-content: center;flex-shrink: 0;">
         <i class="fas fa-key" style="color: var(--success-color);font-size: 1.1rem;"></i>
       </div>
-      <h2>SSH Key Setup</h2>
+      <h2>{% translate "SSH Key Setup" %}</h2>
     </div>
-    <p class="subtitle">ProxOrchestrator will authenticate to Proxmox using an SSH key. We'll copy our public key now.</p>
+    <p class="subtitle">{% translate "ProxOrchestrator will authenticate to Proxmox using an SSH key. We'll copy our public key now." %}</p>
   </div>
 
   <div class="wizard-card-body">
@@ -20,8 +21,8 @@
     <div class="info-box" style="margin-bottom: 1.5rem;">
       <div class="info-box-icon"><i class="fas fa-shield-alt"></i></div>
       <div>
-        <strong>Your password is used once and never stored.</strong>
-        ProxOrchestrator uses SSH key authentication for all ongoing operations. The root password you enter below is only used this one time to copy the public key, then discarded immediately.
+        <strong>{% translate "Your password is used once and never stored." %}</strong>
+        {% translate "ProxOrchestrator uses SSH key authentication for all ongoing operations. The root password you enter below is only used this one time to copy the public key, then discarded immediately." %}
       </div>
     </div>
 
@@ -29,23 +30,23 @@
     {% if error %}
       <div class="notification is-danger is-light" style="font-size: 0.875rem;margin-bottom: 1.25rem;">
         <button class="delete" onclick="this.parentElement.remove()"></button>
-        <strong><i class="fas fa-exclamation-triangle" style="margin-right: 0.4rem;"></i>SSH key copy failed</strong>
+        <strong><i class="fas fa-exclamation-triangle" style="margin-right: 0.4rem;"></i>{% translate "SSH key copy failed" %}</strong>
         <p style="margin-top: 0.35rem;">{{ error }}</p>
       </div>
     {% endif %}
 
     {# Public key display #}
     <div class="field" style="margin-bottom: 1.5rem;">
-      <label class="label" style="font-weight: 600;color: var(--text-header);">ProxOrchestrator Public Key</label>
-      <p class="field-hint" style="margin-bottom: 0.5rem;">This key will be added to <code>~/.ssh/authorized_keys</code> on your Proxmox host.</p>
+      <label class="label" style="font-weight: 600;color: var(--text-header);">{% translate "ProxOrchestrator Public Key" %}</label>
+      <p class="field-hint" style="margin-bottom: 0.5rem;">{% translate "This key will be added to" %} <code>~/.ssh/authorized_keys</code> {% translate "on your Proxmox host." %}</p>
       <div class="key-display" id="public-key-box">{{ public_key }}</div>
       <div style="margin-top: 0.5rem;">
         <button type="button" class="button is-small is-light" onclick="copyPublicKey()">
           <span class="icon is-small"><i class="fas fa-copy"></i></span>
-          <span>Copy to Clipboard</span>
+          <span>{% translate "Copy to Clipboard" %}</span>
         </button>
         <span id="copy-feedback" style="display: none;margin-left: 0.5rem;color: var(--success-color);font-size: 0.8125rem;">
-          <i class="fas fa-check"></i> Copied!
+          <i class="fas fa-check"></i> {% translate "Copied!" %}
         </span>
       </div>
     </div>
@@ -53,28 +54,28 @@
     {# Alternative without the root password #}
     <details style="margin-bottom: 1.5rem;" {% if verify_error %}open{% endif %}>
       <summary style="cursor: pointer;font-weight: 600;color: var(--text-header);">
-        Root password login disabled? Add the key yourself instead
+        {% translate "Root password login disabled? Add the key yourself instead" %}
       </summary>
       <p class="field-hint" style="margin: 0.5rem 0;">
-        In the Proxmox web UI open <strong>your node &rarr; Shell</strong>, paste this line, then click
-        <em>I added it</em>.
+        {% translate "In the Proxmox web UI open" %} <strong>{% translate "your node &rarr; Shell" %}</strong>{% translate ", paste this line, then click" %}
+        <em>{% translate "I added it" %}</em>.
       </p>
-      <div class="key-display" id="add-key-cmd" style="white-space: pre;overflow-x: auto;">echo '{{ public_key }}' &gt;&gt; /root/.ssh/authorized_keys</div>
+      <div class="key-display" id="add-key-cmd" style="white-space: pre;overflow-x: auto;">{% blocktranslate trimmed %}echo '{{ public_key }}' &gt;&gt; /root/.ssh/authorized_keys{% endblocktranslate %}</div>
       <div style="margin-top: 0.5rem;display: flex;align-items: center;gap: 0.5rem;flex-wrap: wrap;">
         <button type="button" class="button is-small is-light" onclick="copyBox('add-key-cmd', 'copy-cmd-feedback')">
           <span class="icon is-small"><i class="fas fa-copy"></i></span>
-          <span>Copy command</span>
+          <span>{% translate "Copy command" %}</span>
         </button>
         <form method="post" action="{% url 'wizard_step2' %}" style="display: inline;">
           {% csrf_token %}
           <input type="hidden" name="mode" value="verify">
           <button type="submit" class="button is-small is-primary">
             <span class="icon is-small"><i class="fas fa-check"></i></span>
-            <span>I added it — test the key</span>
+            <span>{% translate "I added it — test the key" %}</span>
           </button>
         </form>
         <span id="copy-cmd-feedback" style="display: none;color: var(--success-color);font-size: 0.8125rem;">
-          <i class="fas fa-check"></i> Copied!
+          <i class="fas fa-check"></i> {% translate "Copied!" %}
         </span>
       </div>
       {% if verify_error %}
@@ -88,7 +89,7 @@
 
       <div class="field" style="margin-bottom: 1.5rem;">
         <label class="label" style="font-weight: 600;color: var(--text-header);">
-          Proxmox Root Password
+          {% translate "Proxmox Root Password" %}
           <span style="color: var(--danger-color);">*</span>
         </label>
         <div class="control has-icons-left">
@@ -108,8 +109,7 @@
           <p class="help is-danger">{{ error }}</p>
         {% endfor %}
         <p class="field-hint">
-          Password for <strong>root@{{ proxmox_host }}</strong> via SSH (port {{ ssh_port }}).
-          This is used once and never stored.
+          {% translate "Password for" %} <strong>{% blocktranslate trimmed %}root@{{ proxmox_host }}{% endblocktranslate %}</strong> {% blocktranslate trimmed %}via SSH (port {{ ssh_port }}). This is used once and never stored.{% endblocktranslate %}
         </p>
       </div>
 
@@ -118,10 +118,10 @@
         <div class="info-box is-warning" style="margin-bottom: 1.25rem;">
           <div class="info-box-icon"><i class="fas fa-fingerprint"></i></div>
           <div>
-            <strong>Host fingerprint:</strong>
+            <strong>{% translate "Host fingerprint:" %}</strong>
             <code style="display: block;margin-top: 0.25rem;word-break: break-all;">{{ host_fingerprint }}</code>
             <p style="margin-top: 0.35rem;margin-bottom: 0;font-size: 0.8125rem;">
-              Verify this matches the fingerprint shown on your Proxmox console before proceeding.
+              {% translate "Verify this matches the fingerprint shown on your Proxmox console before proceeding." %}
             </p>
           </div>
         </div>
@@ -133,16 +133,16 @@
   <div class="wizard-card-footer">
     <a href="{% url 'wizard_step1' %}" class="button is-light" style="font-weight: 500;">
       <span class="icon"><i class="fas fa-arrow-left"></i></span>
-      <span>Back</span>
+      <span>{% translate "Back" %}</span>
     </a>
     <div style="display: flex;align-items: center;gap: 0.75rem;">
       <span id="step2-spinner" style="display: none;">
         <span class="spinner"></span>
-        <span style="font-size: 0.875rem;color: var(--text-muted);margin-left: 0.4rem;">Copying key...</span>
+        <span style="font-size: 0.875rem;color: var(--text-muted);margin-left: 0.4rem;">{% translate "Copying key..." %}</span>
       </span>
       <button type="submit" form="step2-form" class="button is-primary is-medium" style="font-weight: 600;min-width: 220px;" id="step2-btn">
         <span class="icon"><i class="fas fa-key"></i></span>
-        <span>Copy Key &amp; Continue</span>
+        <span>{% translate "Copy Key &amp; Continue" %}</span>
         <span class="icon"><i class="fas fa-arrow-right"></i></span>
       </button>
     </div>

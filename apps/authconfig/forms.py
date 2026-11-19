@@ -4,6 +4,7 @@ from django import forms
 
 from apps.authconfig.models import EntraIDConfig
 from apps.authconfig.models import LDAPConfig
+from django.utils.translation import gettext_lazy
 
 logger = logging.getLogger(__name__)
 
@@ -14,8 +15,8 @@ class LDAPConfigForm(forms.ModelForm):
     bind_password = forms.CharField(
         required=False,
         widget=forms.PasswordInput(render_value=True, attrs={"autocomplete": "off"}),
-        label="Bind Password",
-        help_text="Leave blank to keep the existing password.",
+        label=gettext_lazy("Bind Password"),
+        help_text=gettext_lazy("Leave blank to keep the existing password."),
     )
 
     class Meta:
@@ -49,8 +50,8 @@ class EntraIDConfigForm(forms.ModelForm):
     client_secret = forms.CharField(
         required=False,
         widget=forms.PasswordInput(render_value=True, attrs={"autocomplete": "off"}),
-        label="Client Secret",
-        help_text="Leave blank to keep the existing secret.",
+        label=gettext_lazy("Client Secret"),
+        help_text=gettext_lazy("Leave blank to keep the existing secret."),
     )
 
     class Meta:

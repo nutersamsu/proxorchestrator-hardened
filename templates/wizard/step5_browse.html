@@ -1,3 +1,4 @@
+{% load i18n %}
 {# Directory browser partial — loaded into #dir-browser-body via HTMX #}
 
 <div style="display: flex;align-items: center;gap: 0.5rem;padding: 0.6rem 1rem;background: var(--bg-main);border-bottom: 1px solid var(--border-main);font-size: 0.875rem;">
@@ -7,7 +8,7 @@
             hx-get="{% url 'wizard_step5_browse' %}?path={{ parent }}"
             hx-target="#dir-browser-body"
             hx-swap="innerHTML"
-            title="Go up">
+            title="{% translate "Go up" %}">
       <span class="icon is-small"><i class="fas fa-level-up-alt"></i></span>
     </button>
   {% endif %}
@@ -16,7 +17,7 @@
   </span>
   <button class="button is-small is-primary" onclick="selectDir('{{ path }}')">
     <span class="icon is-small"><i class="fas fa-check"></i></span>
-    <span>Select this</span>
+    <span>{% translate "Select this" %}</span>
   </button>
 </div>
 
@@ -28,11 +29,11 @@
 {% elif not dirs %}
   <div style="padding: 1.25rem 1rem;color: var(--text-muted);font-size: 0.875rem;text-align: center;">
     <i class="fas fa-folder-open" style="margin-right: 0.4rem;"></i>
-    No subdirectories here.
+    {% translate "No subdirectories here." %}
     <br>
     <button class="button is-small is-primary is-light" style="margin-top: 0.75rem;" onclick="selectDir('{{ path }}')">
       <i class="fas fa-check" style="margin-right: 0.3rem;"></i>
-      Use <code>{{ path }}</code>
+      {% translate "Use" %} <code>{{ path }}</code>
     </button>
   </div>
 {% else %}
@@ -47,7 +48,7 @@
                   hx-swap="innerHTML">
             {{ dir }}
           </button>
-          <button class="button is-small is-light" onclick="selectDir('{{ path }}/{{ dir }}')" title="Select">
+          <button class="button is-small is-light" onclick="selectDir('{{ path }}/{{ dir }}')" title="{% translate "Select" %}">
             <span class="icon is-small"><i class="fas fa-check"></i></span>
           </button>
         </div>
