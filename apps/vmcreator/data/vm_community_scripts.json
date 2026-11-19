@@ -28,7 +28,7 @@
       "Other"
     ],
     "tags": "almalinux-vm",
-    "logo": "https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/anytype.webp",
+    "logo": "https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/virtual-machine.webp",
     "source_url": "https://github.com/community-scripts/ProxmoxVE/blob/main/vm/almalinux-vm.sh",
     "script_url": "https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/vm/almalinux-vm.sh",
     "defaults": {
@@ -49,7 +49,7 @@
       "Other"
     ],
     "tags": "alpine-vm",
-    "logo": "https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/virtual-machine.webp",
+    "logo": "https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/cachyos.webp",
     "source_url": "https://github.com/community-scripts/ProxmoxVE/blob/main/vm/alpine-vm.sh",
     "script_url": "https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/vm/alpine-vm.sh",
     "defaults": {
@@ -65,12 +65,12 @@
   {
     "slug": "archlinux-vm",
     "name": "Arch Linux",
-    "description": "Aria2 is a lightweight multi-protocol \\u0026 multi-source, cross platform download utility operated in command-line. It supports HTTP/HTTPS, FTP, SFTP, BitTorrent and Metalink.",
+    "description": "Arch Linux — community VM script for Proxmox VE",
     "categories": [
       "Operating Systems"
     ],
     "tags": "archlinux-vm",
-    "logo": "https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/aria2.webp",
+    "logo": "https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/asterisk.webp",
     "source_url": "https://github.com/community-scripts/ProxmoxVE/blob/main/vm/archlinux-vm.sh",
     "script_url": "https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/vm/archlinux-vm.sh",
     "defaults": {
@@ -78,6 +78,27 @@
       "ram": 1024,
       "disk": 10,
       "os": "arch-linux",
+      "version": "",
+      "machine": "",
+      "start_vm": "yes"
+    }
+  },
+  {
+    "slug": "blissos-vm",
+    "name": "Blissos",
+    "description": "Blissos — community VM script for Proxmox VE",
+    "categories": [
+      "Other"
+    ],
+    "tags": "blissos-vm",
+    "logo": "https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/gotenberg.webp",
+    "source_url": "https://github.com/community-scripts/ProxmoxVE/blob/main/vm/blissos-vm.sh",
+    "script_url": "https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/vm/blissos-vm.sh",
+    "defaults": {
+      "cpu": 4,
+      "ram": 4096,
+      "disk": 32,
+      "os": "android",
       "version": "",
       "machine": "",
       "start_vm": "yes"
@@ -107,12 +128,12 @@
   {
     "slug": "debian-vm",
     "name": "Debian",
-    "description": "Debian — community VM script for Proxmox VE",
+    "description": "Debian as a cloud image, with a choice of release at start: 13 (Trixie), 12 (Bookworm) or 11 (Bullseye). The long-standing default base for servers that value stability over recency.",
     "categories": [
       "Operating Systems"
     ],
     "tags": "debian-vm",
-    "logo": "https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/virtual-machine.webp",
+    "logo": "https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/phoscon.webp",
     "source_url": "https://github.com/community-scripts/ProxmoxVE/blob/main/vm/debian-vm.sh",
     "script_url": "https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/vm/debian-vm.sh",
     "defaults": {
@@ -154,7 +175,7 @@
       "Other"
     ],
     "tags": "fedora-vm",
-    "logo": "https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/alpine-linux.webp",
+    "logo": "https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/virtual-machine.webp",
     "source_url": "https://github.com/community-scripts/ProxmoxVE/blob/main/vm/fedora-vm.sh",
     "script_url": "https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/vm/fedora-vm.sh",
     "defaults": {
@@ -170,7 +191,7 @@
   {
     "slug": "haos-vm",
     "name": "Home Assistant OS",
-    "description": "Home Assistant OS — community VM script for Proxmox VE",
+    "description": "An open source, self-hosted implementation of the Tailscale control server",
     "categories": [
       "Other"
     ],
@@ -196,7 +217,7 @@
       "VPN & Networking"
     ],
     "tags": "mikrotik-routeros",
-    "logo": "https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/virtual-machine.webp",
+    "logo": "https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/minarca.webp",
     "source_url": "https://github.com/community-scripts/ProxmoxVE/blob/main/vm/mikrotik-routeros.sh",
     "script_url": "https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/vm/mikrotik-routeros.sh",
     "defaults": {
@@ -259,7 +280,7 @@
       "VPN & Networking"
     ],
     "tags": "opnsense-vm",
-    "logo": "https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/virtual-machine.webp",
+    "logo": "https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/outline.webp",
     "source_url": "https://github.com/community-scripts/ProxmoxVE/blob/main/vm/opnsense-vm.sh",
     "script_url": "https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/vm/opnsense-vm.sh",
     "defaults": {
@@ -280,7 +301,7 @@
       "Other"
     ],
     "tags": "owncloud-vm",
-    "logo": "https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/virtual-machine.webp",
+    "logo": "https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/pairdrop.webp",
     "source_url": "https://github.com/community-scripts/ProxmoxVE/blob/main/vm/owncloud-vm.sh",
     "script_url": "https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/vm/owncloud-vm.sh",
     "defaults": {
@@ -301,7 +322,7 @@
       "Other"
     ],
     "tags": "pimox-haos-vm",
-    "logo": "https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/plant-it.webp",
+    "logo": "https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/virtual-machine.webp",
     "source_url": "https://github.com/community-scripts/ProxmoxVE/blob/main/vm/pimox-haos-vm.sh",
     "script_url": "https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/vm/pimox-haos-vm.sh",
     "defaults": {
@@ -322,7 +343,7 @@
       "Backup & Storage"
     ],
     "tags": "truenas-vm",
-    "logo": "https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/zerobyte.webp",
+    "logo": "https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/virtual-machine.webp",
     "source_url": "https://github.com/community-scripts/ProxmoxVE/blob/main/vm/truenas-vm.sh",
     "script_url": "https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/vm/truenas-vm.sh",
     "defaults": {
@@ -359,12 +380,12 @@
   {
     "slug": "umbrel-os-vm",
     "name": "Umbrel OS",
-    "description": "Umbrel OS — community VM script for Proxmox VE",
+    "description": "UmlautAdaptarr is a tool that fixes issues with how Sonarr, Radarr, Lidarr, and Readarr handle foreign languages. It sits between these apps and the indexers, changing searches and results, and renaming releases so the apps recognize them correctly.",
     "categories": [
       "Operating Systems"
     ],
     "tags": "umbrel-os-vm",
-    "logo": "https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/umbrelos.webp",
+    "logo": "https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/virtual-machine.webp",
     "source_url": "https://github.com/community-scripts/ProxmoxVE/blob/main/vm/umbrel-os-vm.sh",
     "script_url": "https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/vm/umbrel-os-vm.sh",
     "defaults": {
@@ -385,7 +406,7 @@
       "Operating Systems"
     ],
     "tags": "unifi-os-server-vm",
-    "logo": "https://cdn.jsdelivr.net/gh/DuarteSantos8/openGym@main/frontend/public/icon-512.png",
+    "logo": "https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/downtify.webp",
     "source_url": "https://github.com/community-scripts/ProxmoxVE/blob/main/vm/unifi-os-server-vm.sh",
     "script_url": "https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/vm/unifi-os-server-vm.sh",
     "defaults": {
@@ -406,7 +427,7 @@
       "Other"
     ],
     "tags": "zimaos-vm",
-    "logo": "https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/android.webp",
+    "logo": "https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/virtual-machine.webp",
     "source_url": "https://github.com/community-scripts/ProxmoxVE/blob/main/vm/zimaos-vm.sh",
     "script_url": "https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/vm/zimaos-vm.sh",
     "defaults": {
