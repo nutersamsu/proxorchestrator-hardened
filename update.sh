@@ -194,10 +194,12 @@ fi
 
 # If the new path already exists, proceed with the normal update
 echo "==> Copying application files to ${APP_HOME}..."
-COPY_DIRS=(apps proxorchestrator templates static help deploy scripts)
+COPY_DIRS=(apps proxorchestrator templates static help locale deploy scripts)
 for d in "${COPY_DIRS[@]}"; do
     if [[ -d "${SCRIPT_DIR}/${d}" ]]; then
-        rsync -a --delete "${SCRIPT_DIR}/${d}/" "${APP_HOME}/${d}/"
+        # --chmod: never carry group/world-writable modes from the source
+        # tree (e.g. a checkout on a shared or FAT/NTFS/virtiofs disk).
+        rsync -a --delete --chmod=go-w "${SCRIPT_DIR}/${d}/" "${APP_HOME}/${d}/"
         chown -R "${APP_USER}:${APP_USER}" "${APP_HOME}/${d}"
     fi
 done
@@ -205,10 +207,13 @@ done
 # Copy top-level Python files
 for f in manage.py requirements.txt package.json; do
     if [[ -f "${SCRIPT_DIR}/${f}" ]]; then
-        cp "${SCRIPT_DIR}/${f}" "${APP_HOME}/${f}"
-        chown "${APP_USER}:${APP_USER}" "${APP_HOME}/${f}"
+        install -m 0644 -o "${APP_USER}" -g "${APP_USER}" "${SCRIPT_DIR}/${f}" "${APP_HOME}/${f}"
     fi
 done
+
+# Code and catalogs run as (or feed scripts run as) root on Proxmox:
+# nothing under the app may be writable by other local users.
+find "${APP_HOME}" -path "${VENV}" -prune -o ! -type l -perm /022 -exec chmod go-w {} +
 
 # Ensure venv is owned by app user (fixes permission issues from older installs
 # where install.sh ran pip as root)

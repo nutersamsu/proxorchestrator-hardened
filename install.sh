@@ -260,7 +260,9 @@ echo "==> Setting up application directory at ${APP_HOME}..."
 mkdir -p "${APP_HOME}" "${LOG_DIR}"
 
 echo "    Syncing application files..."
-rsync -a \
+# --chmod=go-w: a checkout on a shared/virtiofs/NTFS disk may report every
+# file as world-writable; never install code other local users could change.
+rsync -a --chmod=go-w \
     --exclude='.git' \
     --exclude='__pycache__' \
     --exclude='*.pyc' \
