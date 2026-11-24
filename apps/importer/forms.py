@@ -577,7 +577,7 @@ class VMConfigForm(forms.Form):
     ballooning = forms.BooleanField(
         required=False,
         label=gettext_lazy("Enable Memory Ballooning"),
-        initial=False,
+        initial=True,
     )
     balloon_min_mb = forms.IntegerField(
         required=False,
@@ -610,10 +610,12 @@ class VMConfigForm(forms.Form):
     disk_discard = forms.BooleanField(
         required=False,
         label=gettext_lazy("Enable Discard (TRIM)"),
+        initial=True,
     )
     disk_ssd = forms.BooleanField(
         required=False,
         label=gettext_lazy("Emulate SSD"),
+        initial=True,
     )
     keep_converted_image = forms.BooleanField(
         required=False,
@@ -675,6 +677,7 @@ class VMConfigForm(forms.Form):
     qemu_agent = forms.BooleanField(
         required=False,
         label=gettext_lazy("Enable QEMU Guest Agent"),
+        initial=True,
     )
     tablet = forms.BooleanField(
         required=False,

@@ -39,7 +39,9 @@ class VmCreateConfigForm(forms.Form):
 
     # --- Memory ---
     memory_mb = forms.IntegerField(initial=2048, min_value=64)
-    ballooning = forms.BooleanField(required=False, initial=False)
+    # Defaults follow the Proxmox VE guide for Linux guests on SSD/thin storage
+    # (ballooning is also the Proxmox UI default). See apps/vmcreator/tests.py.
+    ballooning = forms.BooleanField(required=False, initial=True)
     balloon_min_mb = forms.IntegerField(required=False, min_value=0)
 
     # --- Primary Disk ---
@@ -49,8 +51,8 @@ class VmCreateConfigForm(forms.Form):
     disk_bus = forms.ChoiceField(choices=DISK_BUS_CHOICES, initial="scsi")
     disk_cache = forms.ChoiceField(choices=DISK_CACHE_CHOICES, initial="none")
     disk_iothread = forms.BooleanField(required=False, initial=True)
-    disk_discard = forms.BooleanField(required=False)
-    disk_ssd = forms.BooleanField(required=False)
+    disk_discard = forms.BooleanField(required=False, initial=True)
+    disk_ssd = forms.BooleanField(required=False, initial=True)
 
     # Extra disks (JSON array from JS)
     extra_disks = forms.CharField(required=False, widget=forms.HiddenInput())
@@ -67,7 +69,7 @@ class VmCreateConfigForm(forms.Form):
     vga_memory = forms.IntegerField(required=False, initial=16, min_value=4, max_value=512)
 
     # --- Options ---
-    qemu_agent = forms.BooleanField(required=False)
+    qemu_agent = forms.BooleanField(required=False, initial=True)
     tablet = forms.BooleanField(required=False)
     protection = forms.BooleanField(required=False)
     start_on_boot = forms.BooleanField(required=False)
