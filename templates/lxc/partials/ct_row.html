@@ -2,8 +2,8 @@
 {# Single LXC container table row — returned after action completes #}
 <tr id="ct-row-{{ ct.vmid }}">
   <td class="vmid-col">{{ ct.vmid }}</td>
-  <td style="vertical-align: middle;">
-    <a href="{% url 'lxc_detail' ct.vmid %}" style="font-weight: 600;color: var(--text-header);">{{ ct.name }}</a>
+  <td class="po-name">
+    <a href="{% url 'lxc_detail' ct.vmid %}" title="{{ ct.name }}">{{ ct.name }}</a>
   </td>
   <td style="vertical-align: middle;">
     {% if ct.status == 'running' %}

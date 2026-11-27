@@ -3,10 +3,8 @@
 {% load humanize %}
 <tr id="vm-row-{{ vm.vmid }}">
   <td class="vmid-col">{{ vm.vmid }}</td>
-  <td style="vertical-align: middle;">
-    <a href="{% url 'vm_detail' vm.vmid %}" style="font-weight: 600;color: var(--text-header);">
-      {{ vm.name }}
-    </a>
+  <td class="po-name">
+    <a href="{% url 'vm_detail' vm.vmid %}" title="{{ vm.name }}">{{ vm.name }}</a>
   </td>
   <td style="vertical-align: middle;">
     {% if vm.status == 'running' %}
