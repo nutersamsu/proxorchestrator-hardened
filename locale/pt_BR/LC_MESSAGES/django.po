@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ProxOrchestrator\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-19 03:25-0600\n"
+"POT-Creation-Date: 2026-11-27 04:11-0600\n"
 "PO-Revision-Date: 2026-11-19 10:40+0100\n"
 "Last-Translator: ProxOrchestrator contributors\n"
 "Language-Team: Português (Brasil)\n"
@@ -525,18 +525,133 @@ msgstr "Configuração ACME redefinida. Agora você pode configurar de novo."
 msgid "Force the user to set a new password on next login."
 msgstr "Obriga o usuário a definir uma nova senha no próximo login."
 
-#: apps/core/models.py:54
+#: apps/core/models.py:51
 msgid "Require all local and LDAP users to set up MFA."
 msgstr "Exige que todos os usuários locais e LDAP configurem o MFA."
 
-#: apps/core/models.py:58
+#: apps/core/models.py:55
 msgid "Allow users to receive a one-time MFA bypass code via email."
 msgstr ""
 "Permite que os usuários recebam por e-mail um código de uso único para pular"
 " o MFA."
 
+#: apps/core/navigation.py:26
+msgid "Datacenter & Cluster"
+msgstr "Datacenter e cluster"
+
+#: apps/core/navigation.py:27 templates/base.html:40
+#: templates/core/dashboard.html:4 templates/exporter/lxc_px_progress.html:111
+#: templates/exporter/px_progress.html:111 templates/importer/progress.html:99
+#: templates/vmcreator/progress.html:117
+msgid "Dashboard"
+msgstr "Painel"
+
+#: apps/core/navigation.py:28
+msgid "Nodes & Health"
+msgstr "Nós e saúde"
+
+#: apps/core/navigation.py:29
+#| msgid "Guests"
+msgid "VMs & Guests"
+msgstr "Máquinas virtuais"
+
+#: apps/core/navigation.py:30
+#| msgid "LXC Containers"
+msgid "LXC & Containers"
+msgstr "Contêineres LXC"
+
+#: apps/core/navigation.py:32
+#| msgid "Storage Paths"
+msgid "Storage & Backups"
+msgstr "Armazenamento e backups"
+
+#: apps/core/navigation.py:33
+#| msgid "Storage Pool"
+msgid "Storage Pools"
+msgstr "Pools de armazenamento"
+
+#: apps/core/navigation.py:34
+#| msgid "Backup jobs"
+msgid "Backup Jobs & Restore"
+msgstr "Backups e restauração"
+
+#: apps/core/navigation.py:36
+#| msgid "VM Export & Import"
+msgid "Export & Import"
+msgstr "Exportar e importar"
+
+#: apps/core/navigation.py:38
+msgid "Import files"
+msgstr "Arquivos de importação"
+
+#: apps/core/navigation.py:40
+msgid "Cyber Defense"
+msgstr "Defesa"
+
+#: apps/core/navigation.py:41
+#| msgid "Firewall enabled"
+msgid "Firewall & Rules"
+msgstr "Firewall e regras"
+
+#: apps/core/navigation.py:42
+msgid "ACME TLS Certs"
+msgstr "Certificados TLS (ACME)"
+
+#: apps/core/navigation.py:44
+msgid "Tools & Automation"
+msgstr "Ferramentas e automação"
+
+#: apps/core/navigation.py:45
+#| msgid "Storage"
+msgid "LXC Store"
+msgstr "Loja de contêineres"
+
+#: apps/core/navigation.py:46
+msgid "VM Marketplace"
+msgstr "Loja de VMs"
+
+#: apps/core/navigation.py:47
+#| msgid "Import Disk"
+msgid "Import Disk Wizard"
+msgstr "Importar disco"
+
+#: apps/core/navigation.py:48 templates/wizard/base_wizard.html:30
+msgid "Setup Wizard"
+msgstr "Assistente de configuração"
+
+#: apps/core/navigation.py:50
+msgid "System & IAM"
+msgstr "Sistema e acessos"
+
+#: apps/core/navigation.py:51
+#| msgid "Permissions"
+msgid "Permissions & API"
+msgstr "Permissões e API"
+
+#: apps/core/navigation.py:52
+#| msgid "Task history"
+msgid "Task History & Logs"
+msgstr "Histórico de tarefas"
+
+#: apps/core/navigation.py:53
+#| msgid "Set Up MFA"
+msgid "Auth & MFA"
+msgstr "Autenticação e MFA"
+
+#: apps/core/navigation.py:54
+msgid "Users"
+msgstr "Usuários"
+
+#: apps/core/navigation.py:55 templates/node/access.html:14
+msgid "Proxmox"
+msgstr ""
+
+#: apps/core/navigation.py:56 templates/authconfig/users.html:37
+#: templates/authconfig/users.html:83 templates/certificates/settings.html:810
+msgid "Email"
+msgstr "E-mail"
+
 #: apps/core/node_summary.py:143
-#| msgid "is available in"
 msgid "SSH unavailable"
 msgstr "SSH indisponível"
 
@@ -545,17 +660,14 @@ msgid "No sensors exposed by the host"
 msgstr "O host não expõe sensores"
 
 #: apps/core/node_summary.py:270
-#| msgid "Proxmox repositories"
 msgid "Error parsing repositories"
 msgstr "Erro ao ler os repositórios"
 
 #: apps/core/node_summary.py:276
-#| msgid "Proxmox repositories"
 msgid "No Proxmox VE repository enabled!"
 msgstr "Nenhum repositório do Proxmox VE ativado!"
 
 #: apps/core/node_summary.py:277
-#| msgid "Proxmox Node"
 msgid "Proxmox VE updates"
 msgstr "Atualizações do Proxmox VE"
 
@@ -576,24 +688,34 @@ msgstr ""
 msgid "Could not read the node status from the Proxmox API."
 msgstr "Não foi possível ler o estado do nó pela API do Proxmox."
 
-#: apps/core/views.py:333
+#: apps/core/tests/test_i18n.py:19 templates/inventory/list.html:82
+msgid "Virtual Machines"
+msgstr "Máquinas virtuais"
+
+#: apps/core/tests/test_i18n.py:21 templates/lxc/partials/ct_snapshots.html:87
+#: templates/vmmanager/partials/vm_snapshots.html:103
+#, python-format
+msgid "Delete snapshot '%(name)s'? This cannot be undone."
+msgstr "Excluir o snapshot '%(name)s'? Isso não pode ser desfeito."
+
+#: apps/core/views.py:390
 msgid "No help available for this page yet."
 msgstr "Ainda não há ajuda para esta página."
 
-#: apps/core/views.py:375
+#: apps/core/views.py:432
 msgid "Password updated successfully."
 msgstr "Senha atualizada com sucesso."
 
-#: apps/core/views.py:392
+#: apps/core/views.py:449
 msgid "Password recovery is unavailable — email is not configured."
 msgstr ""
 "A recuperação de senha não está disponível — o e-mail não está configurado."
 
-#: apps/core/views.py:396
+#: apps/core/views.py:453
 msgid "Too many requests. Please try again later."
 msgstr "Muitas solicitações. Tente novamente mais tarde."
 
-#: apps/core/views.py:409
+#: apps/core/views.py:466
 msgid ""
 "This is an external directory account. Password recovery is disabled for "
 "this account — please reset your password through your organisation's "
@@ -603,7 +725,7 @@ msgstr ""
 "desativada para ela — redefina a senha pelo diretório da sua organização "
 "(LDAP ou Entra ID)."
 
-#: apps/core/views.py:442
+#: apps/core/views.py:499
 msgid ""
 "If a local account exists with that email address, a password reset link has"
 " been sent."
@@ -611,49 +733,49 @@ msgstr ""
 "Se existir uma conta local com esse e-mail, um link para redefinir a senha "
 "foi enviado."
 
-#: apps/core/views.py:480
+#: apps/core/views.py:537
 msgid "Your password has been reset. You can now sign in."
 msgstr "Sua senha foi redefinida. Agora você pode entrar."
 
-#: apps/core/views.py:534 apps/core/views.py:618
+#: apps/core/views.py:591 apps/core/views.py:675
 msgid "Too many failed attempts. Please sign in again."
 msgstr "Tentativas demais sem sucesso. Entre novamente."
 
-#: apps/core/views.py:591
+#: apps/core/views.py:648
 msgid "Email recovery has been disabled by your administrator."
 msgstr "A recuperação por e-mail foi desativada pelo administrador."
 
-#: apps/core/views.py:630
+#: apps/core/views.py:687
 msgid "Signed in via email recovery code."
 msgstr "Entrada feita com código de recuperação por e-mail."
 
-#: apps/core/views.py:663
+#: apps/core/views.py:720
 #, python-format
 msgid "A recovery code has been sent to %(email)s."
 msgstr "Um código de recuperação foi enviado para %(email)s."
 
-#: apps/core/views.py:681
+#: apps/core/views.py:738
 msgid "MFA is managed by your Entra ID provider."
 msgstr "O MFA é gerenciado pelo seu provedor Entra ID."
 
-#: apps/core/views.py:717
+#: apps/core/views.py:774
 msgid "MFA setup expired. Please try again."
 msgstr "A configuração do MFA expirou. Tente novamente."
 
-#: apps/core/views.py:724
+#: apps/core/views.py:781
 msgid ""
 "Invalid code. Please scan the QR code again and enter the current code."
 msgstr "Código inválido. Leia o QR code de novo e digite o código atual."
 
-#: apps/core/views.py:753
+#: apps/core/views.py:810
 msgid "MFA is enforced globally and cannot be disabled."
 msgstr "O MFA é obrigatório para todos e não pode ser desativado."
 
-#: apps/core/views.py:758
+#: apps/core/views.py:815
 msgid "Incorrect password. MFA was not disabled."
 msgstr "Senha incorreta. O MFA não foi desativado."
 
-#: apps/core/views.py:769
+#: apps/core/views.py:826
 msgid "MFA has been disabled for your account."
 msgstr "O MFA foi desativado na sua conta."
 
@@ -1071,8 +1193,8 @@ msgstr ""
 msgid "Cirrus"
 msgstr ""
 
-#: apps/importer/forms.py:115 apps/importer/forms.py:704
-#: apps/vmcreator/forms.py:85 templates/importer/configure.html:666
+#: apps/importer/forms.py:115 apps/importer/forms.py:707
+#: apps/vmcreator/forms.py:87 templates/importer/configure.html:666
 #: templates/node/node.html:69 templates/node/node.html:76
 #: templates/node/node.html:82 templates/node/node.html:86
 #: templates/vmcreator/configure.html:517 templates/vmmanager/detail.html:194
@@ -1237,15 +1359,15 @@ msgstr "Recomendado para VirtIO-SCSI."
 msgid "Enable Discard (TRIM)"
 msgstr "Ativar descarte (TRIM)"
 
-#: apps/importer/forms.py:616
+#: apps/importer/forms.py:617
 msgid "Emulate SSD"
 msgstr "Emular SSD"
 
-#: apps/importer/forms.py:621
+#: apps/importer/forms.py:623
 msgid "Keep the converted image on Proxmox for reuse"
 msgstr "Manter a imagem convertida no Proxmox para reutilizar"
 
-#: apps/importer/forms.py:622
+#: apps/importer/forms.py:624
 msgid ""
 "Leaves a copy in the Proxmox temp directory (as large as the disk) so it can"
 " be imported again from Storage. Off by default."
@@ -1253,74 +1375,74 @@ msgstr ""
 "Deixa uma cópia na pasta temporária do Proxmox (do tamanho do disco) para "
 "poder importar de novo pelo Armazenamento. Desligado por padrão."
 
-#: apps/importer/forms.py:634 templates/importer/configure.html:633
+#: apps/importer/forms.py:636 templates/importer/configure.html:633
 #: templates/vmcreator/configure.html:484
 msgid "Network Bridge"
 msgstr "Bridge de rede"
 
-#: apps/importer/forms.py:639 templates/importer/configure.html:647
+#: apps/importer/forms.py:641 templates/importer/configure.html:647
 #: templates/vmcreator/configure.html:498
 msgid "Network Model"
 msgstr "Modelo de rede"
 
-#: apps/importer/forms.py:644 templates/importer/configure.html:662
+#: apps/importer/forms.py:646 templates/importer/configure.html:662
 #: templates/vmcreator/configure.html:513
 msgid "VLAN Tag"
 msgstr "Tag de VLAN"
 
-#: apps/importer/forms.py:647
+#: apps/importer/forms.py:649
 msgid "Leave blank for untagged."
 msgstr "Deixe em branco para sem tag."
 
-#: apps/importer/forms.py:651
+#: apps/importer/forms.py:653
 msgid "Enable Proxmox Firewall"
 msgstr "Ativar firewall do Proxmox"
 
-#: apps/importer/forms.py:656 templates/importer/configure.html:674
+#: apps/importer/forms.py:658 templates/importer/configure.html:674
 #: templates/lxc/partials/lxc_networks.html:24
 #: templates/vmcreator/configure.html:525
 #: templates/vmmanager/partials/vm_networks.html:19
 msgid "MAC Address"
 msgstr "Endereço MAC"
 
-#: apps/importer/forms.py:657
+#: apps/importer/forms.py:659
 msgid "Leave blank to auto-generate. Format: AA:BB:CC:DD:EE:FF"
 msgstr ""
 "Deixe em branco para gerar automaticamente. Formato: AA:BB:CC:DD:EE:FF"
 
-#: apps/importer/forms.py:663
+#: apps/importer/forms.py:665
 msgid "Display Type"
 msgstr "Tipo de vídeo"
 
-#: apps/importer/forms.py:669 templates/importer/configure.html:723
+#: apps/importer/forms.py:671 templates/importer/configure.html:723
 #: templates/vmcreator/configure.html:574
 msgid "Display Memory (MB)"
 msgstr "Memória de vídeo (MB)"
 
-#: apps/importer/forms.py:677 templates/importer/configure.html:736
+#: apps/importer/forms.py:679 templates/importer/configure.html:736
 #: templates/vmcreator/configure.html:587
 msgid "Enable QEMU Guest Agent"
 msgstr "Ativar QEMU Guest Agent"
 
-#: apps/importer/forms.py:681
+#: apps/importer/forms.py:684
 msgid "Enable USB Tablet (for VNC pointer sync)"
 msgstr "Ativar tablet USB (sincroniza o ponteiro no VNC)"
 
-#: apps/importer/forms.py:685
+#: apps/importer/forms.py:688
 msgid "Add Serial Port (socket)"
 msgstr "Adicionar porta serial (socket)"
 
-#: apps/importer/forms.py:686 templates/importer/configure.html:758
+#: apps/importer/forms.py:689 templates/importer/configure.html:758
 msgid "Required for some appliances (e.g. Cisco Expressway install wizard)."
 msgstr ""
 "Necessária para alguns appliances (ex.: assistente de instalação do Cisco "
 "Expressway)."
 
-#: apps/importer/forms.py:690
+#: apps/importer/forms.py:693
 msgid "Enable VM Protection (prevents accidental deletion)"
 msgstr "Ativar proteção da VM (evita exclusão acidental)"
 
-#: apps/importer/forms.py:704 apps/vmcreator/forms.py:85
+#: apps/importer/forms.py:707 apps/vmcreator/forms.py:87
 #: templates/exporter/lxc_px_configure.html:205
 #: templates/firewall/partials/panel.html:45
 #: templates/importer/configure.html:811
@@ -1331,7 +1453,7 @@ msgstr "Ativar proteção da VM (evita exclusão acidental)"
 msgid "DHCP"
 msgstr ""
 
-#: apps/importer/forms.py:704 apps/vmcreator/forms.py:85
+#: apps/importer/forms.py:707 apps/vmcreator/forms.py:87
 #: templates/exporter/lxc_px_configure.html:206
 #: templates/importer/configure.html:812
 #: templates/vmcreator/configure.html:651
@@ -1580,7 +1702,7 @@ msgstr "Não foi possível parar a tarefa: %(message)s"
 msgid "Leave blank to auto-assign."
 msgstr "Deixe em branco para atribuir automaticamente."
 
-#: apps/vmcreator/forms.py:48
+#: apps/vmcreator/forms.py:50
 msgid "Size of the primary disk in GB."
 msgstr "Tamanho do disco principal em GB."
 
@@ -1763,10 +1885,10 @@ msgstr "Pare a VM antes de convertê-la em template."
 msgid "Type the VMID to confirm the conversion."
 msgstr "Digite o VMID para confirmar a conversão."
 
-#: apps/wizard/forms.py:14 templates/core/dashboard.html:260
+#: apps/wizard/forms.py:14 templates/core/dashboard.html:96
 #: templates/vmcreator/vm_community_scripts_deploy.html:114
-#: templates/wizard/base_wizard.html:42 templates/wizard/settings.html:57
-#: templates/wizard/settings.html:622 templates/wizard/step1.html:39
+#: templates/wizard/base_wizard.html:49 templates/wizard/settings.html:57
+#: templates/wizard/settings.html:606 templates/wizard/step1.html:39
 #: templates/wizard/step6.html:24
 msgid "Proxmox Host"
 msgstr "Host do Proxmox"
@@ -1825,7 +1947,7 @@ msgid "Default Network Bridge"
 msgstr "Bridge de rede padrão"
 
 #: apps/wizard/forms.py:77 templates/importer/storage.html:96
-#: templates/wizard/settings.html:487 templates/wizard/step5.html:113
+#: templates/wizard/settings.html:471 templates/wizard/step5.html:113
 msgid "Proxmox Temp Directory"
 msgstr "Pasta temporária no Proxmox"
 
@@ -1865,7 +1987,7 @@ msgstr "Maior VMID que o ProxOrchestrator atribui automaticamente."
 
 #: apps/wizard/forms.py:108 apps/wizard/models.py:30
 #: templates/importer/configure.html:294
-#: templates/vmcreator/configure.html:128 templates/wizard/settings.html:559
+#: templates/vmcreator/configure.html:128 templates/wizard/settings.html:543
 #: templates/wizard/step5.html:212
 msgid "VirtIO Windows Drivers ISO"
 msgstr "ISO de drivers VirtIO para Windows"
@@ -2051,7 +2173,6 @@ msgid "Entra ID (Microsoft)"
 msgstr ""
 
 #: templates/authconfig/settings.html:35 templates/authconfig/users.html:41
-#: templates/base.html:191
 msgid "MFA"
 msgstr "MFA"
 
@@ -2297,7 +2418,7 @@ msgstr ""
 msgid "Trusted CA Certificate (PEM)"
 msgstr "Certificado de CA confiável (PEM)"
 
-#: templates/authconfig/settings.html:281 templates/wizard/settings.html:560
+#: templates/authconfig/settings.html:281 templates/wizard/settings.html:544
 #: templates/wizard/step5.html:213
 msgid "— optional"
 msgstr "— opcional"
@@ -2475,12 +2596,13 @@ msgstr "Permissão"
 
 #: templates/authconfig/settings.html:392
 #: templates/backups/storage_list.html:12
-#: templates/certificates/settings.html:82 templates/core/dashboard.html:214
-#: templates/emailconfig/settings.html:283 templates/lxc/detail.html:400
-#: templates/node/access.html:34 templates/node/access.html:52
-#: templates/node/node.html:28 templates/node/node.html:54
-#: templates/tasks/detail.html:21 templates/tasks/list.html:16
-#: templates/vmmanager/detail.html:668 templates/vmmanager/detail.html:703
+#: templates/certificates/settings.html:82 templates/core/dashboard.html:59
+#: templates/core/dashboard.html:120 templates/emailconfig/settings.html:283
+#: templates/lxc/detail.html:400 templates/node/access.html:34
+#: templates/node/access.html:52 templates/node/node.html:28
+#: templates/node/node.html:54 templates/tasks/detail.html:21
+#: templates/tasks/list.html:16 templates/vmmanager/detail.html:668
+#: templates/vmmanager/detail.html:703
 #: templates/vmmanager/partials/vm_cloudinit.html:36
 #: templates/wizard/step4_results.html:58
 msgid "Type"
@@ -2660,11 +2782,6 @@ msgstr "(%(users)s no total)"
 msgid "Username"
 msgstr "Usuário"
 
-#: templates/authconfig/users.html:37 templates/authconfig/users.html:83
-#: templates/base.html:180 templates/certificates/settings.html:810
-msgid "Email"
-msgstr "E-mail"
-
 #: templates/authconfig/users.html:38
 msgid "Auth Source"
 msgstr "Origem da autenticação"
@@ -2673,7 +2790,7 @@ msgstr "Origem da autenticação"
 msgid "Last Login"
 msgstr "Último login"
 
-#: templates/authconfig/users.html:43 templates/core/dashboard.html:217
+#: templates/authconfig/users.html:43 templates/core/dashboard.html:121
 #: templates/inventory/list.html:113 templates/lxc/list.html:108
 #: templates/lxc/partials/ct_snapshots.html:57
 #: templates/lxc/partials/lxc_networks.html:29
@@ -2697,7 +2814,7 @@ msgid "user@example.com"
 msgstr "usuario@exemplo.com"
 
 #: templates/authconfig/users.html:90 templates/authconfig/users.html:92
-#: templates/core/login.html:83 templates/emailconfig/settings.html:164
+#: templates/core/login.html:76 templates/emailconfig/settings.html:164
 #: templates/importer/configure.html:859
 #: templates/vmcreator/configure.html:698
 #: templates/vmmanager/partials/vm_cloudinit.html:31
@@ -2706,7 +2823,7 @@ msgstr "Senha"
 
 #: templates/authconfig/users.html:97 templates/authconfig/users.html:142
 #: templates/core/change_password.html:45
-#: templates/core/password_reset_confirm.html:53
+#: templates/core/password_reset_confirm.html:46
 msgid "Confirm Password"
 msgstr "Confirmar senha"
 
@@ -2728,7 +2845,7 @@ msgstr "&nbsp;Dar acesso de administrador"
 #: templates/exporter/lxc_px_upload.html:43
 #: templates/exporter/px_upload.html:43
 #: templates/firewall/partials/panel.html:237
-#: templates/inventory/list.html:307 templates/lxc/clone_options.html:137
+#: templates/inventory/list.html:305 templates/lxc/clone_options.html:137
 #: templates/lxc/detail.html:381 templates/lxc/detail.html:405
 #: templates/lxc/detail.html:431 templates/lxc/detail.html:478
 #: templates/lxc/detail.html:586 templates/lxc/detail.html:626
@@ -2757,7 +2874,7 @@ msgstr "Redefinir senha —"
 
 #: templates/authconfig/users.html:135 templates/authconfig/users.html:180
 #: templates/core/change_password.html:29
-#: templates/core/password_reset_confirm.html:35
+#: templates/core/password_reset_confirm.html:28
 msgid "New Password"
 msgstr "Nova senha"
 
@@ -2803,7 +2920,7 @@ msgid "Backups — ProxOrchestrator"
 msgstr "Backups — ProxOrchestrator"
 
 #: templates/backups/index.html:4 templates/backups/new.html:8
-#: templates/backups/restore.html:8 templates/base.html:155
+#: templates/backups/restore.html:8
 msgid "Backups"
 msgstr ""
 
@@ -2842,7 +2959,7 @@ msgstr "Seleção"
 #: templates/backups/partials/guest_backups.html:7
 #: templates/backups/partials/guest_backups.html:23
 #: templates/backups/storage_list.html:4
-#: templates/backups/storage_list.html:12 templates/base.html:158
+#: templates/backups/storage_list.html:12
 #: templates/exporter/lxc_px_configure.html:151
 #: templates/lxc/configure.html:125 templates/lxc/detail.html:269
 #: templates/lxc/partials/lxc_storage.html:24
@@ -2856,7 +2973,7 @@ msgstr "Armazenamento"
 
 #: templates/backups/index.html:21 templates/backups/new.html:39
 #: templates/backups/partials/guest_backups.html:10
-#: templates/lxc/community_scripts.html:120
+#: templates/lxc/community_scripts.html:122
 msgid "Mode"
 msgstr "Modo"
 
@@ -2907,7 +3024,7 @@ msgstr "Convidado"
 #: templates/backups/index.html:65
 #: templates/backups/partials/guest_backups.html:23
 #: templates/backups/restore.html:20 templates/backups/storage_content.html:23
-#: templates/core/dashboard.html:216
+#: templates/core/dashboard.html:121
 #: templates/lxc/partials/ct_snapshots.html:56
 #: templates/vmmanager/partials/vm_snapshots.html:62
 msgid "Date"
@@ -2962,7 +3079,7 @@ msgstr "Nenhum backup encontrado."
 msgid "Backup now — ProxOrchestrator"
 msgstr "Fazer backup agora — ProxOrchestrator"
 
-#: templates/backups/new.html:18
+#: templates/backups/new.html:18 templates/core/dashboard.html:41
 msgid "Guests"
 msgstr "Convidados"
 
@@ -2983,7 +3100,8 @@ msgstr ""
 msgid "vmid"
 msgstr ""
 
-#: templates/backups/new.html:51 templates/node/node.html:5
+#: templates/backups/new.html:51 templates/core/partials/sidebar.html:21
+#: templates/node/node.html:5
 msgid "node"
 msgstr ""
 
@@ -3022,8 +3140,8 @@ msgstr "Editar notas"
 #: templates/backups/partials/volume_modals.html:23
 #: templates/backups/storage_content.html:39
 #: templates/firewall/partials/panel.html:119
-#: templates/inventory/list.html:243
-#: templates/inventory/partials/vm_row.html:119 templates/lxc/list.html:223
+#: templates/inventory/list.html:241
+#: templates/inventory/partials/vm_row.html:117 templates/lxc/list.html:223
 #: templates/lxc/partials/ct_row.html:103
 #: templates/lxc/partials/template_list.html:47
 #: templates/vmmanager/partials/vm_disks.html:105
@@ -3180,7 +3298,7 @@ msgstr "armazenamento"
 msgid "Could not load content: %(error)s"
 msgstr "Não foi possível carregar o conteúdo: %(error)s"
 
-#: templates/backups/storage_content.html:23 templates/core/dashboard.html:213
+#: templates/backups/storage_content.html:23 templates/core/dashboard.html:120
 #: templates/inventory/list.html:106 templates/lxc/detail.html:96
 #: templates/lxc/list.html:101 templates/lxc/partials/ct_snapshots.html:27
 #: templates/lxc/partials/ct_snapshots.html:54
@@ -3243,7 +3361,7 @@ msgstr "Conteúdo"
 msgid "Usage"
 msgstr "Uso"
 
-#: templates/backups/storage_list.html:12 templates/core/dashboard.html:215
+#: templates/backups/storage_list.html:12 templates/core/dashboard.html:121
 #: templates/exporter/export_index.html:41
 #: templates/exporter/export_index.html:117
 #: templates/exporter/lxc_export_index.html:41
@@ -3280,174 +3398,60 @@ msgstr "Nenhum armazenamento."
 msgid "ProxOrchestrator"
 msgstr ""
 
-#: templates/base.html:47
-msgid "NEXUS is a dark theme — choose another theme below for light mode"
-msgstr ""
-"O NEXUS é um tema escuro — escolha outro tema abaixo para o modo claro"
+#: templates/base.html:35
+msgid "Open menu"
+msgstr "Abrir menu"
 
-#: templates/base.html:47 templates/base.html:198
-msgid "Toggle dark mode"
-msgstr "Alternar modo escuro"
+#: templates/base.html:39
+msgid "datacenter"
+msgstr "datacenter"
 
-#: templates/base.html:107 templates/core/login.html:11
-#: templates/core/mfa_email_recovery.html:10 templates/core/mfa_verify.html:10
-#: templates/core/password_reset_confirm.html:10
-#: templates/core/password_reset_invalid.html:10
-#: templates/core/password_reset_request.html:10
-#: templates/wizard/base_wizard.html:17
-msgid "&#9889; ProxOrchestrator"
-msgstr ""
-
-#: templates/base.html:109
-msgid "ForgedIO"
-msgstr ""
-
-#: templates/base.html:110 templates/wizard/base_wizard.html:18
-msgid "by ForgedIO"
-msgstr "por ForgedIO"
-
-#: templates/base.html:114
-msgid "Main"
-msgstr "Principal"
-
-#: templates/base.html:116 templates/base.html:227
-#: templates/core/dashboard.html:4 templates/exporter/lxc_px_progress.html:111
-#: templates/exporter/px_progress.html:111 templates/importer/progress.html:99
-#: templates/vmcreator/progress.html:117
-msgid "Dashboard"
-msgstr "Painel"
-
-#: templates/base.html:119 templates/core/dashboard.html:73
-#: templates/inventory/list.html:82
-msgid "Virtual Machines"
-msgstr "Máquinas virtuais"
-
-#: templates/base.html:121 templates/core/dashboard.html:234
+#: templates/base.html:45 templates/core/dashboard.html:131
 #: templates/core/partials/dashboard_job_row.html:32
 #: templates/vmcreator/create.html:4
 msgid "New VM"
 msgstr "Nova VM"
 
-#: templates/base.html:124 templates/core/dashboard.html:242
-#: templates/vmcreator/create.html:165
-msgid "Import Disk"
-msgstr "Importar disco"
+#: templates/base.html:46
+#| msgid "New LXC"
+msgid "LXC"
+msgstr "LXC"
 
-#: templates/base.html:127 templates/exporter/export_index.html:99
-#: templates/inventory/list.html:4
-msgid "VM Inventory"
-msgstr "Inventário de VMs"
+#: templates/base.html:47 templates/core/partials/dashboard_job_row.html:20
+#: templates/exporter/export_index.html:184
+#: templates/exporter/lxc_export_index.html:184
+msgid "Import"
+msgstr "Importar"
 
-#: templates/base.html:130 templates/base.html:144
-#: templates/lxc/community_scripts.html:4
-msgid "Community Scripts"
-msgstr "Scripts da comunidade"
-
-#: templates/base.html:133 templates/base.html:147
-msgid "Export &amp; Import"
-msgstr "Exportar e importar"
-
-#: templates/base.html:136 templates/core/dashboard.html:124
-msgid "LXC Containers"
-msgstr "Contêineres LXC"
-
-#: templates/base.html:138
-msgid "New Container"
-msgstr "Novo contêiner"
-
-#: templates/base.html:141 templates/exporter/lxc_export_index.html:99
-#: templates/lxc/list.html:4 templates/lxc/list.html:73
-msgid "Container Inventory"
-msgstr "Inventário de contêineres"
-
-#: templates/base.html:150 templates/firewall/index.html:11
-msgid "Datacenter"
-msgstr ""
-
-#: templates/base.html:152 templates/tasks/list.html:4
-msgid "Tasks"
-msgstr "Tarefas"
-
-#: templates/base.html:161 templates/firewall/index.html:4
-#: templates/firewall/partials/panel.html:16 templates/lxc/detail.html:315
-#: templates/lxc/partials/lxc_networks.html:27
-#: templates/vmmanager/detail.html:362
-msgid "Firewall"
-msgstr ""
-
-#: templates/base.html:165
-msgid "Permissions"
-msgstr "Permissões"
-
-#: templates/base.html:168 templates/core/dashboard.html:56
-#: templates/inventory/list.html:112 templates/lxc/list.html:107
-#: templates/tasks/detail.html:24 templates/tasks/list.html:49
-msgid "Node"
-msgstr "Nó"
-
-#: templates/base.html:172 templates/wizard/step6.html:74
-msgid "Settings"
-msgstr "Configurações"
-
-#: templates/base.html:174 templates/node/access.html:14
-msgid "Proxmox"
-msgstr ""
-
-#: templates/base.html:177 templates/lxc/configure.html:244
-msgid "Authentication"
-msgstr "Autenticação"
-
-#: templates/base.html:183
-msgid "Certificates"
-msgstr "Certificados"
-
-#: templates/base.html:186
-msgid "Import files"
-msgstr "Arquivos de importação"
-
-#: templates/base.html:189
-msgid "Account"
-msgstr "Conta"
-
-#: templates/base.html:190
-msgid "Users"
-msgstr "Usuários"
-
-#: templates/base.html:207 templates/base.html:208
-msgid "Theme"
-msgstr "Tema"
-
-#: templates/base.html:215
-msgid "Sign out"
-msgstr "Sair"
-
-#: templates/base.html:224
-msgid "Open menu"
-msgstr "Abrir menu"
-
-#: templates/base.html:233 templates/base.html:284
+#: templates/base.html:49 templates/base.html:50 templates/base.html:102
 msgid "Help"
 msgstr "Ajuda"
 
-#: templates/base.html:255
+#: templates/base.html:72
 msgid "Recent tasks"
 msgstr "Tarefas recentes"
 
-#: templates/base.html:257 templates/tasks/detail.html:9
+#: templates/base.html:74 templates/core/dashboard.html:115
+#: templates/tasks/detail.html:9
 msgid "All tasks"
 msgstr "Todas as tarefas"
 
-#: templates/base.html:276 templates/core/login.html:158
-#: templates/core/mfa_email_recovery.html:99 templates/core/mfa_verify.html:93
-#: templates/core/password_reset_confirm.html:82
-#: templates/core/password_reset_invalid.html:43
-#: templates/core/password_reset_request.html:85
-#: templates/wizard/base_wizard.html:97
+#: templates/base.html:93 templates/core/partials/auth_footer.html:3
+#: templates/wizard/base_wizard.html:104
 msgid "ProxOrchestrator &mdash; by ForgedIO &mdash; Free &amp; Open Source"
 msgstr ""
 "ProxOrchestrator &mdash; por ForgedIO &mdash; livre e de código aberto"
 
-#: templates/base.html:290
+#: templates/base.html:94 templates/core/partials/auth_footer.html:4
+#: templates/wizard/base_wizard.html:105
+msgid ""
+"Proxmox® is a registered trademark of Proxmox Server Solutions GmbH in the "
+"EU, the U.S., and other countries."
+msgstr ""
+"Proxmox® é uma marca registrada da Proxmox Server Solutions GmbH na UE, nos "
+"EUA e em outros países."
+
+#: templates/base.html:108
 msgid "Click Help to load content for this page."
 msgstr "Clique em Ajuda para carregar o conteúdo desta página."
 
@@ -3945,7 +3949,7 @@ msgstr "Última renovação"
 msgid "Expires In"
 msgstr "Expira em"
 
-#: templates/certificates/settings.html:607 templates/core/dashboard.html:43
+#: templates/certificates/settings.html:607 templates/core/dashboard.html:25
 #, python-format
 msgid "%(cert_days_remaining)s days"
 msgstr "%(cert_days_remaining)s dias"
@@ -4170,7 +4174,7 @@ msgstr "Manual (envia o registro TXT por e-mail aos administradores)"
 
 #: templates/certificates/settings.html:858
 #: templates/certificates/settings.html:1045
-#: templates/wizard/base_wizard.html:54 templates/wizard/settings.html:129
+#: templates/wizard/base_wizard.html:61 templates/wizard/settings.html:129
 #: templates/wizard/step6.html:40
 msgid "API Token"
 msgstr "Token da API"
@@ -4326,7 +4330,7 @@ msgstr ""
 "Sua conta está usando a senha padrão. Escolha uma nova senha para continuar."
 
 #: templates/core/change_password.html:35
-#: templates/core/password_reset_confirm.html:41
+#: templates/core/password_reset_confirm.html:34
 msgid "At least 8 characters"
 msgstr "Pelo menos 8 caracteres"
 
@@ -4346,15 +4350,11 @@ msgstr "Painel — ProxOrchestrator"
 msgid "dashboard"
 msgstr ""
 
-#: templates/core/dashboard.html:10 templates/importer/upload.html:4
-msgid "Import VM"
-msgstr "Importar VM"
-
-#: templates/core/dashboard.html:25
+#: templates/core/dashboard.html:13
 msgid "Setup Required"
 msgstr "Configuração necessária"
 
-#: templates/core/dashboard.html:27
+#: templates/core/dashboard.html:14
 msgid ""
 "ProxOrchestrator hasn't been connected to your Proxmox server yet. Run the "
 "setup wizard to configure your Proxmox host, SSH key authentication, API "
@@ -4364,41 +4364,63 @@ msgstr ""
 "assistente de configuração para definir o host do Proxmox, a autenticação "
 "por chave SSH, o token da API e as configurações padrão."
 
-#: templates/core/dashboard.html:31
+#: templates/core/dashboard.html:16
 msgid "Run Setup Wizard"
 msgstr "Abrir assistente de configuração"
 
-#: templates/core/dashboard.html:43
+#: templates/core/dashboard.html:25
 msgid "TLS certificate expires in"
 msgstr "O certificado TLS expira em"
 
-#: templates/core/dashboard.html:44
+#: templates/core/dashboard.html:26
 msgid "Manage certificates &rarr;"
 msgstr "Gerenciar certificados &rarr;"
 
-#: templates/core/dashboard.html:57
+#: templates/core/dashboard.html:34 templates/core/dashboard.html:88
+#: templates/core/partials/node_summary.html:9
+#: templates/inventory/list.html:112 templates/lxc/list.html:107
+#: templates/tasks/detail.html:24 templates/tasks/list.html:49
+msgid "Node"
+msgstr "Nó"
+
+#: templates/core/dashboard.html:34
 msgid "Loading node status…"
 msgstr "Carregando estado do nó…"
 
-#: templates/core/dashboard.html:63
-msgid "Node performance"
-msgstr "Desempenho do nó"
+#: templates/core/dashboard.html:42
+#, python-format
+msgid "%(n)s workload"
+msgid_plural "%(n)s workloads"
+msgstr[0] "%(n)s máquina ou contêiner"
+msgstr[1] "%(n)s máquinas e contêineres"
 
-#: templates/core/dashboard.html:66 templates/lxc/detail.html:344
-#: templates/vmmanager/detail.html:389
-msgid "Loading statistics…"
-msgstr "Carregando estatísticas…"
+#: templates/core/dashboard.html:44
+#| msgid "Deploy VM"
+msgid "Deploy guest"
+msgstr "Criar VM"
 
-#: templates/core/dashboard.html:83 templates/inventory/list.html:40
-msgid "Total VMs"
-msgstr "Total de VMs"
+#: templates/core/dashboard.html:47
+#| msgid "No guests."
+msgid "Filter guests"
+msgstr "Filtrar máquinas e contêineres"
 
-#: templates/core/dashboard.html:94 templates/core/dashboard.html:145
-#: templates/exporter/export_options.html:43
+#: templates/core/dashboard.html:48 templates/tasks/list.html:19
+msgid "All"
+msgstr "Todos"
+
+#: templates/core/dashboard.html:49
+msgid "VMs"
+msgstr "VMs"
+
+#: templates/core/dashboard.html:50
+msgid "LXCs"
+msgstr "LXCs"
+
+#: templates/core/dashboard.html:51 templates/exporter/export_options.html:43
 #: templates/exporter/lxc_export_options.html:37
-#: templates/inventory/list.html:49 templates/inventory/list.html:133
+#: templates/inventory/list.html:49 templates/inventory/list.html:131
 #: templates/inventory/partials/vm_detail_banner.html:53
-#: templates/inventory/partials/vm_row.html:13
+#: templates/inventory/partials/vm_row.html:11
 #: templates/lxc/clone_options.html:36 templates/lxc/list.html:49
 #: templates/lxc/list.html:126 templates/lxc/partials/ct_detail_banner.html:28
 #: templates/lxc/partials/ct_row.html:10
@@ -4406,12 +4428,11 @@ msgstr "Total de VMs"
 msgid "Running"
 msgstr "Rodando"
 
-#: templates/core/dashboard.html:105 templates/core/dashboard.html:156
-#: templates/exporter/export_options.html:45
+#: templates/core/dashboard.html:52 templates/exporter/export_options.html:45
 #: templates/exporter/lxc_export_options.html:39
-#: templates/inventory/list.html:58 templates/inventory/list.html:135
+#: templates/inventory/list.html:58 templates/inventory/list.html:133
 #: templates/inventory/partials/vm_detail_banner.html:55
-#: templates/inventory/partials/vm_row.html:15
+#: templates/inventory/partials/vm_row.html:13
 #: templates/lxc/clone_options.html:38 templates/lxc/list.html:58
 #: templates/lxc/list.html:128 templates/lxc/partials/ct_detail_banner.html:30
 #: templates/lxc/partials/ct_row.html:12
@@ -4419,141 +4440,183 @@ msgstr "Rodando"
 msgid "Stopped"
 msgstr "Parado"
 
-#: templates/core/dashboard.html:115 templates/core/dashboard.html:166
-msgid "See inventory"
-msgstr "Ver inventário"
+#: templates/core/dashboard.html:53
+msgid "Filter workloads…"
+msgstr "Filtrar por nome ou ID…"
 
-#: templates/core/dashboard.html:116
-msgid "VM Details"
-msgstr "Detalhes das VMs"
+#: templates/core/dashboard.html:53
+#| msgid "Filter by name or ID…"
+msgid "Filter workloads by name or ID"
+msgstr "Filtrar máquinas e contêineres por nome ou ID"
 
-#: templates/core/dashboard.html:134 templates/lxc/list.html:40
-msgid "Total Containers"
-msgstr "Total de contêineres"
+#: templates/core/dashboard.html:59
+#| msgid "State"
+msgid "State & ID"
+msgstr "Estado e ID"
 
-#: templates/core/dashboard.html:167
-msgid "LXC Details"
-msgstr "Detalhes dos LXC"
+#: templates/core/dashboard.html:59
+#| msgid "group name"
+msgid "Workload name"
+msgstr "Nome"
 
-#: templates/core/dashboard.html:178
-msgid "Quick Actions"
-msgstr "Ações rápidas"
+#: templates/core/dashboard.html:60
+#| msgid "Upload"
+msgid "CPU load"
+msgstr "Uso de CPU"
 
-#: templates/core/dashboard.html:183
-msgid "Import VM from Disk Image"
-msgstr "Importar VM de imagem de disco"
+#: templates/core/dashboard.html:60 templates/importer/configure.html:443
+#: templates/lxc/community_scripts_deploy.html:52
+#: templates/lxc/detail.html:218 templates/vmcreator/configure.html:290
+#: templates/vmcreator/vm_community_scripts_deploy.html:52
+#: templates/vmmanager/detail.html:249
+msgid "Memory"
+msgstr "Memória"
 
-#: templates/core/dashboard.html:187 templates/core/dashboard.html:238
-#: templates/lxc/create.html:4
-msgid "New LXC Container"
-msgstr "Novo contêiner LXC"
+#: templates/core/dashboard.html:66
+#| msgid "Template"
+msgid "template"
+msgstr "modelo"
 
-#: templates/core/dashboard.html:191
-#: templates/core/partials/dashboard_job_row.html:79
-msgid "View VM Inventory"
-msgstr "Ver inventário de VMs"
+#: templates/core/dashboard.html:75
+#| msgid "No VMs matched your filter."
+msgid "No workload matches the filter."
+msgstr "Nenhuma máquina ou contêiner corresponde ao filtro."
 
-#: templates/core/dashboard.html:195
-#: templates/core/partials/dashboard_job_row.html:69
-msgid "View Container Inventory"
-msgstr "Ver inventário de contêineres"
+#: templates/core/dashboard.html:77
+#| msgid "No container exports yet."
+msgid "No VMs or containers on this node yet."
+msgstr "Ainda não há VMs nem contêineres neste nó."
 
-#: templates/core/dashboard.html:205
-msgid "Recent Jobs"
-msgstr "Jobs recentes"
-
-#: templates/core/dashboard.html:212 templates/firewall/partials/panel.html:83
-#: templates/firewall/partials/panel.html:226
-msgid "Source"
-msgstr "Origem"
-
-#: templates/core/dashboard.html:229
-msgid "No jobs yet"
-msgstr "Nenhum job ainda"
-
-#: templates/core/dashboard.html:230
-msgid ""
-"Import a disk image, create a VM, or spin up a container to get started."
+#: templates/core/dashboard.html:80
+msgid "Proxmox API unavailable — guests cannot be listed right now."
 msgstr ""
-"Importe uma imagem de disco, crie uma VM ou suba um contêiner para começar."
+"API do Proxmox indisponível — não dá para listar as máquinas e contêineres "
+"agora."
 
-#: templates/core/dashboard.html:255
+#: templates/core/dashboard.html:87
+#| msgid "Show S.M.A.R.T."
+msgid "Disk health (S.M.A.R.T.)"
+msgstr "Saúde dos discos (S.M.A.R.T.)"
+
+#: templates/core/dashboard.html:89 templates/firewall/index.html:13
+#: templates/firewall/index.html:20 templates/firewall/index.html:30
+#: templates/wizard/settings.html:654
+msgid "Loading…"
+msgstr "Carregando…"
+
+#: templates/core/dashboard.html:94
 msgid "System Information"
 msgstr "Informações do sistema"
 
-#: templates/core/dashboard.html:264 templates/wizard/settings.html:626
+#: templates/core/dashboard.html:97 templates/wizard/settings.html:610
 msgid "API Status"
 msgstr "Estado da API"
 
-#: templates/core/dashboard.html:268
+#: templates/core/dashboard.html:97
 #: templates/lxc/partials/lxc_networks.html:49
 #: templates/vmmanager/partials/vm_networks.html:47
-#: templates/wizard/settings.html:629
+#: templates/wizard/settings.html:613
 msgid "Connected"
 msgstr "Conectado"
 
-#: templates/core/dashboard.html:271
+#: templates/core/dashboard.html:97
 #: templates/lxc/partials/lxc_networks.html:45
 #: templates/vmmanager/partials/vm_networks.html:43
 msgid "Disconnected"
 msgstr "Desconectado"
 
-#: templates/core/dashboard.html:276 templates/wizard/base_wizard.html:48
-#: templates/wizard/settings.html:300
+#: templates/core/dashboard.html:98 templates/wizard/base_wizard.html:55
+#: templates/wizard/settings.html:284
 msgid "SSH Key"
 msgstr "Chave SSH"
 
-#: templates/core/dashboard.html:280
+#: templates/core/dashboard.html:98
 msgid "Configured"
 msgstr "Configurada"
 
-#: templates/core/dashboard.html:283
+#: templates/core/dashboard.html:98
 msgid "Not configured"
 msgstr "Não configurada"
+
+#: templates/core/dashboard.html:106
+msgid "Node performance"
+msgstr "Desempenho do nó"
+
+#: templates/core/dashboard.html:108 templates/lxc/detail.html:344
+#: templates/vmmanager/detail.html:389
+msgid "Loading statistics…"
+msgstr "Carregando estatísticas…"
+
+#: templates/core/dashboard.html:114
+msgid "Recent Jobs"
+msgstr "Jobs recentes"
+
+#: templates/core/dashboard.html:120 templates/firewall/partials/panel.html:83
+#: templates/firewall/partials/panel.html:226
+msgid "Source"
+msgstr "Origem"
+
+#: templates/core/dashboard.html:130
+msgid "No jobs yet"
+msgstr "Nenhum job ainda"
+
+#: templates/core/dashboard.html:130
+msgid ""
+"Import a disk image, create a VM, or spin up a container to get started."
+msgstr ""
+"Importe uma imagem de disco, crie uma VM ou suba um contêiner para começar."
+
+#: templates/core/dashboard.html:132 templates/lxc/create.html:4
+msgid "New LXC Container"
+msgstr "Novo contêiner LXC"
+
+#: templates/core/dashboard.html:133 templates/vmcreator/create.html:165
+msgid "Import Disk"
+msgstr "Importar disco"
 
 #: templates/core/login.html:3
 msgid "Sign In — ProxOrchestrator"
 msgstr "Entrar — ProxOrchestrator"
 
-#: templates/core/login.html:14
+#: templates/core/login.html:9
 msgid "Self-hosted Proxmox VM Manager"
 msgstr "Gerenciador de VMs Proxmox auto-hospedado"
 
-#: templates/core/login.html:23
+#: templates/core/login.html:16
 msgid "Sign in to your account"
 msgstr "Entre na sua conta"
 
-#: templates/core/login.html:60
+#: templates/core/login.html:53
 msgid "Username or Email"
 msgstr "Usuário ou e-mail"
 
-#: templates/core/login.html:67
+#: templates/core/login.html:60
 msgid "Username or email address"
 msgstr "Usuário ou endereço de e-mail"
 
-#: templates/core/login.html:90 templates/core/mfa_setup.html:83
+#: templates/core/login.html:83 templates/core/mfa_setup.html:83
 msgid "Enter your password"
 msgstr "Digite sua senha"
 
-#: templates/core/login.html:107
+#: templates/core/login.html:100
 msgid "Sign In"
 msgstr "Entrar"
 
-#: templates/core/login.html:114
+#: templates/core/login.html:107
 msgid "Forgot your password?"
 msgstr "Esqueceu a senha?"
 
-#: templates/core/login.html:123
+#: templates/core/login.html:116
 #: templates/exporter/partials/delete_after_download_option.html:9
 #: templates/importer/upload.html:38
 msgid "or"
 msgstr "ou"
 
-#: templates/core/login.html:141
+#: templates/core/login.html:134
 msgid "Sign in with Microsoft"
 msgstr "Entrar com a Microsoft"
 
-#: templates/core/login.html:150
+#: templates/core/login.html:143
 msgid "LDAP authentication is enabled — use your directory credentials."
 msgstr "A autenticação LDAP está ativada — use as credenciais do diretório."
 
@@ -4561,20 +4624,20 @@ msgstr "A autenticação LDAP está ativada — use as credenciais do diretório
 msgid "Email Recovery — ProxOrchestrator"
 msgstr "Recuperação por e-mail — ProxOrchestrator"
 
-#: templates/core/mfa_email_recovery.html:13
+#: templates/core/mfa_email_recovery.html:8
 msgid "MFA Email Recovery"
 msgstr "Recuperação de MFA por e-mail"
 
-#: templates/core/mfa_email_recovery.html:22
+#: templates/core/mfa_email_recovery.html:15
 msgid "Recover access via email"
 msgstr "Recuperar o acesso por e-mail"
 
-#: templates/core/mfa_email_recovery.html:45
-#: templates/core/password_reset_request.html:36
+#: templates/core/mfa_email_recovery.html:38
+#: templates/core/password_reset_request.html:29
 msgid "Email is not configured."
 msgstr "O e-mail não está configurado."
 
-#: templates/core/mfa_email_recovery.html:46
+#: templates/core/mfa_email_recovery.html:39
 msgid ""
 "Email recovery is unavailable. Please use a recovery code or contact your "
 "administrator."
@@ -4582,31 +4645,31 @@ msgstr ""
 "A recuperação por e-mail não está disponível. Use um código de recuperação "
 "ou fale com o administrador."
 
-#: templates/core/mfa_email_recovery.html:50
+#: templates/core/mfa_email_recovery.html:43
 msgid "We'll send a one-time code to"
 msgstr "Vamos enviar um código de uso único para"
 
-#: templates/core/mfa_email_recovery.html:50
+#: templates/core/mfa_email_recovery.html:43
 msgid ". Click below to send the code, then enter it to sign in."
 msgstr ". Clique abaixo para enviar o código e depois digite-o para entrar."
 
-#: templates/core/mfa_email_recovery.html:58
+#: templates/core/mfa_email_recovery.html:51
 msgid "Send Recovery Code"
 msgstr "Enviar código de recuperação"
 
-#: templates/core/mfa_email_recovery.html:66
+#: templates/core/mfa_email_recovery.html:59
 msgid "Enter the code from your email"
 msgstr "Digite o código recebido por e-mail"
 
-#: templates/core/mfa_email_recovery.html:72
+#: templates/core/mfa_email_recovery.html:65
 msgid "6-digit code"
 msgstr "Código de 6 dígitos"
 
-#: templates/core/mfa_email_recovery.html:85
+#: templates/core/mfa_email_recovery.html:78
 msgid "Verify Code"
 msgstr "Verificar código"
 
-#: templates/core/mfa_email_recovery.html:92
+#: templates/core/mfa_email_recovery.html:85
 msgid "Back to authenticator code"
 msgstr "Voltar ao código do autenticador"
 
@@ -4728,15 +4791,15 @@ msgstr "Tem certeza de que quer desativar o MFA?"
 msgid "MFA Verification — ProxOrchestrator"
 msgstr "Verificação do MFA — ProxOrchestrator"
 
-#: templates/core/mfa_verify.html:13
+#: templates/core/mfa_verify.html:8
 msgid "Two-Factor Authentication"
 msgstr "Autenticação em dois fatores"
 
-#: templates/core/mfa_verify.html:22
+#: templates/core/mfa_verify.html:15
 msgid "Enter your authenticator code"
 msgstr "Digite o código do autenticador"
 
-#: templates/core/mfa_verify.html:43
+#: templates/core/mfa_verify.html:36
 msgid ""
 "Open your authenticator app and enter the 6-digit code. You can also use a "
 "recovery code."
@@ -4744,37 +4807,64 @@ msgstr ""
 "Abra o aplicativo autenticador e digite o código de 6 dígitos. Você também "
 "pode usar um código de recuperação."
 
-#: templates/core/mfa_verify.html:55
+#: templates/core/mfa_verify.html:48
 msgid "6-digit code or recovery code"
 msgstr "Código de 6 dígitos ou de recuperação"
 
-#: templates/core/mfa_verify.html:73
+#: templates/core/mfa_verify.html:66
 msgid "Verify"
 msgstr "Verificar"
 
-#: templates/core/mfa_verify.html:82
+#: templates/core/mfa_verify.html:75
 msgid "Email me a recovery code"
 msgstr "Enviar um código de recuperação por e-mail"
 
-#: templates/core/mfa_verify.html:86
-#: templates/core/password_reset_invalid.html:36
-#: templates/core/password_reset_request.html:78
+#: templates/core/mfa_verify.html:79
+#: templates/core/password_reset_invalid.html:32
+#: templates/core/password_reset_request.html:71
 msgid "Back to Sign In"
 msgstr "Voltar para o login"
 
-#: templates/core/partials/dashboard_job_row.html:20
-#: templates/exporter/export_index.html:184
-#: templates/exporter/lxc_export_index.html:184
-msgid "Import"
-msgstr "Importar"
+#: templates/core/partials/auth_brand.html:8
+#: templates/core/partials/sidebar.html:8 templates/wizard/base_wizard.html:20
+msgid "Hardened ops"
+msgstr "Edição reforçada"
+
+#: templates/core/partials/auth_brand.html:11
+#: templates/core/partials/sidebar.html:11
+#: templates/wizard/base_wizard.html:23
+#| msgid "Proxmox repositories"
+msgid "Proxmox website"
+msgstr "Site do Proxmox"
+
+#: templates/core/partials/auth_brand.html:12
+#: templates/core/partials/sidebar.html:12
+#: templates/wizard/base_wizard.html:24
+#| msgid "or"
+msgid "for"
+msgstr "para"
+
+#: templates/core/partials/dashboard_disks.html:3
+#| msgid "SSH unavailable"
+msgid "Disk health unavailable"
+msgstr "Saúde dos discos indisponível"
+
+#: templates/core/partials/dashboard_disks.html:15
+msgid "life"
+msgstr "vida útil"
+
+#: templates/core/partials/dashboard_disks.html:19
+#| msgid "No sensors exposed by the host"
+msgid "No disks reported by the node."
+msgstr "O nó não informou nenhum disco."
 
 #: templates/core/partials/dashboard_job_row.html:22
 msgid "New LXC"
 msgstr "Novo LXC"
 
 #: templates/core/partials/dashboard_job_row.html:24
-#: templates/inventory/list.html:231
-#: templates/inventory/partials/vm_row.html:107 templates/lxc/detail.html:64
+#: templates/inventory/list.html:229
+#: templates/inventory/partials/vm_row.html:105 templates/lxc/detail.html:64
 #: templates/lxc/detail.html:398 templates/lxc/list.html:211
 #: templates/lxc/partials/ct_row.html:91 templates/vmmanager/detail.html:88
 #: templates/vmmanager/detail.html:665
@@ -4851,11 +4941,19 @@ msgstr "Aguardando configuração"
 msgid "View Container"
 msgstr "Ver contêiner"
 
+#: templates/core/partials/dashboard_job_row.html:69
+msgid "View Container Inventory"
+msgstr "Ver inventário de contêineres"
+
 #: templates/core/partials/dashboard_job_row.html:75
 #: templates/core/partials/dashboard_job_row.html:84
 #: templates/exporter/export_index.html:147
 msgid "View VM"
 msgstr "Ver VM"
+
+#: templates/core/partials/dashboard_job_row.html:79
+msgid "View VM Inventory"
+msgstr "Ver inventário de VMs"
 
 #: templates/core/partials/dashboard_job_row.html:91
 #: templates/core/partials/dashboard_job_row.html:95
@@ -4945,67 +5043,72 @@ msgstr "Cancelar este job em execução?"
 msgid "Language"
 msgstr "Idioma"
 
-#: templates/core/partials/node_summary.html:8
-#, python-format
-msgid "%(node)s (Uptime:"
-msgstr "%(node)s (Tempo ligado:"
+#: templates/core/partials/node_summary.html:11
+#| msgid "(online)"
+msgid "online"
+msgstr "online"
 
-#: templates/core/partials/node_summary.html:17
-msgid "CPU usage"
-msgstr "Uso de CPU"
+#: templates/core/partials/node_summary.html:11
+#| msgid "Unreachable"
+msgid "unreachable"
+msgstr "inacessível"
 
-#: templates/core/partials/node_summary.html:21
-msgid "IO delay"
-msgstr "Espera de E/S"
+#: templates/core/partials/node_summary.html:16
+#: templates/inventory/list.html:111 templates/lxc/list.html:106
+msgid "Uptime"
+msgstr "Tempo ligado"
 
-#: templates/core/partials/node_summary.html:25
-msgid "Load average"
-msgstr "Carga média"
-
-#: templates/core/partials/node_summary.html:31
-msgid "RAM usage"
-msgstr "Uso de RAM"
-
-#: templates/core/partials/node_summary.html:35
-msgid "KSM sharing"
-msgstr "Compartilhamento KSM"
-
-#: templates/core/partials/node_summary.html:38
-msgid "/ HD space"
-msgstr "/ Espaço em disco"
-
-#: templates/core/partials/node_summary.html:42
-msgid "SWAP usage"
-msgstr "Uso de SWAP"
-
-#: templates/core/partials/node_summary.html:48
-msgid "CPU(s)"
-msgstr "CPU(s)"
-
-#: templates/core/partials/node_summary.html:49
-msgid "Kernel Version"
-msgstr "Versão do kernel"
-
-#: templates/core/partials/node_summary.html:50
+#: templates/core/partials/node_summary.html:18
 msgid "Boot Mode"
 msgstr "Modo de boot"
 
-#: templates/core/partials/node_summary.html:51
-msgid "Manager Version"
-msgstr "Versão do gerenciador"
+#: templates/core/partials/node_summary.html:32
+msgid "CPU usage"
+msgstr "Uso de CPU"
 
-#: templates/core/partials/node_summary.html:53
-msgid "Repository Status"
-msgstr "Estado dos repositórios"
+#: templates/core/partials/node_summary.html:36
+msgid "Load average"
+msgstr "Carga média"
 
+#: templates/core/partials/node_summary.html:39
+msgid "RAM usage"
+msgstr "Uso de RAM"
+
+#: templates/core/partials/node_summary.html:43
+msgid "KSM sharing"
+msgstr "Compartilhamento KSM"
+
+#: templates/core/partials/node_summary.html:46
+msgid "/ HD space"
+msgstr "/ Espaço em disco"
+
+#: templates/core/partials/node_summary.html:52
+msgid "SWAP usage"
+msgstr "Uso de SWAP"
+
+#: templates/core/partials/node_summary.html:52
 #: templates/core/partials/node_summary.html:56
-#: templates/core/partials/node_summary.html:62
+#: templates/core/partials/topbar_stats.html:4
+msgid "IO delay"
+msgstr "Espera de E/S"
+
+#: templates/core/partials/node_summary.html:55
+msgid "No swap"
+msgstr "Sem swap"
+
+#: templates/core/partials/node_summary.html:63
+msgid "CPU(s)"
+msgstr "CPU(s)"
+
+#: templates/core/partials/node_summary.html:64
+msgid "Kernel Version"
+msgstr "Versão do kernel"
+
+#: templates/core/partials/node_summary.html:66
 msgid "Temperatures"
 msgstr "Temperaturas"
 
-#: templates/core/partials/node_summary.html:56
-#: templates/core/partials/node_summary.html:62
-#| msgid "Available"
+#: templates/core/partials/node_summary.html:67
 msgid "Unavailable"
 msgstr "Indisponível"
 
@@ -5031,23 +5134,92 @@ msgstr "Sem dados para este período."
 msgid "max %(max)s"
 msgstr "máx. %(max)s"
 
+#: templates/core/partials/sidebar.html:2
+#| msgid "Open menu"
+msgid "Main menu"
+msgstr "Menu principal"
+
+#: templates/core/partials/sidebar.html:41
+msgid "administrator"
+msgstr "administrador"
+
+#: templates/core/partials/sidebar.html:41
+#| msgid "No users."
+msgid "user"
+msgstr "usuário"
+
+#: templates/core/partials/sidebar.html:45
+msgid "Sign out"
+msgstr "Sair"
+
+#: templates/core/partials/store_hero.html:5
+#| msgid "VM Community Scripts"
+msgid "Proxmox VE community scripts"
+msgstr "Scripts da comunidade para Proxmox VE"
+
+#: templates/core/partials/store_hero.html:10
+#| msgid "All Scripts"
+msgid "Scripts"
+msgstr "Scripts"
+
+#: templates/core/partials/store_hero.html:11
+#: templates/lxc/community_scripts.html:18
+#: templates/vmcreator/vm_community_scripts.html:18
+msgid "Categories"
+msgstr "Categorias"
+
+#: templates/core/partials/store_hero.html:11
+msgid "in the catalog"
+msgstr "no catálogo"
+
+#: templates/core/partials/topbar_stats.html:2
+#: templates/importer/configure.html:389 templates/inventory/list.html:109
+#: templates/inventory/partials/vm_detail_banner.html:81
+#: templates/lxc/community_scripts.html:118 templates/lxc/detail.html:192
+#: templates/lxc/list.html:104 templates/lxc/partials/ct_detail_banner.html:48
+#: templates/vmcreator/configure.html:236
+#: templates/vmcreator/vm_community_scripts.html:117
+#: templates/vmmanager/detail.html:215
+msgid "CPU"
+msgstr ""
+
+#: templates/core/partials/topbar_stats.html:3
+#: templates/importer/configure.html:451 templates/inventory/list.html:110
+#: templates/lxc/community_scripts.html:119 templates/lxc/list.html:105
+#: templates/lxc/partials/script_card.html:35
+#: templates/vmcreator/configure.html:298
+#: templates/vmcreator/partials/vm_script_card.html:34
+#: templates/vmcreator/vm_community_scripts.html:118
+#: templates/vmmanager/partials/vm_snapshots.html:63
+msgid "RAM"
+msgstr ""
+
+#: templates/core/partials/topbar_stats.html:4
+msgid "IO"
+msgstr "IO"
+
+#: templates/core/partials/topbar_stats.html:6
+#| msgid "Update available"
+msgid "Node stats unavailable"
+msgstr "Dados do nó indisponíveis"
+
 #: templates/core/password_reset_confirm.html:3
 msgid "Reset Password — ProxOrchestrator"
 msgstr "Redefinir senha — ProxOrchestrator"
 
-#: templates/core/password_reset_confirm.html:13
+#: templates/core/password_reset_confirm.html:8
 msgid "Set New Password"
 msgstr "Definir nova senha"
 
-#: templates/core/password_reset_confirm.html:20
+#: templates/core/password_reset_confirm.html:13
 msgid "Choose a new password"
 msgstr "Escolha uma nova senha"
 
-#: templates/core/password_reset_confirm.html:59
+#: templates/core/password_reset_confirm.html:52
 msgid "Re-enter your password"
 msgstr "Digite a senha de novo"
 
-#: templates/core/password_reset_confirm.html:73
+#: templates/core/password_reset_confirm.html:66
 msgid "Reset Password"
 msgstr "Redefinir senha"
 
@@ -5055,15 +5227,15 @@ msgstr "Redefinir senha"
 msgid "Invalid Reset Link — ProxOrchestrator"
 msgstr "Link de redefinição inválido — ProxOrchestrator"
 
-#: templates/core/password_reset_invalid.html:17
+#: templates/core/password_reset_invalid.html:13
 msgid "Password Reset"
 msgstr "Redefinição de senha"
 
-#: templates/core/password_reset_invalid.html:25
+#: templates/core/password_reset_invalid.html:21
 msgid "Invalid or Expired Link"
 msgstr "Link inválido ou expirado"
 
-#: templates/core/password_reset_invalid.html:28
+#: templates/core/password_reset_invalid.html:24
 msgid ""
 "This password reset link is invalid or has expired. Reset links are valid "
 "for a limited time and can only be used once."
@@ -5071,7 +5243,7 @@ msgstr ""
 "Este link de redefinição de senha é inválido ou expirou. Os links valem por "
 "tempo limitado e só podem ser usados uma vez."
 
-#: templates/core/password_reset_invalid.html:32
+#: templates/core/password_reset_invalid.html:28
 msgid "Request a New Link"
 msgstr "Pedir um novo link"
 
@@ -5079,15 +5251,15 @@ msgstr "Pedir um novo link"
 msgid "Forgot Password — ProxOrchestrator"
 msgstr "Esqueci a senha — ProxOrchestrator"
 
-#: templates/core/password_reset_request.html:13
+#: templates/core/password_reset_request.html:8
 msgid "Password Recovery"
 msgstr "Recuperação de senha"
 
-#: templates/core/password_reset_request.html:20
+#: templates/core/password_reset_request.html:13
 msgid "Reset your password"
 msgstr "Redefina sua senha"
 
-#: templates/core/password_reset_request.html:37
+#: templates/core/password_reset_request.html:30
 msgid ""
 "Password recovery requires email to be set up. Contact your administrator to"
 " configure email settings (SMTP or Microsoft Graph API) in the "
@@ -5097,7 +5269,7 @@ msgstr ""
 "para configurar o e-mail (SMTP ou Microsoft Graph API) no assistente do "
 "ProxOrchestrator."
 
-#: templates/core/password_reset_request.html:41
+#: templates/core/password_reset_request.html:34
 msgid ""
 "Enter the email address associated with your account. If a matching account "
 "exists, we'll send a link to reset your password."
@@ -5105,17 +5277,17 @@ msgstr ""
 "Digite o e-mail associado à sua conta. Se existir uma conta com ele, vamos "
 "enviar um link para redefinir a senha."
 
-#: templates/core/password_reset_request.html:48
+#: templates/core/password_reset_request.html:41
 msgid "Email Address"
 msgstr "Endereço de e-mail"
 
-#: templates/core/password_reset_request.html:54
+#: templates/core/password_reset_request.html:47
 #: templates/emailconfig/settings.html:202
 #: templates/emailconfig/settings.html:406
 msgid "you@example.com"
 msgstr "voce@exemplo.com"
 
-#: templates/core/password_reset_request.html:69
+#: templates/core/password_reset_request.html:62
 msgid "Send Reset Link"
 msgstr "Enviar link de redefinição"
 
@@ -5499,7 +5671,7 @@ msgstr "VMID %(vmid)s"
 #: templates/lxc/progress.html:44 templates/vmcreator/progress.html:50
 #: templates/vmcreator/vm_community_scripts_progress.html:66
 #: templates/vmmanager/clone_progress.html:85
-#: templates/wizard/base_wizard.html:72
+#: templates/wizard/base_wizard.html:79
 msgid "Complete"
 msgstr "Concluído"
 
@@ -5551,13 +5723,17 @@ msgstr "Excluir esta exportação?"
 msgid "No exports yet."
 msgstr "Nenhuma exportação ainda."
 
+#: templates/exporter/export_index.html:99 templates/inventory/list.html:4
+msgid "VM Inventory"
+msgstr "Inventário de VMs"
+
 #: templates/exporter/export_index.html:99
 msgid ", open a VM, and click"
 msgstr ", abra uma VM e clique em"
 
 #: templates/exporter/export_index.html:99
-#: templates/exporter/export_options.html:4 templates/inventory/list.html:234
-#: templates/inventory/partials/vm_row.html:110
+#: templates/exporter/export_options.html:4 templates/inventory/list.html:232
+#: templates/inventory/partials/vm_row.html:108
 #: templates/vmmanager/detail.html:93
 msgid "Export VM"
 msgstr "Exportar VM"
@@ -5835,8 +6011,8 @@ msgid "Export Modes Explained"
 msgstr "Os modos de exportação"
 
 #: templates/exporter/export_options.html:242
-#: templates/inventory/list.html:195
-#: templates/inventory/partials/vm_row.html:71 templates/lxc/detail.html:28
+#: templates/inventory/list.html:193
+#: templates/inventory/partials/vm_row.html:69 templates/lxc/detail.html:28
 #: templates/lxc/list.html:182 templates/lxc/partials/ct_row.html:62
 #: templates/vmmanager/detail.html:28
 msgid "Shutdown"
@@ -6095,6 +6271,11 @@ msgstr ""
 msgid "No container exports yet."
 msgstr "Nenhuma exportação de contêiner ainda."
 
+#: templates/exporter/lxc_export_index.html:99 templates/lxc/list.html:4
+#: templates/lxc/list.html:73
+msgid "Container Inventory"
+msgstr "Inventário de contêineres"
+
 #: templates/exporter/lxc_export_index.html:99
 msgid ", open a container, and click"
 msgstr ", abra um contêiner e clique em"
@@ -6321,7 +6502,7 @@ msgstr "Recursos"
 #: templates/lxc/community_scripts_deploy.html:172
 #: templates/lxc/configure.html:94
 #: templates/vmcreator/vm_community_scripts_deploy.html:48
-#: templates/wizard/settings.html:508 templates/wizard/step5.html:147
+#: templates/wizard/settings.html:492 templates/wizard/step5.html:147
 msgid "CPU Cores"
 msgstr "Núcleos de CPU"
 
@@ -6447,7 +6628,7 @@ msgid "Network:"
 msgstr "Rede:"
 
 #: templates/exporter/lxc_px_configure.html:324
-#: templates/lxc/community_scripts.html:339
+#: templates/lxc/community_scripts.html:341
 #: templates/lxc/community_scripts_deploy.html:64
 #: templates/lxc/detail.html:131 templates/lxc/detail.html:504
 msgid "Unprivileged"
@@ -6770,7 +6951,7 @@ msgstr ""
 
 #: templates/exporter/px_configure.html:46
 #: templates/importer/configure.html:970
-#: templates/vmcreator/vm_community_scripts.html:132
+#: templates/vmcreator/vm_community_scripts.html:134
 msgid "Deploy VM"
 msgstr "Implantar VM"
 
@@ -6855,14 +7036,19 @@ msgstr ""
 msgid "Firewall — ProxOrchestrator"
 msgstr "Firewall — ProxOrchestrator"
 
+#: templates/firewall/index.html:4 templates/firewall/partials/panel.html:16
+#: templates/lxc/detail.html:315 templates/lxc/partials/lxc_networks.html:27
+#: templates/vmmanager/detail.html:362
+msgid "Firewall"
+msgstr ""
+
 #: templates/firewall/index.html:5
 msgid "firewall"
 msgstr ""
 
-#: templates/firewall/index.html:13 templates/firewall/index.html:20
-#: templates/firewall/index.html:30 templates/wizard/settings.html:670
-msgid "Loading…"
-msgstr "Carregando…"
+#: templates/firewall/index.html:11
+msgid "Datacenter"
+msgstr ""
 
 #: templates/firewall/index.html:18 templates/node/node.html:4
 #, python-format
@@ -7501,16 +7687,6 @@ msgstr "Adicionar TPM 2.0"
 msgid "Required for Windows 11."
 msgstr "Obrigatório para Windows 11."
 
-#: templates/importer/configure.html:389 templates/inventory/list.html:109
-#: templates/inventory/partials/vm_detail_banner.html:81
-#: templates/lxc/community_scripts.html:116 templates/lxc/detail.html:192
-#: templates/lxc/list.html:104 templates/lxc/partials/ct_detail_banner.html:48
-#: templates/vmcreator/configure.html:236
-#: templates/vmcreator/vm_community_scripts.html:115
-#: templates/vmmanager/detail.html:215
-msgid "CPU"
-msgstr ""
-
 #: templates/importer/configure.html:407
 #: templates/vmcreator/configure.html:254
 msgid "= best performance (migration restricted)."
@@ -7536,22 +7712,6 @@ msgstr "Núcleos por socket"
 #: templates/vmcreator/configure.html:279
 msgid "&nbsp;Enable NUMA topology"
 msgstr "&nbsp;Ativar topologia NUMA"
-
-#: templates/importer/configure.html:443
-#: templates/lxc/community_scripts_deploy.html:52
-#: templates/lxc/detail.html:218 templates/vmcreator/configure.html:290
-#: templates/vmcreator/vm_community_scripts_deploy.html:52
-#: templates/vmmanager/detail.html:249
-msgid "Memory"
-msgstr "Memória"
-
-#: templates/importer/configure.html:451 templates/inventory/list.html:110
-#: templates/lxc/community_scripts.html:117 templates/lxc/list.html:105
-#: templates/vmcreator/configure.html:298
-#: templates/vmcreator/vm_community_scripts.html:116
-#: templates/vmmanager/partials/vm_snapshots.html:63
-msgid "RAM"
-msgstr ""
 
 #: templates/importer/configure.html:457
 #: templates/vmcreator/configure.html:304
@@ -7627,11 +7787,13 @@ msgstr ""
 
 #: templates/importer/configure.html:509
 #: templates/importer/configure.html:1130
-#: templates/lxc/community_scripts.html:118
+#: templates/lxc/community_scripts.html:120
 #: templates/lxc/community_scripts_deploy.html:56
+#: templates/lxc/partials/script_card.html:36
 #: templates/vmcreator/configure.html:356
 #: templates/vmcreator/configure.html:947
-#: templates/vmcreator/vm_community_scripts.html:117
+#: templates/vmcreator/partials/vm_script_card.html:35
+#: templates/vmcreator/vm_community_scripts.html:119
 #: templates/vmcreator/vm_community_scripts_deploy.html:56
 msgid "Disk"
 msgstr "Disco"
@@ -8223,6 +8385,10 @@ msgstr "Limpar concluídos e com falha"
 msgid "Import VM — ProxOrchestrator"
 msgstr "Importar VM — ProxOrchestrator"
 
+#: templates/importer/upload.html:4
+msgid "Import VM"
+msgstr "Importar VM"
+
 #: templates/importer/upload.html:5
 msgid "importer-upload"
 msgstr ""
@@ -8317,7 +8483,7 @@ msgstr "Enviar"
 msgid "— Your disk image is uploaded to the ProxOrchestrator server."
 msgstr "— A imagem de disco é enviada ao servidor do ProxOrchestrator."
 
-#: templates/importer/upload.html:168 templates/wizard/base_wizard.html:66
+#: templates/importer/upload.html:168 templates/wizard/base_wizard.html:73
 msgid "Configure"
 msgstr "Configurar"
 
@@ -8325,9 +8491,9 @@ msgstr "Configurar"
 msgid "— Set VM name, CPU, RAM, firmware, and network options."
 msgstr "— Defina nome, CPU, RAM, firmware e rede da VM."
 
-#: templates/importer/upload.html:174 templates/lxc/community_scripts.html:134
-#: templates/lxc/partials/script_card.html:42
-#: templates/vmcreator/partials/vm_script_card.html:41
+#: templates/importer/upload.html:174 templates/lxc/community_scripts.html:136
+#: templates/lxc/partials/script_card.html:45
+#: templates/vmcreator/partials/vm_script_card.html:44
 #: templates/vmcreator/vm_community_scripts_deploy.html:143
 msgid "Deploy"
 msgstr "Implantar"
@@ -8439,9 +8605,13 @@ msgstr ""
 msgid "Refresh"
 msgstr "Atualizar"
 
-#: templates/inventory/list.html:67 templates/inventory/list.html:137
+#: templates/inventory/list.html:40
+msgid "Total VMs"
+msgstr "Total de VMs"
+
+#: templates/inventory/list.html:67 templates/inventory/list.html:135
 #: templates/inventory/partials/vm_detail_banner.html:57
-#: templates/inventory/partials/vm_row.html:17
+#: templates/inventory/partials/vm_row.html:15
 msgid "Paused"
 msgstr "Pausada"
 
@@ -8458,10 +8628,6 @@ msgstr "Filtrar por nome ou VMID…"
 msgid "IP Address"
 msgstr "Endereço IP"
 
-#: templates/inventory/list.html:111 templates/lxc/list.html:106
-msgid "Uptime"
-msgstr "Tempo ligado"
-
 #: templates/inventory/list.html:120
 msgid "No VMs matched your filter."
 msgstr "Nenhuma VM corresponde ao filtro."
@@ -8472,145 +8638,145 @@ msgstr "Nenhuma VM corresponde ao filtro."
 msgid "Clear"
 msgstr "Limpar"
 
-#: templates/inventory/list.html:158
-#: templates/inventory/partials/vm_row.html:38
+#: templates/inventory/list.html:156
+#: templates/inventory/partials/vm_row.html:36
 #, python-format
 msgid "%(cpus)s cores"
 msgstr "%(cpus)s núcleos"
 
-#: templates/inventory/list.html:194
-#: templates/inventory/partials/vm_row.html:70 templates/lxc/detail.html:24
+#: templates/inventory/list.html:192
+#: templates/inventory/partials/vm_row.html:68 templates/lxc/detail.html:24
 #: templates/lxc/list.html:181 templates/lxc/partials/ct_row.html:61
 #: templates/vmmanager/detail.html:24
 #, python-format
 msgid "Gracefully shut down %(name)s?"
 msgstr "Desligar %(name)s normalmente?"
 
-#: templates/inventory/list.html:201
-#: templates/inventory/partials/vm_row.html:77 templates/lxc/detail.html:32
+#: templates/inventory/list.html:199
+#: templates/inventory/partials/vm_row.html:75 templates/lxc/detail.html:32
 #: templates/lxc/list.html:188 templates/lxc/partials/ct_row.html:68
 #: templates/vmmanager/detail.html:32
 #, python-format
 msgid "Force stop %(name)s? Unsaved data may be lost."
 msgstr "Forçar a parada de %(name)s? Dados não salvos podem ser perdidos."
 
-#: templates/inventory/list.html:202
-#: templates/inventory/partials/vm_row.html:78 templates/lxc/detail.html:36
+#: templates/inventory/list.html:200
+#: templates/inventory/partials/vm_row.html:76 templates/lxc/detail.html:36
 #: templates/lxc/list.html:189 templates/lxc/partials/ct_row.html:69
 #: templates/vmmanager/detail.html:36
 msgid "Force Stop"
 msgstr "Forçar parada"
 
-#: templates/inventory/list.html:208
-#: templates/inventory/partials/vm_row.html:84 templates/lxc/detail.html:40
+#: templates/inventory/list.html:206
+#: templates/inventory/partials/vm_row.html:82 templates/lxc/detail.html:40
 #: templates/lxc/list.html:195 templates/lxc/partials/ct_row.html:75
 #: templates/vmmanager/detail.html:40
 #, python-format
 msgid "Reboot %(name)s?"
 msgstr "Reiniciar %(name)s?"
 
-#: templates/inventory/list.html:209
-#: templates/inventory/partials/vm_row.html:85 templates/lxc/detail.html:44
+#: templates/inventory/list.html:207
+#: templates/inventory/partials/vm_row.html:83 templates/lxc/detail.html:44
 #: templates/lxc/list.html:196 templates/lxc/partials/ct_row.html:76
 #: templates/vmmanager/detail.html:44
 msgid "Reboot"
 msgstr "Reiniciar"
 
-#: templates/inventory/list.html:212
-#: templates/inventory/partials/vm_row.html:88 templates/lxc/detail.html:17
+#: templates/inventory/list.html:210
+#: templates/inventory/partials/vm_row.html:86 templates/lxc/detail.html:17
 #: templates/lxc/list.html:199 templates/lxc/partials/ct_row.html:79
 #: templates/vmmanager/detail.html:17
 msgid "Console"
 msgstr "Console"
 
-#: templates/inventory/list.html:219
-#: templates/inventory/partials/vm_row.html:95 templates/lxc/detail.html:58
+#: templates/inventory/list.html:217
+#: templates/inventory/partials/vm_row.html:93 templates/lxc/detail.html:58
 #: templates/lxc/list.html:206 templates/lxc/partials/ct_row.html:86
 #: templates/vmmanager/detail.html:74
 msgid "Start"
 msgstr "Iniciar"
 
-#: templates/inventory/list.html:226
-#: templates/inventory/partials/vm_row.html:102
+#: templates/inventory/list.html:224
+#: templates/inventory/partials/vm_row.html:100
 #: templates/vmmanager/detail.html:82
 msgid "Resume"
 msgstr "Retomar"
 
-#: templates/inventory/list.html:237
-#: templates/inventory/partials/vm_row.html:113
+#: templates/inventory/list.html:235
+#: templates/inventory/partials/vm_row.html:111
 #: templates/inventory/partials/vm_row_pending.html:17
 #: templates/lxc/list.html:217 templates/lxc/partials/ct_row.html:97
 msgid "Details"
 msgstr "Detalhes"
 
-#: templates/inventory/list.html:261
+#: templates/inventory/list.html:259
 msgid "No Virtual Machines Found"
 msgstr "Nenhuma máquina virtual encontrada"
 
-#: templates/inventory/list.html:264
+#: templates/inventory/list.html:262
 msgid "No VMs matched your search."
 msgstr "Nenhuma VM corresponde à busca."
 
-#: templates/inventory/list.html:264 templates/lxc/list.html:244
+#: templates/inventory/list.html:262 templates/lxc/list.html:244
 msgid "Clear filter"
 msgstr "Limpar filtro"
 
-#: templates/inventory/list.html:266
+#: templates/inventory/list.html:264
 msgid ""
 "Your Proxmox node doesn't have any VMs yet, or the API couldn't be reached."
 msgstr "O seu nó Proxmox ainda não tem VMs, ou a API não respondeu."
 
-#: templates/inventory/list.html:272
+#: templates/inventory/list.html:270
 msgid "Import a VM"
 msgstr "Importar uma VM"
 
-#: templates/inventory/list.html:285
+#: templates/inventory/list.html:283
 msgid "&nbsp; Delete VM"
 msgstr "&nbsp; Excluir VM"
 
-#: templates/inventory/list.html:291 templates/lxc/list.html:265
+#: templates/inventory/list.html:289 templates/lxc/list.html:265
 #: templates/vmmanager/detail.html:691
 msgid "You are about to"
 msgstr "Você está prestes a"
 
-#: templates/inventory/list.html:291 templates/lxc/list.html:265
+#: templates/inventory/list.html:289 templates/lxc/list.html:265
 #: templates/vmmanager/detail.html:691
 msgid "permanently delete"
 msgstr "excluir permanentemente"
 
-#: templates/inventory/list.html:291 templates/vmmanager/detail.html:691
+#: templates/inventory/list.html:289 templates/vmmanager/detail.html:691
 msgid "the virtual machine:"
 msgstr "a máquina virtual:"
 
-#: templates/inventory/list.html:293
+#: templates/inventory/list.html:291
 #: templates/vmmanager/clone_progress.html:94
 msgid "(VMID"
 msgstr "(VMID"
 
-#: templates/inventory/list.html:297 templates/lxc/list.html:271
+#: templates/inventory/list.html:295 templates/lxc/list.html:271
 #: templates/vmmanager/detail.html:700
 msgid "This will destroy all disks and data. This action cannot be undone."
 msgstr ""
 "Isso destrói todos os discos e dados. Esta ação não pode ser desfeita."
 
-#: templates/inventory/list.html:300
+#: templates/inventory/list.html:298
 msgid "Type the VMID to confirm:"
 msgstr "Digite o VMID para confirmar:"
 
-#: templates/inventory/list.html:301 templates/vmmanager/detail.html:704
+#: templates/inventory/list.html:299 templates/vmmanager/detail.html:704
 msgid "Enter VMID"
 msgstr "Digite o VMID"
 
-#: templates/inventory/list.html:312 templates/vmmanager/detail.html:106
+#: templates/inventory/list.html:310 templates/vmmanager/detail.html:106
 #: templates/vmmanager/detail.html:716
 msgid "Delete VM"
 msgstr "Excluir VM"
 
-#: templates/inventory/list.html:484 templates/vmmanager/detail.html:749
+#: templates/inventory/list.html:482 templates/vmmanager/detail.html:749
 msgid "Deleting VM…"
 msgstr "Excluindo VM…"
 
-#: templates/inventory/list.html:485 templates/lxc/list.html:444
+#: templates/inventory/list.html:483 templates/lxc/list.html:444
 #: templates/vmmanager/detail.html:750
 msgid "Waiting for Proxmox to remove disks and configuration."
 msgstr "Aguardando o Proxmox remover os discos e a configuração."
@@ -8773,87 +8939,106 @@ msgstr "Falha na clonagem"
 msgid "Community Scripts — ProxOrchestrator"
 msgstr "Scripts da comunidade — ProxOrchestrator"
 
+#: templates/lxc/community_scripts.html:4
+msgid "Community Scripts"
+msgstr "Scripts da comunidade"
+
 #: templates/lxc/community_scripts.html:5
 #: templates/lxc/community_scripts_deploy.html:5
 #: templates/lxc/community_scripts_progress.html:6
 msgid "lxc-community-scripts"
 msgstr ""
 
-#: templates/lxc/community_scripts.html:16
-#: templates/vmcreator/vm_community_scripts.html:16
-msgid "Categories"
-msgstr "Categorias"
+#: templates/lxc/community_scripts.html:9
+#| msgid "Back to Containers"
+msgid "1-click community containers"
+msgstr "Contêineres da comunidade em 1 clique"
 
-#: templates/lxc/community_scripts.html:26
-#: templates/vmcreator/vm_community_scripts.html:26
+#: templates/lxc/community_scripts.html:9
+msgid ""
+"Deploy Docker, Pi-hole, Home Assistant, Plex, WireGuard and hundreds of "
+"other apps as LXC containers on your node, straight from the community-"
+"scripts catalog."
+msgstr ""
+"Instale Docker, Pi-hole, Home Assistant, Plex, WireGuard e centenas de "
+"outros apps como contêineres LXC no seu nó, direto do catálogo community-"
+"scripts."
+
+#: templates/lxc/community_scripts.html:9
+#| msgid "LXC Containers"
+msgid "LXC containers"
+msgstr "contêineres LXC"
+
+#: templates/lxc/community_scripts.html:28
+#: templates/vmcreator/vm_community_scripts.html:28
 msgid "All Scripts"
 msgstr "Todos os scripts"
 
-#: templates/lxc/community_scripts.html:57
+#: templates/lxc/community_scripts.html:59
 msgid "Search scripts... (e.g. Docker, Pi-hole, Plex)"
 msgstr "Buscar scripts... (ex.: Docker, Pi-hole, Plex)"
 
-#: templates/lxc/community_scripts.html:73
+#: templates/lxc/community_scripts.html:75
 #: templates/lxc/partials/script_grid.html:4
 #: templates/vmcreator/partials/vm_script_grid.html:4
-#: templates/vmcreator/vm_community_scripts.html:73
+#: templates/vmcreator/vm_community_scripts.html:75
 #, python-format
 msgid "%(total_count)s script%(total_count2)s"
 msgstr "%(total_count)s script%(total_count2)s"
 
-#: templates/lxc/community_scripts.html:94 templates/lxc/console.html:237
+#: templates/lxc/community_scripts.html:96 templates/lxc/console.html:237
 #: templates/lxc/console.html:259
-#: templates/vmcreator/vm_community_scripts.html:93
+#: templates/vmcreator/vm_community_scripts.html:95
 #: templates/vmmanager/console.html:238 templates/vmmanager/console.html:260
 msgid "Close"
 msgstr "Fechar"
 
-#: templates/lxc/community_scripts.html:113
+#: templates/lxc/community_scripts.html:115
 #: templates/lxc/community_scripts_deploy.html:44
 #: templates/vmcreator/vm_community_scripts_deploy.html:44
 msgid "Script Defaults"
 msgstr "Padrões do script"
 
-#: templates/lxc/community_scripts.html:119
+#: templates/lxc/community_scripts.html:121
 #: templates/lxc/community_scripts_deploy.html:60
-#: templates/vmcreator/vm_community_scripts.html:118
+#: templates/vmcreator/vm_community_scripts.html:120
 #: templates/vmcreator/vm_community_scripts_deploy.html:60
 msgid "OS"
 msgstr "Sistema"
 
-#: templates/lxc/community_scripts.html:127
+#: templates/lxc/community_scripts.html:129
 #: templates/lxc/community_scripts_deploy.html:80
 #: templates/vmcreator/vm_community_scripts_deploy.html:70
 msgid "Project Website"
 msgstr "Site do projeto"
 
-#: templates/lxc/community_scripts.html:339
+#: templates/lxc/community_scripts.html:341
 msgid "Privileged"
 msgstr "Com privilégios"
 
-#: templates/lxc/community_scripts.html:405
+#: templates/lxc/community_scripts.html:407
 #: templates/lxc/partials/catalog_update_banner.html:6
 #: templates/vmcreator/partials/vm_catalog_update_banner.html:6
-#: templates/vmcreator/vm_community_scripts.html:310
+#: templates/vmcreator/vm_community_scripts.html:312
 msgid "Update available"
 msgstr "Atualização disponível"
 
-#: templates/lxc/community_scripts.html:423
-#: templates/vmcreator/vm_community_scripts.html:327
+#: templates/lxc/community_scripts.html:425
+#: templates/vmcreator/vm_community_scripts.html:329
 msgid "Retry"
 msgstr "Tentar de novo"
 
-#: templates/lxc/community_scripts.html:424
-#: templates/vmcreator/vm_community_scripts.html:328
+#: templates/lxc/community_scripts.html:426
+#: templates/vmcreator/vm_community_scripts.html:330
 msgid "Update failed: "
 msgstr "Falha na atualização: "
 
-#: templates/lxc/community_scripts.html:424
-#: templates/vmcreator/vm_community_scripts.html:328
+#: templates/lxc/community_scripts.html:426
+#: templates/vmcreator/vm_community_scripts.html:330
 msgid "Unknown error"
 msgstr "Erro desconhecido"
 
-#: templates/lxc/community_scripts.html:424
+#: templates/lxc/community_scripts.html:426
 msgid " — click to retry"
 msgstr " — clique para tentar de novo"
 
@@ -9049,6 +9234,10 @@ msgstr "Só aparecem armazenamentos que aceitam rootfs de contêiner."
 #: templates/lxc/configure.html:148
 msgid "Root Disk Size (GB)"
 msgstr "Tamanho do disco raiz (GB)"
+
+#: templates/lxc/configure.html:244
+msgid "Authentication"
+msgstr "Autenticação"
 
 #: templates/lxc/configure.html:250
 msgid "Root Password"
@@ -9281,7 +9470,7 @@ msgstr "Ou implante um app pronto"
 
 #: templates/lxc/create.html:123
 #: templates/vmmanager/partials/vm_disks.html:466
-#: templates/wizard/settings.html:273 templates/wizard/settings.html:498
+#: templates/wizard/settings.html:257 templates/wizard/settings.html:482
 #: templates/wizard/step5.html:129
 msgid "Browse"
 msgstr "Veja os"
@@ -9736,6 +9925,10 @@ msgstr "Inventário de contêineres — ProxOrchestrator"
 msgid "lxc"
 msgstr ""
 
+#: templates/lxc/list.html:40
+msgid "Total Containers"
+msgstr "Total de contêineres"
+
 #: templates/lxc/list.html:82
 msgid "Filter by name or ID…"
 msgstr "Filtrar por nome ou ID…"
@@ -9869,12 +10062,6 @@ msgstr "Voltar a este snapshot"
 #: templates/vmmanager/partials/vm_snapshots.html:97
 msgid "Rollback"
 msgstr "Voltar"
-
-#: templates/lxc/partials/ct_snapshots.html:87
-#: templates/vmmanager/partials/vm_snapshots.html:103
-#, python-format
-msgid "Delete snapshot '%(name)s'? This cannot be undone."
-msgstr "Excluir o snapshot '%(name)s'? Isso não pode ser desfeito."
 
 #: templates/lxc/partials/ct_snapshots.html:88
 #: templates/vmmanager/partials/vm_snapshots.html:104
@@ -10063,11 +10250,10 @@ msgstr "Acrescentar (GB)"
 msgid "Mountpoints can only be grown, never shrunk."
 msgstr "Pontos de montagem só podem crescer, nunca diminuir."
 
-#: templates/lxc/partials/script_card.html:35
-#: templates/vmcreator/partials/vm_script_card.html:34
-#, python-format
-msgid "%(cpu)sC &nbsp;/&nbsp; %(ram)sMB &nbsp;/&nbsp; %(disk)sGB"
-msgstr ""
+#: templates/lxc/partials/script_card.html:34
+#: templates/vmcreator/partials/vm_script_card.html:33
+msgid "vCPU"
+msgstr "vCPU"
 
 #: templates/lxc/partials/script_grid.html:19
 msgid "No scripts found"
@@ -10603,9 +10789,9 @@ msgstr "Carregando log…"
 msgid "Tasks — ProxOrchestrator"
 msgstr "Tarefas — ProxOrchestrator"
 
-#: templates/tasks/list.html:19
-msgid "All"
-msgstr "Todos"
+#: templates/tasks/list.html:4
+msgid "Tasks"
+msgstr "Tarefas"
 
 #: templates/tasks/list.html:28
 msgid "root@pam"
@@ -11050,16 +11236,34 @@ msgstr "Scripts de VM da comunidade"
 msgid "vm-community-scripts"
 msgstr ""
 
-#: templates/vmcreator/vm_community_scripts.html:57
+#: templates/vmcreator/vm_community_scripts.html:9
+#| msgid "the virtual machine:"
+msgid "Community virtual machines"
+msgstr "Máquinas virtuais da comunidade"
+
+#: templates/vmcreator/vm_community_scripts.html:9
+msgid ""
+"Create ready-made VMs (Home Assistant OS, OPNsense, Debian cloud images and "
+"more) on your node from the community-scripts catalog."
+msgstr ""
+"Crie VMs prontas (Home Assistant OS, OPNsense, imagens cloud do Debian e "
+"outras) no seu nó a partir do catálogo community-scripts."
+
+#: templates/vmcreator/vm_community_scripts.html:9
+#| msgid "Virtual Machines"
+msgid "virtual machines"
+msgstr "máquinas virtuais"
+
+#: templates/vmcreator/vm_community_scripts.html:59
 msgid "Search VM scripts... (e.g. Docker, Home Assistant, TrueNAS)"
 msgstr "Buscar scripts de VM... (ex.: Docker, Home Assistant, TrueNAS)"
 
-#: templates/vmcreator/vm_community_scripts.html:112
-#: templates/wizard/settings.html:396 templates/wizard/step5.html:141
+#: templates/vmcreator/vm_community_scripts.html:114
+#: templates/wizard/settings.html:380 templates/wizard/step5.html:141
 msgid "VM Defaults"
 msgstr "Padrões da VM"
 
-#: templates/vmcreator/vm_community_scripts.html:125
+#: templates/vmcreator/vm_community_scripts.html:127
 msgid "View Script Source"
 msgstr "Ver código do script"
 
@@ -12090,19 +12294,15 @@ msgstr ""
 msgid "Setup Wizard — ProxOrchestrator"
 msgstr "Assistente de configuração — ProxOrchestrator"
 
-#: templates/wizard/base_wizard.html:23
-msgid "Setup Wizard"
-msgstr "Assistente de configuração"
-
-#: templates/wizard/base_wizard.html:28
+#: templates/wizard/base_wizard.html:35
 msgid "Step"
 msgstr "Passo"
 
-#: templates/wizard/base_wizard.html:28
+#: templates/wizard/base_wizard.html:35
 msgid "of 6"
 msgstr "de 6"
 
-#: templates/wizard/base_wizard.html:60
+#: templates/wizard/base_wizard.html:67
 msgid "Discover"
 msgstr "Descobrir"
 
@@ -12118,7 +12318,7 @@ msgstr "Espaço livre:"
 msgid "No subdirectories here."
 msgstr "Nenhuma subpasta aqui."
 
-#: templates/wizard/local_browse.html:71 templates/wizard/settings.html:746
+#: templates/wizard/local_browse.html:71 templates/wizard/settings.html:730
 msgid "New folder name"
 msgstr "Nome da nova pasta"
 
@@ -12262,39 +12462,25 @@ msgstr "Configurações do servidor"
 msgid "Server settings saved and applied."
 msgstr "Configurações do servidor salvas e aplicadas."
 
-#: templates/wizard/settings.html:239
-msgid "Appearance"
-msgstr "Aparência"
-
-#: templates/wizard/settings.html:250
-msgid ""
-"Choose how ProxOrchestrator looks: the classic theme or the denser \"Ops\" "
-"theme, each light, dark or following your system. Saved to your account "
-"(also in the sidebar)."
-msgstr ""
-"Escolha a aparência do ProxOrchestrator: o tema clássico ou o tema \"Ops\", "
-"mais compacto, cada um claro, escuro ou seguindo o sistema. Fica salvo na "
-"sua conta (também na barra lateral)."
-
-#: templates/wizard/settings.html:256
+#: templates/wizard/settings.html:240
 msgid "Upload Temp Directory"
 msgstr "Pasta temporária de envio"
 
-#: templates/wizard/settings.html:266
+#: templates/wizard/settings.html:250
 msgid "Leave blank to use OS default (/tmp)"
 msgstr "Deixe em branco para usar o padrão do sistema (/tmp)"
 
-#: templates/wizard/settings.html:278
+#: templates/wizard/settings.html:262
 msgid "Where this server writes large upload temp files during HTTP transfer."
 msgstr ""
 "Onde este servidor grava os arquivos temporários de envios grandes durante a"
 " transferência HTTP."
 
-#: templates/wizard/settings.html:279
+#: templates/wizard/settings.html:263
 msgid "/tmp is often a small RAM-backed tmpfs"
 msgstr "/tmp costuma ser um tmpfs pequeno, na memória RAM"
 
-#: templates/wizard/settings.html:279
+#: templates/wizard/settings.html:263
 msgid ""
 "— if you import images larger than your available RAM, set this to a "
 "directory on a disk with enough free space (e.g."
@@ -12302,7 +12488,7 @@ msgstr ""
 "— se você importa imagens maiores que a RAM disponível, aponte para uma "
 "pasta num disco com espaço livre suficiente (ex.:"
 
-#: templates/wizard/settings.html:279
+#: templates/wizard/settings.html:263
 msgid ""
 "). The directory will be created automatically. Changes apply immediately "
 "without a restart."
@@ -12310,43 +12496,43 @@ msgstr ""
 "). A pasta é criada automaticamente. As mudanças valem na hora, sem "
 "reiniciar."
 
-#: templates/wizard/settings.html:286
+#: templates/wizard/settings.html:270
 msgid "Save Server Settings"
 msgstr "Salvar configurações do servidor"
 
-#: templates/wizard/settings.html:308
+#: templates/wizard/settings.html:292
 msgid "SSH key operation completed successfully."
 msgstr "Operação com a chave SSH concluída com sucesso."
 
-#: templates/wizard/settings.html:323
+#: templates/wizard/settings.html:307
 msgid "Public Key"
 msgstr "Chave pública"
 
-#: templates/wizard/settings.html:327
+#: templates/wizard/settings.html:311
 msgid "Add this key to"
 msgstr "Adicione esta chave em"
 
-#: templates/wizard/settings.html:327
+#: templates/wizard/settings.html:311
 msgid "on your Proxmox host, or use the re-copy button below."
 msgstr "no seu host Proxmox, ou use o botão de copiar de novo abaixo."
 
-#: templates/wizard/settings.html:332
+#: templates/wizard/settings.html:316
 msgid "No SSH key found. Use the regenerate button below."
 msgstr "Nenhuma chave SSH encontrada. Use o botão de gerar de novo abaixo."
 
-#: templates/wizard/settings.html:342
+#: templates/wizard/settings.html:326
 msgid "Re-copy Key to Proxmox"
 msgstr "Copiar a chave de novo para o Proxmox"
 
-#: templates/wizard/settings.html:353
+#: templates/wizard/settings.html:337
 msgid "Proxmox root password"
 msgstr "Senha do root do Proxmox"
 
-#: templates/wizard/settings.html:361
+#: templates/wizard/settings.html:345
 msgid "Copy Key to Proxmox Host"
 msgstr "Copiar a chave para o host Proxmox"
 
-#: templates/wizard/settings.html:365
+#: templates/wizard/settings.html:349
 msgid ""
 "Uses the root password one time to install the SSH key. The password is not "
 "stored."
@@ -12354,11 +12540,11 @@ msgstr ""
 "Usa a senha do root uma vez para instalar a chave SSH. A senha não é "
 "guardada."
 
-#: templates/wizard/settings.html:374
+#: templates/wizard/settings.html:358
 msgid "Regenerate SSH Key"
 msgstr "Gerar nova chave SSH"
 
-#: templates/wizard/settings.html:377
+#: templates/wizard/settings.html:361
 msgid ""
 "Regenerating the SSH key will break existing key-based access to Proxmox "
 "until you re-copy the new key. Continue?"
@@ -12366,11 +12552,11 @@ msgstr ""
 "Gerar uma nova chave SSH quebra o acesso atual por chave ao Proxmox até você"
 " copiar a nova chave. Continuar?"
 
-#: templates/wizard/settings.html:382
+#: templates/wizard/settings.html:366
 msgid "Generate New 4096-bit RSA Key"
 msgstr "Gerar nova chave RSA de 4096 bits"
 
-#: templates/wizard/settings.html:386
+#: templates/wizard/settings.html:370
 msgid ""
 "After regenerating, use the re-copy form above to install the new key on "
 "Proxmox."
@@ -12378,11 +12564,11 @@ msgstr ""
 "Depois de gerar, use o formulário acima para instalar a nova chave no "
 "Proxmox."
 
-#: templates/wizard/settings.html:404
+#: templates/wizard/settings.html:388
 msgid "VM default settings saved."
 msgstr "Configurações padrão de VM salvas."
 
-#: templates/wizard/settings.html:425
+#: templates/wizard/settings.html:409
 msgid ""
 "Proxmox API is not reachable — dropdowns show current saved values only. Fix"
 " the connection settings above, then reload this page to see live options."
@@ -12391,73 +12577,73 @@ msgstr ""
 "salvos. Corrija a conexão acima e recarregue a página para ver as opções "
 "atuais."
 
-#: templates/wizard/settings.html:430 templates/wizard/settings.html:638
+#: templates/wizard/settings.html:414 templates/wizard/settings.html:622
 #: templates/wizard/step5.html:52 templates/wizard/step6.html:28
 msgid "Default Node"
 msgstr "Nó padrão"
 
-#: templates/wizard/settings.html:442
+#: templates/wizard/settings.html:426
 msgid "pve"
 msgstr ""
 
-#: templates/wizard/settings.html:449 templates/wizard/settings.html:642
+#: templates/wizard/settings.html:433 templates/wizard/settings.html:626
 #: templates/wizard/step5.html:72 templates/wizard/step6.html:32
 msgid "Default Storage"
 msgstr "Armazenamento padrão"
 
-#: templates/wizard/settings.html:461
+#: templates/wizard/settings.html:445
 msgid "local-lvm"
 msgstr ""
 
-#: templates/wizard/settings.html:468 templates/wizard/settings.html:646
+#: templates/wizard/settings.html:452 templates/wizard/settings.html:630
 #: templates/wizard/step6.html:36
 msgid "Default Bridge"
 msgstr "Bridge padrão"
 
-#: templates/wizard/settings.html:480
+#: templates/wizard/settings.html:464
 msgid "vmbr0"
 msgstr ""
 
-#: templates/wizard/settings.html:491 templates/wizard/step5.html:123
+#: templates/wizard/settings.html:475 templates/wizard/step5.html:123
 msgid "/var/tmp/proxorchestrator/"
 msgstr ""
 
-#: templates/wizard/settings.html:502
+#: templates/wizard/settings.html:486
 msgid "Staging directory on the Proxmox host for disk image transfers."
 msgstr ""
 "Pasta de preparo no host Proxmox para as transferências de imagens de disco."
 
-#: templates/wizard/settings.html:518 templates/wizard/step5.html:157
+#: templates/wizard/settings.html:502 templates/wizard/step5.html:157
 msgid "RAM (MB)"
 msgstr "RAM (MB)"
 
-#: templates/wizard/settings.html:530 templates/wizard/step5.html:170
+#: templates/wizard/settings.html:514 templates/wizard/step5.html:170
 msgid "VMID Pool Range"
 msgstr "Faixa de VMIDs"
 
-#: templates/wizard/settings.html:535 templates/wizard/step5.html:185
+#: templates/wizard/settings.html:519 templates/wizard/step5.html:185
 msgid "Pool Min"
 msgstr "Mínimo"
 
-#: templates/wizard/settings.html:544 templates/wizard/step5.html:194
+#: templates/wizard/settings.html:528 templates/wizard/step5.html:194
 msgid "Pool Max"
 msgstr "Máximo"
 
-#: templates/wizard/settings.html:553
+#: templates/wizard/settings.html:537
 msgid ""
 "ProxOrchestrator auto-selects VMIDs within this range when creating VMs."
 msgstr "O ProxOrchestrator escolhe VMIDs dentro desta faixa ao criar VMs."
 
-#: templates/wizard/settings.html:565 templates/wizard/step5.html:223
+#: templates/wizard/settings.html:549 templates/wizard/step5.html:223
 msgid "data:iso/virtio-win-0.1.285.iso"
 msgstr ""
 
-#: templates/wizard/settings.html:569 templates/wizard/step5.html:229
+#: templates/wizard/settings.html:553 templates/wizard/step5.html:229
 #: templates/wizard/step5.html:233
 msgid "Scan"
 msgstr "Procurar"
 
-#: templates/wizard/settings.html:572
+#: templates/wizard/settings.html:556
 msgid ""
 "Auto-attached to Windows VMs as a second CD-ROM. Click Scan to detect from "
 "Proxmox."
@@ -12465,15 +12651,15 @@ msgstr ""
 "Anexada automaticamente às VMs Windows como segundo CD-ROM. Clique em "
 "Procurar para detectar no Proxmox."
 
-#: templates/wizard/settings.html:579
+#: templates/wizard/settings.html:563
 msgid "Save Defaults"
 msgstr "Salvar padrões"
 
-#: templates/wizard/settings.html:594 templates/wizard/settings.html:609
+#: templates/wizard/settings.html:578 templates/wizard/settings.html:593
 msgid "Re-run Setup Wizard"
 msgstr "Rodar o assistente de novo"
 
-#: templates/wizard/settings.html:598
+#: templates/wizard/settings.html:582
 msgid ""
 "If you have changed your Proxmox server, credentials, or network "
 "configuration, re-running the wizard will walk you through every step again "
@@ -12484,7 +12670,7 @@ msgstr ""
 "assistente de novo refaz todos os passos — copia a chave SSH outra vez, "
 "testa o token da API de novo e redescobre nós, armazenamentos e redes."
 
-#: templates/wizard/settings.html:601
+#: templates/wizard/settings.html:585
 msgid ""
 "Your existing VMs and import history are not affected. The app will be "
 "inaccessible until the wizard is completed again."
@@ -12492,7 +12678,7 @@ msgstr ""
 "As VMs existentes e o histórico de importações não são afetados. O app fica "
 "inacessível até o assistente ser concluído de novo."
 
-#: templates/wizard/settings.html:604
+#: templates/wizard/settings.html:588
 msgid ""
 "This will reset the setup wizard. The app will redirect to the wizard until "
 "it is completed. Continue?"
@@ -12500,43 +12686,43 @@ msgstr ""
 "Isso reinicia o assistente de configuração. O app vai redirecionar para o "
 "assistente até ele ser concluído. Continuar?"
 
-#: templates/wizard/settings.html:618
+#: templates/wizard/settings.html:602
 msgid "Current Status"
 msgstr "Estado atual"
 
-#: templates/wizard/settings.html:631
+#: templates/wizard/settings.html:615
 msgid "Unreachable"
 msgstr "Inacessível"
 
-#: templates/wizard/settings.html:650 templates/wizard/step6.html:44
+#: templates/wizard/settings.html:634 templates/wizard/step6.html:44
 msgid "VMID Pool"
 msgstr "Faixa de VMIDs"
 
-#: templates/wizard/settings.html:665
+#: templates/wizard/settings.html:649
 msgid "Browse Proxmox Directory"
 msgstr "Procurar pasta no Proxmox"
 
-#: templates/wizard/settings.html:681
+#: templates/wizard/settings.html:665
 msgid "Browse Local Directory"
 msgstr "Procurar pasta local"
 
-#: templates/wizard/settings.html:686
+#: templates/wizard/settings.html:670
 msgid "Loading..."
 msgstr "Carregando..."
 
-#: templates/wizard/settings.html:743
+#: templates/wizard/settings.html:727
 msgid "Could not create directory"
 msgstr "Não foi possível criar a pasta"
 
-#: templates/wizard/settings.html:764 templates/wizard/step5.html:288
+#: templates/wizard/settings.html:748 templates/wizard/step5.html:288
 msgid "Found:"
 msgstr "Encontrada:"
 
-#: templates/wizard/settings.html:766 templates/wizard/step5.html:290
+#: templates/wizard/settings.html:750 templates/wizard/step5.html:290
 msgid "No VirtIO ISO found."
 msgstr "Nenhuma ISO VirtIO encontrada."
 
-#: templates/wizard/settings.html:771
+#: templates/wizard/settings.html:755
 msgid "Scan failed."
 msgstr "Falha na busca."
 
@@ -13083,3 +13269,7 @@ msgstr "Ir para o painel"
 #: templates/wizard/step6.html:73
 msgid "You can change any of these settings later under"
 msgstr "Você pode mudar qualquer uma destas configurações depois em"
+
+#: templates/wizard/step6.html:74
+msgid "Settings"
+msgstr "Configurações"
