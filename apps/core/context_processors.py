@@ -29,3 +29,18 @@ def _css_version():
 
 def asset_versions(request):
     return {"css_version": _css_version()}
+
+
+def shell(request):
+    """Sidebar sections and the node shown in the top-bar breadcrumb (logged-in pages only)."""
+    user = getattr(request, "user", None)
+    if user is None or not user.is_authenticated:
+        return {"nav_sections": [], "nav_node": ""}
+    from apps.core.navigation import sections_for
+    from apps.wizard.models import ProxmoxConfig
+
+    match = getattr(request, "resolver_match", None)
+    node = (ProxmoxConfig.objects.filter(is_configured=True)
+            .values_list("default_node", flat=True).first()) or ""
+    return {"nav_sections": sections_for(user, getattr(match, "url_name", "") or ""),
+            "nav_node": node}

@@ -1,0 +1,7 @@
+{% load i18n %}{% if summary %}
+<span class="po-chip" title="{{ summary.cpu_text|default:'' }}"><i class="fas fa-microchip" aria-hidden="true"></i>{% translate "CPU" %} <b>{{ summary.cpu_pct|floatformat:1 }}%</b></span>
+{% if summary.memory.present %}<span class="po-chip" title="{{ summary.memory.text }}"><i class="fas fa-memory" aria-hidden="true"></i>{% translate "RAM" %} <b>{{ summary.memory.pct|floatformat:0 }}%</b></span>{% endif %}
+{% if summary.io_delay_text %}<span class="po-chip is-optional" title="{% translate "IO delay" %}"><i class="fas fa-hard-drive" aria-hidden="true"></i>{% translate "IO" %} <b>{{ summary.io_delay_text }}</b></span>{% endif %}
+{% else %}
+<span class="po-chip po-unavailable" title="{{ error|default:'' }}"><i class="fas fa-circle-exclamation" aria-hidden="true"></i>{% translate "Node stats unavailable" %}</span>
+{% endif %}

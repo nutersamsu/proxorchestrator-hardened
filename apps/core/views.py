@@ -182,6 +182,20 @@ def dashboard_node_summary(request):
 
 
 @login_required
+def topbar_stats(request):
+    """HTMX endpoint: live CPU / RAM / IO-delay chips of the top bar (node summary cache)."""
+    from apps.core import node_summary
+    from apps.wizard.models import ProxmoxConfig
+
+    config = ProxmoxConfig.objects.filter(is_configured=True).first()
+    if config is None:
+        return HttpResponse(status=204)
+    data = node_summary.get_node_summary(config)
+    return render(request, "core/partials/topbar_stats.html",
+                  {"summary": data.get("summary"), "error": data.get("error")})
+
+
+@login_required
 def dashboard_job_status(request, job_type, job_id):
     """HTMX endpoint: return an updated job row partial for dashboard polling."""
     from apps.importer.models import ImportJob

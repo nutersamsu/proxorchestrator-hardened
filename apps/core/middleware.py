@@ -7,6 +7,7 @@ logger = logging.getLogger(__name__)
 # Paths that bypass the wizard redirect check
 EXEMPT_PREFIXES = (
     "/wizard/",
+    "/topbar/",  # top-bar chips poll from every page, wizard included: answer 204, never redirect
     "/i18n/",
     "/login/",
     "/logout/",

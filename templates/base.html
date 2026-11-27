@@ -27,125 +27,30 @@
     }
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') toggleSidebar(false); });
   </script>
-  <div class="sidebar" id="app-sidebar">
-    <div class="sidebar-logo">
-      <div class="logo-title">{% translate "&#9889; ProxOrchestrator" %}</div>
-      <div style="display: flex;align-items: center;gap: 0.5rem;margin-top: 0.25rem;">
-        <img src="/static/images/forged_io_logo.png" alt="{% translate "ForgedIO" %}" style="width: 22px;height: 22px;border-radius: 50%;opacity: 0.7;flex-shrink: 0;">
-        <div class="logo-subtitle" style="margin-top: 0;">{% translate "by ForgedIO" %}</div>
-      </div>
-    </div>
-    <nav class="sidebar-nav">
-      <div class="nav-label">{% translate "Main" %}</div>
-      <a href="{% url 'dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}is-active{% endif %}">
-        <i class="fas fa-tachometer-alt"></i> {% translate "Dashboard" %}
-      </a>
-
-      <div class="nav-label">{% translate "Virtual Machines" %}</div>
-      <a href="{% url 'vmcreator_create' %}" class="{% if 'vmcreator' in request.resolver_match.url_name %}is-active{% endif %}">
-        <i class="fas fa-plus-circle"></i> {% translate "New VM" %}
-      </a>
-      <a href="{% url 'importer_upload' %}" class="{% if 'importer' in request.resolver_match.url_name %}is-active{% endif %}">
-        <i class="fas fa-upload"></i> {% translate "Import Disk" %}
-      </a>
-      <a href="{% url 'inventory' %}" class="{% if request.resolver_match.url_name == 'inventory' %}is-active{% endif %}">
-        <i class="fas fa-server"></i> {% translate "VM Inventory" %}
-      </a>
-      <a href="{% url 'vm_community_scripts' %}" class="{% if 'vm_community_scripts' in request.resolver_match.url_name %}is-active{% endif %}">
-        <i class="fas fa-store"></i> {% translate "Community Scripts" %}
-      </a>
-      <a href="{% url 'export_index' %}" class="{% if 'lxc' not in request.resolver_match.url_name and 'export' in request.resolver_match.url_name or 'px_' in request.resolver_match.url_name and 'lxc' not in request.resolver_match.url_name %}is-active{% endif %}">
-        <i class="fas fa-file-export"></i> {% translate "Export &amp; Import" %}
-      </a>
-
-      <div class="nav-label">{% translate "LXC Containers" %}</div>
-      <a href="{% url 'lxc_create' %}" class="{% if request.resolver_match.url_name == 'lxc_create' or request.resolver_match.url_name == 'lxc_configure' %}is-active{% endif %}">
-        <i class="fas fa-plus-circle"></i> {% translate "New Container" %}
-      </a>
-      <a href="{% url 'lxc_list' %}" class="{% if request.resolver_match.url_name == 'lxc_list' %}is-active{% endif %}">
-        <i class="fas fa-cube"></i> {% translate "Container Inventory" %}
-      </a>
-      <a href="{% url 'lxc_community_scripts' %}" class="{% if 'lxc_community_scripts' in request.resolver_match.url_name %}is-active{% endif %}">
-        <i class="fas fa-store"></i> {% translate "Community Scripts" %}
-      </a>
-      <a href="{% url 'lxc_export_index' %}" class="{% if 'lxc_export' in request.resolver_match.url_name or 'lxc_px' in request.resolver_match.url_name %}is-active{% endif %}">
-        <i class="fas fa-file-export"></i> {% translate "Export &amp; Import" %}
-      </a>
-
-      <div class="nav-label">{% translate "Datacenter" %}</div>
-      <a href="{% url 'task_list' %}" class="{% if 'task' in request.resolver_match.url_name %}is-active{% endif %}">
-        <i class="fas fa-list-alt"></i> {% translate "Tasks" %}
-      </a>
-      <a href="{% url 'backups_index' %}" class="{% if 'backup' in request.resolver_match.url_name %}is-active{% endif %}">
-        <i class="fas fa-archive"></i> {% translate "Backups" %}
-      </a>
-      <a href="{% url 'datastore_list' %}" class="{% if 'datastore' in request.resolver_match.url_name %}is-active{% endif %}">
-        <i class="fas fa-database"></i> {% translate "Storage" %}
-      </a>
-      <a href="{% url 'firewall_index' %}" class="{% if 'firewall' in request.resolver_match.url_name %}is-active{% endif %}">
-        <i class="fas fa-shield-alt"></i> {% translate "Firewall" %}
-      </a>
-      {% if user.is_staff %}
-      <a href="{% url 'pveaccess_page' %}" class="{% if 'pveaccess' in request.resolver_match.url_name %}is-active{% endif %}">
-        <i class="fas fa-user-lock"></i> {% translate "Permissions" %}
-      </a>
-      <a href="{% url 'node_page' %}" class="{% if 'node_' in request.resolver_match.url_name and request.resolver_match.url_name != 'dashboard_node_summary' %}is-active{% endif %}">
-        <i class="fas fa-server"></i> {% translate "Node" %}
-      </a>
-      {% endif %}
-
-      <div class="nav-label">{% translate "Settings" %}</div>
-      <a href="{% url 'proxmox_settings' %}" class="{% if 'proxmox_settings' in request.resolver_match.url_name %}is-active{% endif %}">
-        <i class="fas fa-server"></i> {% translate "Proxmox" %}
-      </a>
-      <a href="{% url 'auth_settings' %}" class="{% if 'auth' in request.resolver_match.url_name %}is-active{% endif %}">
-        <i class="fas fa-shield-alt"></i> {% translate "Authentication" %}
-      </a>
-      <a href="{% url 'email_settings' %}" class="{% if 'email' in request.resolver_match.url_name %}is-active{% endif %}">
-        <i class="fas fa-envelope"></i> {% translate "Email" %}
-      </a>
-      <a href="{% url 'cert_settings' %}" class="{% if 'cert' in request.resolver_match.url_name %}is-active{% endif %}">
-        <i class="fas fa-certificate"></i> {% translate "Certificates" %}
-      </a>
-      <a href="{% url 'storage_management' %}" class="{% if 'storage' in request.resolver_match.url_name %}is-active{% endif %}">
-        <i class="fas fa-hdd"></i> {% translate "Import files" %}
-      </a>
-
-      <div class="nav-label">{% translate "Account" %}</div>
-      <a href="{% url 'user_list' %}"><i class="fas fa-users"></i> {% translate "Users" %}</a>
-      <a href="{% url 'mfa_setup' %}"><i class="fas fa-shield-alt"></i> {% translate "MFA" %}</a>
-    </nav>
-    <div style="padding: 1rem 1.5rem;border-top: 1px solid var(--border-sidebar);">
-      <div style="display: flex;align-items: center;justify-content: space-between;">
-        <div style="color: var(--text-sidebar);font-size: 0.75rem;">
-          <i class="fas fa-user-circle" style="margin-right: 0.3rem;"></i>{{ request.user.username }}
-        </div>
-      </div>
-      <form method="post" action="{% url 'logout' %}">
-        {% csrf_token %}
-        <button type="submit" style="background: none;border: none;color: var(--text-sidebar);font-size: 0.75rem;cursor: pointer;padding: 0;margin-top: 0.35rem;">
-          <i class="fas fa-sign-out-alt"></i> {% translate "Sign out" %}
-        </button>
-      </form>
-    </div>
-  </div>
+  {% include "core/partials/sidebar.html" %}
 
   {# ===== Main Content ===== #}
   <div class="main-content">
-    <div class="page-header">
+    <header class="topbar page-header">
       <button class="nav-toggle-btn" type="button" aria-label="{% translate "Open menu" %}" aria-controls="app-sidebar" aria-expanded="false" onclick="toggleSidebar(true)">
         <i class="fas fa-bars" aria-hidden="true"></i>
       </button>
-      <h1>{% block page_title %}{% translate "Dashboard" %}{% endblock %}</h1>
-      <div style="display: flex;gap: 0.75rem;align-items: center;">
+      <div class="topbar-crumb">
+        <span class="topbar-path"><i class="fas fa-cloud" aria-hidden="true"></i>{% translate "datacenter" %}{% if nav_node %}<span class="sep">/</span><span class="node">{{ nav_node }}</span>{% endif %}<span class="sep">/</span></span>
+        <h1>{% block page_title %}{% translate "Dashboard" %}{% endblock %}</h1>
+      </div>
+      <div class="topbar-stats" id="topbar-stats" hx-get="{% url 'topbar_stats' %}" hx-trigger="load, every 30s" hx-swap="innerHTML" aria-live="off"></div>
+      <div class="topbar-actions">
         {% block page_actions %}{% endblock %}
+        <a class="button is-primary is-small topbar-quick" href="{% url 'vmcreator_create' %}"><i class="fas fa-plus" aria-hidden="true"></i><span>{% translate "New VM" %}</span></a>
+        <a class="button is-small topbar-quick" href="{% url 'lxc_create' %}"><i class="fas fa-rocket" aria-hidden="true"></i><span>{% translate "LXC" %}</span></a>
+        <a class="button is-small topbar-quick" href="{% url 'importer_upload' %}"><i class="fas fa-download" aria-hidden="true"></i><span>{% translate "Import" %}</span></a>
         {% include "core/partials/language_switcher.html" %}
-        <button class="button is-light is-small" onclick="openHelp()">
-          <span class="icon is-small"><i class="fas fa-question-circle"></i></span>
-          <span>{% translate "Help" %}</span>
+        <button class="button is-ghost is-small" type="button" onclick="openHelp()" title="{% translate "Help" %}">
+          <i class="fas fa-circle-question" aria-hidden="true"></i><span class="topbar-help-text">{% translate "Help" %}</span>
         </button>
       </div>
-    </div>
+    </header>
 
     <div class="page-body">
       {# Django messages #}
@@ -185,7 +90,8 @@
     </script>
 
     <div class="footer-bar">
-      {% translate "ProxOrchestrator &mdash; by ForgedIO &mdash; Free &amp; Open Source" %}
+      <span>{% translate "ProxOrchestrator &mdash; by ForgedIO &mdash; Free &amp; Open Source" %}</span>
+      <span class="trademark">{% translate "Proxmox® is a registered trademark of Proxmox Server Solutions GmbH in the EU, the U.S., and other countries." %}</span>
     </div>
   </div>
 

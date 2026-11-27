@@ -1,0 +1,51 @@
+{% load i18n %}
+<aside class="sidebar" id="app-sidebar" aria-label="{% translate "Main menu" %}">
+  <div class="sidebar-brand">
+    <a href="{% url 'dashboard' %}" class="brand-mark">
+      <span class="brand-shield" aria-hidden="true"><i class="fas fa-shield-halved"></i></span>
+      <span class="brand-text">
+        <span class="brand-name">ProxOrchestrator</span>
+        <span class="brand-tag">{% translate "Hardened ops" %}</span>
+      </span>
+    </a>
+    <a class="brand-proxmox" href="https://www.proxmox.com" target="_blank" rel="noopener" title="{% translate "Proxmox website" %}">
+      <span>{% translate "for" %}</span>
+      <img src="/static/images/proxmox/proxmox-logo-dark.svg" alt="Proxmox" width="122" height="22">
+    </a>
+  </div>
+
+  {% if nav_node %}
+  <div class="sidebar-node">
+    <span class="po-badge is-ok no-dot"><i class="fas fa-server" aria-hidden="true"></i></span>
+    <span class="sidebar-node-name po-truncate">{{ nav_node }}</span>
+    <span class="po-label">{% translate "node" %}</span>
+  </div>
+  {% endif %}
+
+  <nav class="sidebar-nav">
+    {% for section in nav_sections %}
+      <div class="nav-label">{{ section.label }}</div>
+      {% for item in section.items %}
+        <a href="{% url item.url_name %}" class="{% if item.active %}is-active{% endif %}"{% if item.active %} aria-current="page"{% endif %}>
+          <i class="fas {{ item.icon }}" aria-hidden="true"></i><span class="po-truncate">{{ item.label }}</span>
+        </a>
+      {% endfor %}
+    {% endfor %}
+  </nav>
+
+  <div class="sidebar-foot">
+    <div class="sidebar-user">
+      <span class="sidebar-avatar" aria-hidden="true"><i class="fas fa-user-shield"></i></span>
+      <span class="sidebar-user-text">
+        <span class="sidebar-user-name po-truncate">{{ request.user.username }}</span>
+        <span class="po-label">{% if request.user.is_staff %}{% translate "administrator" %}{% else %}{% translate "user" %}{% endif %}</span>
+      </span>
+      <form method="post" action="{% url 'logout' %}" class="sidebar-logout">
+        {% csrf_token %}
+        <button type="submit" class="button is-ghost is-small" title="{% translate "Sign out" %}" aria-label="{% translate "Sign out" %}">
+          <i class="fas fa-right-from-bracket" aria-hidden="true"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+</aside>
