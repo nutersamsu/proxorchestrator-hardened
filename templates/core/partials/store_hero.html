@@ -1,0 +1,13 @@
+{% load i18n %}
+{# Store header (Stitch "LXC 1-Click Store"): only numbers the catalog really has. #}
+<section class="po-card po-store-hero" data-count="{{ total_count }}" data-categories="{{ categories|length }}">
+  <div class="po-store-hero-text">
+    <span class="po-badge is-info">{% translate "Proxmox VE community scripts" %}</span>
+    <h2 class="po-store-title">{{ hero_title }}</h2>
+    <p>{{ hero_text }}</p>
+  </div>
+  <div class="po-store-stats">
+    <div class="po-store-stat"><span class="po-label">{% translate "Scripts" %}</span><span class="po-metric-value">{{ total_count }}</span><span class="po-metric-sub">{{ hero_kind }}</span></div>
+    <div class="po-store-stat"><span class="po-label">{% translate "Categories" %}</span><span class="po-metric-value">{{ categories|length }}</span><span class="po-metric-sub">{% translate "in the catalog" %}</span></div>
+  </div>
+</section>

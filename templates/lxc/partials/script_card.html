@@ -30,10 +30,13 @@
         <div class="cs-app-desc">{{ script.description }}</div>
       </div>
     </div>
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-top:0.75rem;">
-      <div class="cs-app-specs">
-        {% blocktranslate with cpu=script.defaults.cpu ram=script.defaults.ram disk=script.defaults.disk trimmed %}{{ cpu }}C &nbsp;/&nbsp; {{ ram }}MB &nbsp;/&nbsp; {{ disk }}GB{% endblocktranslate %}
-      </div>
+    <div class="cs-specs-grid">
+      <div class="cs-spec"><span class="po-label"><i class="fas fa-microchip" aria-hidden="true"></i> {% translate "vCPU" %}</span><b>{{ script.defaults.cpu }}</b></div>
+      <div class="cs-spec"><span class="po-label"><i class="fas fa-memory" aria-hidden="true"></i> {% translate "RAM" %}</span><b>{{ script.defaults.ram }} MB</b></div>
+      <div class="cs-spec"><span class="po-label"><i class="fas fa-hard-drive" aria-hidden="true"></i> {% translate "Disk" %}</span><b>{{ script.defaults.disk }} GB</b></div>
+    </div>
+    <div class="cs-card-foot">
+      <span class="cs-app-os po-mono po-truncate">{{ script.defaults.os }} {{ script.defaults.version }}</span>
       <a href="{% url 'lxc_community_scripts_deploy' script.slug %}"
          class="button is-primary is-small"
          style="font-weight:600;"

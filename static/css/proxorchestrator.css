@@ -2207,6 +2207,42 @@ a.stat-card-link:hover { border-color: var(--po-edge); box-shadow: var(--po-bloo
 .discovery-chip { border-radius: 999px; font-family: var(--font-mono); }
 .cert-detail-label { font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; }
 
+/* 8c. Pages — community-script stores (Stitch "LXC 1-Click Store") ------------- */
+.po-store-hero {
+  display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;
+  padding: 1.4rem 1.5rem; margin-bottom: 1.25rem;
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.10), rgba(17, 24, 39, 0.75) 45%), var(--po-surface);
+  border-color: rgba(6, 182, 212, 0.18);
+}
+.po-store-hero-text { flex: 1 1 26rem; min-width: 0; }
+.po-store-title { font-size: 1.75rem; font-weight: 700; letter-spacing: -0.02em; color: #FFFFFF; margin: 0.6rem 0 0.4rem; line-height: 1.15; }
+.po-store-hero-text p { color: var(--po-text-soft); max-width: 46rem; }
+.po-store-stats { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+.po-store-stat { display: flex; flex-direction: column; gap: 0.2rem; min-width: 8.5rem; padding: 0.8rem 1rem;
+  border-radius: var(--po-radius); background: rgba(255, 255, 255, 0.03); border: 1px solid var(--po-line-2); }
+.po-store-stat .po-metric-value { color: var(--po-primary); }
+
+body .cs-cat-link { color: var(--po-text-muted); border-radius: var(--po-radius); }
+body .cs-cat-link:hover { background: rgba(255, 255, 255, 0.04); color: #FFFFFF; }
+body .cs-cat-link.is-active { background: rgba(6, 182, 212, 0.14); color: var(--po-primary); box-shadow: inset 2px 0 0 var(--po-primary); }
+body .cs-cat-link.is-active i { color: var(--po-primary); }
+body .cs-cat-count { font-family: var(--font-mono); font-weight: 500; color: var(--po-text-faint); }
+body .cs-cat-link.is-active .cs-cat-count { color: var(--po-primary); }
+
+body .cs-app-card { background: var(--po-surface); border-color: var(--po-line-cyan); border-radius: var(--po-radius-lg); gap: 0.75rem; }
+body .cs-app-card:hover { border-color: var(--po-edge); box-shadow: var(--po-bloom); }
+body .cs-app-logo-fallback { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--po-line-2); color: var(--po-text-muted); border-radius: var(--po-radius-lg); }
+body .cs-app-name { color: #FFFFFF; font-size: 0.95rem; font-weight: 600; }
+body .cs-app-desc { color: var(--po-text-muted); }
+.cs-specs-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; margin-top: auto;
+  background: var(--po-line); border: 1px solid var(--po-line); border-radius: var(--po-radius); overflow: hidden; }
+.cs-spec { display: flex; flex-direction: column; gap: 0.1rem; padding: 0.45rem 0.6rem; background: rgba(11, 15, 25, 0.6); min-width: 0; }
+.cs-spec .po-label { font-size: 0.62rem; }
+.cs-spec .po-label i { color: var(--po-primary); }
+.cs-spec b { font-family: var(--font-mono); font-size: 0.8rem; font-weight: 500; color: #FFFFFF; white-space: nowrap; }
+.cs-card-foot { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; }
+.cs-app-os { color: var(--po-text-faint); font-size: 0.72rem; min-width: 0; }
+
 /* 9. Responsive -------------------------------------------------------------- */
 @media (max-width: 1280px) {
   .po-grid.is-main { grid-template-columns: minmax(0, 1fr); }
