@@ -234,22 +234,6 @@
           {% csrf_token %}
           <input type="hidden" name="section" value="server">
 
-          <div class="field" style="margin-bottom: 1.25rem;">
-            <label class="label" style="font-weight: 600;color:  var(--text-header);font-size: 0.875rem;">
-              {% translate "Appearance" %}
-            </label>
-            <div class="control has-icons-left">
-              <div class="select is-fullwidth">
-                <select id="theme-selector" onchange="updateTheme(this.value)">
-                  {% for key, label in theme_choices %}<option value="{{ key }}">{{ label }}</option>{% endfor %}
-                </select>
-              </div>
-              <span class="icon is-left"><i class="fas fa-palette" style="color: var(--text-muted);"></i></span>
-            </div>
-            <p class="field-hint">
-              {% blocktranslate %}Choose how ProxOrchestrator looks: the classic theme or the denser "Ops" theme, each light, dark or following your system. Saved to your account (also in the sidebar).{% endblocktranslate %}
-            </p>
-          </div>
 
           <div class="field" style="margin-bottom: 0.5rem;">
             <label class="label" style="font-weight: 600;color:  var(--text-header);font-size: 0.875rem;">
@@ -772,11 +756,5 @@
       });
   }
 
-  // Dark Mode Theme Switcher
-  function updateTheme(theme) {
-    if (window.setTheme) window.setTheme(theme);
-  }
-  // The selector is synchronised by applyTheme() in base.html.
-  if (window.applyTheme) window.applyTheme();
 </script>
 {% endblock %}

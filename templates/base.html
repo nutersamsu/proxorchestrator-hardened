@@ -10,82 +10,7 @@
   <link rel="stylesheet" href="/static/vendor/css/all.min.css">
   <link rel="stylesheet" href="/static/css/proxorchestrator.css?v={{ css_version }}">
   <meta name="csrf-token" content="{{ csrf_token }}">
-  <script>
-    /* Theme = skin + mode. Skins: classic (original), ops, nexus (dark only). Modes: system, light, dark.
-       Stored values: system | light | dark | ops | ops-light | ops-dark | nexus.
-       The user's choice lives in their profile (every browser) and in localStorage (fast first paint). */
-    (function () {
-      var THEMES = ['system', 'light', 'dark', 'ops', 'ops-light', 'ops-dark', 'nexus'];
-      var serverTheme = "{{ user_theme|escapejs }}";
-
-      function stored() {
-        try { return localStorage.getItem('proxorchestrator_theme'); } catch (e) { return null; }
-      }
-      function current() {
-        var t = serverTheme || stored() || 'system';
-        return THEMES.indexOf(t) >= 0 ? t : 'system';
-      }
-      function parse(t) {
-        if (t === 'nexus') return { skin: 'nexus', mode: 'dark' };
-        if (t.indexOf('ops') === 0) return { skin: 'ops', mode: t === 'ops' ? 'system' : t.slice(4) };
-        return { skin: 'classic', mode: t };
-      }
-
-      window.applyTheme = function (theme) {
-        theme = theme && THEMES.indexOf(theme) >= 0 ? theme : current();
-        var p = parse(theme);
-        var dark = p.mode === 'dark' || (p.mode === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-        var root = document.documentElement;
-        root.setAttribute('data-theme', dark ? 'dark' : 'light');
-        if (p.skin !== 'classic') { root.setAttribute('data-skin', p.skin); } else { root.removeAttribute('data-skin'); }
-        var cb = document.getElementById('theme-toggle-cb');
-        if (cb) {
-          cb.checked = dark;
-          /* NEXUS is a dark-only theme: the light/dark switch does not apply to it. */
-          cb.disabled = p.skin === 'nexus';
-          var sw = cb.closest('.theme-switch');
-          if (sw) { sw.title = cb.disabled ? '{{ _("NEXUS is a dark theme — choose another theme below for light mode")|escapejs }}' : '{{ _("Toggle dark mode")|escapejs }}'; }
-        }
-        ['theme-selector', 'theme-selector-side'].forEach(function (id) {
-          var sel = document.getElementById(id);
-          if (sel) { sel.value = theme; }
-        });
-      };
-
-      window.setTheme = function (theme) {
-        if (THEMES.indexOf(theme) < 0) return;
-        serverTheme = theme;
-        try { localStorage.setItem('proxorchestrator_theme', theme); } catch (e) {}
-        window.applyTheme(theme);
-        var meta = document.querySelector('meta[name="csrf-token"]');
-        if (meta && meta.content) {
-          fetch('/account/theme/', {
-            method: 'POST', credentials: 'same-origin',
-            headers: { 'X-CSRFToken': meta.content, 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: 'theme=' + encodeURIComponent(theme)
-          }).catch(function () {});
-        }
-      };
-
-      window.toggleTheme = function () {
-        var p = parse(current());
-        if (p.skin === 'nexus') { window.applyTheme(); return; }
-        var next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-        window.setTheme(p.skin === 'ops' ? 'ops-' + next : next);
-      };
-
-      try {
-        if (serverTheme) { localStorage.setItem('proxorchestrator_theme', serverTheme); }
-      } catch (e) {}
-      try {
-        window.applyTheme();
-        document.addEventListener('DOMContentLoaded', function () { window.applyTheme(); });
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function () {
-          if (parse(current()).mode === 'system') window.applyTheme();
-        });
-      } catch (e) { console.error('Theme detection failed', e); }
-    })();
-  </script>
+  <meta name="color-scheme" content="dark">
   {% block extra_head %}{% endblock %}
 </head>
 <body>
@@ -195,19 +120,6 @@
         <div style="color: var(--text-sidebar);font-size: 0.75rem;">
           <i class="fas fa-user-circle" style="margin-right: 0.3rem;"></i>{{ request.user.username }}
         </div>
-        <label class="theme-switch" title="{% translate "Toggle dark mode" %}">
-          <input type="checkbox" id="theme-toggle-cb" onchange="toggleTheme()">
-          <span class="theme-slider">
-            <svg class="theme-icon theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
-            <svg class="theme-icon theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
-          </span>
-        </label>
-      </div>
-      <div class="theme-picker">
-        <label for="theme-selector-side"><i class="fas fa-palette" aria-hidden="true"></i><span class="is-sr-only">{% translate "Theme" %}</span></label>
-        <select id="theme-selector-side" onchange="setTheme(this.value)" aria-label="{% translate "Theme" %}">
-          {% for key, label in theme_choices %}<option value="{{ key }}">{{ label }}</option>{% endfor %}
-        </select>
       </div>
       <form method="post" action="{% url 'logout' %}">
         {% csrf_token %}

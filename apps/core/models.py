@@ -39,9 +39,6 @@ class UserProfile(models.Model):
     mfa_recovery_codes = EncryptedCharField(max_length=500, blank=True, default="")
     mfa_confirmed_at = models.DateTimeField(null=True, blank=True)
 
-    # Appearance: system | light | dark | ops | ops-light | ops-dark ("" = not chosen yet)
-    ui_theme = models.CharField(max_length=16, blank=True, default="")
-
     def __str__(self):
         return f"Profile({self.user.username})"
 

@@ -299,23 +299,6 @@ def logout_view(request):
     return redirect("/login/")
 
 
-@login_required
-@require_POST
-def save_theme(request):
-    """Remember the chosen theme in the user's profile (per user, every browser)."""
-    from apps.core.context_processors import THEME_KEYS
-    from apps.core.models import UserProfile
-
-    theme = request.POST.get("theme", "")
-    if theme not in THEME_KEYS:
-        return HttpResponse(status=400)
-    profile, _ = UserProfile.objects.get_or_create(user=request.user)
-    if profile.ui_theme != theme:
-        profile.ui_theme = theme
-        profile.save(update_fields=["ui_theme"])
-    return HttpResponse(status=204)
-
-
 def help_view(request, slug):
     """Return a rendered markdown help partial.
 
