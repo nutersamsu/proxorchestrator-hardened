@@ -72,6 +72,15 @@ class NavigationTests(TestCase):
         self.assertIn(TRADEMARK, html)
         self.assertIn('id="topbar-stats"', html)
 
+    def test_page_actions_wrapped_for_shortcut_hiding(self):
+        # pages with their own buttons (VM detail…) hide the New VM/LXC/Import shortcuts via CSS :has()
+        from pathlib import Path
+        from django.conf import settings
+        base = (Path(settings.BASE_DIR) / "templates" / "base.html").read_text()
+        self.assertIn('<span class="page-actions">{% block page_actions %}{% endblock %}</span>', base)
+        css = (Path(settings.BASE_DIR) / "static" / "css" / "proxorchestrator.css").read_text()
+        self.assertIn(".topbar-actions:has(.page-actions > *) .topbar-quick", css)
+
     def test_topbar_stats_not_configured(self):
         ProxmoxConfig.objects.filter(pk=1).update(is_configured=False)
         c = Client()

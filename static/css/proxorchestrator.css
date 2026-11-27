@@ -1992,12 +1992,16 @@ tr.task-failed td { background: var(--bg-danger-light); }
 /* Top bar (glass, sticky) */
 .topbar.page-header {
   min-height: var(--topbar-height); padding: 0.6rem 1.5rem; gap: 1rem;
-  justify-content: flex-start; flex-wrap: nowrap;
+  justify-content: flex-start; flex-wrap: nowrap; row-gap: 0.5rem;
   background: rgba(11, 15, 25, 0.78);
   -webkit-backdrop-filter: var(--po-blur); backdrop-filter: var(--po-blur);
   border-bottom: 1px solid var(--po-line);
 }
 .topbar-crumb { display: flex; align-items: baseline; gap: 0.5rem; min-width: 0; flex: 0 1 auto; max-width: 42%; }
+/* pages with many own buttons (VM detail…): the bar wraps to a second row instead of overlapping */
+.topbar.page-header:has(.page-actions > *) { flex-wrap: wrap; }
+.topbar.page-header:has(.page-actions > *) .topbar-crumb { flex: 1 0 auto; max-width: none; }
+.topbar.page-header:has(.page-actions > *) .topbar-actions { flex-wrap: wrap; justify-content: flex-end; margin-left: auto; }
 .topbar-actions .lang-switch select { max-width: 7.5rem; }
 .topbar-path { display: inline-flex; align-items: center; gap: 0.4rem; font-family: var(--font-mono); font-size: 0.78rem;
   color: var(--po-text-faint); white-space: nowrap; }
@@ -2012,6 +2016,9 @@ tr.task-failed td { background: var(--bg-danger-light); }
 .topbar-actions { display: flex; gap: 0.5rem; align-items: center; flex-shrink: 0; }
 .topbar-actions .button.is-small { height: 2.15rem; }
 .topbar-actions .topbar-quick i { margin-right: 0.4rem; }
+.topbar-actions .page-actions { display: contents; }
+/* pages with their own buttons (VM detail…) give the room to them: shortcuts are in the menu anyway */
+.topbar-actions:has(.page-actions > *) .topbar-quick { display: none; }
 .topbar-actions .button.is-ghost i + .topbar-help-text { margin-left: 0.4rem; }
 
 .page-body { padding: 1.5rem 1.75rem 2rem; }

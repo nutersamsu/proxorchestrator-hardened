@@ -41,7 +41,7 @@
       </div>
       <div class="topbar-stats" id="topbar-stats" hx-get="{% url 'topbar_stats' %}" hx-trigger="load, every 30s" hx-swap="innerHTML" aria-live="off"></div>
       <div class="topbar-actions">
-        {% block page_actions %}{% endblock %}
+        <span class="page-actions">{% block page_actions %}{% endblock %}</span>
         <a class="button is-primary is-small topbar-quick" href="{% url 'vmcreator_create' %}"><i class="fas fa-plus" aria-hidden="true"></i><span>{% translate "New VM" %}</span></a>
         <a class="button is-small topbar-quick" href="{% url 'lxc_create' %}"><i class="fas fa-rocket" aria-hidden="true"></i><span>{% translate "LXC" %}</span></a>
         <a class="button is-small topbar-quick" href="{% url 'importer_upload' %}"><i class="fas fa-download" aria-hidden="true"></i><span>{% translate "Import" %}</span></a>
