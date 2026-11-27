@@ -1,0 +1,16 @@
+{% load i18n %}
+{# Brand above the public cards (login, MFA, password recovery). Proxmox logo smaller than our name, linked, unmodified. #}
+<div class="auth-brand">
+  <div class="brand-mark">
+    <span class="brand-shield" aria-hidden="true"><i class="fas fa-shield-halved"></i></span>
+    <span class="brand-text">
+      <span class="brand-name">ProxOrchestrator</span>
+      <span class="brand-tag">{% translate "Hardened ops" %}</span>
+    </span>
+  </div>
+  <a class="brand-proxmox" href="https://www.proxmox.com" target="_blank" rel="noopener" title="{% translate "Proxmox website" %}">
+    <span>{% translate "for" %}</span>
+    <img src="/static/images/proxmox/proxmox-logo-dark.svg" alt="Proxmox" width="122" height="22">
+  </a>
+  {% if auth_subtitle %}<div class="po-label auth-subtitle">{{ auth_subtitle }}</div>{% endif %}
+</div>

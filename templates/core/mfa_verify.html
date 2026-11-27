@@ -5,14 +5,7 @@
 {% block public_content %}
 <div style="min-height: 100vh;background: linear-gradient(135deg,var(--bg-sidebar) 0%,var(--auth-gradient-mid) 50%,var(--auth-gradient-end) 100%);display: flex;flex-direction: column;align-items: center;justify-content: center;padding: 2rem;">
 
-  <div style="text-align: center;margin-bottom: 2rem;">
-    <div style="font-size: 2.5rem;color: #ffffff;font-weight: 800;letter-spacing: -0.5px;margin-bottom: 0.35rem;">
-      {% translate "&#9889; ProxOrchestrator" %}
-    </div>
-    <div style="color: rgba(255,255,255,0.45);font-size: 0.8125rem;text-transform: uppercase;letter-spacing: 2px;">
-      {% translate "Two-Factor Authentication" %}
-    </div>
-  </div>
+  {% translate "Two-Factor Authentication" as auth_subtitle %}{% include "core/partials/auth_brand.html" %}
 
   <div style="background: var(--bg-card);border-radius: 14px;box-shadow: 0 20px 60px rgba(0,0,0,0.4);width: 100%;max-width: 420px;overflow: hidden;">
 
@@ -89,9 +82,7 @@
     </div>
   </div>
 
-  <div style="margin-top: 2rem;text-align: center;color: rgba(255,255,255,0.25);font-size: 0.75rem;">
-    {% translate "ProxOrchestrator &mdash; by ForgedIO &mdash; Free &amp; Open Source" %}
-  </div>
+  {% include "core/partials/auth_footer.html" %}
 
 </div>
 {% endblock %}

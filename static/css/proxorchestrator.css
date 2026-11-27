@@ -2246,6 +2246,28 @@ body .cs-app-desc { color: var(--po-text-muted); }
 .cs-card-foot { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; }
 .cs-app-os { color: var(--po-text-faint); font-size: 0.72rem; min-width: 0; }
 
+/* 8d. Pages — login / MFA / password recovery / setup wizard -------------------- */
+.auth-brand { display: flex; flex-direction: column; align-items: center; gap: 0.65rem; margin-bottom: 1.75rem; text-align: center; }
+.auth-brand .brand-mark { gap: 0.85rem; }
+.auth-brand .brand-shield { width: 48px; height: 48px; font-size: 1.35rem; }
+.auth-brand .brand-name { font-size: 1.7rem; }
+.auth-brand .brand-proxmox { align-self: center; }
+.auth-subtitle { margin-top: 0.15rem; }
+.auth-footer { margin-top: 2rem; display: flex; flex-direction: column; align-items: center; gap: 0.25rem;
+  text-align: center; color: var(--po-text-faint); font-size: 0.72rem; }
+/* the public card is styled inline (bg-card): lift it to glass level 3 */
+.lang-switch-public ~ div > div[style*="max-width: 420px"],
+.lang-switch-public ~ div > div[style*="max-width:420px"] {
+  background: var(--po-overlay) !important;
+  -webkit-backdrop-filter: var(--po-blur-strong); backdrop-filter: var(--po-blur-strong);
+  border: 1px solid var(--po-edge); box-shadow: var(--po-bloom), 0 30px 80px -20px rgba(0, 0, 0, 0.8) !important;
+  border-radius: var(--po-radius-lg) !important;
+}
+.wizard-topbar { background: rgba(11, 15, 25, 0.85) !important; border-bottom: 1px solid var(--po-line) !important;
+  -webkit-backdrop-filter: var(--po-blur); backdrop-filter: var(--po-blur); gap: 1rem; flex-wrap: wrap; }
+.wizard-topbar .brand-proxmox { align-self: center; }
+.wizard-title { color: #FFFFFF; font-weight: 600; }
+
 /* 9. Responsive -------------------------------------------------------------- */
 @media (max-width: 1280px) {
   .po-grid.is-main { grid-template-columns: minmax(0, 1fr); }

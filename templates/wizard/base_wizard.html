@@ -13,10 +13,17 @@
 
 {# ===== Wizard Top Bar ===== #}
 <div class="wizard-topbar">
-  <div>
-    <div class="logo-title">{% translate "&#9889; ProxOrchestrator" %}</div>
-    <div class="logo-subtitle">{% translate "by ForgedIO" %}</div>
+  <div class="brand-mark">
+    <span class="brand-shield" aria-hidden="true"><i class="fas fa-shield-halved"></i></span>
+    <span class="brand-text">
+      <span class="brand-name">ProxOrchestrator</span>
+      <span class="brand-tag">{% translate "Hardened ops" %}</span>
+    </span>
   </div>
+  <a class="brand-proxmox" href="https://www.proxmox.com" target="_blank" rel="noopener" title="{% translate "Proxmox website" %}">
+    <span>{% translate "for" %}</span>
+    <img src="/static/images/proxmox/proxmox-logo-dark.svg" alt="Proxmox" width="122" height="22">
+  </a>
   <div class="wizard-topbar-divider"></div>
   <div class="wizard-title">
     <i class="fas fa-magic" style="margin-right: 0.4rem;opacity: 0.6;"></i>
@@ -93,7 +100,8 @@
 
 {# ===== Footer ===== #}
 <div class="footer-bar" style="margin-top: auto;">
-  {% translate "ProxOrchestrator &mdash; by ForgedIO &mdash; Free &amp; Open Source" %}
+  <span>{% translate "ProxOrchestrator &mdash; by ForgedIO &mdash; Free &amp; Open Source" %}</span>
+  <span class="trademark">{% translate "Proxmox® is a registered trademark of Proxmox Server Solutions GmbH in the EU, the U.S., and other countries." %}</span>
 </div>
 
 <script src="/static/js/vendor/htmx-1.9.12.min.js"></script>
