@@ -9,6 +9,7 @@ urlpatterns = [
     path("", views.dashboard, name="dashboard"),
     path("dashboard/node-summary/", views.dashboard_node_summary, name="dashboard_node_summary"),
     path("topbar/stats/", views.topbar_stats, name="topbar_stats"),
+    path("dashboard/disks/", views.dashboard_disks, name="dashboard_disks"),
     path("rrd/<str:kind>/", views_rrd.rrd_charts, name="rrd_node"),
     path("rrd/<str:kind>/<int:vmid>/", views_rrd.rrd_charts, name="rrd_guest"),
     path("dashboard/job/<str:job_type>/<int:job_id>/", views.dashboard_job_status, name="dashboard_job_status"),

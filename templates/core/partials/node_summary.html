@@ -1,67 +1,70 @@
 {% load i18n %}
 {% comment %}
-  Mirrors the PVE node "Summary" status panel (pve-manager StatusView.js):
-  two columns, icon + title on the left, value on the right, usage bar
-  underneath; IO delay spans two rows; full-width rows at the bottom.
+  Node status (PVE /nodes/{node}/status) as the Nexus dashboard header: status strip,
+  four metric cards and a details row. Refreshed by HTMX every 30 s.
 {% endcomment %}
-<div class="proxorchestrator-card node-summary">
-  <div class="pve-header">{% blocktranslate trimmed %}{{ node }} (Uptime:{% endblocktranslate %} {% if summary %}{{ summary.uptime }}{% else %}-{% endif %})</div>
-  <div class="pve-body">
-    {% if error %}
-      <p class="node-summary-error"><i class="fas fa-exclamation-triangle"></i> {% translate error %}</p>
-    {% endif %}
-
+<div class="node-summary">
+  <div class="dash-strip po-card">
+    <div class="dash-strip-main">
+      <span class="po-label">{% translate "Node" %}</span>
+      <span class="dash-strip-node">
+        <span class="po-badge {% if summary %}is-ok is-live{% else %}is-bad{% endif %}">{% if summary %}{% translate "online" %}{% else %}{% translate "unreachable" %}{% endif %}</span>
+        <b>{{ node }}</b>
+      </span>
+    </div>
     {% if summary %}
-    <div class="pve-status">
-      <div class="pve-item pve-cpu">
-        <div class="pve-line"><span class="pve-title"><i class="fas fa-microchip"></i>{% translate "CPU usage" %}</span><span class="pve-value">{{ summary.cpu_text }}</span></div>
-        <div class="pve-bar{% if summary.cpu_pct >= 90 %} is-critical{% elif summary.cpu_pct >= 75 %} is-warning{% endif %}"><div style="width: {{ summary.cpu_pct|stringformat:".2f" }}%"></div></div>
-      </div>
-      <div class="pve-item pve-io">
-        <div class="pve-line"><span class="pve-title"><i class="far fa-clock"></i>{% translate "IO delay" %}</span><span class="pve-value">{{ summary.io_delay_text }}</span></div>
-        <div class="pve-bar{% if summary.io_delay_pct >= 90 %} is-critical{% elif summary.io_delay_pct >= 75 %} is-warning{% endif %}"><div style="width: {{ summary.io_delay_pct|stringformat:".2f" }}%"></div></div>
-      </div>
-      <div class="pve-item pve-load">
-        <div class="pve-line"><span class="pve-title"><i class="fas fa-tasks"></i>{% translate "Load average" %}</span><span class="pve-value">{{ summary.loadavg }}</span></div>
-      </div>
-
-      <div class="pve-spacer"></div>
-
-      <div class="pve-item">
-        <div class="pve-line"><span class="pve-title"><i class="fas fa-memory"></i>{% translate "RAM usage" %}</span><span class="pve-value">{{ summary.memory.text }}</span></div>
-        <div class="pve-bar{% if summary.memory.pct >= 90 %} is-critical{% elif summary.memory.pct >= 75 %} is-warning{% endif %}"><div style="width: {{ summary.memory.pct|stringformat:".2f" }}%"></div></div>
-      </div>
-      <div class="pve-item">
-        <div class="pve-line"><span class="pve-title">{% translate "KSM sharing" %}</span><span class="pve-value">{{ summary.ksm_shared }}</span></div>
-      </div>
-      <div class="pve-item">
-        <div class="pve-line"><span class="pve-title"><i class="far fa-hdd"></i>{% translate "/ HD space" %}</span><span class="pve-value">{{ summary.rootfs.text }}</span></div>
-        <div class="pve-bar{% if summary.rootfs.pct >= 90 %} is-critical{% elif summary.rootfs.pct >= 75 %} is-warning{% endif %}"><div style="width: {{ summary.rootfs.pct|stringformat:".2f" }}%"></div></div>
-      </div>
-      <div class="pve-item">
-        <div class="pve-line"><span class="pve-title"><i class="fas fa-sync-alt"></i>{% translate "SWAP usage" %}</span><span class="pve-value">{% if summary.swap.present %}{{ summary.swap.text }}{% else %}N/A{% endif %}</span></div>
-        <div class="pve-bar{% if summary.swap.pct >= 90 %} is-critical{% elif summary.swap.pct >= 75 %} is-warning{% endif %}"><div style="width: {{ summary.swap.pct|stringformat:".2f" }}%"></div></div>
-      </div>
-
-      <div class="pve-spacer"></div>
-
-      <div class="pve-item is-wide"><div class="pve-line"><span class="pve-title">{% translate "CPU(s)" %}</span><span class="pve-value">{{ summary.cpu_desc }}</span></div></div>
-      <div class="pve-item is-wide"><div class="pve-line"><span class="pve-title">{% translate "Kernel Version" %}</span><span class="pve-value">{{ summary.kernel }}</span></div></div>
-      <div class="pve-item is-wide"><div class="pve-line"><span class="pve-title">{% translate "Boot Mode" %}</span><span class="pve-value">{{ summary.boot_mode }}</span></div></div>
-      <div class="pve-item is-wide"><div class="pve-line"><span class="pve-title">{% translate "Manager Version" %}</span><span class="pve-value">{{ summary.pveversion }}</span></div></div>
-      {% if repos %}
-      <div class="pve-item is-wide"><div class="pve-line"><span class="pve-title">{% translate "Repository Status" %}</span><span class="pve-value">{% for r in repos %}<span class="pve-repo is-{{ r.level }}"><i class="fas {% if r.level == 'ok' %}fa-check-circle{% elif r.level == 'warning' %}fa-exclamation-circle{% else %}fa-times-circle{% endif %}"></i>{% translate r.text %}</span>{% endfor %}</span></div></div>
-      {% endif %}
-      <div class="pve-item is-wide">
-        <div class="pve-line"><span class="pve-title">{% translate "Temperatures" %}</span><span class="pve-value">{% for t in temps %}<span class="pve-temp"{% if t.details %} title="{% for d in t.details %}{{ d.label }}: {{ d.celsius }} °C{% if not forloop.last %}&#10;{% endif %}{% endfor %}"{% endif %}>{{ t.name }} <span class="temp-value temp-{{ t.level }}">{{ t.celsius }} °C</span></span>{% empty %}{% if temps_error %}{% translate temps_error %}{% else %}{% translate "Unavailable" %}{% endif %}{% endfor %}</span></div>
-      </div>
-    </div>
-    {% else %}
-    <div class="pve-status">
-      <div class="pve-item is-wide">
-        <div class="pve-line"><span class="pve-title">{% translate "Temperatures" %}</span><span class="pve-value">{% for t in temps %}<span class="pve-temp">{{ t.name }} <span class="temp-value temp-{{ t.level }}">{{ t.celsius }} °C</span></span>{% empty %}{% if temps_error %}{% translate temps_error %}{% else %}{% translate "Unavailable" %}{% endif %}{% endfor %}</span></div>
-      </div>
-    </div>
+    <span class="po-chip"><i class="far fa-clock" aria-hidden="true"></i>{% translate "Uptime" %} <b>{{ summary.uptime }}</b></span>
+    <span class="po-chip"><i class="fas fa-code-branch" aria-hidden="true"></i><b>{{ summary.pveversion }}</b></span>
+    <span class="po-chip is-optional"><i class="fas fa-power-off" aria-hidden="true"></i>{% translate "Boot Mode" %} <b>{{ summary.boot_mode }}</b></span>
     {% endif %}
+    {% if repos %}
+    <span class="dash-strip-repos">{% for r in repos %}<span class="pve-repo is-{{ r.level }}"><i class="fas {% if r.level == 'ok' %}fa-check-circle{% elif r.level == 'warning' %}fa-exclamation-circle{% else %}fa-times-circle{% endif %}" aria-hidden="true"></i>{% translate r.text %}</span>{% endfor %}</span>
+    {% endif %}
+  </div>
+
+  {% if error %}
+    <p class="node-summary-error po-unavailable"><i class="fas fa-triangle-exclamation" aria-hidden="true"></i> {% translate error %}</p>
+  {% endif %}
+
+  {% if summary %}
+  <div class="po-grid is-4 dash-metrics">
+    <article class="po-card po-metric">
+      <span class="po-label"><i class="fas fa-microchip" aria-hidden="true"></i> {% translate "CPU usage" %}</span>
+      <span class="po-metric-value">{{ summary.cpu_pct|floatformat:1 }}<small>%</small></span>
+      <div class="pve-bar{% if summary.cpu_pct >= 90 %} is-critical{% elif summary.cpu_pct >= 75 %} is-warning{% endif %}"><div style="width: {{ summary.cpu_pct|stringformat:".2f" }}%"></div></div>
+      <span class="po-metric-sub" title="{{ summary.cpu_desc }}">{{ summary.cpu_text }}</span>
+      <span class="po-metric-sub">{% translate "Load average" %} <b>{{ summary.loadavg }}</b></span>
+    </article>
+    <article class="po-card po-metric">
+      <span class="po-label"><i class="fas fa-memory" aria-hidden="true"></i> {% translate "RAM usage" %}</span>
+      <span class="po-metric-value">{{ summary.memory.pct|floatformat:1 }}<small>%</small></span>
+      <div class="pve-bar{% if summary.memory.pct >= 90 %} is-critical{% elif summary.memory.pct >= 75 %} is-warning{% endif %}"><div style="width: {{ summary.memory.pct|stringformat:".2f" }}%"></div></div>
+      <span class="po-metric-sub">{{ summary.memory.text }}</span>
+      <span class="po-metric-sub">{% translate "KSM sharing" %} <b>{{ summary.ksm_shared }}</b></span>
+    </article>
+    <article class="po-card po-metric">
+      <span class="po-label"><i class="far fa-hdd" aria-hidden="true"></i> {% translate "/ HD space" %}</span>
+      <span class="po-metric-value">{{ summary.rootfs.pct|floatformat:1 }}<small>%</small></span>
+      <div class="pve-bar{% if summary.rootfs.pct >= 90 %} is-critical{% elif summary.rootfs.pct >= 75 %} is-warning{% endif %}"><div style="width: {{ summary.rootfs.pct|stringformat:".2f" }}%"></div></div>
+      <span class="po-metric-sub">{{ summary.rootfs.text }}</span>
+    </article>
+    <article class="po-card po-metric">
+      <span class="po-label"><i class="fas fa-sync-alt" aria-hidden="true"></i> {% translate "SWAP usage" %} · {% translate "IO delay" %}</span>
+      <span class="po-metric-value">{% if summary.swap.present %}{{ summary.swap.pct|floatformat:1 }}<small>%</small>{% else %}N/A{% endif %}</span>
+      <div class="pve-bar{% if summary.swap.pct >= 90 %} is-critical{% elif summary.swap.pct >= 75 %} is-warning{% endif %}"><div style="width: {{ summary.swap.pct|stringformat:".2f" }}%"></div></div>
+      <span class="po-metric-sub">{% if summary.swap.present %}{{ summary.swap.text }}{% else %}{% translate "No swap" %}{% endif %}</span>
+      <span class="po-metric-sub">{% translate "IO delay" %} <b>{{ summary.io_delay_text }}</b></span>
+    </article>
+  </div>
+  {% endif %}
+
+  <div class="dash-details">
+    {% if summary %}
+    <span><span class="po-label">{% translate "CPU(s)" %}</span> {{ summary.cpu_desc }}</span>
+    <span><span class="po-label">{% translate "Kernel Version" %}</span> {{ summary.kernel }}</span>
+    {% endif %}
+    <span><span class="po-label">{% translate "Temperatures" %}</span>
+      {% for t in temps %}<span class="pve-temp"{% if t.details %} title="{% for d in t.details %}{{ d.label }}: {{ d.celsius }} °C{% if not forloop.last %}&#10;{% endif %}{% endfor %}"{% endif %}>{{ t.name }} <span class="temp-value temp-{{ t.level }}">{{ t.celsius }} °C</span></span>{% empty %}{% if temps_error %}{% translate temps_error %}{% else %}{% translate "Unavailable" %}{% endif %}{% endfor %}
+    </span>
   </div>
 </div>

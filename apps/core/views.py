@@ -43,6 +43,60 @@ logger = logging.getLogger(__name__)
 HELP_DIR = getattr(settings, "HELP_DIR", Path(settings.BASE_DIR) / "help")
 
 
+def _dashboard_guests(vms, cts):
+    """VMs and containers of the default node as one list for the dashboard table."""
+    from django.urls import reverse
+
+    def row(g, kind):
+        vmid = int(g.get("vmid") or 0)
+        return {
+            "vmid": vmid,
+            "name": g.get("name") or "",
+            "kind": kind,
+            "status": g.get("status") or "unknown",
+            "template": bool(g.get("template")),
+            "cpu_pct": round(float(g.get("cpu") or 0) * 100, 1),
+            "mem_used": int(g.get("mem") or 0),
+            "mem_total": int(g.get("maxmem") or 0),
+            "url": reverse("vm_detail" if kind == "vm" else "lxc_detail", args=[vmid]),
+        }
+
+    rows = [row(v, "vm") for v in vms] + [row(c, "ct") for c in cts]
+    return sorted(rows, key=lambda r: r["vmid"])
+
+
+@login_required
+def dashboard_disks(request):
+    """HTMX partial: physical disks + SMART health of the node (staff only, cached 60 s)."""
+    from django.core.cache import cache
+    from apps.proxmox.api import ProxmoxAPIError
+    from apps.wizard.models import ProxmoxConfig
+
+    if not request.user.is_staff:
+        return HttpResponse(status=403)
+    config = ProxmoxConfig.objects.filter(is_configured=True).first()
+    if config is None:
+        return HttpResponse(status=204)
+    key = f"po:dash-disks:{config.pk}:{config.default_node}"
+    data = cache.get(key)
+    if data is None:
+        try:
+            disks = config.get_api_client()._get(f"/nodes/{config.default_node}/disks/list") or []
+            data = {"disks": [{
+                "devpath": d.get("devpath") or "",
+                "model": d.get("model") or d.get("vendor") or "",
+                "size": int(d.get("size") or 0),
+                "type": d.get("type") or "",
+                "health": (d.get("health") or "").upper(),
+                "ok": (d.get("health") or "").upper() in ("PASSED", "OK"),
+                "wearout": d.get("wearout"),
+            } for d in disks], "error": None}
+        except (ProxmoxAPIError, Exception) as exc:  # token without Sys.Audit, node down…
+            data = {"disks": [], "error": str(exc)}
+        cache.set(key, data, 60)
+    return render(request, "core/partials/dashboard_disks.html", data)
+
+
 @login_required
 def dashboard(request):
     """Main dashboard view."""
@@ -60,6 +114,7 @@ def dashboard(request):
     api_ok = False
     ssh_key_ok = False
     recent_jobs = []
+    guests = []
     vm_total = vm_running = vm_stopped = 0
     ct_total = ct_running = ct_stopped = 0
 
@@ -90,8 +145,10 @@ def dashboard(request):
             ct_total = len(cts)
             ct_running = sum(1 for c in cts if c.get("status") == "running")
             ct_stopped = ct_total - ct_running
+            guests = _dashboard_guests(vms, cts)
         except Exception:
             api_ok = False
+            guests = []
 
         import_jobs = list(ImportJob.objects.order_by("-created_at")[:5])
         create_jobs = list(VmCreateJob.objects.order_by("-created_at")[:5])
@@ -155,6 +212,9 @@ def dashboard(request):
         "api_ok": api_ok,
         "ssh_key_ok": ssh_key_ok,
         "recent_jobs": recent_jobs,
+        "guests": guests,
+        "guest_running": vm_running + ct_running,
+        "guest_stopped": vm_stopped + ct_stopped,
         "vm_total": vm_total,
         "vm_running": vm_running,
         "vm_stopped": vm_stopped,

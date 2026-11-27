@@ -2054,6 +2054,72 @@ tr.task-failed td { background: var(--bg-danger-light); }
   .footer-bar { justify-content: center; text-align: center; }
 }
 
+/* 8. Pages — Dashboard (Stitch "Dashboard (Cluster Overview)") ---------------- */
+:root, .node-summary {
+  --pve-bar-track: var(--po-track);
+  --pve-bar-fill: var(--po-primary);
+  --pve-bar-warning: var(--po-warning);
+  --pve-bar-critical: var(--po-danger);
+}
+.pve-bar { height: 6px; border-radius: 999px; }
+.pve-bar > div { border-radius: 999px; background: linear-gradient(90deg, var(--po-primary), var(--po-secondary)); }
+.pve-bar.is-warning > div { background: linear-gradient(90deg, var(--po-warning), #F97316); }
+.pve-bar.is-critical > div { background: linear-gradient(90deg, var(--po-danger), #DC2626); }
+.pve-repo.is-ok i { color: var(--po-success); }
+.pve-repo.is-warning i { color: var(--po-warning); }
+.pve-repo.is-error i { color: var(--po-danger); }
+
+.node-summary { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1rem; }
+.node-summary.proxorchestrator-card { background: none; border: 0; box-shadow: none; }
+.dash-strip { display: flex; align-items: center; flex-wrap: wrap; gap: 0.6rem 0.75rem; padding: 0.8rem 1rem; }
+.dash-strip-main { display: flex; flex-direction: column; gap: 0.15rem; margin-right: 0.75rem; }
+.dash-strip-node { display: flex; align-items: center; gap: 0.55rem; font-size: 1.15rem; }
+.dash-strip-node b { color: #FFFFFF; font-family: var(--font-mono); font-weight: 600; letter-spacing: 0.02em; }
+.dash-strip-repos { margin-left: auto; font-size: 0.8rem; color: var(--po-text-muted); }
+.dash-metrics .po-card { padding: 1rem 1.1rem 1.05rem; }
+.dash-metrics .po-label i { color: var(--po-primary); margin-right: 0.15rem; }
+.dash-metrics .pve-bar { margin: 0.35rem 0 0.15rem; }
+.dash-details { display: flex; flex-wrap: wrap; gap: 0.4rem 1.5rem; font-size: 0.8rem; color: var(--po-text-soft); padding: 0 0.2rem; }
+.dash-details > span { display: inline-flex; align-items: baseline; gap: 0.5rem; min-width: 0; }
+.node-summary-error { margin: 0; }
+
+.dash-main { margin-bottom: 1rem; }
+.dash-filters { padding: 0 1.1rem 0.8rem; }
+.dash-filters .po-search { margin-left: auto; }
+#guests-card .table-container { margin: 0; }
+#guests-card .table { margin-bottom: 0; }
+#guests-card .table thead th:first-child, #guests-card .table td:first-child { padding-left: 1.1rem; }
+#guests-card .po-empty { border-top: 1px solid var(--po-line); }
+#guests-card .po-name { max-width: 15rem; }
+.dash-cpu { display: flex; align-items: center; gap: 0.5rem; min-width: 7.5rem; }
+.dash-cpu .po-mono { width: 3.4rem; text-align: right; flex-shrink: 0; }
+.dash-cpu .po-bar { flex: 1; }
+#guests-card .table td.po-mono, #guests-card .po-kind { white-space: nowrap; }
+.po-name a { color: #FFFFFF; font-weight: 500; }
+.po-name a:hover { color: var(--po-primary); }
+
+.dash-disks { display: flex; flex-direction: column; gap: 0.55rem; }
+.dash-disk { padding: 0.6rem 0.7rem; border-radius: var(--po-radius); background: rgba(255, 255, 255, 0.03); border: 1px solid var(--po-line); }
+.dash-disk-head { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+.dash-disk-model { color: #FFFFFF; font-weight: 500; font-size: 0.85rem; }
+.dash-disk-meta { display: flex; flex-wrap: wrap; gap: 0.2rem 0.8rem; margin-top: 0.25rem; color: var(--po-text-muted); font-size: 0.74rem; }
+.dash-disk-meta b { color: var(--po-primary); font-weight: 500; }
+
+.dash-sys { display: flex; flex-direction: column; gap: 0.6rem; }
+.dash-sys > div { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; min-width: 0; }
+
+.dash-rrd, .dash-jobs { margin-bottom: 1rem; }
+.dash-jobs .table { margin-bottom: 0; }
+.dash-jobs .table td:first-child, .dash-jobs .table th:first-child { padding-left: 1.1rem; }
+.dash-setup { display: flex; gap: 1.25rem; align-items: flex-start; margin-bottom: 1.25rem; padding: 1.5rem; }
+
+@media (max-width: 1280px) { .dash-strip .po-chip.is-optional { display: none; } }
+@media (max-width: 640px) {
+  .dash-strip-repos { margin-left: 0; }
+  .dash-filters .po-search { margin-left: 0; }
+  #guests-card .table th:nth-child(5), #guests-card .table td:nth-child(5) { display: none; }
+}
+
 /* 9. Responsive -------------------------------------------------------------- */
 @media (max-width: 1280px) {
   .po-grid.is-main { grid-template-columns: minmax(0, 1fr); }

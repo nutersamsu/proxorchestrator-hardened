@@ -1,0 +1,22 @@
+{% load i18n %}
+{% if error %}
+  <div class="po-empty po-unavailable"><i class="fas fa-circle-exclamation" aria-hidden="true"></i> {% translate "Disk health unavailable" %}</div>
+{% else %}
+  <div class="dash-disks">
+  {% for d in disks %}
+    <div class="dash-disk">
+      <div class="dash-disk-head">
+        <span class="dash-disk-model po-truncate" title="{{ d.model }}">{{ d.model|default:d.devpath }}</span>
+        {% if d.health %}<span class="po-badge {% if d.ok %}is-ok{% else %}is-bad{% endif %}">{{ d.health }}</span>{% endif %}
+      </div>
+      <div class="dash-disk-meta po-mono">
+        <span>{{ d.devpath }}</span>
+        <span>{{ d.size|filesizeformat }}{% if d.type %} · {{ d.type|upper }}{% endif %}</span>
+        {% if d.wearout is not None and d.wearout != "N/A" and d.wearout != "" %}<span>{% translate "life" %} <b>{{ d.wearout }}%</b></span>{% endif %}
+      </div>
+    </div>
+  {% empty %}
+    <div class="po-empty">{% translate "No disks reported by the node." %}</div>
+  {% endfor %}
+  </div>
+{% endif %}

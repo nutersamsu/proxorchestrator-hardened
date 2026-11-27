@@ -4,302 +4,173 @@
 {% block page_title %}{% translate "Dashboard" %}{% endblock %}
 {% block help_slug %}{% translate "dashboard" %}{% endblock %}
 
-{% block page_actions %}
-  <a href="{% url 'importer_upload' %}" class="button is-primary is-small">
-    <span class="icon is-small"><i class="fas fa-plus"></i></span>
-    <span>{% translate "Import VM" %}</span>
-  </a>
-{% endblock %}
-
 {% block content %}
 
-{# ===== SETUP REQUIRED BANNER ===== #}
 {% if not wizard_complete %}
-<div class="proxorchestrator-card setup-required-card" style="margin-bottom: 2rem;">
-  <div class="card-body" style="padding: 2rem;">
-    <div style="display: flex;align-items: flex-start;gap: 1.5rem;">
-      <div style="width: 56px;height: 56px;border-radius: 14px;background: var(--bg-info-light);display: flex;align-items: center;justify-content: center;flex-shrink: 0;">
-        <i class="fas fa-cogs" style="font-size: 1.5rem;color: var(--link-color);"></i>
-      </div>
-      <div style="flex: 1;">
-        <h2 style="font-size: 1.15rem;font-weight: 700;color: var(--text-header);margin-bottom: 0.4rem;">{% translate "Setup Required" %}</h2>
-        <p style="color: var(--text-muted);font-size: 0.875rem;margin-bottom: 1.25rem;line-height: 1.6;">
-          {% translate "ProxOrchestrator hasn't been connected to your Proxmox server yet. Run the setup wizard to configure your Proxmox host, SSH key authentication, API token, and default settings." %}
-        </p>
-        <a href="{% url 'wizard_step1' %}" class="button is-primary" style="font-weight: 600;">
-          <span class="icon"><i class="fas fa-magic"></i></span>
-          <span>{% translate "Run Setup Wizard" %}</span>
-          <span class="icon"><i class="fas fa-arrow-right"></i></span>
-        </a>
-      </div>
-    </div>
+<div class="po-card setup-required-card dash-setup">
+  <div class="brand-shield" aria-hidden="true"><i class="fas fa-wand-magic-sparkles"></i></div>
+  <div>
+    <h2 class="title is-5">{% translate "Setup Required" %}</h2>
+    <p class="mb-4">{% translate "ProxOrchestrator hasn't been connected to your Proxmox server yet. Run the setup wizard to configure your Proxmox host, SSH key authentication, API token, and default settings." %}</p>
+    <a href="{% url 'wizard_step1' %}" class="button is-primary">
+      <i class="fas fa-magic mr-2" aria-hidden="true"></i>{% translate "Run Setup Wizard" %}<i class="fas fa-arrow-right ml-2" aria-hidden="true"></i>
+    </a>
   </div>
 </div>
 {% endif %}
 
 {% if cert_expiry_warning %}
-<div class="notification is-warning" style="margin-bottom:1.5rem;padding:0.75rem 1rem;border-radius:8px;font-size:0.875rem;">
-  <i class="fas fa-exclamation-triangle" style="margin-right:0.4rem;"></i>
+<div class="notification is-warning">
+  <i class="fas fa-exclamation-triangle mr-2" aria-hidden="true"></i>
   {% translate "TLS certificate expires in" %} <strong>{% blocktranslate trimmed %}{{ cert_days_remaining }} days{% endblocktranslate %}</strong>.
-  <a href="{% url 'cert_settings' %}" style="margin-left:0.5rem;">{% translate "Manage certificates &rarr;" %}</a>
+  <a href="{% url 'cert_settings' %}" class="ml-2">{% translate "Manage certificates &rarr;" %}</a>
 </div>
 {% endif %}
 
 {% if wizard_complete %}
 
-{# ===== NODE SUMMARY (loaded after the page; refreshes every 30s) ===== #}
-<div id="node-summary"
-     hx-get="{% url 'dashboard_node_summary' %}"
-     hx-trigger="load, every 30s"
-     hx-swap="innerHTML">
-  <div class="proxorchestrator-card node-summary">
-    <div class="card-header"><i class="fas fa-server" style="color: var(--link-color);"></i> {% translate "Node" %}</div>
-    <div class="card-body ns-sub">{% translate "Loading node status…" %}</div>
-  </div>
+{# ===== Node status strip + metric cards (refreshes every 30 s) ===== #}
+<div id="node-summary" hx-get="{% url 'dashboard_node_summary' %}" hx-trigger="load, every 30s" hx-swap="innerHTML">
+  <div class="po-card dash-strip"><span class="po-label">{% translate "Node" %}</span><span class="po-unavailable">{% translate "Loading node status…" %}</span></div>
 </div>
 
-{# ===== NODE PERFORMANCE (RRD) ===== #}
-<div class="proxorchestrator-card" style="margin-bottom:1.5rem;">
-  <div class="card-header"><i class="fas fa-chart-area" style="color: var(--link-color);"></i> {% translate "Node performance" %}</div>
-  <div class="card-body" style="padding:1rem 1.5rem;">
-    <div id="rrd-node-node" hx-get="{% url 'rrd_node' 'node' %}" hx-trigger="load" hx-swap="innerHTML">
-      <div class="ns-sub">{% translate "Loading statistics…" %}</div>
+<div class="po-grid is-main dash-main">
+  {# ===== Guests (VMs + containers of the node) ===== #}
+  <section class="po-card is-flush" id="guests-card" aria-labelledby="guests-title">
+    <div class="po-card-head">
+      <span class="po-card-title" id="guests-title"><i class="fas fa-layer-group" aria-hidden="true"></i>{% translate "Guests" %}</span>
+      <span class="po-label">{% blocktranslate count n=guests|length trimmed %}{{ n }} workload{% plural %}{{ n }} workloads{% endblocktranslate %}</span>
+      <span class="po-spacer"></span>
+      <a class="button is-primary is-small" href="{% url 'vmcreator_create' %}"><i class="fas fa-plus mr-2" aria-hidden="true"></i>{% translate "Deploy guest" %}</a>
     </div>
+    {% if api_ok %}
+      <div class="po-filters dash-filters" role="group" aria-label="{% translate "Filter guests" %}">
+        <button type="button" class="po-filter is-active" data-filter="all" aria-pressed="true">{% translate "All" %} <b>{{ guests|length }}</b></button>
+        <button type="button" class="po-filter" data-filter="vm" aria-pressed="false">{% translate "VMs" %} <b>{{ vm_total }}</b></button>
+        <button type="button" class="po-filter" data-filter="ct" aria-pressed="false">{% translate "LXCs" %} <b>{{ ct_total }}</b></button>
+        <button type="button" class="po-filter is-running" data-filter="running" aria-pressed="false">{% translate "Running" %} <b>{{ guest_running }}</b></button>
+        <button type="button" class="po-filter is-stopped" data-filter="stopped" aria-pressed="false">{% translate "Stopped" %} <b>{{ guest_stopped }}</b></button>
+        <input class="po-search" type="search" id="guest-search" placeholder="{% translate "Filter workloads…" %}" aria-label="{% translate "Filter workloads by name or ID" %}">
+      </div>
+      {% if guests %}
+      <div class="table-container">
+        <table class="table is-fullwidth is-hoverable po-table" id="guests-table">
+          <thead><tr>
+            <th>{% translate "State & ID" %}</th><th>{% translate "Workload name" %}</th><th>{% translate "Type" %}</th>
+            <th>{% translate "CPU load" %}</th><th>{% translate "Memory" %}</th>
+          </tr></thead>
+          <tbody>
+          {% for g in guests %}
+            <tr data-kind="{{ g.kind }}" data-status="{{ g.status }}" data-name="{{ g.vmid }} {{ g.name|lower }}">
+              <td class="po-mono"><span class="po-dot{% if g.status == 'running' %} is-on{% elif g.status == 'paused' %} is-paused{% endif %}" title="{{ g.status }}"></span>{{ g.vmid }}</td>
+              <td class="po-name"><a href="{{ g.url }}" title="{{ g.name }}">{{ g.name|default:"—" }}</a>{% if g.template %} <span class="po-badge no-dot">{% translate "template" %}</span>{% endif %}</td>
+              <td>{% if g.kind == "vm" %}<span class="po-kind is-vm">QEMU</span>{% else %}<span class="po-kind is-ct">LXC CT</span>{% endif %}</td>
+              <td><div class="dash-cpu"><span class="po-mono">{{ g.cpu_pct|floatformat:1 }}%</span><div class="po-bar{% if g.cpu_pct >= 90 %} is-full{% elif g.cpu_pct >= 75 %} is-hot{% endif %}"><i style="width: {{ g.cpu_pct|stringformat:".1f" }}%"></i></div></div></td>
+              <td class="po-mono">{% if g.status == "running" %}{{ g.mem_used|filesizeformat }} / {% endif %}{{ g.mem_total|filesizeformat }}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="po-empty dash-no-match" hidden>{% translate "No workload matches the filter." %}</div>
+      {% else %}
+        <div class="po-empty">{% translate "No VMs or containers on this node yet." %}</div>
+      {% endif %}
+    {% else %}
+      <div class="po-empty po-unavailable"><i class="fas fa-plug-circle-xmark" aria-hidden="true"></i> {% translate "Proxmox API unavailable — guests cannot be listed right now." %}</div>
+    {% endif %}
+  </section>
+
+  <div class="po-stack">
+    {% if user.is_staff %}
+    <section class="po-card" aria-labelledby="disks-title">
+      <div class="po-card-head"><span class="po-card-title" id="disks-title"><i class="fas fa-hard-drive" aria-hidden="true"></i>{% translate "Disk health (S.M.A.R.T.)" %}</span>
+        <span class="po-spacer"></span><a class="po-label" href="{% url 'node_page' %}">{% translate "Node" %} →</a></div>
+      <div hx-get="{% url 'dashboard_disks' %}" hx-trigger="load, every 300s" hx-swap="innerHTML"><div class="po-unavailable">{% translate "Loading…" %}</div></div>
+    </section>
+    {% endif %}
+
+    <section class="po-card" aria-labelledby="sys-title">
+      <div class="po-card-head"><span class="po-card-title" id="sys-title"><i class="fas fa-circle-nodes" aria-hidden="true"></i>{% translate "System Information" %}</span></div>
+      <div class="dash-sys">
+        <div><span class="po-label">{% translate "Proxmox Host" %}</span><span class="po-mono po-truncate">{{ proxmox_host|default:"—" }}</span></div>
+        <div><span class="po-label">{% translate "API Status" %}</span>{% if api_ok %}<span class="po-badge is-ok">{% translate "Connected" %}</span>{% else %}<span class="po-badge is-bad">{% translate "Disconnected" %}</span>{% endif %}</div>
+        <div><span class="po-label">{% translate "SSH Key" %}</span>{% if ssh_key_ok %}<span class="po-badge is-ok">{% translate "Configured" %}</span>{% else %}<span class="po-badge is-warn">{% translate "Not configured" %}</span>{% endif %}</div>
+      </div>
+    </section>
   </div>
 </div>
 
-{# ===== VM STAT CARDS ===== #}
-<div style="font-size: 0.8125rem;text-transform: uppercase;letter-spacing: 1px;color: var(--text-muted);font-weight: 600;margin-bottom: 0.5rem;">
-  <i class="fas fa-server" style="margin-right: 0.3rem;"></i> {% translate "Virtual Machines" %}
-</div>
-<div class="columns is-multiline" style="margin-bottom: 1rem;">
-  <div class="column is-3">
-    <a href="{% url 'inventory' %}" class="stat-card stat-card-link">
-      <div class="stat-card-icon is-blue">
-        <i class="fas fa-server"></i>
-      </div>
-      <div>
-        <div class="stat-card-value">{{ vm_total }}</div>
-        <div class="stat-card-label">{% translate "Total VMs" %}</div>
-      </div>
-    </a>
+{# ===== Node performance (RRD) ===== #}
+<section class="po-card dash-rrd" aria-labelledby="rrd-title">
+  <div class="po-card-head"><span class="po-card-title" id="rrd-title"><i class="fas fa-chart-area" aria-hidden="true"></i>{% translate "Node performance" %}</span></div>
+  <div id="rrd-node-node" hx-get="{% url 'rrd_node' 'node' %}" hx-trigger="load" hx-swap="innerHTML">
+    <div class="po-unavailable">{% translate "Loading statistics…" %}</div>
   </div>
-  <div class="column is-3">
-    <a href="{% url 'inventory' %}" class="stat-card stat-card-link">
-      <div class="stat-card-icon is-green">
-        <i class="fas fa-play-circle"></i>
-      </div>
-      <div>
-        <div class="stat-card-value">{{ vm_running }}</div>
-        <div class="stat-card-label">{% translate "Running" %}</div>
-      </div>
-    </a>
-  </div>
-  <div class="column is-3">
-    <a href="{% url 'inventory' %}" class="stat-card stat-card-link">
-      <div class="stat-card-icon is-red">
-        <i class="fas fa-stop-circle"></i>
-      </div>
-      <div>
-        <div class="stat-card-value">{{ vm_stopped }}</div>
-        <div class="stat-card-label">{% translate "Stopped" %}</div>
-      </div>
-    </a>
-  </div>
-  <div class="column is-3">
-    <a href="{% url 'inventory' %}" class="stat-card stat-card-link">
-      <div class="stat-card-icon is-purple">
-        <i class="fas fa-database"></i>
-      </div>
-      <div>
-        <div class="stat-card-value" style="font-size: 1rem;padding-top: 0.3rem;">{% translate "See inventory" %}</div>
-        <div class="stat-card-label">{% translate "VM Details" %}</div>
-      </div>
-    </a>
-  </div>
-</div>
+</section>
 
-{# ===== CONTAINER STAT CARDS ===== #}
-<div style="font-size: 0.8125rem;text-transform: uppercase;letter-spacing: 1px;color: var(--text-muted);font-weight: 600;margin-bottom: 0.5rem;">
-  <i class="fas fa-cube" style="margin-right: 0.3rem;"></i> {% translate "LXC Containers" %}
-</div>
-<div class="columns is-multiline" style="margin-bottom: 0.5rem;">
-  <div class="column is-3">
-    <a href="{% url 'lxc_list' %}" class="stat-card stat-card-link">
-      <div class="stat-card-icon is-blue">
-        <i class="fas fa-cube"></i>
-      </div>
-      <div>
-        <div class="stat-card-value">{{ ct_total }}</div>
-        <div class="stat-card-label">{% translate "Total Containers" %}</div>
-      </div>
-    </a>
-  </div>
-  <div class="column is-3">
-    <a href="{% url 'lxc_list' %}" class="stat-card stat-card-link">
-      <div class="stat-card-icon is-green">
-        <i class="fas fa-play-circle"></i>
-      </div>
-      <div>
-        <div class="stat-card-value">{{ ct_running }}</div>
-        <div class="stat-card-label">{% translate "Running" %}</div>
-      </div>
-    </a>
-  </div>
-  <div class="column is-3">
-    <a href="{% url 'lxc_list' %}" class="stat-card stat-card-link">
-      <div class="stat-card-icon is-red">
-        <i class="fas fa-stop-circle"></i>
-      </div>
-      <div>
-        <div class="stat-card-value">{{ ct_stopped }}</div>
-        <div class="stat-card-label">{% translate "Stopped" %}</div>
-      </div>
-    </a>
-  </div>
-  <div class="column is-3">
-    <a href="{% url 'lxc_list' %}" class="stat-card stat-card-link">
-      <div class="stat-card-icon is-purple">
-        <i class="fas fa-database"></i>
-      </div>
-      <div>
-        <div class="stat-card-value" style="font-size: 1rem;padding-top: 0.3rem;">{% translate "See inventory" %}</div>
-        <div class="stat-card-label">{% translate "LXC Details" %}</div>
-      </div>
-    </a>
-  </div>
-</div>
-
-{# ===== QUICK ACTIONS ===== #}
-<div class="columns" style="margin-top: 1.5rem;">
-  <div class="column is-4">
-    <div class="proxorchestrator-card" style="height: 100%;">
-      <div class="card-header">
-        <i class="fas fa-bolt" style="color: var(--warning-color);"></i> {% translate "Quick Actions" %}
-      </div>
-      <div class="card-body" style="display: flex;flex-direction: column;gap: 0.75rem;">
-        <a href="{% url 'importer_upload' %}" class="button is-primary is-medium is-fullwidth" style="font-weight: 600;justify-content: flex-start;padding-left: 1.25rem;">
-          <span class="icon"><i class="fas fa-upload"></i></span>
-          <span>{% translate "Import VM from Disk Image" %}</span>
-        </a>
-        <a href="{% url 'lxc_create' %}" class="button is-primary is-medium is-fullwidth" style="font-weight: 600;justify-content: flex-start;padding-left: 1.25rem;">
-          <span class="icon"><i class="fas fa-cube"></i></span>
-          <span>{% translate "New LXC Container" %}</span>
-        </a>
-        <a href="{% url 'inventory' %}" class="button is-light is-medium is-fullwidth" style="font-weight: 600;justify-content: flex-start;padding-left: 1.25rem;border: 1px solid var(--border-main);">
-          <span class="icon"><i class="fas fa-server"></i></span>
-          <span>{% translate "View VM Inventory" %}</span>
-        </a>
-        <a href="{% url 'lxc_list' %}" class="button is-light is-medium is-fullwidth" style="font-weight: 600;justify-content: flex-start;padding-left: 1.25rem;border: 1px solid var(--border-main);">
-          <span class="icon"><i class="fas fa-cube"></i></span>
-          <span>{% translate "View Container Inventory" %}</span>
-        </a>
-      </div>
+{# ===== Recent ProxOrchestrator jobs ===== #}
+<section class="po-card is-flush dash-jobs" aria-labelledby="jobs-title">
+  <div class="po-card-head"><span class="po-card-title" id="jobs-title"><i class="fas fa-history" aria-hidden="true"></i>{% translate "Recent Jobs" %}</span>
+    <span class="po-spacer"></span><a class="po-label" href="{% url 'task_list' %}">{% translate "All tasks" %} →</a></div>
+  {% if recent_jobs %}
+    <div class="table-container">
+      <table class="table is-fullwidth is-hoverable po-table">
+        <thead><tr>
+          <th>{% translate "Source" %}</th><th>{% translate "Name" %}</th><th>{% translate "Type" %}</th>
+          <th>{% translate "Status" %}</th><th>{% translate "Date" %}</th><th class="has-text-right">{% translate "Actions" %}</th>
+        </tr></thead>
+        <tbody>
+          {% for job in recent_jobs %}{% include "core/partials/dashboard_job_row.html" with job=job %}{% endfor %}
+        </tbody>
+      </table>
     </div>
-  </div>
-
-  {# ===== RECENT JOBS ===== #}
-  <div class="column is-8">
-    <div class="proxorchestrator-card" style="height: 100%;">
-      <div class="card-header">
-        <i class="fas fa-history" style="color: var(--link-color);"></i> {% translate "Recent Jobs" %}
-      </div>
-      <div style="overflow-x: auto;">
-        {% if recent_jobs %}
-          <table class="table is-fullwidth" style="margin: 0;">
-            <thead>
-              <tr style="background: var(--bg-main);">
-                <th style="font-size: 0.8125rem;color: var(--text-muted);font-weight: 600;border-bottom: 1px solid var(--border-main);">{% translate "Source" %}</th>
-                <th style="font-size: 0.8125rem;color: var(--text-muted);font-weight: 600;border-bottom: 1px solid var(--border-main);">{% translate "Name" %}</th>
-                <th style="font-size: 0.8125rem;color: var(--text-muted);font-weight: 600;border-bottom: 1px solid var(--border-main);">{% translate "Type" %}</th>
-                <th style="font-size: 0.8125rem;color: var(--text-muted);font-weight: 600;border-bottom: 1px solid var(--border-main);">{% translate "Status" %}</th>
-                <th style="font-size: 0.8125rem;color: var(--text-muted);font-weight: 600;border-bottom: 1px solid var(--border-main);">{% translate "Date" %}</th>
-                <th style="font-size: 0.8125rem;color: var(--text-muted);font-weight: 600;border-bottom: 1px solid var(--border-main);text-align: right;">{% translate "Actions" %}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for job in recent_jobs %}
-              {% include "core/partials/dashboard_job_row.html" with job=job %}
-              {% endfor %}
-            </tbody>
-          </table>
-        {% else %}
-          <div class="empty-state" style="padding: 2.5rem 1.5rem;">
-            <div class="empty-state-icon"><i class="fas fa-inbox"></i></div>
-            <h3>{% translate "No jobs yet" %}</h3>
-            <p>{% translate "Import a disk image, create a VM, or spin up a container to get started." %}</p>
-            <div style="display: flex;gap: 0.75rem;justify-content: center;flex-wrap: wrap;">
-              <a href="{% url 'vmcreator_create' %}" class="button is-primary is-small">
-                <span class="icon is-small"><i class="fas fa-plus-circle"></i></span>
-                <span>{% translate "New VM" %}</span>
-              </a>
-              <a href="{% url 'lxc_create' %}" class="button is-primary is-small">
-                <span class="icon is-small"><i class="fas fa-cube"></i></span>
-                <span>{% translate "New LXC Container" %}</span>
-              </a>
-              <a href="{% url 'importer_upload' %}" class="button is-light is-small">
-                <span class="icon is-small"><i class="fas fa-upload"></i></span>
-                <span>{% translate "Import Disk" %}</span>
-              </a>
-            </div>
-          </div>
-        {% endif %}
-      </div>
+  {% else %}
+    <div class="po-empty">
+      <p class="mb-3">{% translate "No jobs yet" %} — {% translate "Import a disk image, create a VM, or spin up a container to get started." %}</p>
+      <a href="{% url 'vmcreator_create' %}" class="button is-primary is-small mr-2">{% translate "New VM" %}</a>
+      <a href="{% url 'lxc_create' %}" class="button is-small mr-2">{% translate "New LXC Container" %}</a>
+      <a href="{% url 'importer_upload' %}" class="button is-small">{% translate "Import Disk" %}</a>
     </div>
-  </div>
-</div>
-
-{# ===== SYSTEM INFO ===== #}
-<div class="proxorchestrator-card" style="margin-top: 0.5rem;">
-  <div class="card-header">
-    <i class="fas fa-info-circle" style="color: var(--text-muted);"></i> {% translate "System Information" %}
-  </div>
-  <div class="card-body">
-    <div class="columns">
-      <div class="column is-4">
-        <div style="font-size: 0.8125rem;text-transform: uppercase;letter-spacing: 1px;color: var(--text-muted);margin-bottom: 0.35rem;font-weight: 600;">{% translate "Proxmox Host" %}</div>
-        <div style="font-weight: 600;color: var(--text-header);font-family: var(--font-mono);">{{ proxmox_host|default:"Not configured" }}</div>
-      </div>
-      <div class="column is-4">
-        <div style="font-size: 0.8125rem;text-transform: uppercase;letter-spacing: 1px;color: var(--text-muted);margin-bottom: 0.35rem;font-weight: 600;">{% translate "API Status" %}</div>
-        <div>
-          {% if api_ok %}
-            <span class="status-dot is-online"></span>
-            <span style="color: var(--text-success-dark);font-weight: 600;">{% translate "Connected" %}</span>
-          {% else %}
-            <span class="status-dot is-offline"></span>
-            <span style="color: var(--danger-color);font-weight: 600;">{% translate "Disconnected" %}</span>
-          {% endif %}
-        </div>
-      </div>
-      <div class="column is-4">
-        <div style="font-size: 0.8125rem;text-transform: uppercase;letter-spacing: 1px;color: var(--text-muted);margin-bottom: 0.35rem;font-weight: 600;">{% translate "SSH Key" %}</div>
-        <div>
-          {% if ssh_key_ok %}
-            <span class="status-dot is-online"></span>
-            <span style="color: var(--text-success-dark);font-weight: 600;">{% translate "Configured" %}</span>
-          {% else %}
-            <span class="status-dot is-offline"></span>
-            <span style="color: var(--danger-color);font-weight: 600;">{% translate "Not configured" %}</span>
-          {% endif %}
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+  {% endif %}
+</section>
 
 {% endif %}{# end wizard_complete #}
-
 {% endblock %}
 
 {% block extra_scripts %}
 <script>
-  // Load the individual stat counters once the page stats partial loads
-  document.addEventListener('htmx:afterSettle', function(evt) {
-    if (evt.detail.target && evt.detail.target.id === 'stat-total') {
-      // The stats partial should have set the innerHTML
-      // Individual counters are updated by the partial itself
+  /* Guests table: status/type buttons + text filter, all client side (data already on the page) */
+  (function () {
+    var card = document.getElementById('guests-card');
+    if (!card) return;
+    var rows = card.querySelectorAll('#guests-table tbody tr');
+    var none = card.querySelector('.dash-no-match');
+    var search = document.getElementById('guest-search');
+    var mode = 'all';
+    function apply() {
+      var q = (search && search.value || '').trim().toLowerCase();
+      var shown = 0;
+      rows.forEach(function (tr) {
+        var ok = mode === 'all' || tr.dataset.kind === mode || tr.dataset.status === mode ||
+                 (mode === 'stopped' && tr.dataset.status !== 'running');
+        if (ok && q) ok = tr.dataset.name.indexOf(q) >= 0;
+        tr.hidden = !ok;
+        if (ok) shown++;
+      });
+      if (none) none.hidden = shown > 0 || !rows.length;
     }
-  });
+    card.querySelectorAll('.po-filter').forEach(function (b) {
+      b.addEventListener('click', function () {
+        mode = b.dataset.filter;
+        card.querySelectorAll('.po-filter').forEach(function (x) {
+          x.classList.toggle('is-active', x === b);
+          x.setAttribute('aria-pressed', x === b ? 'true' : 'false');
+        });
+        apply();
+      });
+    });
+    if (search) search.addEventListener('input', apply);
+  })();
 </script>
 {% endblock %}
