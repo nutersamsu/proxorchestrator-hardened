@@ -33,5 +33,10 @@ class StylesheetTests(SimpleTestCase):
     def test_no_external_urls(self):
         self.assertNotRegex(CSS, r"https?://")
 
+    def test_tag_variants_beat_bulma(self):
+        # Bulma 0.9 styles variants as ".tag:not(body).is-light" (0,3,0): ours must match it
+        self.assertIn(".tag:not(body).is-light", CSS)
+        self.assertIn(".status-badge.task-badge-running::before { display: none; }", CSS)
+
     def test_reduced_motion_block(self):
         self.assertIn("prefers-reduced-motion: reduce", CSS)

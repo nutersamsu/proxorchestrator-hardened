@@ -299,14 +299,16 @@ input[type="range"] { accent-color: var(--po-primary); }
   background-color: rgba(255, 255, 255, 0.06); color: var(--po-text-soft);
   border: 1px solid var(--po-line-2);
 }
-.tag.is-success, .tag.is-success.is-light { background-color: var(--bg-success-light); color: var(--text-success-dark); border-color: var(--border-success); }
-.tag.is-danger, .tag.is-danger.is-light { background-color: var(--bg-danger-light); color: var(--text-danger-dark); border-color: var(--border-danger); }
-.tag.is-warning, .tag.is-warning.is-light { background-color: var(--bg-warning-light); color: var(--text-warning-dark); border-color: var(--border-warning); }
-.tag.is-info, .tag.is-link, .tag.is-primary, .tag.is-info.is-light, .tag.is-link.is-light, .tag.is-primary.is-light {
+/* Bulma writes its variants as .tag:not(body).is-x — match that specificity */
+.tag:not(body).is-light, .tag:not(body).is-white { background-color: rgba(255, 255, 255, 0.06); color: var(--po-text); }
+.tag:not(body).is-dark, .tag:not(body).is-black { background-color: var(--po-track); color: var(--po-text); }
+.tag:not(body).is-success, .tag:not(body).is-success.is-light { background-color: var(--bg-success-light); color: var(--text-success-dark); border-color: var(--border-success); }
+.tag:not(body).is-danger, .tag:not(body).is-danger.is-light { background-color: var(--bg-danger-light); color: var(--text-danger-dark); border-color: var(--border-danger); }
+.tag:not(body).is-warning, .tag:not(body).is-warning.is-light { background-color: var(--bg-warning-light); color: var(--text-warning-dark); border-color: var(--border-warning); }
+.tag:not(body).is-info, .tag:not(body).is-link, .tag:not(body).is-primary,
+.tag:not(body).is-info.is-light, .tag:not(body).is-link.is-light, .tag:not(body).is-primary.is-light {
   background-color: rgba(6, 182, 212, 0.12); color: #67E8F9; border-color: rgba(6, 182, 212, 0.3);
 }
-.tag.is-dark, .tag.is-black { background-color: var(--po-track); color: var(--po-text); }
-.tag.is-light, .tag.is-white { background-color: rgba(255, 255, 255, 0.06); color: var(--po-text); }
 .tag .delete { background-color: rgba(255, 255, 255, 0.15); }
 
 /* Notifications and messages: glass with a left accent bar */
@@ -2134,6 +2136,7 @@ tr.task-failed td { background: var(--bg-danger-light); }
 .vm-status-stopped { background: rgba(239, 68, 68, 0.12); border-color: rgba(239, 68, 68, 0.35); color: #F87171; }
 .vm-status-paused { background: rgba(245, 158, 11, 0.12); border-color: rgba(245, 158, 11, 0.3); color: #FBBF24; }
 .vm-status-unknown { background: rgba(255, 255, 255, 0.05); color: var(--po-text-muted); }
+.status-badge.task-badge-running::before { display: none; } /* it already shows a spinner icon */
 .status-badge.task-badge-running { background: rgba(6, 182, 212, 0.12); border-color: rgba(6, 182, 212, 0.3); color: #67E8F9; }
 .status-badge.task-badge-warning { background: rgba(245, 158, 11, 0.12); border-color: rgba(245, 158, 11, 0.3); color: #FBBF24; }
 .status-badge.task-badge-error { background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.45); color: #F87171; }
