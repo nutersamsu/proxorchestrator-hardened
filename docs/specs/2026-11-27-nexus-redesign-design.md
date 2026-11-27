@@ -3,8 +3,8 @@
 ## Intenção
 Aplicar ao ProxOrchestrator o redesign do projeto Stitch **"ProxOrchestrator Modern UI
 Redesign"** (`projects/4008781002491535973`, 28 telas, design system "Nexus Hardened
-Cyber-Ops") e **remover o estilo antigo**. O usuário usa o app no homelab (VM 102,
-https://192.168.1.38:8443) e quer uma interface moderna, densa, escura, tipo console de
+Cyber-Ops") e **remover o estilo antigo**. O usuário usa o app no homelab (VM própria,
+só na rede local) e quer uma interface moderna, densa, escura, tipo console de
 operações.
 
 ## Decisões do usuário (27/11)
